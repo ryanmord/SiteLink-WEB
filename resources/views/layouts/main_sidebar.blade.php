@@ -7,7 +7,7 @@
                 <!-- <li class="list-group-item"><input type="text" class="form-control search-query" placeholder="Search Something"></li> -->
                 <li class="list-group-item"><a href="{{ url('/dashboard')}}"><i class="glyphicon glyphicon-home"></i>Dashboard </a></li>
                
-                <li class="list-group-item"><a href="{{ url('/users')}}"><i class="glyphicon glyphicon-user"></i>Associates and Schedulars </a></li>
+                <li class="list-group-item"><a href="{{ url('/users')}}"><i class="glyphicon glyphicon-user"></i>Associate and Schedular Users </a></li>
                <li class="list-group-item"><a href="{{ url('/adminuser')}}"><i class="glyphicon glyphicon-user"></i>Admin Users </a></li>
               </ul>
           </div>

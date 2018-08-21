@@ -35,5 +35,10 @@ class User extends Authenticatable
     {
         return $this->hasOne('App\AdminUser', 'admin_users_id', 'users_approved_by');
     }
+    public function scope_performed()
+    {
+        return $this->belongsToMany('App\ScopePerformed','user_scope_performed', 'scope_performed_id', 'users_id');
+    }
+
 
 }

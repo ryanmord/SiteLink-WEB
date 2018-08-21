@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 use App\User;
 use App\UserType;
+Use App\UserScopePerformed;
+Use App\ScopePerformed;
 use App\AdminUser;
 use Illuminate\Http\Request;
 use DateTime;
 use Session;
+use DB;
 class UserController extends Controller
 {
     /**
