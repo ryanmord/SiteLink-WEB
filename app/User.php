@@ -14,9 +14,11 @@ class User extends Authenticatable
      *
      * @var array
      */
+    protected $primaryKey = 'users_id';
     protected $fillable = [
         'users_name', 'users_email', 'users_password',
     ];
+
 
     /**
      * The attributes that should be hidden for arrays.
@@ -35,10 +37,8 @@ class User extends Authenticatable
     {
         return $this->hasOne('App\AdminUser', 'admin_users_id', 'users_approved_by');
     }
-    public function scope_performed()
+    public function scopeperformed()
     {
-        return $this->belongsToMany('App\ScopePerformed','user_scope_performed', 'scope_performed_id', 'users_id');
+        return $this->belongsToMany('App\ScopePerformed','user_scope_performed','users_id','scope_performed_id');
     }
-
-
 }

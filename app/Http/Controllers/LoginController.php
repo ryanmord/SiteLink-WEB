@@ -84,7 +84,9 @@ class LoginController extends Controller
     }
     public function logout(Request $request)
     {
-        $request->session()->flush(); 
+        $request->session()->forget('loginuser');
+        $request->session()->flush();
+        //session()->flush();
        
         return redirect()->action('LoginController@index');
     }

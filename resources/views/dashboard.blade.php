@@ -3,69 +3,6 @@
 @section('main-content')
 
         <div class="col-xs-12 col-sm-9 content">
-     
-       <!--  <div class="panel-body">
-        <div class="content-row">
-		<div class="row">
-		<div class="col-md-4">
-        <div class="pricing">
-        <div class="clearfix">
-		<ul>
-        <li class="unit price-primary">
-       <div class="price-title unit price-primary">
-        <h4><i class="glyphicon glyphicon-user"></i>  Associates</h4>
-                                               
-       </div>
-       <div class="price-body">
-        <h5>550</h5>
-         </div>
-         </li>
-         </ul>
-         </div>
-         </div>
-         </div>
-         <div class="col-md-4">
-         <div class="pricing">
-         <div class="clearfix">
-
-                          <ul>
-                            <li class="unit price-success">
-                                              <div class="price-title">
-                                               <h4><i class="glyphicon glyphicon-user"></i>  Associates</h4>
-                                               
-                                              </div>
-                                              <div class="price-body">
-                                               <h5>550</h5>
-                        </div>
-                        </li>
-                        </ul>
-                        </div>
-                        </div>
-                        </div>
-                         <div class="col-md-4">
-         <div class="pricing">
-         <div class="clearfix">
-
-                          <ul>
-                            <li class="unit price-warning">
-                                              <div class="price-title">
-                                               <h4><i class="glyphicon glyphicon-user"></i>  Associates</h4>
-                                               
-                                              </div>
-                                              <div class="price-body">
-                                               <h5>550</h5>
-                        </div>
-                        </li>
-                        </ul>
-                        </div>
-                        </div>
-                        </div>
-                        </div>
-                        </div>
-                        </div>
-
- -->
-
                   <div class="content-row">
                     
                     <div class="row">
@@ -75,12 +12,11 @@
                             
                 <div style=" height: 100px;width: 220px;background-color: #19B5FE;text-align: center;">
                 <br>
-                <font size="4" color="white"><b><i class="glyphicon glyphicon-user"></i>  Associates</b></font>
-                <br>
                 <font size="4" color="white"><b>{{ $associate }}</b></font>
-
-                         
-                            </div>
+                <br>
+              
+                <font size="4" color="white"><b><i class="glyphicon glyphicon-user"></i>  Associates</b></font>
+                </div>
                           </div>
                         </div>
                       </div>
@@ -90,10 +26,11 @@
                             
                 <div style=" height: 100px;width: 220px;background-color:#26A65B;text-align: center;">
                 <br>
-                <font size="4" color="white"><b><i class="glyphicon glyphicon-user"></i>  Schedulers</b></font>
-                <br>
                 <font size="4" color="white"><b>{{ $schedular }}</b></font>
 
+                <br>
+                <font size="4" color="white"><b><i class="glyphicon glyphicon-user"></i>  Schedulers</b></font>
+                
                          
                             </div>
                           </div>
@@ -104,11 +41,12 @@
                           <div >
                             
                 <div style=" height: 100px;width: 220px;background-color:#DB5A6B;text-align: center;">
-                <br>
-                <font size="4" color="white"><b><i class="fa fa-building-o"></i>  No. of Projects</b></font>
-                <br>
+                 <br>
                 <font size="4" color="white"><b>550</b></font>
 
+                <br>
+                <font size="4" color="white"><b><i class="fa fa-building-o"></i>  No. of Projects</b></font>
+               
                          
                             </div>
                           </div>
@@ -120,10 +58,11 @@
                             
                 <div style=" height: 100px;width: 220px;background-color:#F5AB35;text-align: center;">
                 <br>
-                <font size="4" color="white"><b><span class="glyphicon glyphicon-briefcase"></span> Total Bids</b></font>
-                <br>
                 <font size="4" color="white"><b>550</b></font>
 
+                <br>
+                <font size="4" color="white"><b><span class="glyphicon glyphicon-briefcase"></span> Total Bids</b></font>
+                
                          
                             </div>
                           </div>
@@ -135,10 +74,10 @@
            
             <div class="panel panel-success">
             <div class="panel-heading">
-                <h3 class="panel-title"><a href="javascript:void(0);" class="toggle-sidebar"><span class="fa fa-angle-double-left" data-toggle="offcanvas" title="Maximize Panel"></span></a> Unverified Associate Users ({{ $users->count() }})</h3>
+                <h3 class="panel-title"><a href="javascript:void(0);" class="toggle-sidebar"><span class="fa fa-angle-double-left" data-toggle="offcanvas" title="Maximize Panel"></span></a> Unverified Associate Users <span class="badge" style="background-color:#DB5A6B;">{{ $users->count() }}</span></h3>
               </div>
              
-               <div class="table-responsive" style="overflow-x:auto;">
+               <div class="table-responsive">
                       @if($users->count()>0)
                         <table class="table table-bordered table-hover table-striped">
 
@@ -177,7 +116,7 @@
                                 
                                 @endif
                     </td>
-                    <td style="text-align: center;vertical-align: middle;">{{ $user->users_name }}</td>
+                    <td style="text-align: center;vertical-align: middle;">{{ ucfirst($user->users_name) }}</td>
                     <td style="text-align: center;vertical-align: middle;">{{ $user->users_company }}</td>
                     <td style="text-align: center;vertical-align: middle;">{{ $user->users_email }}</td>
                     <td style="text-align: center;vertical-align: middle;">+91{{ $user->users_phone }}</td>
@@ -202,20 +141,20 @@
                    <td style="text-align: center;vertical-align: middle;color: #5B8930;">
                     <span class="glyphicon glyphicon-ok"></span></td>
                    @else
-                   <td style="text-align: center;vertical-align: middle;color: #DC3023;">
+                   <td style="text-align: center;vertical-align: middle;color: #DB5A6B;">
                   
-                <span class="glyphicon glyphicon-remove"></span></td>
+                  <span class="glyphicon glyphicon-remove"></span></td>
                    @endif
                    <td style="text-align: center;vertical-align: middle;">
                    <div class="btn-group">
                         <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-cog"></span></button>
                         <ul class="dropdown-menu" role="menu" style="left: 0% !important;
                         right: 100% !important;text-align: center !important;transform: translate(-75%, 0) !important;">
-                          <li><a href="{{url('dashboard/user/'.$user['users_id'].'/1')}}">Approve</a></li>
-                          <li><a href="{{url('dashboard/user/'.$user['users_id'].'/0')}}">Reject</a></li>
+                          <li><a href="{{url('dashboard/user/'.$user['users_id'].'/1')}}" onclick="return confirm('Do you want to approve this associates?')">Approve</a></li>
+                          <li><a href="{{url('dashboard/user/'.$user['users_id'].'/0')}}" onclick="return confirm('Do you want to Reject this associates?')">Reject</a></li>
                           <!-- <li><a href="{{url('dashboard/user/'.$user['users_id'].'/3')}}">Block</a></li> -->
                         </ul>
-                      </div>
+                    </div>
                    <!-- <label class="toggle">
                    <a href="{{url('dashboard/user/'.$user['users_id'].'/1')}}" onclick="return confirm('Do you want to approve this associates?')">
   				   <input type="checkbox">

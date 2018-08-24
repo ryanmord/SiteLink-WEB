@@ -11,11 +11,12 @@
                 @else
                 <span class="fa fa-angle-double-left" data-toggle="offcanvas" title="Maximize Panel"></span></a> Associate And Schedular Users</h3>
                 @endif
+                
               </div>
              
              <!--  <input id="myInput" type="text" placeholder="Search.."> -->
              
-               <div class="table-responsive" style="overflow-x:auto;">
+               <div class="table-responsive">
                         <table class="table table-bordered table-hover table-striped">
 
                           <thead>
@@ -39,6 +40,7 @@
                             @endif
                           <th style="text-align: center;vertical-align: middle;">Action</th>
                             </tr>
+                            @if(!isset($admin))
                             <tr>
                             
                             <th style="text-align: center;vertical-align: middle;"></th>
@@ -70,11 +72,11 @@
                             @endif
                             <th style="text-align: center;vertical-align: middle;"></th>
                             <th style="text-align: center;vertical-align: middle;">
-                            <select class="form-control" onchange='filteruserstatus()' id="userstatus">
+                            <!-- <select class="form-control" onchange='filteruserstatus()' id="userstatus">
                             <option value="">Any</option>
                             <option value="Active">Active</option>
                             <option value="Inactive">Inactive</option>
-                            </select>
+                            </select> -->
                             </th>
                             @if(!isset($admin))
                             <th style="text-align: center;vertical-align: middle;">
@@ -90,27 +92,30 @@
                             @endif
                              <th style="text-align: center;vertical-align: middle;"></th>
                             </tr> 
-                         </thead>
+                            @endif
+                            </thead>
                           <tbody id="myTable">
-                           @foreach ($users as $user)
-                <tr class="content">
-
-
-                    <td style="text-align: center;vertical-align: middle;">
-                    @if(isset($user->users_profile_image))
-                                 <?php $user['users_profile_image'] = asset("/img/users/" . $user['users_profile_image']); ?>
-                                    
-                                <img style="max-width:50px;max-height:50px;min-width:50px;min-height:50px;" src= "{{ $user['users_profile_image'] }}" />
-                    
-                                
-                                @else
+                          @foreach ($users as $user)
+                          <tr class="content">
+                          <td style="text-align: center;vertical-align: middle;">
+                          @if(isset($user->users_profile_image))
+                          <?php $user['users_profile_image'] = asset("/img/users/" . $user['users_profile_image']); ?>
+                          <img style="max-width:50px;max-height:50px;min-width:50px;min-height:50px;" src= "{{ $user['users_profile_image'] }}" />
+                          @else
                             
                                     
                                 <img style="max-width:50px;max-height:50px;min-width:50px;min-height:50px;" src='{{asset('/img/users/default.png')}}'/>
                                 
                                 @endif
                     </td>
-                    <td style="text-align: center;vertical-align: middle;">{{ $user->users_name }}</td>
+                    <td style="text-align: center;vertical-align: middle;">
+                    @if($user->user_types_id == 1)
+                    <a class="text-primary" href="{{url('projects/'.$user['users_id'])}}">
+                    {{ ucfirst($user->users_name) }}</a>
+                    @else
+                    {{ ucfirst($user->users_name) }}
+                    @endif
+                    </td>
                     <td style="text-align: center;vertical-align: middle;">{{ $user->users_company }}</td>
                     <td style="text-align: center;vertical-align: middle;">{{ $user->users_email }}</td>
                     <td style="text-align: center;vertical-align: middle;">+91{{ $user->users_phone }}</td>
@@ -119,10 +124,32 @@
                     <a href="#" data-toggle="tooltip" data-placement="top" title="{{ $user->users_address }}">
                     <img style="max-width:30px;max-height:30px;min-width:30px;min-height:30px;" src="{{asset('/img/home.svg')}}"></a></td>
                     
-                    <td style="text-align: center;vertical-align: middle;">{{ $user->usertype->user_types }}</td>
+                    <td style="text-align: center;vertical-align: middle;">
+                    {{ $user->usertype->user_types }}</td>
                      @if(!isset($admin))
                     <td style="text-align: center;vertical-align: middle;">
-                   
+                   @if($user->user_types_id == 2)
+                   @foreach($user->scopeperformed as $scopeperform)
+                      {{ $scopeperform->scope_performed }},
+                    @endforeach
+                   <?php
+                   $temp = explode(",", $user->scopeperformed);
+                   foreach($temp as $scope)
+                    {
+                        foreach ($scopeperformed as $value) {
+                            if($value->scope_performed_id==$scope)
+                            {
+                                echo $value->scope_performed;
+                                echo ",<br>";
+                            }
+                        }
+                       
+                    }  ?> 
+                    
+                    @else
+                      -
+                    @endif
+                    </td>
                     @endif
                     <?php $date1=date("Y-m-d H:i:s");
                     $date2= date($user->users_enrolled);
@@ -140,9 +167,8 @@
                    <td style="text-align: center;vertical-align: middle;color: #5B8930;">
                     <span class="glyphicon glyphicon-ok"></span></td>
                    @else
-                   <td style="text-align: center;vertical-align: middle;color: #DC3023;">
-                  
-                <span class="glyphicon glyphicon-remove"></span></td>
+                   <td style="text-align: center;vertical-align: middle;color: #DB5A6B;">
+                  <span class="glyphicon glyphicon-remove"></span></td>
                    @endif
                     @if(!isset($admin))
                     @if($user->users_approval_status == 1 )

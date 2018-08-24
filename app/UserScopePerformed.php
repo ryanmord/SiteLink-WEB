@@ -11,9 +11,6 @@ class UserScopePerformed extends Model
     DB::table('stories')->whereIn('author',$idsArr)->get();
 */
     protected $table = 'user_scope_performed';
-    public function userscope()
-    {
-        return $this->hasOne('App\User', 'users_id', 'users_id');
-    }
-
+    protected $primaryKey = 'user_scope_performed_id'; 
+   
 }
