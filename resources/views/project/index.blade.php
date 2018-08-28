@@ -1,23 +1,23 @@
 @extends('layouts.main_layout')
 
 @section('main-content')
- <div class="col-xs-12 col-sm-9 content">
-    <!-- <a href="{{ url()->previous() }}">Back</a> -->
-            <div class="panel panel-success">
-            <div class="panel-heading">
-                <h3 class="panel-title">
-                <a href="{{ url()->previous() }}">Back</a>
-                <a href="javascript:void(0);" class="toggle-sidebar">
-                <span class="fa fa-angle-double-left" data-toggle="offcanvas" title="Maximize Panel"></span></a>{{ ucfirst($user) }}'s Projects</h3>
-            </div>
-            <div class="table-responsive">
-            @if($projects->count()>0)
-           <table class="table table-bordered table-hover table-striped">
-			<thead>
+<div class="col-xs-12 col-sm-9 content">
+<div class="panel panel-success">
+<div class="panel-heading">
+<h3 class="panel-title">
+<a href="{{ url()->previous() }}">Back</a>
+<a href="javascript:void(0);" class="toggle-sidebar">
+<span class="fa fa-angle-double-left" data-toggle="offcanvas" title="Maximize Panel"></span></a>{{ ucfirst($user) }}'s Projects</h3>
+</div>
+<div class="table-responsive">
+    @if($projects->count()>0)
+        <table class="table table-bordered table-hover table-striped">
+		<thead>
             <tr bgcolor="#EEEEEE">
             <th style="text-align: center;vertical-align: middle;">Project Name</th>
             <th style="text-align: center;vertical-align: middle;">Site Address</th>
             <th style="text-align: center;vertical-align: middle;">Scope Performed</th>
+            <th style="text-align: center;vertical-align: middle;">Report Template</th>
             <th style="text-align: center;vertical-align: middle;">Instruction</th>
             <th style="text-align: center;vertical-align: middle;">Approx Bid</th>
             <th style="text-align: center;vertical-align: middle;">Status</th>
@@ -25,14 +25,13 @@
             <th style="text-align: center;vertical-align: middle;">Report
             Due Date</th>
             <th style="text-align: center;vertical-align: middle;">Updated_at</th>
-           <!--  <th style="text-align: center;vertical-align: middle;">Action</th> -->
             </tr>
-    		</thead>
-    		<tbody id="myTable">
-                @foreach ($projects as $project)
-               		<tr class="content">
+    	</thead>
+    	<tbody id="myTable">
+            @foreach ($projects as $project)
+               	<tr class="content">
 					<td style="text-align: center;vertical-align: middle;">
-					{{ $project->project_name }}
+					   {{ $project->project_name }}
 					</td>
 					<td style="text-align: center;vertical-align: middle;">
 					<a href="#" data-toggle="tooltip" data-placement="top" title="{{ $project->project_site_address }}">
@@ -58,9 +57,9 @@
                        
                     }   
                     ?>
-                    
-                   
-                 
+                    </td>
+                    <td style="text-align: center;vertical-align: middle;">
+                    {{ $project->report_template }}
                     </td>
                     <td style="text-align: center;vertical-align: middle;">
                     {{ $project->instructions }}
@@ -100,25 +99,15 @@
                     ?>
                     {{ $date }}
                     </td>
-                   <!--  <td style="text-align: center;vertical-align: middle;">
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-cog"></span></button>
-                        <ul class="dropdown-menu" role="menu" style="left: 0% !important;
-                      right: 100% !important;text-align: center !important;transform: translate(-75%, 0) !important;">
-                          <li><a href="#">Update</a></li>
-                          <li><a href="#">Delete</a></li>
-                        </ul>
-                      </div>
-                   </td> -->
-
-					</tr>
+                </tr>
 				@endforeach
+                </tbody>
     		</table>
             @else
-            
-    		 <h6><center>No Projects created</center></h6>
+                <h6><center>No Projects created</center></h6>
     		@endif
-    		</div>
-    		</div>
-    		</div>
+    	</div>
+    </div>
+    {!! $projects->links() !!}
+   </div>
 @endsection

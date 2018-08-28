@@ -152,7 +152,7 @@
                     </td>
                     @endif
                     <?php $date1=date("Y-m-d H:i:s");
-                    $date2= date($user->users_enrolled);
+                    $date2= date($user->created_at);
                     $datetime1 = new DateTime($date1);
                     $datetime2 = new DateTime($date2);
                     $date= $datetime2->format("m-d-Y");
@@ -195,7 +195,7 @@
                    @endif
                    <td style="text-align: center;vertical-align: middle;">
                     <div class="btn-group">
-                        <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-cog"></span></button>
+                        <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown"><center><span class="glyphicon glyphicon-cog"></span></center></button>
                         <ul class="dropdown-menu" role="menu" style="left: 0% !important;
                       right: 100% !important;text-align: center !important;transform: translate(-75%, 0) !important;">
                           <li><a href="#">Update</a></li>
@@ -209,12 +209,8 @@
                          </tbody>
                         </table>
                       </div>
-                        
-                      </div>
+                    </div>
                       {!! $users->appends(\Request::except('page'))->render() !!}
-                      
-                         
-                      
                       </div>
 
 

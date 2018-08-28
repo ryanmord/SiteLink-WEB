@@ -12,5 +12,7 @@ class UserScopePerformed extends Model
 */
     protected $table = 'user_scope_performed';
     protected $primaryKey = 'user_scope_performed_id'; 
+    protected $fillable = ['users_id','scope_performed_id'];
+    public $timestamps = false; 
    
 }

@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 use App\User;
 use App\UserType;
@@ -21,7 +20,8 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::where('user_types_id','=','2')->orWhere('user_types_id','=','1')->paginate(8);
+        $users = User::where('user_types_id','=','2')
+        ->orWhere('user_types_id','=','1')->paginate(8);
         $usertype = UserType::all();
         $scopeperformed= ScopePerformed::all();
 
@@ -40,7 +40,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        
     }
 
     /**
@@ -96,7 +96,7 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+        
     }
     public function dashboard()
     {
@@ -113,17 +113,17 @@ class UserController extends Controller
     }
     public function approveduser($id,$status)
     {
-        $adminid=session('loginuserid');
-        $date=date("Y-m-d H:i:s");  
+        $adminid = session('loginuserid');
+        $date    = date("Y-m-d H:i:s");  
         User::where('users_id', $id)
         ->update(['users_approval_status' => $status,'users_approved_by' => $adminid,'users_approved_date' => $date]);
         if($status == 1)
         {
             $user=User::where('users_id',$id)->first();
-            $useremail=$user->users_email;
+            $useremail = $user->users_email;
             //Mail::to($useremail)->send(new Approveduser($user));
         }
-        Session::flash('flash_message', 'Record has been updated successfully');
+        session()->flash('message', 'Approval status has been updated successfully');
         return redirect()->action('UserController@dashboard');
 
     }
@@ -132,7 +132,10 @@ class UserController extends Controller
         $approval_status = $request->status;
         $users = User::where('users_approval_status', $approval_status)->paginate(8);
         $usertype = UserType::all();
-        return $users;
+        return view('admin.user',[
+                    'users'     => $users,
+                    'usertype'  => $usertype,
+                   ]);
     }
     public function adminuser()
     {

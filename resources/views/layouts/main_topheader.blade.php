@@ -20,7 +20,7 @@
               <li class="dropdown">
                 <a data-toggle="dropdown" class="dropdown-toggle" href="#"> {{ucfirst(session('loginusername'))}} <b class="caret"></b></a>
                 <ul role="menu" class="dropdown-menu">
-                  <li><a href="{{ url('/logout')}}"><span class="glyphicon glyphicon-off"> Signout</span></a></li>
+                  <li style="text-align: center;"><a href="{{ url('/logout')}}"><span class="glyphicon glyphicon-off">Signout</span></a></li>
                 </ul>
               </li>
             </ul>
