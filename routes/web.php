@@ -32,8 +32,12 @@ Route::group(['middleware' => 'disablepreventback'],function()
 	Route::any('dashboard/user/{id}/{status}', 'UserController@approveduser')->middleware(guest::class);
 	Route::any('user/{status}', 'UserController@search')->middleware(guest::class);
 	Route::get('/projects/{id}','ProjectController@show')->middleware(guest::class);
+	Route::any('setSettings','ProjectController@settings')->middleware(guest::class);
 	Route::get('/logout','LoginController@logout');
+
 });
+Route::any('/forgotPassword/{userid}','LoginController@forgotpassword');
+Route::any('/changepassword/{userid}','LoginController@changepassword');
 //Route::get('/logout','LoginController@logout');
 //});
 

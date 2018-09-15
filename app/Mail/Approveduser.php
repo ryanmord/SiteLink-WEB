@@ -29,7 +29,8 @@ class Approveduser extends Mailable
     public function build()
     {
         $introLines = array('Your associate approval request for '.config('app.name').' is approved successfully');
-        $outroLines = array('You can login into the app using following credentials.','Username : '.$this->user->users_email,'Password : '.$this->user->users_password);
+        $outroLines = array('Now you can login into the Project Bidding app');
+        /* $outroLines = array('You can login into the app using following credentials.','Username : '.$this->user->users_email,'Password : '.$this->user->users_password);*/
         $subject = 'Asscociate Request Approved Successfully';
         $greeting = 'Hello '.$this->user->users_name."!";
         return $this->subject($subject)->markdown('email.approveduser',['level'=>'success','greeting'=>$greeting,'introLines'=>$introLines,'outroLines'=>$outroLines]);

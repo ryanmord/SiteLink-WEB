@@ -16,7 +16,7 @@
              
              <!--  <input id="myInput" type="text" placeholder="Search.."> -->
              
-               <div class="table-responsive">
+               <div class="table-responsive" style="overflow-x:auto;">
                         <table class="table table-bordered table-hover table-striped">
 
                           <thead>
@@ -118,7 +118,7 @@
                     </td>
                     <td style="text-align: center;vertical-align: middle;">{{ $user->users_company }}</td>
                     <td style="text-align: center;vertical-align: middle;">{{ $user->users_email }}</td>
-                    <td style="text-align: center;vertical-align: middle;">+91{{ $user->users_phone }}</td>
+                    <td style="text-align: center;vertical-align: middle;">{{ $user->users_phone }}</td>
                   <td style="text-align: center;vertical-align: middle;">
                                            
                     <a href="#" data-toggle="tooltip" data-placement="top" title="{{ $user->users_address }}">
@@ -159,7 +159,7 @@
                     $interval = $datetime1->diff($datetime2);
                     $days = $interval->format(' %a days ago');?>
                     <td style="text-align: center;vertical-align: middle;">
-                    {{$days}}<br>
+                    
                     {{$date}}
                     </td>
                    

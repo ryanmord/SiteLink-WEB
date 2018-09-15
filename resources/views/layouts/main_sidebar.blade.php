@@ -8,5 +8,6 @@
         <li class="list-group-item"><a href="{{ url('/dashboard')}}"><i class="glyphicon glyphicon-home"></i>Dashboard </a></li>
         <li class="list-group-item"><a href="{{ url('/users')}}"><i class="glyphicon glyphicon-user"></i>Associate and Schedular Users </a></li>
         <li class="list-group-item"><a href="{{ url('/adminuser')}}"><i class="glyphicon glyphicon-user"></i>Admin Users </a></li>
+        <li class="list-group-item"><a href="{{ url('/setSettings') }}"><i class="glyphicon glyphicon-cog"></i>Settings</a></li>
       </ul>
     </div>

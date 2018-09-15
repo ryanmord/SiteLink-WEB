@@ -121,7 +121,7 @@ class UserController extends Controller
         {
             $user=User::where('users_id',$id)->first();
             $useremail = $user->users_email;
-            //Mail::to($useremail)->send(new Approveduser($user));
+            Mail::to($useremail)->send(new Approveduser($user));
         }
         session()->flash('message', 'Approval status has been updated successfully');
         return redirect()->action('UserController@dashboard');

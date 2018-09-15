@@ -96,4 +96,20 @@ class ProjectController extends Controller
     {
         //
     }
+    public function settings()
+    {
+        return view('settings.setsetting');
+    }
+    public function changesetting(Request $request)
+    {
+        $this->validate($request, [
+            'minmiles'=>'required',
+            'maxmile'=>'required',
+        ],
+        $message = [
+            'minmiles.required' => 'The minimum miles field is required.',
+            'maxmile.required' => 'The maximum miles field is required.',
+        ]);
+           
+    }
 }

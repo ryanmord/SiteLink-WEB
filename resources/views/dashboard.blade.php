@@ -110,7 +110,7 @@
                     <td style="text-align: center;vertical-align: middle;">{{ ucfirst($user->users_name) }}</td>
                     <td style="text-align: center;vertical-align: middle;">{{ $user->users_company }}</td>
                     <td style="text-align: center;vertical-align: middle;">{{ $user->users_email }}</td>
-                    <td style="text-align: center;vertical-align: middle;">+91{{ $user->users_phone }}</td>
+                    <td style="text-align: center;vertical-align: middle;">{{ $user->users_phone }}</td>
                   	<td style="text-align: center;vertical-align: middle;">
                                       
                     <a href="#" data-toggle="tooltip" data-placement="top" title="{{ $user->users_address }}">
@@ -156,15 +156,4 @@
               </div>
                 {!! $users->links() !!}
           </div>
-                     
-                       
-                      
-                   
-            
-                  
-
-                      
-                      
-
-
 @endsection

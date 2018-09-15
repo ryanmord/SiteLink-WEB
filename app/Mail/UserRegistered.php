@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Mail;
-
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
@@ -17,12 +16,14 @@ class UserRegistered extends Mailable
      * @return void
      */
     protected $user;
+    protected $password;
     protected $action;
     
-    public function __construct($user,$action)
+    public function __construct($user,$password,$action)
     {
-        $this->user     = $user;
-        $this->action   = $action;
+        $this->user      = $user;
+        $this->password  = $password;
+        $this->action    = $action;
     }
 
     /**
@@ -34,12 +35,12 @@ class UserRegistered extends Mailable
     {
         //User Registration
         if($this->action == 1){
-            $introLines = array('Your registration for '.config('app.name').' is finished successfully');
-            $outroLines = array('You can login in to the system using following credentials.','User Name / Email : '.$this->user->users_email,'Password : '.$this->user->users_password);
+            $introLines = array('Your registration for Project Management is finished successfully');
+            $outroLines = array('You can login in to the system using following credentials.','User Name / Email : '.$this->user->users_email,'Password : '.$this->password);
             $subject = 'User Registration';
         }else if($this->action == 2){
             $introLines = array('Your password is changed successfully');
-            $outroLines = array('You can login in to the system using following credentials.','User Name / Email : '.$this->user->email,'Password : '.$this->user->password);
+            $outroLines = array('You can login in to the system using following credentials.','User Name / Email : '.$this->user->users_email,'Password : '.$this->password);
             $subject = 'Your Password has been updated';
         }
         $greeting = 'Hello '.$this->user->users_name."!";

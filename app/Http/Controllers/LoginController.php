@@ -5,9 +5,10 @@ namespace App\Http\Controllers;
 use Session;
 use App\AdminUser;
 use App\User;
+use App\UserForgetPasswordRequest;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
-
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 
 
@@ -90,25 +91,47 @@ class LoginController extends Controller
        
         return redirect()->action('LoginController@index');
     }
-    
-
-   /*public function getUserLogin()
+    public function forgotpassword(Request $request)
     {
-        return view('adminlte::auth.login');
+        $user_id = $request->userid;
+        $userid = base64_decode($user_id);
+        return view('password.forgotpassword',['userid'=>$userid]);
+        
     }
-
-    public function userAuth(Request $request)
+    public function changepassword(Request $request)
     {
         $this->validate($request, [
-            'user_email' => 'required|email',
-            'user_password' => 'required',
+            'new_password'=>'required|min:6|max:12',
+            'confirm_password'=>'required|min:6|max:12|same:new_password',
+        ],
+        $message = [
+            'new_password.required' => 'The New Password field is required.',
+            'confirm_password.required' => 'The Confirm password field is required.',
+            'confirm_password.same' => 'Confirm Password does not match to New password.',
         ]);
-        if (auth()->attempt(['user_email' => $request->input('email'), 'user_password' => $request->input('password')]))
-        {
-            $user = auth()->admin_user();
-            return redirect()->route('admin/');
-        }else{
-            dd('your username and password are wrong.');
+        $newpw = Hash::make($request->new_password);
+        //$userid = $request->userid;
+        //exit;
+        $model=User::where('users_id','=',$request->userid)->update(['users_password' =>$newpw]);
+        $date = date('Y-m-d H:i:s');
+        $forgotpwd=UserForgetPasswordRequest::where('users_id','=',$request->userid)->get();
+        foreach ($forgotpwd as  $value) {
+            $forgotpwdid = $value->user_forget_password_request_id;
         }
-    }*/
+
+        $model=UserForgetPasswordRequest::where('users_id','=',$request->userid)->
+        where('user_forget_password_request_id','=',$forgotpwdid)->update(['password_updated_flag' => 1]);
+        $model=UserForgetPasswordRequest::where('users_id','=',$request->userid)->
+        where('user_forget_password_request_id','=',$forgotpwdid)->update(['password_updated_date' => $date]);
+        if(isset($model))
+        {
+            echo json_encode(array('status' => '1', 'message' => "Password changed successfully "));
+            exit;
+        }
+        else
+        {
+            echo json_encode(array('status' => '0', 'message' => "Password does not changed"));
+            exit;
+        }
+    }
 }
