@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Response;
 use App\Project;
 use App\User;
 use App\ScopePerformed;
 use App\ProjectStatusType;
+use App\Setting;
 use DateTime;
 
 class ProjectController extends Controller
@@ -102,14 +104,17 @@ class ProjectController extends Controller
     }
     public function changesetting(Request $request)
     {
-        $this->validate($request, [
-            'minmiles'=>'required',
-            'maxmile'=>'required',
-        ],
-        $message = [
-            'minmiles.required' => 'The minimum miles field is required.',
-            'maxmile.required' => 'The maximum miles field is required.',
-        ]);
-           
+       $minmiles = $request['minmiles'];
+       $maxmiles = $request['maxmiles'];
+       $model = Setting::where('setting_status','=', 1)
+       ->update(['setting_status' => 0]);
+       $setting = new Setting;
+       $setting->min_miles = $minmiles;
+       $setting->max_miles = $maxmiles;
+       $setting->setting_status = 1;
+       $setting->created_at = date('Y-m-d H:i:s');
+       $setting->save();
+       $msg = 'Setting changed successfully';
+        return Response::json($msg);
     }
 }

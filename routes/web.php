@@ -33,6 +33,7 @@ Route::group(['middleware' => 'disablepreventback'],function()
 	Route::any('user/{status}', 'UserController@search')->middleware(guest::class);
 	Route::get('/projects/{id}','ProjectController@show')->middleware(guest::class);
 	Route::any('setSettings','ProjectController@settings')->middleware(guest::class);
+	Route::any('changeSettings','ProjectController@changesetting')->middleware(guest::class);
 	Route::get('/logout','LoginController@logout');
 
 });
