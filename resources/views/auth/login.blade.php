@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title> Project_management</title>
+<title> Project Bidding</title>
 
   <link rel="shortcut icon" href="{{{ asset('img/brick-wall.png') }}}">
   <link href="{{asset('/css/themeCss/site.min.css')}}" rel="stylesheet" type="text/css">
@@ -12,16 +12,15 @@
       body {
         padding-top: 40px;
         padding-bottom: 40px;
-        background-color: #303641;
-        color: #C1C3C6
+        width:100%;
       }
     </style>
   </head>
-  <body>
+  <body background="{{{ asset('img/Banner.png') }}}">
     <div class="container">
       <form class="form-signin" role="form" method="POST" action="{{ url('/login') }}">
         {{ csrf_field() }}
-        <h3 class="form-signin-heading">Please sign in</h3>
+        <h3 class="form-signin-heading" style="color: white">Please sign in</h3>
         <div class="form-group{{ $errors->has('admin_users_email') ? ' has-error' : '' }}">
         <div class="input-group">
             <div class="input-group-addon">
@@ -55,7 +54,7 @@
          Invalid Email or Password. <br>
           </p>
         @endif
-        <label class="checkbox">
+        <label class="checkbox" style="color: white">
         <input type="checkbox" value="remember-me"> &nbsp Remember me
         </label>
         <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>

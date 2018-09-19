@@ -24,7 +24,7 @@
 @if (! empty($salutation))
 {{ $salutation }}
 @else
-Regards,<br>Project Management
+Regards,<br>Project Bidding app team
 @endif
 
 <!-- Subcopy -->

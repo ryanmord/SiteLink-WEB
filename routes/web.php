@@ -32,6 +32,11 @@ Route::group(['middleware' => 'disablepreventback'],function()
 	Route::any('dashboard/user/{id}/{status}', 'UserController@approveduser')->middleware(guest::class);
 	Route::any('user/{status}', 'UserController@search')->middleware(guest::class);
 	Route::get('/projects/{id}','ProjectController@show')->middleware(guest::class);
+	Route::get('/projectBid/{id}','ProjectController@projectbid')->middleware(guest::class);
+	Route::get('/allocatedProject','ProjectController@allocatedproject')->middleware(guest::class);
+	Route::get('/nonAllocatedProject','ProjectController@nonallocatedproject')->middleware(guest::class);
+	Route::get('/completedProject','ProjectController@completedproject')->middleware(guest::class);
+	Route::get('/cancelledProject','ProjectController@cancelledproject')->middleware(guest::class);
 	Route::any('setSettings','ProjectController@settings')->middleware(guest::class);
 	Route::any('changeSettings','ProjectController@changesetting')->middleware(guest::class);
 	Route::get('/logout','LoginController@logout');

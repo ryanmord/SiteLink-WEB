@@ -14,6 +14,7 @@ use App\UserForgetPasswordRequest;
 use App\UserReview;
 use App\ProjectProgressStatus;
 use App\Setting;
+use APP\ProjectBidRequest;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Image;
@@ -77,6 +78,11 @@ class ApiController extends Controller
     			{
     				$model->users_address = "-";
     			}
+                if(isset($request['latitude']) && isset($request['longitude']))
+                {
+                    $model->latitude = $request['latitude'];
+                    $model->longitude = $request['longitude'];
+                }
     			$model->save();
     			$user = User::where('users_email','=',$email)->first();
     			if(isset($request['scope']))
@@ -365,7 +371,7 @@ class ApiController extends Controller
             {
                 $username = $user->users_name;
                 $usertype = $user->user_types_id;
-                $notificationcount = ProjectNotification::where('to_users_id','=',$userid)
+                $notificationcount = ProjectNotification::where('to_user_id','=',$userid)
                 ->where('read_flag','=',0)->count();
                 $profileimage = asset("/img/users/" . $user['users_profile_image']);
                 if($usertype == 1)
@@ -634,6 +640,8 @@ class ApiController extends Controller
                 if($user->user_types_id == 2)
                 {
                     $address = $user->users_address;
+                    $latitude = $user->latitude;
+                    $longitude = $user->longitude;
                     $scopeid = DB::select(DB::raw("SELECT sp.scope_performed_id
                             FROM user_scope_performed sp,users u
                             WHERE sp.users_id = u.users_id
@@ -657,6 +665,8 @@ class ApiController extends Controller
                                         'email'        => $email,
                                         'phone'        => $phone,
                                         'address'      => $address,
+                                        'latitude'     => $latitude,
+                                        'longitude'    => $longitude,
                                         'scopeperformed' => $data,
                                         ));
                     exit;
@@ -734,6 +744,14 @@ class ApiController extends Controller
                 $phone = $request['phone'];
                 $model = User::where('users_id', '=',$userid)
                 ->update(['users_phone' => $phone]);
+            }
+            if(isset($request['latitude']) && isset($request['longitude']))
+            {
+                $latitude = $request['latitude'];
+                $longitude = $request['longitude'];
+                $date = date('Y-m-d H:i:s');
+                $model = User::where('users_id','=',$userid)
+                ->update(['latitude' => $latitude,'longitude' => $longitude,'lat_long_updated_at' => $date]);
             }
             if(isset($request['address']))
             {
@@ -900,9 +918,9 @@ class ApiController extends Controller
             $key = UserAccessKey::where('user_access_key','=',$accesskey)
             ->where('user_access_key_status','=',1)
             ->where('user_id','=',$userid)->first();
-           $user = User::where('users_id', '=',$userid)->first();
-           if(isset($user) && isset(($key)))
-           {
+            $user = User::where('users_id', '=',$userid)->first();
+            if(isset($user) && isset(($key)))
+            {
                 if(isset($request['projectname']) && isset($request['siteaddress']) && isset($request['reportduedate']) && isset($request['scopeperformed']) && isset($request['approxbid']))
                 {
                     $model = new Project;
@@ -910,6 +928,9 @@ class ApiController extends Controller
                     $model->project_name = $request['projectname'];
                     $model->project_site_address = $request['siteaddress'];
                     $model->report_due_date = new DateTime($request['reportduedate']);
+                    $model->latitude = $request['latitude'];
+                    $model->longitude = $request['longitude'];
+                    $model->milesrange = $request['miles'];
                     if(isset($request['instructions']))
                     {
                         $model->instructions = $request['instructions'];
@@ -922,7 +943,7 @@ class ApiController extends Controller
                     {
                         $model->scope_performed_id = $request['scopeperformed'];
                     }
-                    $model->approx_bid = $request['approxbid'];
+                    $model->approx_bid = (double)$request['approxbid'];
                     $model->save();
                     $project = Project::where('user_id','=',$userid)
                     ->where('project_name','=',$request['projectname'])->get();
@@ -935,6 +956,30 @@ class ApiController extends Controller
                     $model->project_status_type_id  = 1;
                     $model->created_at = date('Y-m-d H:i:s');
                     $model->save();
+                    $latitude = (double)$request['latitude'];
+                    $longitude = (double)$request['longitude'];
+                    $miles = (int)$request['miles'];
+                    $result =  DB::select(DB::raw("SELECT users_id , ( 3956 *2 * ASIN( SQRT( POWER( SIN( ( $latitude - latitude ) * PI( ) /180 /2 ) , 2 ) + COS( $latitude * PI( ) /180 ) * COS( latitude * PI( ) /180 ) * POWER( SIN( ( $longitude - longitude ) * PI( ) /180 /2 ) , 2 ) ) ) ) AS distance
+                        FROM users
+                        WHERE  user_types_id <>1
+                        HAVING distance <= $miles"));
+                    foreach ($result as $value) 
+                    {
+                       $model = new ProjectNotification;
+                       $model->to_user_id = $value->users_id;
+                       $model->from_user_id = $userid;
+                       $model->project_id = $projectid;
+                       $model->project_notification_type_id = 1;
+                       $model->created_at = date('Y-m-d H:i:s');
+                       $model->save();
+                      /* $model = new ProjectBidRequest;
+                       $model->project_id = $projectid;
+                       $model->to_user_id = $value->users_id;
+                       $model->from_user_id = $userid;
+                       $model->created_at = date('Y-m-d H:i:s');
+                       $model->save();
+*/
+                    }
                     echo json_encode(array('status' => '1', 'message' => "Project created successfully"));
                     exit;
                 }
@@ -1309,21 +1354,31 @@ class ApiController extends Controller
                 {
                     $projectbid = ProjectBid::where('project_id','=',$projectid)
                                 ->where('user_id','=',$userid)->get();
+                    if($projectbid->count() > 0)
+                    {
                     foreach ($projectbid as $value) 
                     {
                         $previousbid = $value->associate_suggested_bid;
                     }
                     $previousbid = (string)$previousbid;
+                    }
+                    else
+                    {
+                        $previousbid = 0;
+                    }
                     echo json_encode(array('status' => '1',
                                 'projectid' => (string)$project->project_id, 
                                 'projectname' =>  $project->project_name, 
                                 'siteaddress' => $project->project_site_address,
+                                'latitude' => $project->latitude,
+                                'longitude' => $project->longitude,
+                                'milesrange' => (string)$project->milesrange,
                                 'createddate' => $createddate,
                                 'reportduedate' => $reportduedate,
                                 'template' => (string)$project->report_template,
                                 'instructions' => $project->instructions,
                                 'approxbid' =>(String)$project->approx_bid,
-                                'previousbid' => $previousbid,
+                                'previousbid' => (string)$previousbid,
                                 'scopeperformed' => $data));
                     exit;
                 }
@@ -1333,6 +1388,9 @@ class ApiController extends Controller
                                 'projectid' => (string)$project->project_id, 
                                 'projectname' =>  $project->project_name, 
                                 'siteaddress' => $project->project_site_address,
+                                'latitude'  => $project->latitude,
+                                'longitude' => $project->longitude,
+                                'milesrange' => (string)$project->milesrange,
                                 'createddate' => $createddate,
                                 'reportduedate' => $reportduedate,
                                 'template' => (string)$project->report_template,
@@ -1597,7 +1655,7 @@ class ApiController extends Controller
                                 'reportduedate' => $reportduedate,
                                 'template' => $projectdetail->report_template,
                                 'instructions' => $projectdetail->instructions,
-                                'suggestedbid' =>(String)$projectdetail->approx_bid,
+                            'suggestedbid' =>(String)$projectdetail->approx_bid,
                                 'finalbid' => $finalbid,
                                 'scopeperformed' => $data,
                                 'rating'   => 'null',
@@ -1900,6 +1958,9 @@ class ApiController extends Controller
                     $associate = User::where('users_id','=',$associateid)->first();
                     $username = $associate->users_name;
                     $usertype = $associate->user_types_id;
+                    $company =$associate->users_company;
+                    $phone = $associate->users_phone;
+                    $email = $associate->users_email;
                     $profileimage = asset("/img/users/" . $associate['users_profile_image']);
                     $projectcount = ProjectBid::where('user_id','=',$associateid)
                     ->where('project_bid_status','=',1)->count();
@@ -2129,6 +2190,20 @@ class ApiController extends Controller
                     $model  = Project::where('project_id', '=',$projectid)
                     ->update(['project_site_address' => $siteaddress]);
                 }
+                if(isset($request['latitude']) && isset($request['longitude']))
+                {
+                    $latitude = $request['latitude'];
+                    $longitude = $request['longitude'];
+                    $model  = Project::where('project_id', '=',$projectid)
+                    ->update(['latitude' => $latitude, 'longitude' => $longitude]);
+                }
+                if(isset($request['miles']))
+                {
+                    $miles = (int)$request['miles'];
+                    $projectid = $request['projectid'];
+                    $model  = Project::where('project_id', '=',$projectid)
+                    ->update(['milesrange' => $miles]);
+                }
                 if(isset($request['reportduedate']))
                 {
                     $reportduedate = new DateTime($request['reportduedate']);
@@ -2159,7 +2234,7 @@ class ApiController extends Controller
                 }
                 if(isset($request['approxbid']))
                 {
-                    $approxbid = $request['approxbid'];
+                    $approxbid = (double)$request['approxbid'];
                     $projectid = $request['projectid'];
                     $model  = Project::where('project_id', '=',$projectid)
                     ->update(['approx_bid' => $approxbid]);
@@ -2537,6 +2612,258 @@ class ApiController extends Controller
                     echo json_encode(array('status' => '0', 'message' => "Mandatory field is required"));
                     exit;  
                 }
+            }
+            else
+            {
+                echo json_encode(array('status' => '0', 'message' => "userid or private key is incorrect"));
+                exit;
+            }
+        }
+        else
+        {
+            echo json_encode(array('status' => '0', 'message' => "Mandatory field is required"));
+            exit;  
+        }
+    }
+    /*Name : complete project by Scheduler
+    Url  :http://103.51.153.235/project_management/public/index.php/api/projectComplete?%20userid=182&privatekey=U5Z5Y9PLqrR1zm9B&projectid=24
+    Date : 15-09-18
+    By   : Suvarna*/
+    public function projectComplete(Request $request)
+    {
+        if(isset($request['userid']) && isset($request['privatekey']))
+        {
+          
+            $userid = (int)$request['userid'];
+            $accesskey = $request['privatekey'];
+            $key = UserAccessKey::where('user_access_key','=',$accesskey)
+                ->where('user_access_key_status','=',1)
+                ->where('user_id','=',$userid)->first();
+            $user = User::where('users_id', '=',$userid)->first();
+            if(isset($user) && isset(($key)))
+            {
+                $projectid = $request['projectid'];
+                $model = new ProjectStatus;
+                $model->project_id = $projectid;
+                $model->project_status_type_id  = 4;
+                $model->created_at = date('Y-m-d H:i:s');
+                $model->save();
+                echo json_encode(array('status' => '1', 'message' => "Project completed successfully"));
+                exit;                                         
+            }
+            else
+            {
+                echo json_encode(array('status' => '0', 'message' => "userid or private key is incorrect"));
+                exit;
+            }
+        }
+        else
+        {
+            echo json_encode(array('status' => '0', 'message' => "Mandatory field is required"));
+            exit;  
+        }
+    }
+    /*Name : cancel project by Scheduler
+    Url  :http://103.51.153.235/project_management/public/index.php/api/projectCancel?%20userid=182&privatekey=U5Z5Y9PLqrR1zm9B&projectid=24
+    Date : 15-09-18
+    By   : Suvarna*/
+    public function projectCancel(Request $request)
+    {
+        if(isset($request['userid']) && isset($request['privatekey']))
+        {
+          
+            $userid = (int)$request['userid'];
+            $accesskey = $request['privatekey'];
+            $key = UserAccessKey::where('user_access_key','=',$accesskey)
+                ->where('user_access_key_status','=',1)
+                ->where('user_id','=',$userid)->first();
+            $user = User::where('users_id', '=',$userid)->first();
+            if(isset($user) && isset(($key)))
+            {
+                $projectid = $request['projectid'];
+                $model = new ProjectStatus;
+                $model->project_id = $projectid;
+                $model->project_status_type_id  = 5;
+                $model->created_at = date('Y-m-d H:i:s');
+                $model->save();
+                echo json_encode(array('status' => '1', 'message' => "Project cancelled successfully"));
+                exit;                                         
+            }
+            else
+            {
+                echo json_encode(array('status' => '0', 'message' => "userid or private key is incorrect"));
+                exit;
+            }
+        }
+        else
+        {
+            echo json_encode(array('status' => '0', 'message' => "Mandatory field is required"));
+            exit;  
+        }
+    }
+    /*Name : associate profile for in publish project
+    Url  :http://103.51.153.235/project_management/public/index.php/api/associateProfile?userid=182&privatekey=10l4SesaKyxue87i&associateid=181
+    Date : 18-09-18
+    By   : Suvarna*/
+    public function associateProfile(Request $request)
+    {
+        if(isset($request['userid']) && isset($request['privatekey']))
+        {
+          
+            $userid = (int)$request['userid'];
+            $accesskey = $request['privatekey'];
+            $key = UserAccessKey::where('user_access_key','=',$accesskey)
+                ->where('user_access_key_status','=',1)
+                ->where('user_id','=',$userid)->first();
+            $user = User::where('users_id', '=',$userid)->first();
+            if(isset($user) && isset(($key)))
+            {
+                $associateid = $request['associateid'];
+                $associate = User::where('users_id','=',$associateid)->first();
+                    $username = $associate->users_name;
+                    $usertype = $associate->user_types_id;
+                    $company =$associate->users_company;
+                    $phone = $associate->users_phone;
+                    $email = $associate->users_email;
+                    $profileimage = asset("/img/users/" . $associate['users_profile_image']);
+                    $projectcount = ProjectBid::where('user_id','=',$associateid)
+                    ->where('project_bid_status','=',1)->count();
+                    
+                    $bidmadecount = ProjectBid::where('project_bid_status','=',1)
+                    ->where('user_id','=',$associateid)->count();
+                    $completedproject = ProjectBid::where('user_id','=',$associateid)->
+                                            where('project_bid_status','=',1)->get();
+                    $completedprojectcount = 0;
+                    foreach ($completedproject as $value) 
+                    {
+                        $projectid = $value->project_id;
+                        $model = ProjectStatus::where('project_id','=',$projectid)->
+                        where('project_status_type_id','=',4)->get();
+                        if(count($model) > 0)
+                        {
+                            $completedprojectcount = $completedprojectcount + 1;
+                        }
+                    }
+                    $overdueprojectcount = 0;
+                    $projectbid = ProjectBid::where('user_id','=',$associateid)->
+                                   where('project_bid_status','=',1)->get();
+
+                    if(count($projectbid) > 0)
+                    {
+                        foreach ($projectbid as $value) 
+                        {
+                            $projectid = $value->project_id;
+                            $project = Project::where('project_id','=',$projectid)->
+                            first();
+                            $reportduedate = $project->report_due_date;
+                            $model = ProjectStatus::where('project_id','=',$projectid)->
+                            where('project_status_type_id','=', 3)->
+                            orWhere('project_status_type_id','=', 2)->
+                            where('created_at','>', $reportduedate)->get();
+                            if(count($model) > 0)
+                            {
+                                $overdueprojectcount = $overdueprojectcount + 1;
+                            }
+
+                        }
+                    }
+
+                    $review = UserReview::where('to_user_id','=',$associateid)->
+                    where('user_review_status','=',1)->max('user_review_ratings');
+                    echo json_encode(array('status'  => '1',
+                                        'userid'  => (string)$associateid,
+                                        'username'     => $username,
+                                        'profileimage' => $profileimage,
+                                        'usertype' =>(string)$usertype,
+                                        'bidmadecount' => (string)$bidmadecount,
+                                        'completedprojectcount' => (string)$completedprojectcount,
+                                        'overdueprojectcount' =>(string)$overdueprojectcount,
+                                        'review' => (string)$review));
+                    exit;
+            }
+            else
+            {
+                echo json_encode(array('status' => '0', 'message' => "userid or private key is incorrect"));
+                exit;
+            }
+        }
+        else
+        {
+            echo json_encode(array('status' => '0', 'message' => "Mandatory field is required"));
+            exit;  
+        }
+    }
+    /*Name : Available Projects for associate
+    Url  :http://103.51.153.235/project_management/public/index.php/api/availableProject?%20userid=181&privatekey=U5Z5Y9PLqrR1zm9B
+    Date : 18-09-18
+    By   : Suvarna*/
+    public function availableProject(Request $request)
+    {
+        if(isset($request['userid']) && isset($request['privatekey']))
+        {
+            $userid = $request['userid'];
+            $accesskey = $request['privatekey'];
+            $user = User::where('users_id','=',$userid)->first();
+            $key = UserAccessKey::where('user_access_key','=',$accesskey)
+                ->where('user_access_key_status','=',1)
+                ->where('user_id','=',$userid)->first();
+            if(isset($user) && isset(($key)))
+            {
+               $availableproject = ProjectNotification::where('to_user_id','=',$userid)->get();
+               if(count($availableproject) > 0)
+               {
+               foreach ($availableproject as $value) 
+               {
+                  $projectid = $value->project_id;
+                  $projectstatus = ProjectStatus::where('project_id','=',$projectid)->where('project_status_type_id','=',2)->first();
+                    if(!isset($projectstatus))
+                    {
+                        $project = Project::where('project_id','=',$projectid)->first();
+                        $managerid = $project->user_id;
+                        $manager = User::where('users_id','=',$managerid)->first();
+                        $managerimage = asset("/img/users/" . $manager->users_profile_image);
+                        $scope = $project->scope_performed_id;
+                        $data = [];
+                        $temp = explode(",", $scope);
+                        foreach($temp as $scope) 
+                        {
+                            $scopeperformed = ScopePerformed::select('scope_performed_id','scope_performed')->where('scope_status','=','1')
+                                 ->where('scope_performed_id','=',(int)$scope)->first();
+                                    $data[]=['scope_performed_id' => (string)$scopeperformed->scope_performed_id,
+                                    'scope_performed' => $scopeperformed->scope_performed];
+                        }
+                        $reportduedate = $project['report_due_date'];
+                            $datetime2 = new DateTime($reportduedate);
+                            $reportduedate= $datetime2->format("Y-m-d");
+                            $created_at = (String)$project->created_at;
+                            $datetime2 = new DateTime($created_at);
+                            $created_at= $datetime2->format("Y-m-d");
+                        $projects[] = ['projectid' => (string)$project->project_id, 
+                                'projectname' =>  $project->project_name, 
+                                'managerimage' => $managerimage,
+                                'siteaddress' => $project->project_site_address,
+                                'createddate'  => $created_at,
+                                'reportduedate' => $reportduedate,
+                                'template' => $project->report_template,
+                                'instructions' => $project->instructions,
+                                'approxbid' =>(String)$project->approx_bid,
+                                'latitude' =>(string)$project->latitude,
+                                'longitude' =>(string)$project->longitude,
+                                'scopeperformed' => $data,
+                                ];
+                        
+                  }
+                 
+               }
+                echo json_encode(array('status' => '1', 'availableprojects' => $projects));
+                  exit;
+
+            }
+            else
+            {
+                echo json_encode(array('status' => '0', 'message' => "You don't have any available project"));
+                exit;
+            }
             }
             else
             {

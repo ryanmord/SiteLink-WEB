@@ -15,7 +15,7 @@
               </div>
              
              <!--  <input id="myInput" type="text" placeholder="Search.."> -->
-             
+            
                <div class="table-responsive" style="overflow-x:auto;">
                         <table class="table table-bordered table-hover table-striped">
 
@@ -26,13 +26,14 @@
                             <th style="text-align: center;vertical-align: middle;">User Name</th>
                             <th style="text-align: center;vertical-align: middle;">Company</th>
                             <th style="text-align: center;vertical-align: middle;">Email</th>
-                            <th style="text-align: center;vertical-align: middle;">Phone</th>
+                            <th style="text-align: center;vertical-align: middle;" width="20%">Phone</th>
                             <th style="text-align: center;vertical-align: middle;">Address</th>
                             <th style="text-align: center;vertical-align: middle;">Type</th>
                             @if(!isset($admin))
                             <th style="text-align: center;vertical-align: middle;">Scope Performed</th>
                             @endif
-                            <th style="text-align: center;vertical-align: middle;">Enrolled </th>
+                            <th style="text-align: center;vertical-align: middle;"
+                            width="15%">Enrolled </th>
                             <th style="text-align: center;vertical-align: middle;">Status</th>
                             @if(!isset($admin))
                             <th style="text-align: center;vertical-align: middle;">Approval status</th>
@@ -155,11 +156,11 @@
                     $date2= date($user->created_at);
                     $datetime1 = new DateTime($date1);
                     $datetime2 = new DateTime($date2);
-                    $date= $datetime2->format("m-d-Y");
+                    $date= $datetime2->format("m/d/Y");
                     $interval = $datetime1->diff($datetime2);
                     $days = $interval->format(' %a days ago');?>
                     <td style="text-align: center;vertical-align: middle;">
-                    
+                   
                     {{$date}}
                     </td>
                    
@@ -203,8 +204,7 @@
                         </ul>
                       </div>
                    </td>
-
-                </tr>
+              </tr>
                 @endforeach
                          </tbody>
                         </table>
@@ -212,9 +212,7 @@
                     </div>
                       {!! $users->appends(\Request::except('page'))->render() !!}
                       </div>
-
-
-                       @stop
+                      @stop
                       @section('script') 
                      <!--  <script>
  

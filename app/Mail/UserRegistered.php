@@ -35,12 +35,12 @@ class UserRegistered extends Mailable
     {
         //User Registration
         if($this->action == 1){
-            $introLines = array('Your registration for Project Management is finished successfully');
-            $outroLines = array('You can login in to the system using following credentials.','User Name / Email : '.$this->user->users_email,'Password : '.$this->password);
+            $introLines = array('Your registration for Project Bidding app is completed successfully');
+            $outroLines = array('You can login in to the Project Bidding app using following credentials.','User Name / Email : '.$this->user->users_email,'Password : '.$this->password);
             $subject = 'User Registration';
         }else if($this->action == 2){
             $introLines = array('Your password is changed successfully');
-            $outroLines = array('You can login in to the system using following credentials.','User Name / Email : '.$this->user->users_email,'Password : '.$this->password);
+            $outroLines = array('You can login in to the Project Bidding app using following credentials.','User Name / Email : '.$this->user->users_email,'Password : '.$this->password);
             $subject = 'Your Password has been updated';
         }
         $greeting = 'Hello '.$this->user->users_name."!";

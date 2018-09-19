@@ -5,6 +5,8 @@ use App\UserType;
 Use App\UserScopePerformed;
 Use App\ScopePerformed;
 use App\AdminUser;
+use App\Project;
+use App\ProjectBid;
 use App\Mail\Approveduser;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
@@ -103,20 +105,26 @@ class UserController extends Controller
 
         $associate = User::where('user_types_id','=','2')->count();
         $schedular = User::where('user_types_id','=','1')->count();
+        $project = Project::all()->count();
+        $projectbid = ProjectBid::all()->count();
         $users = User::where('user_types_id','=','2')
         ->where('users_approval_status','=','2')->paginate(8);
         return view('dashboard',[
         'associate'    => $associate, 
         'schedular'    => $schedular,
+        'project'      => $project,
+        'projectbid'   => $projectbid,
         'users'        => $users,
         ]);
     }
-    public function approveduser($id,$status)
+    public function approveduser($id,$status,Request $request)
     {
         $adminid = session('loginuserid');
-        $date    = date("Y-m-d H:i:s");  
+        $date    = date("Y-m-d H:i:s");
+        $associatetype =  $request->input('optradio');
         User::where('users_id', $id)
-        ->update(['users_approval_status' => $status,'users_approved_by' => $adminid,'users_approved_date' => $date]);
+        ->update(['users_approval_status' => $status,'users_approved_by' => $adminid,'users_approved_date' => $date,'associate_type_id' => $associatetype]);
+       
         if($status == 1)
         {
             $user=User::where('users_id',$id)->first();

@@ -12,7 +12,7 @@
                             
                 <div style=" height: 100px;width: 220px;background-color: #19B5FE;text-align: center;">
                 <br>
-                <font size="4" color="white"><b>{{ $associate }}</b></font>
+                <font size="5" color="white"><b>{{ $associate }}</b></font>
                 <br>
               
                 <font size="4" color="white"><b><i class="glyphicon glyphicon-user"></i>  Associates</b></font>
@@ -26,10 +26,10 @@
                             
                 <div style=" height: 100px;width: 220px;background-color:#26A65B;text-align: center;">
                 <br>
-                <font size="4" color="white"><b>{{ $schedular }}</b></font>
+                <font size="5" color="white"><b>{{ $schedular }}</b></font>
 
                 <br>
-                <font size="4" color="white"><b><i class="glyphicon glyphicon-user"></i>  Schedulers</b></font>
+                <font size="4" color="white"><b><i class="glyphicon glyphicon-user"></i>  Project Managers</b></font>
                 
                          
                             </div>
@@ -42,7 +42,7 @@
                             
                 <div style=" height: 100px;width: 220px;background-color:#DB5A6B;text-align: center;">
                  <br>
-                <font size="4" color="white"><b>550</b></font>
+                <font size="5" color="white"><b>{{$project}}</b></font>
 
                 <br>
                 <font size="4" color="white"><b><i class="fa fa-building-o"></i>  No. of Projects</b></font>
@@ -58,7 +58,7 @@
                             
                 <div style=" height: 100px;width: 220px;background-color:#F5AB35;text-align: center;">
                 <br>
-                <font size="4" color="white"><b>550</b></font>
+                <font size="5" color="white"><b>{{$projectbid}}</b></font>
 
                 <br>
                 <font size="4" color="white"><b><span class="glyphicon glyphicon-briefcase"></span> Total Bids</b></font>
@@ -140,10 +140,58 @@
                     <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown"><center><span class="glyphicon glyphicon-cog"></span></center></button>
                     <ul class="dropdown-menu" role="menu" style="left: 0% !important;
                         right: 100% !important;text-align: center !important;transform: translate(-75%, 0) !important;">
-                    <li><a href="{{url('dashboard/user/'.$user['users_id'].'/1')}}" onclick="return confirm('Do you want to approve this associates?')">Approve</a></li>
-                    <li><a href="{{url('dashboard/user/'.$user['users_id'].'/0')}}" onclick="return confirm('Do you want to Reject this associates?')">Reject</a>
+                        <?php $userid = $user->users_id ?>
+                    <li id="approve" data-toggle="modal" data-target="#myModal"><a>Approve</a></li>
+                    <li><a href="{{url('dashboard/user/'.$user['users_id'].'/0')}}" onclick="return confirm('Are you sure want to reject this associate?')">Reject</a>
                     </li>
+                    <!-- <li><a href="{{url('dashboard/user/'.$user['users_id'].'/1')}}" onclick="return confirm('Do you want to approve this associates?')">Approve</a></li>
+                    <li><a href="{{url('dashboard/user/'.$user['users_id'].'/0')}}" onclick="return confirm('Do you want to Reject this associates?')">Reject</a>
+                    </li> -->
                     </ul>
+                     <!-- Modal -->
+          <div class="modal fade" id="myModal" role="dialog">
+          <div class="modal-dialog">
+          <div class="modal-content">
+          <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title" style="text-align: left;">Assign the category to associate</h4>
+          </div>
+          <div class="modal-body">
+          <form role="form" class="form-horizontal" id="associateapprove" method="Post" action="{{url('dashboard/user/'.$userid.'/1')}}">
+                       {{ csrf_field() }}
+                        <div class="form-group">
+                          <div class="col-md-4">
+                         <div class="radio" style="text-align: left;">
+                        <label><input type="radio" value="1" name="optradio" checked>&nbsp Employee</label>
+                        </div>
+                        </div>
+                        </div>
+                        <div class="form-group">
+                           <div class="col-md-4">
+                          <div class="radio" style="text-align: left;">
+                             <label><input type="radio" value="2" name="optradio" checked>&nbsp Preferred Associate</label>
+                        </div>
+                        </div>
+                        </div>
+                        <div class="form-group">
+                           <div class="col-md-4">
+                          <div class="radio" style="text-align: left;">
+                             <label><input type="radio" value="3" name="optradio" checked>&nbsp Associate</label>
+                          </div>
+                        </div>
+                        </div>
+                        <div class="form-group">
+                        <div class="col-md-offset-3 col-md-3">
+                        <button class="btn btn-success" type="submit">Approve</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>  
+                          </div>
+                          
+                        </div>
+                      </form>
+                      </div>
+                      </div>
+                      </div>
+                      </div>
                     </div>
                     </td>
                   </tr>
@@ -156,4 +204,8 @@
               </div>
                 {!! $users->links() !!}
           </div>
+          @stop
+          @section('script')
+         
+</script>
 @endsection

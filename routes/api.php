@@ -48,3 +48,7 @@ Route::any('/inProgessProject', 'ApiController@inProgessProject');
 Route::any('/addStatus', 'ApiController@addStatus');
 Route::any('/myBids', 'ApiController@myBids');
 Route::any('/bidRequest', 'ApiController@bidrequest');
+Route::any('/projectComplete', 'ApiController@projectComplete');
+Route::any('/projectCancel', 'ApiController@projectCancel');
+Route::any('/availableProject', 'ApiController@availableProject');
+Route::any('/associateProfile', 'ApiController@associateProfile');

@@ -60,7 +60,24 @@
 
     </div>
     <script src="{{asset('/js/app.js')}}"></script>
+    <script type="text/javascript">
+    $(document).ready(function() {
+      $('#setting').submit(function(event){
+        $.ajax({
+            type: 'POST',
+              url: '/project_management/public/index.php/changeSettings',
+              data: $('form#setting').serialize(),
+              dataType: 'json',
+          })
 
-  </body>
+          .done(function(msg) {
+          alert(msg);
+        });
+
+          event.preventDefault();
+      });
+    });
+</script>
+</body>
 </html>
 

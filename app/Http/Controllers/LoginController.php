@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Session;
 use App\AdminUser;
 use App\User;
+use App\Project;
+use App\ProjectBid;
 use App\UserForgetPasswordRequest;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
@@ -57,12 +59,16 @@ class LoginController extends Controller
             session(['loginusername' => $auth->admin_users_name]);
             $associate = User::where('user_types_id','=','2')->count();
             $schedular = User::where('user_types_id','=','1')->count();
+            $project = Project::all()->count();
+            $projectbid = ProjectBid::all()->count();
             $users = User::where('user_types_id','=','2')
             ->where('users_approval_status','=','2')->paginate(8);
             return view('dashboard',[
             'associate'    => $associate, 
             'schedular'    => $schedular,
             'users'        => $users,
+            'project'      => $project,
+            'projectbid'   => $projectbid,
     ]);
         }else{
             $warning="email or password incorrect";
@@ -110,8 +116,6 @@ class LoginController extends Controller
             'confirm_password.same' => 'Confirm Password does not match to New password.',
         ]);
         $newpw = Hash::make($request->new_password);
-        //$userid = $request->userid;
-        //exit;
         $model=User::where('users_id','=',$request->userid)->update(['users_password' =>$newpw]);
         $date = date('Y-m-d H:i:s');
         $forgotpwd=UserForgetPasswordRequest::where('users_id','=',$request->userid)->get();
@@ -125,8 +129,9 @@ class LoginController extends Controller
         where('user_forget_password_request_id','=',$forgotpwdid)->update(['password_updated_date' => $date]);
         if(isset($model))
         {
-            echo json_encode(array('status' => '1', 'message' => "Password changed successfully "));
-            exit;
+            /*echo json_encode(array('status' => '1', 'message' => "Password changed successfully "));
+            exit;*/
+            return view('password.forgotpassword');
         }
         else
         {
