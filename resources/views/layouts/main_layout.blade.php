@@ -5,7 +5,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    @include('layouts.main_metaheader')
+<meta charset="utf-8">
+<title> Project Bidding </title>
+
+  <link rel="shortcut icon" href="{{{ asset('img/brick-wall.png') }}}">
     @include('layouts.include_css')
 </head>
 

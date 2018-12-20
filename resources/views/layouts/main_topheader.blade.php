@@ -8,7 +8,7 @@
               <span class="icon-bar"></span>
               <span class="icon-bar"></span>
             </button>
-            <a href="#" class="navbar-brand">Project Management</a>
+            <a href="#" class="navbar-brand">Project Bidding</a>
           </div>
 
           <!-- Collect the nav links, forms, and other content for toggling -->
@@ -18,9 +18,9 @@
               <li class="active"><a href="index.html">Documentation</a></li> -->
               <!-- <li class="disabled"><a href="#">Link</a></li> -->
               <li class="dropdown">
-                <a data-toggle="dropdown" class="dropdown-toggle" href="#"> {{session('loginusername')}} <b class="caret"></b></a>
+                <a data-toggle="dropdown" class="dropdown-toggle" href="#"> {{ucfirst(session('loginusername'))}} <b class="caret"></b></a>
                 <ul role="menu" class="dropdown-menu">
-                  <li><a href="{{ url('/logout')}}">Signout</a></li>
+                  <li style="text-align: center;"><a href="{{ url('/logout')}}"><span class="glyphicon glyphicon-off"> Signout</span></a></li>
                 </ul>
               </li>
             </ul>

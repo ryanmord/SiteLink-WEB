@@ -19,25 +19,31 @@
      // uses 'auth' middleware
 
 
-Route::group(['middleware' => 'disablepreventback'],function(){
-Route::get('/','LoginController@index');
+Route::group(['middleware' => 'disablepreventback'],function()
+{
+	Route::get('/','LoginController@index');
 
-Route::get('/login', ['as' => 'admin_users.login', 'uses' => 'LoginController@getadminLogin']);
-Route::post('/login', ['as' => 'admin_users.auth', 'uses' => 'LoginController@adminAuth']);
-Route::get('/admin','LoginController@admin')->middleware(guest::class);
-Route::get('/dashboard','UserController@dashboard')->middleware(guest::class);
-//Route::group(['middleware' => ['guest']], function () {
-
-/*Route::resource('users', 'UserController', ['except' => 'create']);*/
-Route::get('/users','UserController@index')->middleware(guest::class);
-
-Route::get('/adminuser','UserController@adminuser')->middleware(guest::class);
-
-Route::any('dashboard/user/{id}/{status}', 'UserController@approveduser')->middleware(guest::class);
-Route::any('user/{status}', 'UserController@search')->middleware(guest::class);
+	Route::get('/login', ['as' => 'admin_users.login', 'uses' => 'LoginController@getadminLogin']);
+	Route::post('/login', ['as' => 'admin_users.auth', 'uses' => 'LoginController@adminAuth']);
+	Route::get('/admin','LoginController@admin')->middleware(guest::class);
+	Route::get('/dashboard','UserController@dashboard')->middleware(guest::class);
+	Route::get('/users','UserController@index')->middleware(guest::class);
+	Route::get('/adminuser','UserController@adminuser')->middleware(guest::class);
+	Route::any('dashboard/user/{id}/{status}', 'UserController@approveduser')->middleware(guest::class);
+	Route::any('user/{status}', 'UserController@search')->middleware(guest::class);
+	Route::get('/projects/{id}','ProjectController@show')->middleware(guest::class);
+	Route::get('/projectBid/{id}','ProjectController@projectbid')->middleware(guest::class);
+	Route::get('/allocatedProject','ProjectController@allocatedproject')->middleware(guest::class);
+	Route::get('/nonAllocatedProject','ProjectController@nonallocatedproject')->middleware(guest::class);
+	Route::get('/completedProject','ProjectController@completedproject')->middleware(guest::class);
+	Route::get('/cancelledProject','ProjectController@cancelledproject')->middleware(guest::class);
+	Route::any('setSettings','ProjectController@settings')->middleware(guest::class);
+	Route::any('changeSettings','ProjectController@changesetting')->middleware(guest::class);
 	Route::get('/logout','LoginController@logout');
 
 });
+Route::any('/forgotPassword/{userid}','LoginController@forgotpassword');
+Route::any('/changepassword/{userid}','LoginController@changepassword');
 //Route::get('/logout','LoginController@logout');
 //});
 
