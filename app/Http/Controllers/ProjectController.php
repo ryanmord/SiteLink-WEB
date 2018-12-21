@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use Illuminate\Http\Request;
 use Response;
 use App\Project;
@@ -10,9 +9,18 @@ use App\ProjectBid;
 use App\ProjectStatus;
 use App\ScopePerformed;
 use App\ProjectStatusType;
+use App\ProjectProgressStatus;
+use App\ProjectNotificationSentDevice;
 use App\Setting;
+use App\UserDevice;
+use App\UserAccessKey;
+use App\ProjectNotification;
+use App\ProjectBidRequest;
 use DateTime;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+use Edujugon\PushNotification\Facades\PushNotification;
+use Illuminate\Support\Facades\Redirect;
 class ProjectController extends Controller
 {
     /**
@@ -25,16 +33,174 @@ class ProjectController extends Controller
         $projects = Project::all()->paginate(8);
         return view('project.index',compact($projects));
     }
+    public function viewStatus(Request $request)
+    {
+        $projectid = $request['projectid'];
+        
+        $request['pagenumber'] = 1;
+        $request['limit']   = 3;
+        
+        $projectstatus = $this->progressstatus($request);
+        $projectstatus = json_decode($projectstatus, true);
+        if($projectstatus['status'] == 1)
+        {
+            $progressstatus = $projectstatus['progressstatus'];
+            return response()->json($progressstatus);
+        }
+        else
+        {
+            $progressstatus = array('status' => 0);
+            return response()->json($progressstatus);
+        }
+    }
+        public function statusPagination(Request $request){
+        $request['projectid'] = $request['projectid'];
+        $request['pagenumber'] = $request['pagenumber'];
+        $request['limit'] = 3;
+        $projectStatus = $this->progressstatus($request);
+        $projectStatus = json_decode($projectStatus, true);
+        $appendLi = "";
+        if($projectStatus['status'] == 1) {
 
+            if(!empty($projectStatus['progressstatus'])) {
+                // $appendLi = '<h4>Available Job</h4>';
+                
+                foreach($projectStatus['progressstatus'] as  $value) {
+                   $appendLi .= '<li> 
+                    <h5>'.$value['subject'].'</h5>
+                    <p>'.$value['status'].'</p>
+                    <div class="status-date">'.$value['createddate'].'</div>
+                 </li>';
+                    
+                }
+                $status = 1;
+            }
+            else
+            {
+                $status = 0;
+            }
+        }
+        else
+        {
+            $status = 0;
+        }
+        $temp = array('appendLi' => $appendLi,
+                      'status'   => $status
+                    );
+        /*print_r($temp);*/
+
+        return response()->json($temp);
+    }
+    public function progressstatus(Request $request)
+    {
+        $projectid = $request['projectid'];
+        $limit = $request['limit']; 
+        $pageno = $request['pagenumber'];   
+        if ($pageno < 1) 
+        {
+            $pageno = 1;
+        }
+        $start = ($pageno + 1);     
+        $items = $limit * ($pageno - 1);
+        $progress = DB::table('project_progress_status')
+                            ->select(DB::raw('SQL_CALC_FOUND_ROWS project_progress_status_id'),
+                             'project_id','project_progress_status_subject','project_progress_status','created_at'
+                           )
+                            ->where('project_id','=',$projectid)
+                            ->limit($limit)
+                            ->offset($items)
+                            ->get();
+        $count = DB::select(DB::raw("SELECT FOUND_ROWS() AS Totalcount;"));
+        $totalRemaingItems = $count[0]->Totalcount - $items;
+        $count = $progress->count();
+        $cntstatus = 0;
+        $totalstatus = 0;
+        if($count != 0) 
+        {
+            foreach($progress as $value) 
+            {
+                $subject = $value->project_progress_status_subject;
+                $status = $value->project_progress_status;
+                $date=$value->created_at;
+                $datetime2 = new DateTime($date);
+                $createddate = $datetime2->format("jS F Y, h:i:s");
+                $progressstatus[] = ['subject' => $subject, 'status' =>  $status, 'createddate' => (string)$createddate];
+                $cntstatus += 1;
+            }
+            if(!empty($progress)) 
+            {
+                $itemsremaining = $totalRemaingItems - $limit;
+                if($totalRemaingItems > 0) 
+                {
+                    if($itemsremaining < 0) 
+                    {
+                        $itemsremaining = 0;
+                    }
+                    $successMsg =  array('status' => '1', 'nextpagenumber' => $start, 'statuscount' => (string)$cntstatus,'itemsremaining' => $itemsremaining,'progressstatus' => $progressstatus);
+                    
+                    return json_encode($successMsg);
+                    exit;
+                }
+                else 
+                {
+                    $errorMsg =  array('status' => '1', 'message' => "There are no status available");
+                    
+                    return json_encode($errorMsg);
+                    exit;
+                }
+            }
+        }
+        else
+        {
+            $errorMsg = array('status' => '0', 'message' => "No any status for this Project");
+            
+            return json_encode($errorMsg);
+            exit;
+        }
+    }
     /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    //create new project
+    public function create(Request $request)
     {
-        //
+        
+        //get miles range values
+        $setting = Setting::where('setting_status','=',1)->first();
+        if(isset($setting))
+        {
+            $minvalue = (string)$setting->min_miles;
+            $maxvalue = (string)$setting->max_miles;
+        }
+        else
+        {
+            $minvalue = 0;
+            $maxvalue = 0;
+        }
+        $scopeperformed = ScopePerformed::all();
+        $address = $request->input('siteaddress');
+        session(['address' => $address]);
+        $user = User::select('users_id','users_name')
+                ->where('user_types_id','=',1)
+                ->where('users_status','=',1)
+                ->where('users_approval_status','=',2)
+                ->where('email_status','=',1)
+                ->get();
+        return view('project.createproject',[
+                    'minvalue'      => $minvalue, 
+                    'maxvalue'      => $maxvalue,
+                    'scope'         => $scopeperformed,
+                    'user'          => $user ]);
+       
+        $returnHTML = view('project.createproject',['minvalue'  => $minvalue,
+                                                    'maxvalue'  => $maxvalue,
+                                                    'scope'     => $scopeperformed])->render();
+        return response()->json( array('success' => true, 'html'=>$returnHTML,'url'=> $url) );
+
     }
+    
 
     /**
      * Store a newly created resource in storage.
@@ -42,11 +208,87 @@ class ProjectController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+    //store project details
     public function store(Request $request)
     {
-        
-    }
+       
+        $project = new Project;
+        $project->project_name = $request->input('projectname');
+        $project->project_site_address = $request->input('siteaddress');
+        $project->milesrange = $request->input('milesrange');
+        $project->latitude = $request->input('latitude');
+        $project->longitude = $request->input('longitude');
+        $reportdate = (string)$request->input('reportdate');
+        $reportdate = date("Y-m-d H:i:s", strtotime($reportdate) );
+        if($request->input('onsitedate') != null)
+        {
+            $onsitedate = (string)$request->input('onsitedate');
+            $onsitedate = date("Y-m-d H:i:s", strtotime($onsitedate));
+            $project->on_site_date = $onsitedate;
+        }
+        if($request->input('instruction') != null)
+        {
+            $project->instructions = $request->input('instruction');
+        }
+        $project->report_due_date = $reportdate;
+        $project->report_template = $request->input('template');
+        $project->approx_bid = $request->input('projectbid');
+        $project->scope_performed_id = $request->input('scopeid');
+        $project->user_id = $request->input('managerid');
+        $project->save();
+        $projectname = $request->input('projectname');
+        $address = $request->input('siteaddress');
+        $project = Project::where('project_name','=',$projectname)
+                            ->where('project_site_address','=',$address)
+                            ->get();
+        foreach($project as $value) 
+        {
+            $projectid = $value->project_id;
+        }
+        $model = new ProjectStatus;
+        $model->project_id = $projectid;
+        $model->project_status_type_id  = 1; //1 for project create status
+        $model->created_at = date('Y-m-d H:i:s');
+        $model->save();
+        $touserid = $request->input('managerid');
+        $notificationtext = 'New project allocated to you!';
+        $notificationtype = '15';
+        $fromuserid = session('loginuserid');
+        $body = $request->input('projectname');
+        $title = $notificationtext;
+        $this->sendUserNotification($touserid,$fromuserid,$projectid,$body,$title,$notificationtext,$notificationtype);
+        $latitude = $request->input('latitude');
+        $longitude = $request->input('longitude');
+        $miles = (int)$request->input('milesrange');
+        //find nearest associate upto particuler distance
+        $result =  DB::select(DB::raw("SELECT users_id , ( 3956 *2 * ASIN( SQRT( POWER( SIN( ( $latitude - latitude ) * PI( ) /180 /2 ) , 2 ) + COS( $latitude * PI( ) /180 ) * COS( latitude * PI( ) /180 ) * POWER( SIN( ( $longitude - longitude ) * PI( ) /180 /2 ) , 2 ) ) ) ) AS distance
+                FROM users
+                WHERE  user_types_id <>1
+                HAVING distance <= $miles"));
+        if(!empty($result))
+        {
+            $notificationtext = 'New project listed in your area!';
+            $notificationtype = '1'; //1 for create project
+            $projectid = $projectid;
+            $fromuserid = $request->input('managerid');
+            $body = $request->input('projectname');
+            $title = 'New project listed in your area!';
+            foreach($result as $value) 
+            {
+                $touserid = $value->users_id;
 
+
+                $this->sendUserNotification($touserid,$fromuserid,$projectid,$body,$title,$notificationtext,$notificationtype);
+                $bidrequest = new ProjectBidRequest();
+                $bidrequest->project_id = $projectid;
+                $bidrequest->to_user_id = $touserid;
+                $bidrequest->from_user_id = $fromuserid;
+                $bidrequest->created_at = date('Y-m-d H:i:s');
+                $bidrequest->save();
+            }
+        }
+        return response()->json(['success'=>'Project created successfully']);
+    }
     /**
      * Display the specified resource.
      *
@@ -55,16 +297,110 @@ class ProjectController extends Controller
      */
     public function show($id)
     {
+      
         $user = User::where('users_id','=',$id)->first();
         $username=$user->users_name;
-        $projects = Project::where('user_id','=',$id)->paginate(8);
+        if($user->user_types_id == 1) //1 for scheduler
+        {
+            $projects = Project::where('user_id','=',$id)->get();
+            if(isset($projects))
+            {
+
+                foreach ($projects as $value) 
+                {
+                    $projectid = $value->project_id;
+                    $status = ProjectStatus::where('project_id','=',$projectid)
+                    ->get();
+                    foreach ($status as $projectstatus) 
+                    {
+                        //get project current status
+                        $status1 = $projectstatus->project_status_type_id;
+                    }
+                    $projectbid = ProjectBid::where('project_id','=',$projectid)
+                                        ->where('project_bid_status','=',1)
+                                        ->where('bid_status','=',1)->first();
+                    //1 for accept bid and project is allocated
+                    if(isset($projectbid))
+                    {
+                        //final bid of project which is given by associate
+                        $approx_bid = $projectbid->associate_suggested_bid;
+                    }
+                    else
+                    {
+                        //project suggested bid which is given by scheduler
+                        $approx_bid = $value->approx_bid;
+                    }
+                    $userproject[] = ['project_name'       => $value->project_name, 
+                                    'project_id'           => $value->project_id,
+                                    'project_site_address' =>  $value->project_site_address,
+                                    'report_due_date'      => $value->report_due_date,
+                                    'report_template'      => $value->report_template,
+                                    'scope_performed_id'   => $value->scope_performed_id,
+                                    'instructions'         => $value->instructions,
+                                    'approx_bid'           => number_format($value->approx_bid, 2),
+                                    'created_at'           => $value->created_at,
+                                    'status'               => $status1,
+                                    'usertype'             => 1
+                                    ];
+                }
+            }
+            else
+            {
+                $userproject = null;
+            }
+        }
+        else
+        {
+            //else part execute when user type is associate
+            $projects = DB::table('projects')
+                        ->select('projects.project_id','projects.project_name','projects.user_id','projects.project_site_address','projects.report_due_date','projects.instructions','projects.approx_bid','projects.report_template','projects.scope_performed_id','projects.created_at','projects.updated_at','project_bids.associate_suggested_bid')
+                        ->leftJoin('project_bids', 'projects.project_id', '=', 'project_bids.project_id')
+                        ->where('project_bids.user_id','=',$id)
+                        ->where('project_bids.project_bid_status','=',1)
+                        ->get();
+            if(isset($projects))
+            {
+
+                foreach ($projects as $value) 
+                {
+                    $projectid = $value->project_id;
+                    $status = ProjectStatus::where('project_id','=',$projectid)
+                    ->get();
+                    foreach ($status as $projectstatus) 
+                    {
+                        //get project current status
+                        $status1 = $projectstatus->project_status_type_id;
+                    }
+                    $userproject[] = ['project_name'       => $value->project_name, 
+                                    'project_id'           => $value->project_id,
+                                    'project_site_address' =>  $value->project_site_address,
+                                    'report_due_date'      => $value->report_due_date,
+                                    'report_template'      => $value->report_template,
+                                    'scope_performed_id'   => $value->scope_performed_id,
+                                    'instructions'         => $value->instructions,
+                                    'approx_bid'           => number_format($value->associate_suggested_bid, 2),
+                                    'created_at'           => $value->created_at,
+                                    'status'               => $status1,
+                                    'usertype'             => 2
+                    ];
+                }
+            }
+            else
+            {
+                $userproject = null;
+            }
+        }
+
+        if(!isset($userproject))
+        {
+            $userproject = null;
+        }
         $scopeperformed= ScopePerformed::all();
         return view('project.index',[
-                    'projects'      => $projects, 
+                    'projects'      => $userproject, 
                     'user'          =>$username,
                     'scopeperformed'=>$scopeperformed,
                 ]);
-
     }
 
     /**
@@ -75,7 +411,42 @@ class ProjectController extends Controller
      */
     public function edit($id)
     {
-        
+        //get all project details
+        $project = Project::where('project_id','=',$id)->first();
+        $scope   = ScopePerformed::all();
+        $setting = Setting::where('setting_status','=',1)->first();
+        if(isset($setting))
+        {
+            $minvalue = (string)$setting->min_miles;
+            $maxvalue = (string)$setting->max_miles;
+        }
+        else
+        {
+            $minvalue = 0;
+            $maxvalue = 0;
+        }
+        $date2      = date($project->report_due_date);
+        $datetime2  = new DateTime($date2);
+        $reportdate = $datetime2->format("m/d/Y");
+        if(isset($project->on_site_date))
+        {
+            $date2      = date($project->on_site_date);
+            $datetime2  = new DateTime($date2);
+            $onsitedate = $datetime2->format("m/d/Y");    
+        }
+        else
+        {
+            $onsitedate = '   -';
+        }
+
+        return view('project.edit',[
+                    'scope'      => $scope, 
+                    'project'    => $project,
+                    'minvalue'   => $minvalue,
+                    'maxvalue'   => $maxvalue,
+                    'reportdate' => $reportdate,
+                    'onsitedate' => $onsitedate
+                ]);
     }
 
     /**
@@ -87,7 +458,149 @@ class ProjectController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        
+        //update project details
+        $projectid = $id;
+        $project_name = $request->input('projectname');
+        $project_site_address = $request->input('siteaddress');
+        $milesrange = $request->input('milesrange');
+        $latitude = $request->input('latitude');
+        $longitude = $request->input('longitude');
+        $reportdate = (string)$request->input('reportdate');
+       
+        $reportdate = date("Y-m-d H:i:s", strtotime($reportdate) );
+        
+        if($request->input('onsitedate') != null)
+        {
+            $onsitedate = (string)$request->input('onsitedate');
+            $onsitedate = date("Y-m-d H:i:s", strtotime($onsitedate));
+            
+        }
+        else
+        {
+            $onsitedate = null;
+        }
+       
+        if($request->input('instruction') != null)
+        {
+            $instructions = $request->input('instruction');
+        }
+        else
+        {
+            $instructions = null;
+        }
+        $report_template = $request->input('template');
+        $approx_bid = $request->input('projectbid');
+        $scope_performed_id = $request->input('scopeid');
+        $project = Project::where('project_id', '=', $projectid)
+                    ->update(['project_name'       => $project_name,
+                            'project_site_address' => $project_site_address,
+                            'milesrange'           => $milesrange,
+                            'latitude'             => $latitude,
+                            'longitude'            => $longitude,
+                            'report_due_date'      => $reportdate,
+                            'on_site_date'         => $onsitedate,
+                            'report_template'      => $report_template,
+                            'instructions'         => $instructions,
+                            'approx_bid'           => $approx_bid,
+                            'scope_performed_id'   => $scope_performed_id
+                             ]);
+        if($project != 0)
+        {
+            $project = Project::where('project_id','=',$projectid)->first();
+            $userid = $project->user_id;
+            $notificationtext = 'Scheduler updated project details';
+            $notificationtype = '6';
+            $fromuserid = session('loginuserid');
+            $touserid = $userid;
+            $body = $request->input('projectname');
+            $title = 'Scheduler updated project details';
+            $this->sendUserNotification($touserid,$fromuserid,$projectid,$body,$title,
+                                        $notificationtext,$notificationtype);
+            $latitude = $request->input('latitude');
+            $longitude = $request->input('longitude');
+            $miles = (int)$request->input('milesrange');
+            //find nearby associates to send paroject available notification
+            $result =  DB::select(DB::raw("SELECT users_id , ( 3956 *2 * ASIN( SQRT( POWER( SIN( ( $latitude - latitude ) * PI( ) /180 /2 ) , 2 ) + COS( $latitude * PI( ) /180 ) * COS( latitude * PI( ) /180 ) * POWER( SIN( ( $longitude - longitude ) * PI( ) /180 /2 ) , 2 ) ) ) ) AS distance
+                FROM users
+                WHERE  user_types_id <>1
+                HAVING distance <= $miles"));
+            if(!empty($result))
+            {
+                foreach($result as $value) 
+                {
+                    /*$associate = DB::table('user_scope_performed')
+                        ->select('user_scope_performed.scope_performed_id')
+                        ->leftJoin('users', 'users.users_id', '=', 'user_scope_performed.users_id')
+                        ->where('users.users_id','=',$touserid)
+                        ->first();
+                    echo $associate;
+                    exit;*/
+                        $date = date('Y-m-d H:i:s');
+                        $update = ProjectNotification::where('to_user_id', '=', $value->users_id)->where('project_id','=',$projectid)
+                            ->update(['project_notification_type_id' => 6,
+                                       'created_at' => $date,
+                                       'notification_text'=> 'Scheduler updated project details',
+                                        'read_flag' => 0]);
+
+                        if($update == 0)
+                        {
+                            $model = new ProjectNotification;
+                            $model->to_user_id = $value->users_id;
+                            $model->from_user_id = $fromuserid;
+                            $model->project_id = $projectid;
+                            $model->notification_text = 'Scheduler updated project details';
+                            $model->project_notification_type_id = 6;
+                            $model->created_at = date('Y-m-d H:i:s');
+                            $model->save();
+                            $bidrequest = new ProjectBidRequest();
+                            $bidrequest->project_id = $projectid;
+                            $bidrequest->to_user_id = $value->users_id;
+                            $bidrequest->from_user_id = $userid;
+                            $bidrequest->created_at = date('Y-m-d H:i:s');
+                            $bidrequest->save();
+                        }
+                        $accesskey = UserAccessKey::where('user_id','=',$value->users_id)->where('user_access_key_status','=',1)->get();
+                        $notification = ProjectNotification::where('project_id','=',$projectid)
+                        ->where('to_user_id','=',$value->users_id)
+                        ->where('project_notification_type_id','=',6)->first();
+                        $sentnotificationid = $notification->project_notification_id;
+                        $notificationcount = ProjectNotification::where('to_user_id','=',$value->users_id)->where('read_flag','=',0)->count();
+                        $notificationcount = (string)$notificationcount;
+                        foreach($accesskey as  $key) 
+                        {
+                           $device = UserDevice::where('user_device_id','=',$key->user_device_id)->first();
+                           $body = $request['projectname'];
+                           $title = 'Scheduler updated project details';
+                           $devicetokenid = $device->user_device_unique_id;
+                           $devicetype = $device->user_device_type;
+                           $notificationid = '6';
+                           $model = new ProjectNotificationSentDevice;
+                           $model->project_notification_id = $sentnotificationid;
+                           $model->user_device_id = $device->user_device_id;
+                           $model->notification_sent = date('Y-m-d H:i:s');
+                           $model->save();
+                           $notificationstatus = User::where('users_id','=',$value->users_id)
+                                                ->where('notification_enable','=',1)->first();
+                           if(isset($notificationstatus))
+                           {
+                                $projectid = (string)$projectid;
+                           
+                                $this->pushnotification($devicetokenid,$title,$body,$notificationid,$projectid,$notificationcount,$devicetype);
+
+                           }
+                           
+                            
+                        }
+                    }
+                }
+            return response()->json(['success'=>'Project updated successfully']);
+        }
+        else
+        {
+            return response()->json(['success'=>'Projectis not updated']);
+        }
+        
     }
 
     /**
@@ -119,12 +632,60 @@ class ProjectController extends Controller
        $msg = 'Setting changed successfully';
         return Response::json($msg);
     }
-    public function allocatedproject()
+    public function showprojects()
     {
+         /* allocated projects*/
+       $projects = ProjectBid::where('project_bid_status','=',1)
+                    ->orderBy('project_bid_id','desc')->get();
+       if(isset($projects))
+       {
+            foreach ($projects as $value) 
+            {
+            $projectid = $value->project_id;
+            $projectstatus = ProjectStatus::where('project_id','=',$projectid)
+                            ->get();
+            foreach ($projectstatus as $status) 
+            {
+                $status1 = $status->project_status_type_id;
+            }
+            if($status1 == 3 or $status1 == 2)
+            {
+                $project = Project::where('project_id','=',$projectid)
+                ->first();
+                $manager = User::where('users_id','=',$project->user_id)->first();
+                $managername = $manager->users_name;
+                $statuscount = ProjectProgressStatus::where('project_id','=',$projectid)->count();
+                $associatename = User::where('users_id','=',$value->user_id)
+                ->first();
+                $data[] = ['project_name'          => $project->project_name, 
+                            'project_id'           => $project->project_id,
+                            'project_site_address' =>  $project->project_site_address,
+                            'instructions'         => $project->instructions,
+                            'approx_bid'           => number_format($value->associate_suggested_bid, 2),
+                            'associatename'        => $associatename->users_name,
+                            'created_at'           => $project->created_at,
+                            'statuscount'          => $statuscount,
+                            'managername'          => $managername
+                ];
+            }
+        }
+            if(!isset($data))
+            {
+                $data = null;
+
+            }
+        }
+        else
+        {
+            $data = null;
+
+        }
+        /* Completed projects*/
         $projects = DB::table('projects')
-        ->leftJoin('project_bids', 'projects.project_id', '=', 'project_bids.project_id')
-        ->where('project_bid_status','=',1)
-        ->get();
+                        ->leftJoin('project_status', 'projects.project_id', '=', 'project_status.project_id')
+                        ->where('project_status_type_id','=',4)
+                        ->orderBy('project_status.project_status_id','desc')
+                        ->get();
         foreach ($projects as $value) 
         {
             $projectid = $value->project_id;
@@ -132,86 +693,244 @@ class ProjectController extends Controller
             ->where('project_bid_status','=', 1)->first();
             $associatename = User::where('users_id','=',$projectbid->user_id)
             ->first();
-            $data[] = ['project_name' => $value->project_name, 
-                'project_site_address' =>  $value->project_site_address,
-                'report_due_date' => $value->report_due_date,
-                'report_template' => $value->report_template,
-                'scope_performed_id' => $value->scope_performed_id,
-                'instructions' => $value->instructions,
-                'approx_bid' => $value->approx_bid,
-                'associatename' => $associatename->users_name,
-                'created_at' => $value->created_at,
-                'updated_at' => $value->updated_at,
-                ];
+            $manager = User::where('users_id','=',$value->user_id)->first();
+            $managername = $manager->users_name;
+            $status = ProjectStatus::where('project_id','=',$projectid)
+                    ->where('project_status_type_id','=',4)->first();
+            $statuscount = ProjectProgressStatus::where('project_id','=',$projectid)->count();
+            $completedproject[] = ['project_name'          => $value->project_name,
+                                    'project_id'           => $value->project_id,
+                                    'project_site_address' =>  $value->project_site_address,
+                                    'approx_bid'           => number_format($projectbid->associate_suggested_bid, 2),
+                                    'associatename'        => $associatename->users_name,
+                                    'created_at'           => $value->created_at,
+                                    'completeddate'        => $status->created_at,
+                                    'statuscount'          => $statuscount,
+                                    'managername'          => $managername
+                                   ];
         }
-        /*$projectbid = ProjectBid::where('project_bid_status','=',1)->get();
-        $projects = Project::where('user_id','=',$id)->paginate(8);*/
-        $scopeperformed= ScopePerformed::all();
-        return view('project.allocatedproject',[
-                    'projects'      => $data, 
-                    'scopeperformed'=>$scopeperformed,
-                ]);
+        /* Cancelled  projects*/
+        $projects = DB::table('projects')
+                    ->select('projects.project_name','projects.project_id','projects.project_site_address','projects.report_due_date','projects.report_template','projects.scope_performed_id','projects.instructions','projects.created_at','projects.user_id')
+                    ->leftJoin('project_status', 'projects.project_id', '=', 'project_status.project_id')
+                    ->where('project_status_type_id','=',5)
+                    ->orderBy('project_status.project_status_id','desc')
+                    ->get();
+       
+        foreach($projects as $value) 
+        {
+            $projectid = $value->project_id;
+            $projectbid = ProjectBid::where('project_id','=',$projectid)
+            ->where('project_bid_status','=', 1)->first();
+            $associatename = User::where('users_id','=',$projectbid->user_id)
+            ->first();
+            $status = ProjectStatus::where('project_id','=',$projectid)
+                    ->where('project_status_type_id','=',5)->first();
+            $manager = User::where('users_id','=',$value->user_id)->first();
+            $managername = $manager->users_name;
+            $statuscount = ProjectProgressStatus::where('project_id','=',$projectid)->count();
+            $cancelledproject[] = ['project_name'     => $value->project_name, 
+                                'project_id'          => $value->project_id,
+                                'project_site_address'=>  $value->project_site_address,
+                                'createddate'         => $value->created_at,
+                                'approx_bid'          => number_format($projectbid->associate_suggested_bid, 2),
+                                'associatename'       => $associatename->users_name,
+                                'cancelleddate'       => $status->created_at,
+                                'statuscount'         => $statuscount,
+                                'managername'         => $managername
+                                ];
 
-    }
-    public function nonallocatedproject()
-    {
-        
-        $projects = Project::all();
+        }
+         /* non allocated projects*/
+        $projects = Project::orderBy('project_id','desc')->get();
         foreach ($projects as $value) 
         {
             $projectid = $value->project_id;
             $projectbid = ProjectBid::where('project_id','=',$projectid)->
-                        where('project_bid_status','=',1)->first();
+                        where('project_bid_status','=',1)
+                        ->orderBy('project_bid_id','desc')->first();
+            $bidcount = ProjectBid::where('project_id','=',$projectid)
+                                    ->where('project_bid_status','=',2)
+                                    ->where('bid_status','=',1)->count();
             if(!isset($projectbid))
             {
                 $managerid = $value->user_id;
                 $user = User::where('users_id','=',$managerid)->first();
                 $managername = $user->users_name;
-                $data[] = ['project_name' => $value->project_name, 
-                'projectid' => $projectid,
-                'project_site_address' =>  $value['project_site_address'],
-                'report_due_date' => $value->report_due_date,
-                'report_template' => $value->report_template,
-                'scope_performed_id' => $value->scope_performed_id,
-                'instructions' => $value->instructions,
-                'approx_bid' => $value->approx_bid,
-                'managername' => $managername,
-                'created_at' => $value->created_at,
-                'updated_at' => $value->updated_at,
-                ];
+                
+                    //newly created projects
+                    $nonallocatedproject[] = ['project_name' => $value->project_name, 
+                            'project_id'           => $value->project_id,
+                            'project_site_address' =>  $value['project_site_address'],
+                            'approx_bid'           => number_format($value->approx_bid, 2),
+                            'managername'          => $managername,
+                            'created_at'           => $value->created_at,
+                            'bidcount'             => $bidcount
+                            ];
+                
+                
             }
+           
         }
+
+        /* Onhold projects */
+        $projects = DB::table('projects')
+         ->select('projects.project_name','projects.project_id','projects.project_site_address','projects.report_due_date','projects.report_template','projects.scope_performed_id','projects.instructions','projects.created_at','projects.user_id')
+        ->leftJoin('project_status', 'projects.project_id', '=', 'project_status.project_id')
+        ->where('project_status_type_id','=',6)
+        ->orderBy('project_status.project_status_id','desc')
+        ->get();
+        foreach ($projects as $value) 
+        {
+            $projectid = $value->project_id;
+            $projectstatus = ProjectStatus::where('project_id','=',$projectid)->get();
+            foreach ($projectstatus as $status) 
+            {
+                $status1 = $status->project_status_type_id;
+            }
+            if($status1 == 6)
+            {
+                $projectbid = ProjectBid::where('project_id','=',$projectid)
+                ->where('project_bid_status','=', 1)->first();
+                $associatename = User::where('users_id','=',$projectbid->user_id)
+                ->first();
+                $statuscount = ProjectProgressStatus::where('project_id','=',$projectid)->count();
+                $manager = User::where('users_id','=',$value->user_id)->first();
+                $managername = $manager->users_name;
+                $onholdprojects[] = ['project_name' => $value->project_name, 
+                            'project_id'            => $value->project_id,
+                            'project_site_address'  =>  $value->project_site_address,
+                            'createddate'           => $value->created_at,
+                            'approx_bid'            => number_format($projectbid->associate_suggested_bid, 2),
+                            'associatename'         => $associatename->users_name,
+                            'statuscount'           => $statuscount,
+                            'managername'           => $managername
+                            ];
+            }
+            
+
+        }
+        if(!isset($completedproject))
+        {
+            $completedproject = null;
+        }
+        if(!isset($data))
+        {
+            $data = null;
+        }
+        if(!isset($cancelledproject))
+        {
+            $cancelledproject = null;
+        }
+        if(!isset($nonallocatedproject))
+        {
+            $nonallocatedproject = null;
+        }
+        if(!isset($onholdprojects))
+        {
+            $onholdprojects = null;
+        }
+        if(!isset($bidsproject))
+        {
+            $bidsproject = null;
+        }
+
+
+        /*$projectbid = ProjectBid::where('project_bid_status','=',1)->get();
+        $projects = Project::where('user_id','=',$id)->paginate(8);*/
         $scopeperformed= ScopePerformed::all();
-        return view('project.nonallocatedproject',[
-                    'projects'      => $data, 
-                    'scopeperformed'=>$scopeperformed,
+        return view('project.projects',[
+                    'projects'           => $data, 
+                    'scopeperformed'     => $scopeperformed,
+                    'completedproject'   => $completedproject,
+                    'cancelledproject'   => $cancelledproject,
+                    'nonallocatedproject'=> $nonallocatedproject,
+                    'onholdprojects'     => $onholdprojects
                 ]);
 
     }
+   
     public function projectbid($projectid)
     {
-        $projectbid = ProjectBid::where('project_id','=',$projectid)->get();
+        $projectbid = ProjectBid::where('project_id','=',$projectid)
+                    ->where('project_bid_status','=',2)
+                    ->where('bid_status','=',1)
+                    ->orderBy('project_bid_id','desc')->get();
+       
+        //check project is allocated or not
+        $bidaccept = ProjectBid::where('project_id','=',$projectid)
+                    ->where('project_bid_status','=',1)
+                    ->where('bid_status','=',1)->first();
+        if(isset($bidaccept))
+        {
+            $bidstatus = 1;
+            $associateid = $bidaccept->user_id;
+            $associate = User::where('users_id','=',$associateid)
+                                ->first();
+            if(isset($associate))
+            {
+                $project = Project::where('project_id','=',$projectid)->first();
+                $projectname = $project->project_name;
+                $associatename = $associate->users_name;
+                $data[] = ['associatename'    => $associatename, 
+                               'associateid'  => $bidaccept->user_id,
+                               'projectid'    => $projectid,
+                               'associatebid' =>  number_format($bidaccept->associate_suggested_bid,2),
+                               'suggestedbid' => number_format($project->approx_bid, 2),
+                               'createddate'  => $bidaccept->created_at
+                               ];
+                return view('project.viewbids',[
+                    'bids'        => $data, 
+                    'projectname' => $projectname,
+                    'bidstatus'   => $bidstatus
+
+                ]);
+                exit;
+            }
+                
+        }
+        else
+        {
+            $bidstatus = 0;
+        }
         $project = Project::where('project_id','=',$projectid)->first();
         $projectname = $project->project_name;
-        if(count($projectbid) > 0)
+        if(isset($projectbid))
         {
             $project = Project::where('project_id','=',$projectid)->first();
             $projectname = $project->project_name;
             foreach ($projectbid as $value) 
             {
                 $associateid = $value->user_id;
-                $associate = User::where('users_id','=',$associateid)->first();
-                $associatename = $associate->users_name;
-                $data[] = ['associatename' => $associatename, 
-                'associatebid' =>  $value->associate_suggested_bid,
-                'suggestedbid' => $project->approx_bid,
-                'createddate' => $value->created_at
-                ];
+
+                $associate = User::where('users_id','=',$associateid)
+                ->first();
+                
+                if(isset($associate))
+                {
+                    $associatename = $associate->users_name;
+                    $data[] = ['associatename'=> $associatename, 
+                               'associateid'  => $value->user_id,
+                               'projectid'    => $projectid,
+                               'associatebid' =>  number_format($value->associate_suggested_bid,2),
+                               'suggestedbid' => number_format($project->approx_bid, 2),
+                               'createddate'  => $value->created_at
+                               ];
+                }
+
+                
+            }
+
+            if(!isset($data))
+            {
+                $data = null;
             }
             return view('project.viewbids',[
-                    'bids'      => $data, 
+                    'bids'        => $data, 
                     'projectname' => $projectname,
+                    'bidstatus'   => $bidstatus
                 ]);
+            exit;
         }
         else
         {
@@ -221,79 +940,631 @@ class ProjectController extends Controller
             ]);
         }
     }
-    public function completedproject()
+    
+   
+    public function bidaccept($projectid,$userid,$status)
     {
-         $projects = DB::table('projects')
-        ->leftJoin('project_status', 'projects.project_id', '=', 'project_status.project_id')
-        ->where('project_status_type_id','=',4)
-        ->get();
-
-        foreach ($projects as $value) 
+     
+        $adminid = session('loginuserid');
+        $date    = date("Y-m-d H:i:s");
+        if($status == 0)
         {
-            $projectid = $value->project_id;
-            $projectbid = ProjectBid::where('project_id','=',$projectid)
-            ->where('project_bid_status','=', 1)->first();
-            $associatename = User::where('users_id','=',$projectbid->user_id)
-            ->first();
-            $status = ProjectStatus::where('project_id','=',$projectid)
-                    ->where('project_status_type_id','=',4)->first();
-            $data[] = ['project_name' => $value->project_name, 
-                'project_site_address' =>  $value->project_site_address,
-                'report_due_date' => $value->report_due_date,
-                'report_template' => $value->report_template,
-                'scope_performed_id' => $value->scope_performed_id,
-                'instructions' => $value->instructions,
-                'approx_bid' => $projectbid->associate_suggested_bid,
-                'associatename' => $associatename->users_name,
-                'created_at' => $value->created_at,
-                'completeddate' => $status->created_at,
-                ];
+            ProjectBid::where('user_id','=', $userid)
+                        ->where('project_id','=',$projectid)
+                        ->where('project_bid_status','=',2)
+                        ->where('bid_status','=',1)
+                        ->update(['project_bid_status' => $status,
+                                'accepted_rejected_at' => $date]);
+            $notificationtext = 'Sorry! Your bid was rejected';
+            $project = Project::where('project_id','=',$projectid)->first();
+            $body = $project->project_name;
+            $title = $notificationtext;
+            $notificationid = '4';
+            //send motification to that particular associate
+            $this->sendUserNotification($userid,$adminid,$projectid,$body,$title,$notificationtext,$notificationid);
+            session()->flash('message', 'Bid Rejected successfully!');
+            return redirect()->action('UserController@dashboard');
         }
-        /*$projectbid = ProjectBid::where('project_bid_status','=',1)->get();
-        $projects = Project::where('user_id','=',$id)->paginate(8);*/
-        $scopeperformed= ScopePerformed::all();
-        return view('project.completedproject',[
-                    'projects'      => $data, 
-                    'scopeperformed'=>$scopeperformed,
-                ]);
-    }
-    public function cancelledproject()
-    {
-         $projects = DB::table('projects')
-         ->select('projects.project_name','projects.project_id','projects.project_site_address','projects.report_due_date','projects.report_template','projects.scope_performed_id','projects.instructions','projects.created_at')
-        ->leftJoin('project_status', 'projects.project_id', '=', 'project_status.project_id')
-        ->where('project_status_type_id','=',5)
-        ->get();
-       
-        foreach ($projects as $value) 
+        else
         {
-            $projectid = $value->project_id;
-            $projectbid = ProjectBid::where('project_id','=',$projectid)
-            ->where('project_bid_status','=', 1)->first();
-            $associatename = User::where('users_id','=',$projectbid->user_id)
-            ->first();
-            $status = ProjectStatus::where('project_id','=',$projectid)
-                    ->where('project_status_type_id','=',5)->first();
-            $data[] = ['project_name' => $value->project_name, 
-                'project_site_address' =>  $value->project_site_address,
-                'report_due_date' => $value->report_due_date,
-                'report_template' => $value->report_template,
-                'scope_performed_id' => $value->scope_performed_id,
-                'instructions' => $value->instructions,
-                'createddate' => $value->created_at,
-                'approx_bid' => $projectbid->associate_suggested_bid,
-                'associatename' => $associatename->users_name,
-                'cancelleddate' => $status->created_at,
-                ];
-
+            ProjectBid::where('user_id','=', $userid)
+                            ->where('project_id','=',$projectid)
+                            ->where('bid_status','=',1)
+                            ->where('project_bid_status','=',2)
+                            ->update(['project_bid_status' => 1,'accepted_rejected_at' => $date]);
+            ProjectBid::where('project_id','=',$projectid)
+                            ->where('project_bid_status','<>',1)
+                            ->where('bid_status','=',1)
+                            ->update(['project_bid_status' => 0,'accepted_rejected_at' => $date]);
+            ProjectBid::where('project_id','=',$projectid)
+                            ->where('user_id','=',$userid)
+                            ->where('project_bid_status','<>',1)
+                            ->where('bid_status','=',1)
+                            ->update(['bid_status' => 0,'accepted_rejected_at' => $date]);
+            $model = new ProjectStatus;
+            $model->project_id = $projectid;
+            $model->project_status_type_id = 2;
+            $model->created_at = $date;
+            $model->save();
+            $model = new ProjectStatus;
+            $model->project_id = $projectid;
+            $model->project_status_type_id = 3;
+            $model->created_at = $date;
+            $model->save();
+            $fromuserid = session('loginuserid');
+            $project = Project::where('project_id','=',$projectid)->first();
+            $managerid = $project->user_id;
+            $body = $project->project_name;
+            $title = 'Congratulations! Your bid was accepted!';
+            $msg = $title;
+            $notificationid = '3';
+            $this->sendUserNotification($userid,$managerid,$projectid,$body,$title,$msg,$notificationid);
+            $user = User::where('users_id','=',$userid)->first();
+            $projectid = (string)$projectid;
+            $title = 'Bid is allocated to '.$user->users_name;
+            $msg = $title;
+            $notificationid = '3';
+            $this->sendUserNotification($managerid,$adminid,$projectid,$body,$title,$msg,$notificationid);
+            session()->flash('message', 'Bid Approved successfully!');
+            return redirect()->action('UserController@dashboard');
+                
         }
         
-        /*$projectbid = ProjectBid::where('project_bid_status','=',1)->get();
-        $projects = Project::where('user_id','=',$id)->paginate(8);*/
+    } 
+   public function pushnotification($deviceid,$title,$body,$notificationid,$dataid,$notificationcount,$devicetype)
+    {
+        //device type 2 for android
+
+        if($devicetype == 2)
+        {
+            $feedback = PushNotification::setService('fcm')
+                    ->setMessage([
+                                'data' => [
+                                    'title'              => $title,
+                                    'body'               => $body,
+                                    'notificationid'     => $notificationid,
+                                    'dataid'             => $dataid,
+                                    'notificationcount'  => $notificationcount
+                                            ]
+                                ])
+                    ->setApiKey('AAAANdKrzEQ:APA91bHZB_ZC2PomiZ2zjIfcDRF219E7hT29sMX1X9Bi3kCNDfHEY-PZ0vlih6O4_trRs_iUUwOh-edlDGKAjSQYEM74wLhq88bLPLzra6jiRvHvSd_EWsBNza86YnmLoP1Db-hBCrtN')
+                    ->setDevicesToken([$deviceid])
+                    ->send()
+                    ->getFeedback();
+        }
+        //devicetype 1 for ios
+        if($devicetype == 1)
+        {
+            $feedback = PushNotification::setService('fcm')
+                    ->setMessage([
+                                'notification' => [
+                                    'title'             => $title,
+                                    'body'              => $body,
+                                    'notificationid'    => $notificationid,
+                                    'dataid'            => $dataid,
+                                    'notificationcount' => $notificationcount
+                                            ]
+                                ])
+                    ->setApiKey('AAAANdKrzEQ:APA91bHZB_ZC2PomiZ2zjIfcDRF219E7hT29sMX1X9Bi3kCNDfHEY-PZ0vlih6O4_trRs_iUUwOh-edlDGKAjSQYEM74wLhq88bLPLzra6jiRvHvSd_EWsBNza86YnmLoP1Db-hBCrtN')
+                    ->setDevicesToken([$deviceid])
+                    ->send()
+                    ->getFeedback();
+        }
+        
+
+    }
+    public function setaddress(Request $request)
+    {
+
+        return view('project.map');
+    }
+    public function sendUserNotification($touserid,$fromuserid,$projectid,$body,$title,$notificationtext,$notificationtype)
+    {
+        //store notification details
+        $model = new ProjectNotification;
+        $model->to_user_id = $touserid;
+        $model->from_user_id = $fromuserid;
+        $model->project_id = $projectid;
+        $model->notification_text = $notificationtext;
+        $model->project_notification_type_id = $notificationtype;
+        $model->created_at = date('Y-m-d H:i:s');
+        $model->save();
+        $notification = ProjectNotification::where('project_id','=',$projectid)
+                                            ->where('from_user_id','=',$fromuserid)
+                                            ->where('to_user_id','=',$touserid)
+                                            ->where('project_notification_type_id','=',$notificationtype)->first();
+        $sentnotificationid = $notification->project_notification_id;
+       
+        /* find that devices where user is login*/
+        $accesskey = UserAccessKey::where('user_id','=',$touserid)
+                                    ->where('user_access_key_status','=',1)->get();
+        
+        $projectid = (string)$projectid;
+        //count for check how many notifications are not reading by user
+        $notificationcount = ProjectNotification::where('to_user_id','=',$touserid)
+                                                ->where('read_flag','=',0)->count();
+        $notificationcount = (string)$notificationcount;
+        
+        foreach($accesskey as  $key) 
+        {
+            $userdevice = UserDevice::where('user_device_id','=',$key->user_device_id)
+                                    ->first();
+
+            $devicetokenid = $userdevice->user_device_unique_id;
+            $devicetype = $userdevice->user_device_type;
+            $notificationid = (string)$notificationtype;
+            $model = new ProjectNotificationSentDevice;
+            $model->project_notification_id = $sentnotificationid;
+            $model->user_device_id = $userdevice->user_device_id;
+            $model->notification_sent = date('Y-m-d H:i:s');
+            $model->save();
+            $user = User::where('users_id','=',$touserid)->first();
+            //1 for received notificaion setting is on
+            if($user->notification_enable == 1)
+            {
+                $this->pushnotification($devicetokenid,$title,$body,$notificationid,$projectid,$notificationcount,$devicetype);
+            }
+            
+        }
+    }
+    //show manager projects
+    public function managerprojects()
+    {
+        /*allocated projects */
+      
+        $userid = session('loginuserid');
+        $projects = Project::where('user_id','=',$userid)->get();
+        $count = $projects->count();
+        if($count != 0)
+        {
+            foreach ($projects as $value) 
+            {
+                $projectid = $value->project_id;
+                $projectstatus = ProjectStatus::where('project_id','=',$projectid)->get();
+                foreach ($projectstatus as $status) 
+                {
+                   $status1 = $status->project_status_type_id;
+                }
+                if($status1 == 3)
+                {
+                    //get project bid details
+                    $projectbid = ProjectBid::where('project_id','=',$projectid)
+                    ->where('project_bid_status','=', 1)->first();
+                    $associatename = User::where('users_id','=',$projectbid->user_id)
+                    ->first();
+                    $statuscount = ProjectProgressStatus::where('project_id','=',$projectid)->count();
+                    $data[] = ['project_name'        => $value->project_name, 
+                              'project_id'           => $value->project_id,
+                              'project_site_address' =>  $value->project_site_address,
+                              'report_due_date'      => $value->report_due_date,
+                              'report_template'      => $value->report_template,
+                              'scope_performed_id'   => $value->scope_performed_id,
+                              'instructions'         => $value->instructions,
+                              'created_at'           => $value->created_at,
+                              'approx_bid'           => number_format($projectbid->associate_suggested_bid, 2),
+                              'associatename'        => $associatename->users_name,
+                              'statuscount'          => $statuscount
+                              ];
+                }
+                
+            }
+        }
+        
+        /* Completed projects*/
+        $projects = DB::table('projects')
+                        ->select(DB::raw('SQL_CALC_FOUND_ROWS projects.project_id'),'projects.project_id','projects.project_name','projects.user_id','projects.project_site_address','projects.on_site_date','projects.report_due_date','projects.instructions','projects.approx_bid','projects.report_template','projects.scope_performed_id','projects.created_at','projects.updated_at','project_status.project_status_type_id')
+                        ->leftJoin('project_status', 'projects.project_id', '=', 'project_status.project_id')
+                        ->where('projects.user_id','=',$userid)
+                        ->where('project_status.project_status_type_id','=',4)
+                        ->orderBy('project_status.project_status_id', 'desc')
+                        ->get();  
+        $count = $projects->count();
+        if($count != 0)
+        { 
+            foreach ($projects as $value) 
+            {
+                $projectid = $value->project_id;
+                $projectbid = ProjectBid::where('project_id','=',$projectid)
+                            ->where('project_bid_status','=', 1)->first();
+                $associatename = User::where('users_id','=',$projectbid->user_id)
+                                ->first();
+                $status = ProjectStatus::where('project_id','=',$projectid)
+                    ->where('project_status_type_id','=',4)->first();
+                $statuscount = ProjectProgressStatus::where('project_id','=',$projectid)->count();
+                $completedproject[] = ['project_name' => $value->project_name,
+                                        'project_id' => $value->project_id,
+                                        'project_site_address' =>  $value->project_site_address,
+                                        'report_due_date' => $value->report_due_date,
+                                        'report_template' => $value->report_template,
+                                        'scope_performed_id' => $value->scope_performed_id,
+                                        'instructions' => $value->instructions,
+                                        'approx_bid' => number_format($projectbid->associate_suggested_bid, 2),
+                                        'associatename' => $associatename->users_name,
+                                        'created_at' => $value->created_at,
+                                        'completeddate' => $status->created_at,
+                                        'statuscount'   => $statuscount
+                                        ];
+            }
+        }
+             /* Cancelled  projects*/
+            $projects = DB::table('projects')
+                        ->select(DB::raw('SQL_CALC_FOUND_ROWS projects.project_id'),'projects.project_id','projects.project_name','projects.user_id','projects.project_site_address','projects.on_site_date','projects.report_due_date','projects.instructions','projects.approx_bid','projects.report_template','projects.scope_performed_id','projects.created_at','projects.updated_at','project_status.project_status_type_id')
+                        ->leftJoin('project_status', 'projects.project_id', '=', 'project_status.project_id')
+                        ->where('projects.user_id','=',$userid)
+                        ->where('project_status.project_status_type_id','=',5)
+                        ->orderBy('project_status.project_status_id', 'desc')
+                        ->get();   
+            $count = $projects->count();
+            if($count != 0)
+            {
+                foreach ($projects as $value) 
+                {
+                    $projectid = $value->project_id;
+                    $projectbid = ProjectBid::where('project_id','=',$projectid)
+                                ->where('project_bid_status','=', 1)->first();
+                    $associatename = User::where('users_id','=',$projectbid->user_id)
+                                    ->first();           
+                    $status = ProjectStatus::where('project_id','=',$projectid)
+                    ->where('project_status_type_id','=',5)->first();
+                    $statuscount = ProjectProgressStatus::where('project_id','=',$projectid)->count();
+                    $cancelledproject[] = ['project_name' => $value->project_name, 
+                                        'project_id'  => $value->project_id,
+                                        'project_site_address' =>  $value->project_site_address,
+                                        'report_due_date' => $value->report_due_date,
+                                        'report_template' => $value->report_template,
+                                        'scope_performed_id' => $value->scope_performed_id,
+                                        'instructions' => $value->instructions,
+                                        'createddate' => $value->created_at,
+                                        'approx_bid' =>  number_format($projectbid->associate_suggested_bid, 2),
+
+                                        'associatename' => $associatename->users_name,
+                                        'cancelleddate' => $status->created_at,
+                                        'statuscount'   => $statuscount
+                                        ];
+
+                }
+            }
+         /* non allocated projects*/
+
+        $projects = Project::where('user_id','=',$userid)
+                            ->orderBy('project_id','desc')->get();
+        $count = $projects->count();
+        if($count != 0)
+        {
+            foreach ($projects as $value) 
+            {
+                $projectid = $value->project_id;
+
+                $projectbid = ProjectBid::where('project_id','=',$projectid)->
+                        where('project_bid_status','=',1)->first();
+                $bidcount = ProjectBid::where('project_id','=',$projectid)
+                                    ->where('project_bid_status','=',2)
+                                    ->where('bid_status','=',1)->count();
+                
+                if(!isset($projectbid))
+                {
+                    $managerid = $value->user_id;
+                    $user = User::where('users_id','=',$managerid)->first();
+                    $managername = $user->users_name;
+                    $nonallocatedproject[] = ['project_name' => $value->project_name, 
+                                            'project_id' => $value->project_id,
+                                            'project_site_address' =>  $value['project_site_address'],
+                                            'report_due_date' => $value->report_due_date,
+                                            'report_template' => $value->report_template,
+                                            'scope_performed_id' => $value->scope_performed_id,
+                                            'instructions' => $value->instructions,
+                                            'approx_bid' => number_format($value->approx_bid, 2),
+                                            'managername' => $managername,
+                                            'created_at' => $value->created_at,
+                                            'updated_at' => $value->updated_at,
+                                            'bidcount'   => $bidcount
+                                           
+                                            ];
+                }
+            }
+        }
+
+        /* onhold project for project manager */
+        $projects = Project::where('user_id','=',$userid)
+                            ->orderBy('project_id','desc')->get();
+        $count = $projects->count();
+        if($count != 0)
+        {
+            foreach ($projects as $value) 
+            {
+                $projectid = $value->project_id;
+                $projectstatus = ProjectStatus::where('project_id','=',$projectid)->get();
+                foreach ($projectstatus as $status) 
+                {
+                   $status1 = $status->project_status_type_id;
+                }
+                if($status1 == 6)
+                {
+                    $projectbid = ProjectBid::where('project_id','=',$projectid)
+                    ->where('project_bid_status','=', 1)->first();
+                    $associatename = User::where('users_id','=',$projectbid->user_id)
+                    ->first();
+                    $statuscount = ProjectProgressStatus::where('project_id','=',$projectid)->count();
+                    $onholdprojects[] = ['project_name' => $value->project_name, 
+                                        'project_id'  => $value->project_id,
+                                        'project_site_address' =>  $value->project_site_address,
+                                        'report_due_date' => $value->report_due_date,
+                                        'report_template' => $value->report_template,
+                                        'scope_performed_id' => $value->scope_performed_id,
+                                        'instructions' => $value->instructions,
+                                        'createddate' => $value->created_at,
+                                        'approx_bid' => number_format($projectbid->associate_suggested_bid, 2),
+                                        'associatename' => $associatename->users_name,
+                                        'statuscount'   => $statuscount
+                                        ];
+                }
+                
+            }
+        }
+        
+        if(!isset($completedproject))
+        {
+            $completedproject = null;
+        }
+        if(!isset($data))
+        {
+            $data = null;
+        }
+        if(!isset($cancelledproject))
+        {
+            $cancelledproject = null;
+        }
+        if(!isset($nonallocatedproject))
+        {
+            $nonallocatedproject = null;
+        }
+        if(!isset($onholdprojects))
+        {
+            $onholdprojects = null;
+        }
+
         $scopeperformed= ScopePerformed::all();
-        return view('project.cancelledproject',[
+        return view('project.projects',[
                     'projects'      => $data, 
-                    'scopeperformed'=>$scopeperformed,
+                    'scopeperformed'=> $scopeperformed,
+                    'completedproject' => $completedproject,
+                    'cancelledproject' => $cancelledproject,
+                    'nonallocatedproject' => $nonallocatedproject,
+                    'onholdprojects'     => $onholdprojects
+                ]);
+
+
+    }
+    public function bidacceptreject($projectid,$userid,$status)
+    {
+     
+        $adminid = session('loginuserid');
+        $date    = date("Y-m-d H:i:s");
+        if($status == 0)
+        {
+            ProjectBid::where('user_id','=', $userid)
+                        ->where('project_id','=',$projectid)
+                        ->where('project_bid_status','=',2)
+                        ->where('bid_status','=',1)
+                        ->update(['project_bid_status' => $status,
+                                'accepted_rejected_at' => $date]);
+            $notificationtext = 'Sorry! Your bid was rejected';
+            $project = Project::where('project_id','=',$projectid)->first();
+            $body = $project->project_name;
+            $title = $notificationtext;
+            $notificationid = '4';
+            $this->sendUserNotification($userid,$adminid,$projectid,$body,$title,$notificationtext,$notificationid);
+            
+            session()->flash('message', 'Bid Rejected successfully!');
+            return redirect()->route('allProjects');
+                
+        }
+        else
+        {
+            ProjectBid::where('user_id','=', $userid)
+                            ->where('project_id','=',$projectid)
+                            ->where('bid_status','=',1)
+                            ->where('project_bid_status','=',2)
+                            ->update(['project_bid_status' => 1,'accepted_rejected_at' => $date]);
+            ProjectBid::where('project_id','=',$projectid)
+                            ->where('project_bid_status','<>',1)
+                            ->where('bid_status','=',1)
+                            ->update(['project_bid_status' => 0,'accepted_rejected_at' => $date]);
+            ProjectBid::where('project_id','=',$projectid)
+                            ->where('user_id','=',$userid)
+                            ->where('project_bid_status','<>',1)
+                            ->where('bid_status','=',1)
+                            ->update(['bid_status' => 0,'accepted_rejected_at' => $date]);
+            $model = new ProjectStatus;
+            $model->project_id = $projectid;
+            $model->project_status_type_id = 2;
+            $model->created_at = $date;
+            $model->save();
+            $model = new ProjectStatus;
+            $model->project_id = $projectid;
+            $model->project_status_type_id = 3;
+            $model->created_at = $date;
+            $model->save();
+            $fromuserid = session('loginuserid');
+            $project = Project::where('project_id','=',$projectid)->first();
+            $managerid = $project->user_id;
+            $body = $project->project_name;
+            $title = 'Congratulations! Your bid was accepted!';
+            $msg = $title;
+            $notificationid = '3';
+            $this->sendUserNotification($userid,$managerid,$projectid,$body,$title,$msg,$notificationid);
+            $user = User::where('users_id','=',$userid)->first();
+            $projectid = (string)$projectid;
+            $title = 'Bid is allocated to '.$user->users_name;
+            $msg = $title;
+            $notificationid = '3';
+            $this->sendUserNotification($managerid,$adminid,$projectid,$body,$title,$msg,$notificationid);
+                
+            session()->flash('message','Bid Accepted Successfully!');
+            return redirect()->route('allProjects');
+        }
+        
+    }
+    //show project details
+    public function projectDetail($id)
+    {
+        $project = Project::where('project_id','=',$id)->first();
+        $scope = ScopePerformed::all();
+        $setting = Setting::where('setting_status','=',1)->first();
+        if(isset($setting))
+        {
+            $minvalue = (string)$setting->min_miles;
+            $maxvalue = (string)$setting->max_miles;
+        }
+        else
+        {
+            $minvalue = 0;
+            $maxvalue = 0;
+        }
+        $date2= date($project->report_due_date);
+        $datetime2 = new DateTime($date2);
+        $reportdate= $datetime2->format("m/d/Y");
+        if(isset($project->on_site_date))
+        {
+            $date2= date($project->on_site_date);
+            $datetime2 = new DateTime($date2);
+            $onsitedate= $datetime2->format("m/d/Y");    
+        }
+        else
+        {
+            $onsitedate= '   -';
+        }
+        $projectbid = ProjectBid::where('project_id','=',$id)
+                                ->where('project_bid_status','=',1)
+                                ->first();
+        
+        if(isset($projectbid))
+        {
+            $finalbid = $projectbid->associate_suggested_bid;
+            
+            $user = User::where('users_id','=',$projectbid->user_id)->first();
+            $statuscount = ProjectProgressStatus::where('project_id','=',$id)->count();
+        }
+        
+        else
+        {
+            $finalbid = 0;
+        }
+        if(!isset($user))
+        {
+            $user = 0;
+        }
+        if(!isset($statuscount))
+        {
+            $statuscount = 0;
+        }
+        return view('project.projectdetail',[
+                    'scope'      => $scope, 
+                    'project'    => $project,
+                    'minvalue'   => $minvalue,
+                    'maxvalue'   => $maxvalue,
+                    'reportdate' => $reportdate,
+                    'onsitedate' => $onsitedate,
+                    'finalbid'   => $finalbid,
+                    'user'       => $user,
+                    'statuscount'=> $statuscount
+                ]);
+    } 
+    //project complete by manager
+    public function projectComplete($id)
+    {
+        $projectid = $id;
+        $model = new ProjectStatus;
+        $model->project_id = $projectid;
+        $model->project_status_type_id  = 4;
+        $model->created_at = date('Y-m-d H:i:s');
+        $model->save();
+        $associate= ProjectBid::where('project_id','=',$projectid)
+                              ->where('project_bid_status','=',1)->first();
+        $userid = session('loginuserid');
+        $touserid = $associate->user_id;
+        $project = Project::where('project_id','=',$projectid)->first();
+        $body = $project->project_name;
+        $msg = 'Project completed by manager!';
+        $notificationid = '7';
+        $title = $msg;
+        $this->sendUserNotification($touserid,$userid,$projectid,$body,$title,$msg,$notificationid);
+        session()->flash('message', 'Project Completed Successfully!');
+        return redirect()->route('projectList');
+    }
+    //project cancel by manager
+    public function projectCancel($id)
+    {
+        $projectid = $id;
+        $model = new ProjectStatus;
+        $model->project_id = $projectid;
+        $model->project_status_type_id  = 5;
+        $model->created_at = date('Y-m-d H:i:s');
+        $model->save();
+        $associate= ProjectBid::where('project_id','=',$projectid)
+                              ->where('project_bid_status','=',1)->first();
+        $userid = session('loginuserid');
+        $touserid = $associate->user_id;
+        $project = Project::where('project_id','=',$projectid)->first();
+        $body = $project->project_name;
+        $msg = 'Project cancelled by manager!';
+        $notificationid = '8';
+        $title = $msg;
+        $this->sendUserNotification($touserid,$userid,$projectid,$body,$title,$msg,$notificationid);
+        session()->flash('message', 'Project Cancelled Successfully!');
+        return redirect()->route('projectList');
+    }
+    //project onhold by manager
+    public function projectOnHold($id)
+    {
+        $projectid = $id;
+        $projectbid = ProjectStatus::where('project_id','=',$projectid)
+                                    ->where('project_status_type_id','=',3)
+                                    ->update(['project_status_type_id' => 6]);
+        $notificationid = '13';
+        $msg = 'Project is On hold by manager!';
+        $message = "Project On hold successfully!";
+        $associate= ProjectBid::where('project_id','=',$projectid)
+                              ->where('project_bid_status','=',1)->first();
+        $userid = session('loginuserid');
+        $touserid = $associate->user_id;
+        $project = Project::where('project_id','=',$projectid)->first();
+        $body = $project->project_name;
+        $title = $msg;
+        $this->sendUserNotification($touserid,$userid,$projectid,$body,$title,$msg,$notificationid);
+        session()->flash('message',$message);
+        return redirect()->route('projectList');
+    }
+    //project in progress by manager
+    public function projectInProgress($id)
+    {
+        $projectid = $id;
+        $projectbid = ProjectStatus::where('project_id','=',$projectid)
+                                            ->where('project_status_type_id','=',6)
+                                            ->update(['project_status_type_id' => 3]);
+        $notificationid = '14';
+        $msg = 'Project is In progress by manager!';
+        $message = "Project In progress successfully!";
+        $associate= ProjectBid::where('project_id','=',$projectid)
+                              ->where('project_bid_status','=',1)->first();
+        $userid = session('loginuserid');
+        $touserid = $associate->user_id;
+        $project = Project::where('project_id','=',$projectid)->first();
+        $body = $project->project_name;
+        $title = $msg;
+        $this->sendUserNotification($touserid,$userid,$projectid,$body,$title,$msg,$notificationid);
+        session()->flash('message',$message);
+        return redirect()->route('projectList');
+    }
+    public function projectstatus($id)
+    {
+        $status = ProjectProgressStatus::where('project_id','=',$id)->get();
+        $project = Project::where('project_id','=',$id)->first();
+        $projectname = $project->project_name;
+        return view('project.status',[
+                    'status'      => $status,
+                    'projectname' => $projectname
                 ]);
     }
+    
 }

@@ -42,7 +42,7 @@ return [
     |
     */
 
-    'port' => env('MAIL_PORT', 587),
+    'port' => env('MAIL_PORT', 465),
 
     /*
     |--------------------------------------------------------------------------
@@ -56,8 +56,8 @@ return [
     */
 
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'suvarnashinde.magneto@gmail.com'),
-        'name' => env('MAIL_FROM_NAME', 'suvarna shinde'),
+        'address' => env('MAIL_FROM_ADDRESS', 'magnetoapps12@gmail.com'),
+        'name' => env('MAIL_FROM_NAME', 'Magneto Apps'),
     ],
 
     /*

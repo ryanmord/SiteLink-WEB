@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class Project extends Model
 {
    protected $primaryKey = 'project_id';
-   protected $fillable = [
-   		'project_name','user_id','project_site_address','report_due_date','instructions','approx_bid','report_template','scope_performed_id','created_at','updated_at',
-   ];
+   protected $fillable   = [
+   		                       'project_name','user_id','project_site_address','report_due_date','instructions','approx_bid','report_template','scope_performed_id','created_at','updated_at',
+                            ];
    public function projectstatustype()
     {
         return $this->belongsToMany('App\ProjectStatusType','project_status','project_id','project_status_type_id');

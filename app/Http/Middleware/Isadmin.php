@@ -18,7 +18,7 @@ class Isadmin
     $loginuser=session('loginuser');
     if($loginuser=='NULL') {
      return redirect('/');
-}
+    }
         return $next($request);
     }
 }
