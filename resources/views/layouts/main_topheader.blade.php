@@ -8,7 +8,11 @@
               <span class="icon-bar"></span>
               <span class="icon-bar"></span>
             </button>
-            <a href="#" class="navbar-brand">Project Bidding</a>
+            @if(session('loginusertype') == 'admin')
+              <a href="{{ url('/dashboard')}}" class="navbar-brand">Scoped</a>
+            @else
+              <a href="{{ url('/managerDashboard')}}" class="navbar-brand">Scoped</a>
+            @endif
           </div>
 
           <!-- Collect the nav links, forms, and other content for toggling -->

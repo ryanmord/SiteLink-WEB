@@ -19,10 +19,10 @@ class UserRegistered extends Mailable
     protected $password;
     protected $action;
     
-    public function __construct($user,$password,$action)
+    public function __construct($user,$verifycode,$action)
     {
         $this->user      = $user;
-        $this->password  = $password;
+        $this->verifycode  = $verifycode;
         $this->action    = $action;
     }
 
@@ -34,14 +34,36 @@ class UserRegistered extends Mailable
     public function build()
     {
         //User Registration
+
         if($this->action == 1){
-            $introLines = array('Your registration for Project Bidding app is completed successfully');
-            $outroLines = array('You can login in to the Project Bidding app using following credentials.','User Name / Email : '.$this->user->users_email,'Password : '.$this->password);
-            $subject = 'User Registration';
-        }else if($this->action == 2){
+            $usertype = $this->user->user_types_id;
+            if($usertype == 2)
+            {
+                $introLines = array('Your registration for Scoped app is completed successfully');
+                $outroLines = array('Now you can complete your Email Verification step into the Scoped app using following verification code.','Verification code : '.$this->verifycode);
+           
+                $subject = 'Scoped: Email verification';
+                $greeting = 'Hello '.$this->user->users_name."!";
+                $actionUrl = url('/');
+                return $this->subject($subject)->markdown('email.userRegistration',['level'=>'success','greeting'=>$greeting,'introLines'=>$introLines,'outroLines'=>$outroLines, 'actionText' => 'Site Link' , 'actionUrl' => $actionUrl]);
+                exit;
+            }
+            else
+            {
+                $introLines = array('Your registration for Scoped app is completed successfully');
+                $outroLines = array('Now you can complete your Email Verification step into the Scoped app using following verification code.','Verification code : '.$this->verifycode);
+           
+                $subject = 'Scoped: Email verification';
+                $greeting = 'Hello '.$this->user->users_name."!";
+                $actionUrl = url('/emailVerification');
+                return $this->subject($subject)->markdown('email.managersignup',['level'=>'success','greeting'=>$greeting,'introLines'=>$introLines,'outroLines'=>$outroLines, 'actionText' => 'Site Link' , 'actionUrl' => $actionUrl]);
+                exit;
+            }
+            
+        }else {
             $introLines = array('Your password is changed successfully');
-            $outroLines = array('You can login in to the Project Bidding app using following credentials.','User Name / Email : '.$this->user->users_email,'Password : '.$this->password);
-            $subject = 'Your Password has been updated';
+            $outroLines = array('Now you can login into the Scoped app');
+            $subject = 'Scoped: Password changed successfully';
         }
         $greeting = 'Hello '.$this->user->users_name."!";
         $actionUrl = url('/');

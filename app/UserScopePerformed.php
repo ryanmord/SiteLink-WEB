@@ -10,9 +10,9 @@ class UserScopePerformed extends Model
     $idsArr = explode(',',$row);  
     DB::table('stories')->whereIn('author',$idsArr)->get();
 */
-    protected $table = 'user_scope_performed';
+    protected $table      = 'user_scope_performed';
     protected $primaryKey = 'user_scope_performed_id'; 
-    protected $fillable = ['users_id','scope_performed_id'];
-    public $timestamps = false; 
+    protected $fillable   = ['users_id','scope_performed_id'];
+    public $timestamps    = false; 
    
 }

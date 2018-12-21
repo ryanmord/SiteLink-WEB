@@ -34,8 +34,8 @@ class ForgotPassword extends Mailable
         //User Registration
         
           
-        $subject = 'Reset Password';
-        $outroLines = 'Please click on this button to create password';
+        $subject = 'Scoped: Reset Password';
+        $outroLines = 'Please click on this button for reset your password';
            
         $greeting = 'Hello '.$this->user->users_name."!";
         $actionUrl = $this->url;

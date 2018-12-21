@@ -41,7 +41,7 @@
 @if (! empty($salutation))
 {{ $salutation }}
 @else
-Regards,<br>Project Bidding app team
+Regards,<br>Scoped app team
 @endif
 
 <!-- Subcopy -->
