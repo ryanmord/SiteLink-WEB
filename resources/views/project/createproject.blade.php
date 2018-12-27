@@ -93,8 +93,9 @@
                                 </div>
                                 <div class="form-group col-md-9">
                                   <input type="text" name="projectname" value="" placeholder="Project Name" required="">
-                           
-                                </div>
+                                 
+                                  </div>  
+                                  
                               </div>
                               <div class="row">
                                 <div class="form-group col-md-3">
@@ -118,7 +119,7 @@
                                 <br><br>
                                 <label>Miles Range</label>
                               </div>
-                              <div class="form-group col-md-9 {{ $errors->has('miles') ? ' has-error' : '' }}">
+                              <div class="form-group col-md-9">
                                 <output style="float: left;">Radius&nbsp</output>
                                 <output name="miles" id="miles" style="float: left;">{{$minvalue }}</output>
                                 <output style="float: left;">&nbspMILES</output>
@@ -179,7 +180,7 @@
                             <div class="row">
                               <div class="form-group col-md-3">
                                 <br><br><br>
-                                <label>Scope Performed</label>
+                                <label>Scope(s)</label>
                               </div>
                               <div class="form-group col-md-9">
                                 @foreach($scope as $value)
@@ -189,15 +190,45 @@
                                   </label>
                                 @endforeach
                                 <label id="scopeperformedid[]-error" class="error" for="scopeperformedid[]" style="color: #b70a0a;"></label>
-                                <input type="hidden" id="scopeid" name="scopeid" value="">
+                                <!-- <input type="hidden" id="scopeid" name="scopeid" value=""> -->
                              
                               </div>
-                              <div id="err"></div>
+                              <!-- <div id="err"></div> -->
                               </div>
-
+                              <div class="row">
+                              <div class="form-group col-md-3">
+                                <br>
+                                <label>Employee Type</label>
+                              </div>
+                              <!-- select associate type -->
+                              <div class="form-group col-md-9">
+                                @foreach($associatetype as $value)
+                                  <label class="checkbox" style="color: grey;">
+                                    <input type="checkbox" value="{{ $value->associate_type_id }}" name="associatetypeid[]" id="associatetypeid[]">
+                                    {{ $value->associate_type }} 
+                                  </label>
+                                @endforeach
+                                 <label id="associatetypeid[]-error" class="error" for="associatetypeid[]" style="color: #b70a0a;"></label>
+                             
+                              </div>
+                              <!-- <div id="err"></div> -->
+                              </div>
+                                <div class="row">
+                              <div class="form-group col-md-3">
+                                
+                                <label>Select Individual(s)</label>
+                              </div>
+                              <!-- select associate type -->
+                              <div class="form-group col-md-9">
+                               <a href="#associate-list" data-toggle="modal"><u style="color: #fe5f55;" id="add-individuals">+ Add Individual(s)</u>
+                               </a>
+                              </div>
+                              @include('project.asscociatelist')
+                              <!-- <div id="err"></div> -->
+                              </div>
                               <div class="row">
                                 <div class="form-group col-md-3">
-                                  <br><br><br>
+                                  <br><br>
                                   <label>Project Manager</label>
                                 </div>
                                 <div class="form-group col-md-9">
@@ -214,6 +245,7 @@
                                   <input type="hidden" id="managerid" name="managerid" value="">
                                 </div>
                               </div>
+
                               <div class="row">
                                 <div class="form-group col-md-3">
                                 </div>
@@ -318,56 +350,66 @@
           $(document).ready(function () {
             $('body').on('click','#saveproject', function (event) {
             event.preventDefault(); 
-            
-          $('#createproject').validate({
-          // initialize the plugin
-
+              $("#createproject").validate({
           rules: {
-            projectname: 
-            {
-              required: true
-            },
-            siteaddress: 
-            {
-              required: true
-            },
-            managerid: 
-            {
+            projectname: {
+                required: true,
+            },siteaddress: {
+                required: true,
+            },managerid: { 
               required: true,
-            },
-            reportdate: 
-            {
-              required: true,
-            },
-            template: 
-            {
-              required: true,
-            },
-            selectmanger: 
-            {
-              required: true,
-            },
-            
-            projectbid: 
-            {
+            },reportdate: { 
+                required: true,
+                
+            },template:{
+                required: true,
+               
+            },selectmanger:{
+                required: true,
+               
+            },projectbid:{
               required: true,
               number: true,
               min:1
-            },
-            'scopeperformedid[]': 
+            },'scopeperformedid[]': 
             {
               required: true, 
               minlength: 1 
             },
+            'associatetypeid[]': 
+            {
+              required: true, 
+              minlength: 1 
+            },
+            "scopeperformedid[]": "required"
+        },messages:{
+            projectname: "Please Enter Project Name",
+            siteaddress: "Please Set The Site Address",
+            managerid: "Please Select Manager",
+            reportdate:{
+              required : "Please Set Report Due From Field",
+              
+            },
+            template:"Please Enter Template",
+            selectmanger:"Please Select Manager",
+            projectbid:{
+              required : "Please Enter Project Bid",
+              number :"Please enter numeric value"
+            },
             
+            "associatetypeid[]": "Please select Employee Type",
+            "scopeperformedid[]": "Please select scope performed"
+        },errorPlacement: function(error, element) {
+            error.insertAfter(element);
         }
-       
-    });
+
+  });
+  
     if($("#createproject").valid()) {
-        checks = $('input[type="checkbox"]:checked').map(function(){
+        /*checks = $('input[type="checkbox"]:checked').map(function(){
               return $(this).val();
                 }).get();
-        document.getElementById("scopeid").value = checks;
+        document.getElementById("scopeid").value = checks;*/
         $(".loader").fadeIn("slow");
         $.ajax({
             type: 'POST',
@@ -378,7 +420,7 @@
 
           .done(function(msg) {
           $(".loader").fadeOut("slow");
-          alert("Project created successfully");
+          alert(msg.success);
           url = '<?php echo route('allProjects'); ?>';
           window.location.replace(url);
           
@@ -387,6 +429,135 @@
 
     });
   });
+  $('#cancel-user').click(function(){
+    document.getElementById("associate-ids").value = '';
+    document.getElementById('pagenumber').value = 1;
+  });
+  $('#add-individuals').click(function(){
+    document.getElementById('pagenumber').value = 1;
+    document.getElementById("associate-ids").value = '';
+    $.ajax({
+            type: 'GET',
+              url: '<?php echo route('searchAssociate'); ?>',
+              data: {pagenumber:1,limit:6},
+              dataType: 'json',
+          })
+
+          .done(function(response) {
+            if(response != '')
+            {
+              $('#usertable').html('');
+              $('#no_any_user').hide();
+              $('#associatetable').show();
+              $('#usertable').append(response);
+            }
+            else
+            {
+              $('#associatetable').hide();
+              $('#no_any_user').show();
+            }
+        });
+    }); 
+   $('#add-individuals-users').click(function(){
+  
+    var idvalue = document.getElementById("associate-ids").value;
+
+    var checks = $('input[name="associateid[]"]:checked').map(function(){
+              return $(this).val();
+                }).get();
+    
+    if(idvalue === "")
+    {
+      document.getElementById("associate-ids").value = checks;
+    }
+    else
+    {
+      document.getElementById("associate-ids").value = idvalue + ',' + checks;
+    }
+    
+    checks = document.getElementById("associate-ids").value;
+    
+  }); 
+    $("#search-user").keyup(function () {
+    var idvalue = document.getElementById("associate-ids").value;
+
+    var checks = $('input[name="associateid[]"]:checked').map(function(){
+              return $(this).val();
+                }).get();
+    
+    if(idvalue === "")
+    {
+      document.getElementById("associate-ids").value = checks;
+    }
+    else
+    {
+      document.getElementById("associate-ids").value = idvalue + ',' + checks;
+    }
+      value = $(this).val();
+      document.getElementById('pagenumber').value = 1;
+      var idvalue = document.getElementById("associate-ids").value;
+      
+      $.ajax({
+            type: 'GET',
+              url: '<?php echo route('searchAssociate'); ?>',
+              data: {search_user:value,selectedAssociate:idvalue,pagenumber:1,limit:6},
+              dataType: 'json',
+          })
+        .done(function(response) {
+            if(response != '')
+            {
+              $('#no_any_user').hide();
+              $('#associatetable').show();
+              $('#usertable').html('');
+              $('#usertable').append(response);
+            }
+            else
+            {
+               $('#associatetable').hide();
+               $('#no_any_user').show();
+            }
+        });
+    });
+  /* $('input[name="associateid[]"]').click(function(){
+      var value = $(this).val();
+       if($(this).prop("checked") == true){
+                alert(value);
+            }
+            else if($(this).prop("checked") == false){
+                alert(value);
+            }
+     
+    });
+*/
+
+      $("#associatetable").scroll(function() {
+
+        var value = $('#search-user').val();
+        var pagenumber1 = document.getElementById('pagenumber').value;
+        var idvalue = document.getElementById("associate-ids").value;
+        var pagenumber = ++pagenumber1;
+        document.getElementById('pagenumber').value = pagenumber;
+        $.ajax({
+              type: 'GET',
+              url: '<?php echo route('searchAssociate'); ?>',
+              data: {search_user:value,selectedAssociate:idvalue,pagenumber:pagenumber,limit:6},
+              dataType: 'json',
+          success: function(response) {
+          if(response === '')
+          {
+            //$pagenumber = --pagenumber1;
+          }
+          else
+          {
+            $('#usertable').append(response);
+            pagenumber = pagenumber;
+           
+            
+          }
+           
+        }
+      });
+    });
   </script>
  
  </body>

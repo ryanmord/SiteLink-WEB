@@ -39,7 +39,7 @@
 
 							 	<div class="form-group">
 									<div class="form-group field-customers-first_name">
-										<input type="text" id="txt_name" class="form-control" name="name"  placeholder="Name">
+										<input type="text" id="txt_name" class="form-control" name="name"  placeholder="First Name">
 										<div class="error">{{ $errors->first('name') }}</div>
 									</div>	
                   <div class="form-group">

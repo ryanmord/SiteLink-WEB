@@ -95,7 +95,7 @@
                           <thead>
                             <tr bgcolor="#EEEEEE">
                             
-                              <th style="text-align: center;vertical-align: middle;">Image</th>
+                              <th style="text-align: center;vertical-align: middle;" width="50px;">Image</th>
                               <th style="text-align: center;vertical-align: middle;">Name</th>
                               <th style="text-align: center;vertical-align: middle;">Company
                               </th>

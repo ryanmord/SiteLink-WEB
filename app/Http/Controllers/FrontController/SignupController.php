@@ -40,7 +40,7 @@ class SignupController extends Controller
         ]);
 
         $scope = $request['scope_performed'];
-        $scope = implode (", ", $scope);
+        $scope = implode (",", $scope);
         $request['scope']    = $scope;
         $request['usertype'] = 2;
         $api = new ApiController;

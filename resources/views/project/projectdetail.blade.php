@@ -155,7 +155,7 @@
                         <div class="row">
                           <div class="form-group col-md-3">
                             <br><br><br>
-                            <label>Scope Performed</label>
+                            <label>Scope(s)</label>
                           </div>
                           <div class="form-group col-md-9">
                             @foreach($scope as $value)

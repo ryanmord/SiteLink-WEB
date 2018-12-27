@@ -174,7 +174,7 @@
                     <div class="row">
                       <div class="form-group col-md-3">
                         <br><br><br>
-                        <label>Scope Performed</label>
+                        <label>Scope(s)</label>
                       </div>
                       <div class="form-group col-md-9">
                         @foreach($scope as $value)
@@ -191,16 +191,57 @@
                           @endif
                         @endforeach
                         <label id="scopeperformedid[]-error" class="error" for="scopeperformedid[]" style="color: #b70a0a;"></label>
-                        <input type="hidden" id="scopeid" name="scopeid" value="">
+                        <!-- <input type="hidden" id="scopeid" name="scopeid" value=""> -->
                       </div>
                     </div>
-                    <div class="row">
-                      <div class="form-group col-md-5">
-                      </div>
-                    <div class="form-group col-md-3">
-                      <button type="submit" class="btn btn-success" id="saveproject"> Update   
-                      </button>
-                    </div>
+                    <?php
+                        $temp = explode(",", $project['employee_type_id']);
+                      ?>
+                   <div class="row">
+                      <div class="form-group col-md-3">
+                        <br>
+                          <label>Employee Type</label>
+                            </div>
+                              <!-- select associate type -->
+                              <div class="form-group col-md-9">
+                                @foreach($associatetype as $value)
+                                @if(in_array("$value->associate_type_id", $temp))
+                                  <label class="checkbox" style="color: grey;">
+                                    <input type="checkbox" value="{{ $value->associate_type_id }}" name="associatetypeid[]" id="associatetypeid[]" checked>
+                                    {{ $value->associate_type }} 
+                                  </label>
+                                  @else
+                                    <label class="checkbox" style="color: grey;">
+                                    <input type="checkbox" value="{{ $value->associate_type_id }}" name="associatetypeid[]" id="associatetypeid[]">
+                                    {{ $value->associate_type }} 
+                                  </label>
+                                  @endif
+                                @endforeach
+                                 <label id="associatetypeid[]-error" class="error" for="associatetypeid[]" style="color: #b70a0a;"></label>
+                             
+                              </div>
+                              <!-- <div id="err"></div> -->
+                              </div>
+                              <div class="row">
+                              <div class="form-group col-md-3">
+                                
+                                <label>Select Individual(s)</label>
+                              </div>
+                              <!-- select associate type -->
+                              <div class="form-group col-md-9">
+                               <a href="#associate-list" data-toggle="modal"><u style="color: #fe5f55;" id="add-individuals">+ Add Individual(s)</u>
+                               </a>
+                              </div>
+                              @include('project.asscociatelist')
+                              <!-- <div id="err"></div> -->
+                              </div>
+                            <div class="row">
+                              <div class="form-group col-md-5">
+                              </div>
+                            <div class="form-group col-md-3">
+                              <button type="submit" class="btn btn-success" id="saveproject"> Update   
+                            </button>
+                        </div>
                   </div>
                 </form>
               </div>
@@ -263,48 +304,67 @@
     /*var date = new Date();
     var todaydate= (date.getMonth() + 1) + '/' + date.getDate() + '/' +  date.getFullYear();
   */
-      $('#editproject').validate({
-     // initialize the plugin
-
-        rules: {
+    $("#editproject").validate({
+          rules: {
             projectname: {
-                required: true
-            },
-            siteaddress: {
-                required: true
-            },
-            managerid: {
                 required: true,
-            },
-            reportdate: {
+            },siteaddress: {
                 required: true,
-            },
-            template: {
+            },managerid: { 
+              required: true,
+            },reportdate: { 
                 required: true,
-            },
-            selectmanger: {
+                
+            },template:{
                 required: true,
-            },
-            projectbid: {
+               
+            },selectmanger:{
                 required: true,
-                number: true,
-                min:1
+               
+            },projectbid:{
+              required: true,
+              number: true,
+              min:1
+            },'scopeperformedid[]': 
+            {
+              required: true, 
+              minlength: 1 
             },
-            'scopeperformedid[]': {
-                   required: true, 
-                   minlength: 1 
+            'associatetypeid[]': 
+            {
+              required: true, 
+              minlength: 1 
+            },
+            "scopeperformedid[]": "required"
+        },messages:{
+            projectname: "Please Enter Project Name",
+            siteaddress: "Please Set The Site Address",
+            managerid: "Please Select Manager",
+            reportdate:{
+              required : "Please Set Report Due From Field",
+              
+            },
+            template:"Please Enter Template",
+            selectmanger:"Please Select Manager",
+            projectbid:{
+              required : "Please Enter Project Bid",
+              number :"Please enter numeric value"
             },
             
+            "associatetypeid[]": "Please select Employee Type",
+            "scopeperformedid[]": "Please select scope performed"
+        },errorPlacement: function(error, element) {
+            error.insertAfter(element);
         }
-       
-    });
+
+  });
     if($("#editproject").valid()) {
    
         
-        checks = $('input[type="checkbox"]:checked').map(function(){
+       /* checks = $('input[type="checkbox"]:checked').map(function(){
               return $(this).val();
                 }).get();
-        document.getElementById("scopeid").value = checks;
+        document.getElementById("scopeid").value = checks;*/
         $(".loader").fadeIn("slow");
         jQuery.ajaxSetup({
                   headers: {
@@ -349,6 +409,131 @@
 .find('input:submit, button:submit')
 .prop('disabled', true);
 });
+$('#cancel-user').click(function(){
+    document.getElementById("associate-ids").value = '';
+    document.getElementById('pagenumber').value = 1;
+  });
+  $('#add-individuals').click(function(){
+    document.getElementById('pagenumber').value = 1;
+    document.getElementById("associate-ids").value = '';
+    $.ajax({
+            type: 'GET',
+              url: '<?php echo route('searchAssociate'); ?>',
+              data: {pagenumber:1,limit:6},
+              dataType: 'json',
+          })
+
+          .done(function(response) {
+            if(response != '')
+            {
+              $('#usertable').html('');
+              $('#no_any_user').hide();
+              $('#associatetable').show();
+              $('#usertable').append(response);
+            }
+            else
+            {
+              $('#associatetable').hide();
+              $('#no_any_user').show();
+            }
+        });
+    }); 
+   $('#add-individuals-users').click(function(){
+  
+    var idvalue = document.getElementById("associate-ids").value;
+
+    var checks = $('input[name="associateid[]"]:checked').map(function(){
+              return $(this).val();
+                }).get();
+    
+    if(idvalue === "")
+    {
+      document.getElementById("associate-ids").value = checks;
+    }
+    else
+    {
+      document.getElementById("associate-ids").value = idvalue + ',' + checks;
+    }
+    
+    checks = document.getElementById("associate-ids").value;
+    
+  }); 
+    $("#search-user").keyup(function () {
+    var idvalue = document.getElementById("associate-ids").value;
+
+    var checks = $('input[name="associateid[]"]:checked').map(function(){
+              return $(this).val();
+                }).get();
+    
+    if(idvalue === "")
+    {
+      document.getElementById("associate-ids").value = checks;
+    }
+    else
+    {
+      document.getElementById("associate-ids").value = idvalue + ',' + checks;
+    }
+      value = $(this).val();
+      document.getElementById('pagenumber').value = 1;
+      $.ajax({
+            type: 'GET',
+              url: '<?php echo route('searchAssociate'); ?>',
+              data: {search_user:value,selectedAssociate:idvalue,pagenumber:1,limit:6},
+              dataType: 'json',
+          })
+        .done(function(response) {
+            if(response != '')
+            {
+              $('#no_any_user').hide();
+              $('#associatetable').show();
+              $('#usertable').html('');
+              $('#usertable').append(response);
+            }
+            else
+            {
+               $('#associatetable').hide();
+               $('#no_any_user').show();
+            }
+        });
+    });
+  /* $('input[name="associateid[]"]').click(function(){
+      var value = $(this).val();
+       if($(this).prop("checked") == true){
+                alert(value);
+            }
+            else if($(this).prop("checked") == false){
+                alert(value);
+            }
+     
+    });
+*/
+
+      $("#associatetable").scroll(function() {
+
+        var value = $('#search-user').val();
+        var pagenumber1 = document.getElementById('pagenumber').value;
+        var idvalue = document.getElementById("associate-ids").value;
+        var pagenumber = ++pagenumber1;
+        document.getElementById('pagenumber').value = pagenumber;
+        $.ajax({
+              type: 'GET',
+              url: '<?php echo route('searchAssociate'); ?>',
+              data: {search_user:value,selectedAssociate:idvalue,pagenumber:pagenumber,limit:6},
+              dataType: 'json',
+          success: function(response) {
+          if(response === '')
+          {
+            //$pagenumber = --pagenumber1;
+          }
+          else
+          {
+            $('#usertable').append(response);
+            pagenumber = pagenumber;
+          }
+           
+        }
+      });
+    });
 </script>
  
   </body>

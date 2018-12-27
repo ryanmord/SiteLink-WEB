@@ -172,7 +172,7 @@
               </div>   
             <div class="col-md-9">
               <div class="form-group">
-                <label>Name</label>
+                <label>First Name</label>
                 <input type="text" name="name" id="txt_name" value="{{ $user['name'] }}">
                 <div class="error">{{ $errors->first('name') }}</div>
               </div>
@@ -243,8 +243,7 @@
             <div class="form-group-data">
               <button type="button" id="update-user" class="btn red-btn">Update</button>  
             </div>
-
-          </div>  
+            </div>  
           </form>  
         </div>
       </div>

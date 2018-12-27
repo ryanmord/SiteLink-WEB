@@ -79,7 +79,7 @@
               </div>   
             <div class="col-md-9">
               <div class="form-group">
-                <label>Name</label>
+                <label>First Name</label>
                 <input type="text" name="first_name" id="first_name" value="{{ $user->users_name}}">
                 <div class="error">{{ $errors->first('first_name') }}</div>
               </div>

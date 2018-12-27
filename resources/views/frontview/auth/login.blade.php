@@ -31,7 +31,7 @@
                     <input type="password" id="login_password" class="form-control" name="login_password" placeholder="Password">
                       <div class="error">{{ $errors->first('login_password') }}
                       </div>
-                      <label id="errmsg" class="error" style="color: #b70a0a;"></label>
+                      <label id="errmsg" class="error" style="color: #b70a0a;float: left;"></label>
                     </div>
                   </div>
 							    <div class="form-group">
@@ -41,7 +41,7 @@
                 <div class='forgotemail' style='display:none;'>
                   <input name='femail' type='email' id='femail'  placeholder='Enter Your Email'>
                   <div class="error">{{ $errors->first('femail') }}</div>
-                  <label id="ferrmsg" class="error" style="color: #b70a0a;"></label><br>
+                  <label id="ferrmsg" class="error" style="color: #b70a0a; float: left;"></label><br>
                   <button type="button" class="btn btn-primary chkforgotpwd" name="forgot_password" id="forgot_password">SUBMIT</button>
                 </div>
 						    <a class="forgot-pass" href="javascript:void(0)">Forgot password?</a>
