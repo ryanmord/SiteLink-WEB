@@ -130,7 +130,7 @@
 								  </div>
 					 				<div class="form-group">
                     <div class="form-group field-customers-first_name">
-											<input type="text" id="first_name" class="form-control" name="first_name"  placeholder="Name">
+											<input type="text" id="first_name" class="form-control" name="first_name"  placeholder="First Name">
 											</div>	
                       <div class="form-group field-customers-first_name">
                       <input type="text" id="lastname" class="form-control" name="lastname"  placeholder="Last Name">

@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Response;
@@ -16,6 +15,8 @@ use App\UserDevice;
 use App\UserAccessKey;
 use App\ProjectNotification;
 use App\ProjectBidRequest;
+use App\AssociateType;
+use App\UserScopePerformed;
 use DateTime;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -180,27 +181,119 @@ class ProjectController extends Controller
             $maxvalue = 0;
         }
         $scopeperformed = ScopePerformed::all();
-        $address = $request->input('siteaddress');
-        session(['address' => $address]);
+        $associatetype = AssociateType::all();
         $user = User::select('users_id','users_name')
                 ->where('user_types_id','=',1)
                 ->where('users_status','=',1)
                 ->where('users_approval_status','=',2)
                 ->where('email_status','=',1)
                 ->get();
+        //$associate_list = $this->associateUserList();
         return view('project.createproject',[
                     'minvalue'      => $minvalue, 
                     'maxvalue'      => $maxvalue,
                     'scope'         => $scopeperformed,
+                    'associatetype' => $associatetype,
                     'user'          => $user ]);
        
-        $returnHTML = view('project.createproject',['minvalue'  => $minvalue,
-                                                    'maxvalue'  => $maxvalue,
-                                                    'scope'     => $scopeperformed])->render();
-        return response()->json( array('success' => true, 'html'=>$returnHTML,'url'=> $url) );
+       
 
     }
+   /* public function associateUserList()
+    {
+        $associatelist = User::select('users_id','users_name','last_name','users_status','users_email','users_phone','users_profile_image','users_company')->where('user_types_id','=',2)->where('users_status','=',1)->where('email_status','=',1)->where('users_approval_status','=',1)->orderBy('users_name','desc')->paginate(6);
+        return($associatelist);
+        
+    }*/
+    public function searchAssociate(Request $request){
+        $pageno = $request['pagenumber'];
+        $limit = $request['limit'];
+        $searchKeyword = $request['search_user'];
+        if(!empty($request['selectedAssociate']))
+        {
+            $selectedUser = $request['selectedAssociate'];
+            $selectedUser = explode(",",$selectedUser);
+            $selectedUser = array_unique($selectedUser);
+        }
+       
+        if ($pageno < 1) 
+        {
+            $pageno = 1;
+        }
+        $start = ($pageno + 1);     
+        $items = $limit * ($pageno - 1);   
+        $where_condition = "1 = 1";
+        if($searchKeyword != "") {
+            $where_condition = "  (users_name Like  '%$searchKeyword%')";
+            $userlist = DB::table('users')
+                            ->select(DB::raw('SQL_CALC_FOUND_ROWS users_id'), 'users_name', 'users_email','users_address','users_company','users_phone','users_profile_image','last_name')
+                            ->where('email_status','=',1)
+                            ->where('users_status','=',1)
+                            ->where('users_approval_status','=',1)
+                            ->whereRaw($where_condition)
+                            ->orderBy('users_name','desc')
+                            ->limit($limit)
+                            ->offset($items)
+                            ->get();
+           
+        }
+        else{
+            $userlist = DB::table('users')
+                            ->select(DB::raw('SQL_CALC_FOUND_ROWS users_id'), 'users_name', 'users_email','users_address','users_company','users_phone','users_profile_image','last_name')
+                            ->where('email_status','=',1)
+                            ->where('users_status','=',1)
+                            ->where('users_approval_status','=',1)
+                            ->orderBy('users_name','desc')
+                            ->limit($limit)
+                            ->offset($items)
+                            ->get();
+        } 
+        $count = DB::select(DB::raw("SELECT FOUND_ROWS() AS Totalcount;"));
+        $usercount =  $userlist->count();
+        $appendtd = '';
+        if($usercount != 0)
+        {
+            foreach ($userlist as $value) {
+                if(isset($selectedUser))
+                {
+                    if(in_array($value->users_id, $selectedUser))
+                {
+                    $appendtd .= ' <tr class="content">
+                    <td><input type="checkbox"  value="'.$value->users_id.'" name="associateid[]" id="associateid[]" style="height: 15px;width: 15px;" checked>
+                    </td>
+                    <td>';
+                }
+                else{
+                    $appendtd .= ' <tr class="content">
+                    <td><input type="checkbox" value="'.$value->users_id.'" name="associateid[]" id="associateid[]" style="height: 15px;width: 15px;">
+                    </td>
+                    <td>';
+                }  
+                }
+                else
+                {
+                    $appendtd .= ' <tr class="content">
+                    <td><input type="checkbox" value="'.$value->users_id.'" name="associateid[]" id="associateid[]" style="height: 15px;width: 15px;">
+                    </td>
+                    <td>';
+                }
+                 
+                
+                    $imagepath = asset("/img/users/" . $value->users_profile_image); 
+                    $appendtd .= '<img class="img-rounded" style="max-width:50px;max-height:50px;min-width:50px;min-height:50px;" src= "'.$imagepath.'" /></td>
+                    <td style="text-align: left;color: #11121380;font-size: 15px;">
+                    '.ucfirst($value->users_name).'&nbsp'.ucfirst($value->last_name).'</td>
+                    <td style="text-align: left;color: #11121380;font-size: 15px;">'.$value->users_company.'</td><td style="text-align: left;color: #11121380;font-size: 15px;">'.$value->users_email.'<br>
+                       '.$value->users_phone.'
+                    </td>
+                  </tr>';
+            }
+        }
+        return response()->json($appendtd);
+    }
+
     
+
 
     /**
      * Store a newly created resource in storage.
@@ -220,6 +313,12 @@ class ProjectController extends Controller
         $project->longitude = $request->input('longitude');
         $reportdate = (string)$request->input('reportdate');
         $reportdate = date("Y-m-d H:i:s", strtotime($reportdate) );
+        $scope = $request['scopeperformedid'];
+        $scope = implode (",",$scope);
+        $associatetypeid = $request['associatetypeid'];
+        $associatetypeid = implode (",",$associatetypeid);
+        /*return response()->json(['success'=> $associatetypeid]);
+        exit;*/
         if($request->input('onsitedate') != null)
         {
             $onsitedate = (string)$request->input('onsitedate');
@@ -233,8 +332,9 @@ class ProjectController extends Controller
         $project->report_due_date = $reportdate;
         $project->report_template = $request->input('template');
         $project->approx_bid = $request->input('projectbid');
-        $project->scope_performed_id = $request->input('scopeid');
+        $project->scope_performed_id = $scope;
         $project->user_id = $request->input('managerid');
+        $project->employee_type_id = $associatetypeid;
         $project->save();
         $projectname = $request->input('projectname');
         $address = $request->input('siteaddress');
@@ -257,6 +357,13 @@ class ProjectController extends Controller
         $body = $request->input('projectname');
         $title = $notificationtext;
         $this->sendUserNotification($touserid,$fromuserid,$projectid,$body,$title,$notificationtext,$notificationtype);
+         //get associate type
+        
+        if(!empty($request['associate-ids']))
+        {
+            $associateid = $request['associate-ids'];
+            //$associateid = implode (",",$associateid);
+        }
         $latitude = $request->input('latitude');
         $longitude = $request->input('longitude');
         $miles = (int)$request->input('milesrange');
@@ -264,7 +371,11 @@ class ProjectController extends Controller
         $result =  DB::select(DB::raw("SELECT users_id , ( 3956 *2 * ASIN( SQRT( POWER( SIN( ( $latitude - latitude ) * PI( ) /180 /2 ) , 2 ) + COS( $latitude * PI( ) /180 ) * COS( latitude * PI( ) /180 ) * POWER( SIN( ( $longitude - longitude ) * PI( ) /180 /2 ) , 2 ) ) ) ) AS distance
                 FROM users
                 WHERE  user_types_id <>1
+                AND associate_type_id IN ($associatetypeid)
                 HAVING distance <= $miles"));
+        //print_r($result);
+       /* return response()->json(['success'=> $associatetypeid]);
+        exit;*/
         if(!empty($result))
         {
             $notificationtext = 'New project listed in your area!';
@@ -273,11 +384,55 @@ class ProjectController extends Controller
             $fromuserid = $request->input('managerid');
             $body = $request->input('projectname');
             $title = 'New project listed in your area!';
+            $scope = explode(",",$scope);
             foreach($result as $value) 
             {
                 $touserid = $value->users_id;
+                $scope_Id = UserScopePerformed::where('users_id','=',$touserid)->first();
+                $userScopeId = (string)$scope_Id->scope_performed_id;
+                $userScopeId = explode(",",$userScopeId);
+                $scopeflag = 1;
+                //check user scope performed is matches or not
+                foreach ($scope as $scopeid) {
+                    if(in_array($scopeid, $userScopeId))
+                    {
+                        $scopeflag = 1;
+                    }
+                    else
+                    {
+                        $scopeflag = 0;
+                        break;
+                    } 
+                }
+                if($scopeflag == 1)
+                {
+                    $this->sendUserNotification($touserid,$fromuserid,$projectid,$body,$title,$notificationtext,$notificationtype);
+                    $bidrequest = new ProjectBidRequest();
+                    $bidrequest->project_id = $projectid;
+                    $bidrequest->to_user_id = $touserid;
+                    $bidrequest->from_user_id = $fromuserid;
+                    $bidrequest->created_at = date('Y-m-d H:i:s');
+                    $bidrequest->save();
 
+                }
 
+            }
+
+        }
+        //send notification to selected users
+        $associateid = explode(",",$associateid);
+        $associateid = array_unique($associateid);
+        foreach ($associateid as $touserid) {
+            $bidrequest = ProjectBidRequest::where('to_user_id','=',$touserid)
+                            ->where('project_id','=',$projectid)->first();
+            if(!isset($bidrequest))
+            {
+                $notificationtext = 'New project listed in your area!';
+                $notificationtype = '1'; //1 for create project
+                $projectid = $projectid;
+                $fromuserid = $request->input('managerid');
+                $body = $request->input('projectname');
+                $title = 'New project listed in your area!';
                 $this->sendUserNotification($touserid,$fromuserid,$projectid,$body,$title,$notificationtext,$notificationtype);
                 $bidrequest = new ProjectBidRequest();
                 $bidrequest->project_id = $projectid;
@@ -286,6 +441,7 @@ class ProjectController extends Controller
                 $bidrequest->created_at = date('Y-m-d H:i:s');
                 $bidrequest->save();
             }
+
         }
         return response()->json(['success'=>'Project created successfully']);
     }
@@ -438,14 +594,15 @@ class ProjectController extends Controller
         {
             $onsitedate = '   -';
         }
-
+        $associatetype = AssociateType::all();
         return view('project.edit',[
-                    'scope'      => $scope, 
-                    'project'    => $project,
-                    'minvalue'   => $minvalue,
-                    'maxvalue'   => $maxvalue,
-                    'reportdate' => $reportdate,
-                    'onsitedate' => $onsitedate
+                    'scope'         => $scope, 
+                    'project'       => $project,
+                    'minvalue'      => $minvalue,
+                    'maxvalue'      => $maxvalue,
+                    'reportdate'    => $reportdate,
+                    'onsitedate'    => $onsitedate,
+                    'associatetype' => $associatetype
                 ]);
     }
 
@@ -458,7 +615,6 @@ class ProjectController extends Controller
      */
     public function update(Request $request, $id)
     {
-        
         //update project details
         $projectid = $id;
         $project_name = $request->input('projectname');
@@ -467,9 +623,11 @@ class ProjectController extends Controller
         $latitude = $request->input('latitude');
         $longitude = $request->input('longitude');
         $reportdate = (string)$request->input('reportdate');
-       
         $reportdate = date("Y-m-d H:i:s", strtotime($reportdate) );
-        
+        $scope = $request['scopeperformedid'];
+        $scope = implode (",",$scope);
+        $associatetypeid = $request['associatetypeid'];
+        $associatetypeid = implode (",",$associatetypeid);
         if($request->input('onsitedate') != null)
         {
             $onsitedate = (string)$request->input('onsitedate');
@@ -491,7 +649,6 @@ class ProjectController extends Controller
         }
         $report_template = $request->input('template');
         $approx_bid = $request->input('projectbid');
-        $scope_performed_id = $request->input('scopeid');
         $project = Project::where('project_id', '=', $projectid)
                     ->update(['project_name'       => $project_name,
                             'project_site_address' => $project_site_address,
@@ -503,8 +660,9 @@ class ProjectController extends Controller
                             'report_template'      => $report_template,
                             'instructions'         => $instructions,
                             'approx_bid'           => $approx_bid,
-                            'scope_performed_id'   => $scope_performed_id
-                             ]);
+                            'scope_performed_id'   => $scope,
+                            'employee_type_id'     => $associatetypeid
+                            ]);
         if($project != 0)
         {
             $project = Project::where('project_id','=',$projectid)->first();
@@ -520,80 +678,74 @@ class ProjectController extends Controller
             $latitude = $request->input('latitude');
             $longitude = $request->input('longitude');
             $miles = (int)$request->input('milesrange');
+            if(!empty($request['associate-ids']))
+            {
+                $associateid = $request['associate-ids'];
+                //$associateid = implode (",",$associateid);
+            }
             //find nearby associates to send paroject available notification
             $result =  DB::select(DB::raw("SELECT users_id , ( 3956 *2 * ASIN( SQRT( POWER( SIN( ( $latitude - latitude ) * PI( ) /180 /2 ) , 2 ) + COS( $latitude * PI( ) /180 ) * COS( latitude * PI( ) /180 ) * POWER( SIN( ( $longitude - longitude ) * PI( ) /180 /2 ) , 2 ) ) ) ) AS distance
                 FROM users
                 WHERE  user_types_id <>1
+                AND associate_type_id IN ($associatetypeid)
                 HAVING distance <= $miles"));
+            $bidrequest = ProjectBidRequest::where('project_id','=',$projectid)->delete();
+            $scope = explode(",",$scope);
             if(!empty($result))
             {
                 foreach($result as $value) 
                 {
-                    /*$associate = DB::table('user_scope_performed')
-                        ->select('user_scope_performed.scope_performed_id')
-                        ->leftJoin('users', 'users.users_id', '=', 'user_scope_performed.users_id')
-                        ->where('users.users_id','=',$touserid)
-                        ->first();
-                    echo $associate;
-                    exit;*/
-                        $date = date('Y-m-d H:i:s');
-                        $update = ProjectNotification::where('to_user_id', '=', $value->users_id)->where('project_id','=',$projectid)
-                            ->update(['project_notification_type_id' => 6,
-                                       'created_at' => $date,
-                                       'notification_text'=> 'Scheduler updated project details',
-                                        'read_flag' => 0]);
-
-                        if($update == 0)
+                    
+                    $touserid = $value->users_id;
+                    $scope_Id = UserScopePerformed::where('users_id','=',$touserid)->first();
+                    $userScopeId = (string)$scope_Id->scope_performed_id;
+                    $userScopeId = explode(",",$userScopeId);
+                    $scopeflag = 1;
+                    //check user scope performed is matches or not
+                    foreach($scope as $scopeid) {
+                        if(in_array($scopeid, $userScopeId))
                         {
-                            $model = new ProjectNotification;
-                            $model->to_user_id = $value->users_id;
-                            $model->from_user_id = $fromuserid;
-                            $model->project_id = $projectid;
-                            $model->notification_text = 'Scheduler updated project details';
-                            $model->project_notification_type_id = 6;
-                            $model->created_at = date('Y-m-d H:i:s');
-                            $model->save();
-                            $bidrequest = new ProjectBidRequest();
-                            $bidrequest->project_id = $projectid;
-                            $bidrequest->to_user_id = $value->users_id;
-                            $bidrequest->from_user_id = $userid;
-                            $bidrequest->created_at = date('Y-m-d H:i:s');
-                            $bidrequest->save();
+                            $scopeflag = 1;
                         }
-                        $accesskey = UserAccessKey::where('user_id','=',$value->users_id)->where('user_access_key_status','=',1)->get();
-                        $notification = ProjectNotification::where('project_id','=',$projectid)
-                        ->where('to_user_id','=',$value->users_id)
-                        ->where('project_notification_type_id','=',6)->first();
-                        $sentnotificationid = $notification->project_notification_id;
-                        $notificationcount = ProjectNotification::where('to_user_id','=',$value->users_id)->where('read_flag','=',0)->count();
-                        $notificationcount = (string)$notificationcount;
-                        foreach($accesskey as  $key) 
+                        else
                         {
-                           $device = UserDevice::where('user_device_id','=',$key->user_device_id)->first();
-                           $body = $request['projectname'];
-                           $title = 'Scheduler updated project details';
-                           $devicetokenid = $device->user_device_unique_id;
-                           $devicetype = $device->user_device_type;
-                           $notificationid = '6';
-                           $model = new ProjectNotificationSentDevice;
-                           $model->project_notification_id = $sentnotificationid;
-                           $model->user_device_id = $device->user_device_id;
-                           $model->notification_sent = date('Y-m-d H:i:s');
-                           $model->save();
-                           $notificationstatus = User::where('users_id','=',$value->users_id)
-                                                ->where('notification_enable','=',1)->first();
-                           if(isset($notificationstatus))
-                           {
-                                $projectid = (string)$projectid;
-                           
-                                $this->pushnotification($devicetokenid,$title,$body,$notificationid,$projectid,$notificationcount,$devicetype);
-
-                           }
-                           
-                            
-                        }
+                            $scopeflag = 0;
+                            break;
+                        } 
                     }
+                    if($scopeflag == 1)
+                    {
+                        $this->sendUserNotification($touserid,$fromuserid,$projectid,$body,$title,$notificationtext,$notificationtype);
+                        $bidrequest = new ProjectBidRequest();
+                        $bidrequest->project_id = $projectid;
+                        $bidrequest->to_user_id = $touserid;
+                        $bidrequest->from_user_id = $fromuserid;
+                        $bidrequest->created_at = date('Y-m-d H:i:s');
+                        $bidrequest->save();
+
+                    }
+
                 }
+            }
+            //send notification to selected users
+            $associateid = explode(",",$associateid);
+            $associateid = array_unique($associateid);
+            foreach ($associateid as $touserid) {
+                $bidrequest = ProjectBidRequest::where('to_user_id','=',$touserid)
+                            ->where('project_id','=',$projectid)->first();
+                if(!isset($bidrequest))
+                {
+                
+                    $this->sendUserNotification($touserid,$fromuserid,$projectid,$body,$title,$notificationtext,$notificationtype);
+                    $bidrequest = new ProjectBidRequest();
+                    $bidrequest->project_id = $projectid;
+                    $bidrequest->to_user_id = $touserid;
+                    $bidrequest->from_user_id = $fromuserid;
+                    $bidrequest->created_at = date('Y-m-d H:i:s');
+                    $bidrequest->save();
+                }
+
+            }
             return response()->json(['success'=>'Project updated successfully']);
         }
         else

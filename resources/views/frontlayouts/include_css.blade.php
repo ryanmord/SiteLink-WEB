@@ -15,7 +15,14 @@
 
 <link href="{{asset('/css/frontCss/bootstrap-toggle.min.css')}}" rel="stylesheet">
 <style>
-
+#login_email-error
+{
+	float: left;
+}
+#login_password-error
+{
+	float: left;
+}
 
 .loading { color: red; }
 </style>

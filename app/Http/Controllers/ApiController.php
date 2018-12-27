@@ -2137,7 +2137,7 @@ class ApiController extends Controller
             $scheduler = User::where('users_id','=',$schedulerid)->first();
             $username = $scheduler->users_name;
             $lastname = $scheduler->last_name;
-            if($lastname == null)
+            if(!isset($lastname))
             {
                 $lastname = '';
             }
@@ -3447,7 +3447,7 @@ class ApiController extends Controller
         $notification = DB::table('project_notification')
                             ->select(DB::raw('SQL_CALC_FOUND_ROWS project_notification_id'), 'project_notification_id', 'project_notification_type_id','read_flag','notification_text','project_id','created_at')
                             ->where('to_user_id','=',$userid)
-                            ->orderBy('project_notification_id','desc')
+                            ->orderBy('created_at','desc')
                             ->limit($limit)
                             ->offset($items)
                             ->get();
@@ -3476,7 +3476,7 @@ class ApiController extends Controller
                 $created_at = $value->created_at;
                 $created_at = new DateTime($created_at);
                 $createddate= $created_at->format("M jS, Y");
-                $data[]=['projectname' => $project->project_name,
+                $data[]=['projectname'         => $project->project_name,
                             'projectid'        => (string)$project->project_id,
                             'notificationflag' => (string)$value->project_notification_type_id,
                             'readflag'         => (string)$value->read_flag,
@@ -3484,7 +3484,7 @@ class ApiController extends Controller
                             'notificationtext' => (string)$value->notification_text,
                             'createddate'      => (string)$createddate,
                             'statusflag'       => $statusflag];
-                 $cntNotification += 1;
+                $cntNotification += 1;
             }
         }
         else {

@@ -204,44 +204,26 @@
         var $this = $(this);
         var pagenumber1 = document.getElementById('pagenumber').value;
         var pagenumber = ++pagenumber1;
-        
-
-        //var $results = $("#projectlist");
-        //var pagenumber = 1;
+        document.getElementById('pagenumber').value = pagenumber;
         $.ajax({
           type: 'GET',
             url: '<?php echo route('notificationPagination'); ?>',
             data: {pagenumber:pagenumber},
             dataType: 'json',
-       
-        beforeSend: function(xhr) {
-         /* $("#projectlist").after($("<li class='loading'>Loading...</li>").fadeIn('slow')).data("loading", true);*/
-        },
         success: function(data) {
-          //alert(data.status);
+          
           if(data.status == 1)
           {
             var results = $("#notofication-list");
-            /*$(".loading").fadeOut('fast', function() {
-                $(this).remove();
-
-            });*/
-            //var $data = $(data);
-            //$data.hide();
             results.append(data.appendLi);
             pagenumber = pagenumber;
-            //$data.fadeIn();
-            //$results.removeData("loading");
           }
-          else
+          /*if(data.status == 0)
           {
-            pagenumber = --pagenumber1;;
-            
-          }
-          document.getElementById('pagenumber').value = '';
-          document.getElementById('pagenumber').value = pagenumber;
-
-            
+            var pagenumber = --pagenumber1;
+            document.getElementById('pagenumber').value = pagenumber;
+          }*/
+              
         }
       });
     });

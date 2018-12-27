@@ -816,7 +816,7 @@
 
      }
 
-  });
+    });
   });
   </script>
   <script type="text/javascript">
@@ -888,7 +888,7 @@
           })
 
           .done(function(msg) {
-           $("#managername").text(msg.managername+' '+msg.lastname);
+           $("#managername").text(msg.managername);
            $("#manageremail").text(msg.manageremail);
            $("#managercompany").text(msg.managercompany);
            $("#managerphone").text(msg.managerphone);
@@ -1233,7 +1233,7 @@
           })
 
           .done(function(msg) {
-            $("#managername").text(msg.managername+' '+msg.lastname);
+            $("#managername").text(msg.managername);
             $("#manageremail").text(msg.manageremail);
             $("#managercompany").text(msg.managercompany);
             $("#managerphone").text(msg.managerphone);

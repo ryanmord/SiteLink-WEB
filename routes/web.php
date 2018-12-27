@@ -63,8 +63,10 @@ Route::group(['middleware' => 'disablepreventback'],function()
 	Route::post('/updateUser', 'UserController@update')->name('updateUser')->middleware(guest::class);
 	Route::post('/userChangePassword', 'UserController@changepassword')->name('userChangePassword')->middleware(guest::class);
 	Route::get('/rating','UserReviewController@rating')->name('rating')->middleware(guest::class);
-	Route::get('/allProejcts/viewStatus','ProjectController@viewStatus')->name('view-Status')->middleware(guest::class);
-	Route::get('/allProejcts/statusPagination','ProjectController@statusPagination')->name('status-Pagination')->middleware(guest::class);
+	Route::get('/allProjects/viewStatus','ProjectController@viewStatus')->name('view-Status')->middleware(guest::class);
+	Route::get('/allProjects/statusPagination','ProjectController@statusPagination')->name('status-Pagination')->middleware(guest::class);
+	Route::get('/allProjects/associateList','ProjectController@associateUserList')->name('associateList')->middleware(guest::class);
+	Route::get('/allProjects/searchAssociate','ProjectController@searchAssociate')->name('searchAssociate')->middleware(guest::class);
 });
 
 Route::get('/forgotPassword/{userid}','LoginController@forgotpassword')->name('forgotPassword');

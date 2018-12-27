@@ -36,30 +36,29 @@
                   <table class="table table-bordered table-hover table-striped">
                     <thead>
                       <tr bgcolor="#EEEEEE">
-                        <th style="text-align: center;vertical-align: middle;">Image</th>
-                        <th style="text-align: center;vertical-align: middle;">User Name</th>
+                        <th width="50px;">Image</th>
+                        <th>User Name</th>
                         @if(!isset($admin))
-                          <th style="text-align: center;vertical-align: middle;">Company</th>
+                          <th>Company</th>
                         @endif
-                        <th style="text-align: center;vertical-align: middle;">Email</th>
+                        <th>Email</th>
                         @if(!isset($admin))
-                          <th style="text-align: center;vertical-align: middle;">Address</th>
+                          <th>Address</th>
                         @endif
                         @if(!isset($admin))
-                          <th style="text-align: center;vertical-align: middle;">Scope Performed</th>
+                          <th>Scope(s)</th>
                         @endif
-                        <th style="text-align: center;vertical-align: middle;"
-                            width="10%">Enrolled </th>
-                        <th style="text-align: center;vertical-align: middle;">Status</th>
+                        <th width="10%">Enrolled </th>
+                        <th>Status</th>
                         
-                        <th style="text-align: center;vertical-align: middle;">Action</th>
+                        <th>Action</th>
                       </tr>
                             
                     </thead>
                       <tbody id="usertable">
                         @foreach ($associate as $user)
                           <tr class="content">
-                            <td style="text-align: center;vertical-align: middle;">
+                            <td>
                             @if(isset($user->users_profile_image))
                             <?php $user['users_profile_image'] = asset("/img/users/" . $user['users_profile_image']); ?>
                             <img class="img-rounded" style="max-width:50px;max-height:50px;min-width:50px;min-height:50px;" src= "{{ $user['users_profile_image'] }}" />
@@ -68,19 +67,19 @@
                                 
                             @endif
                           </td>
-                          <td style="text-align: left;vertical-align: middle;">
+                          <td style="text-align: left;">
                             {{ ucfirst($user->users_name) }}<br>{{ ucfirst($user->last_name) }}
                           </td>
-                          <td style="text-align: left;vertical-align: middle;">{{ $user->users_company }} </td>
-                          <td style="text-align: left;vertical-align: middle;">{{ $user->users_email }}<br>
+                          <td style="text-align: left;">{{ $user->users_company }} </td>
+                          <td style="text-align: left;">{{ $user->users_email }}<br>
                             {{ $user->users_phone }}
                           </td>
                           @if(!isset($admin))
-                            <td style="text-align: left;vertical-align: middle;">
+                            <td style="text-align: left;">
                             {{ $user->users_address }}
                             </td>
                           @endif
-                          <td style="text-align: left;vertical-align: middle;">
+                          <td style="text-align: left;">
                             @if($user->user_types_id == 2)
                               @foreach($user->scopeperformed as $scopeperform)
                                 {{ $scopeperform->scope_performed }},
@@ -111,18 +110,18 @@
                               $date= $datetime2->format("m-d-Y");
                               $interval = $datetime1->diff($datetime2);
                               $days = $interval->format(' %a days ago');?>
-                              <td style="text-align: left;vertical-align: middle;">
+                              <td style="text-align: left;">
                                 {{ $days }}<br>
                                 {{$date}}
                               </td>
                               @if($user->users_status == 1 )
-                                <td style="text-align: center;vertical-align: middle;color: #5B8930;">
+                                <td style="color: #5B8930;">
                                 <span class="glyphicon glyphicon-ok"></span></td>
                               @else
-                                <td style="text-align: center;vertical-align: middle;color: #DB5A6B;">
+                                <td style="color: #DB5A6B;">
                                 <span class="glyphicon glyphicon-remove"></span></td>
                               @endif
-                              <td style="text-align: center;vertical-align: middle;">
+                              <td>
                                 <div class="btn-group">
                                   <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown"><center><span class="glyphicon glyphicon-cog"></span></center></button>
                                   <ul class="dropdown-menu" role="menu" style="left: 0% !important;
@@ -159,15 +158,14 @@
                     <table class="table table-bordered table-hover table-striped">
                       <thead>
                         <tr bgcolor="#EEEEEE">
-                          <th style="text-align: center;vertical-align: middle;">Image</th>
-                          <th style="text-align: center;vertical-align: middle;">User Name
+                          <th width="50px;">Image</th>
+                          <th>User Name
                           </th>
-                          <th style="text-align: center;vertical-align: middle;">Company</th>
-                          <th style="text-align: center;vertical-align: middle;">Email</th>
-                          <th style="text-align: center;vertical-align: middle;"
-                            width="10%">Enrolled </th>
-                          <th style="text-align: center;vertical-align: middle;">Status</th>
-                          <th style="text-align: center;vertical-align: middle;">Action</th>
+                          <th>Company</th>
+                          <th>Email</th>
+                          <th width="10%">Enrolled </th>
+                          <th>Status</th>
+                          <th>Action</th>
                         </tr>
                       </thead>
                       <tbody id="usertable">

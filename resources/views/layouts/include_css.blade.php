@@ -16,6 +16,12 @@
       {
         color: #b70a0a;
       }
+      .table-td-th
+      {
+        text-align: center;
+        vertical-align: middle;
+      }
+    
 
   </style>
    
