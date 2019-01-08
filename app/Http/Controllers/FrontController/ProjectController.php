@@ -7,6 +7,7 @@ use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ApiController;
 use App\ProjectStatus;
+use App\ProgressStatusType;
 use App\Project;
 use Illuminate\Support\Facades\DB;
 use DateTime;
@@ -24,7 +25,7 @@ class ProjectController extends Controller
         $request['userid'] = session('associateId');
         $request['privatekey'] = 1;
         $request['pagenumber'] = 1;
-        $request['limit'] = 9;
+        $request['limit'] = 10;
         $availableProject = $apiobj->availableProject($request);
         $availableProject = json_decode($availableProject, true);
         if($availableProject['status'] == 1)
@@ -40,9 +41,9 @@ class ProjectController extends Controller
             $publish_projectdetail = $this->show($request);
             
         }
-        if(!isset($projectdetail))
+        if(!isset($publish_projectdetail))
         {
-            $projectdetail = null;
+            $publish_projectdetail = null;
         }
         $inprogressproject = $apiobj->inProgessProject($request);
         $inprogressproject = json_decode($inprogressproject, true);
@@ -86,12 +87,14 @@ class ProjectController extends Controller
         {
             $history_projectdetail = null;
         }
+        $progressStatus = ProgressStatusType::all();
         return view('frontview.projects.project',['inprogressproject' => $inprogressproject,
                                         'progresProjecDetail'   => $projectdetail,
                                         'projecthistorylist'    => $projecthistorylist,
                                         'history_projectdetail' => $history_projectdetail,
                                         'publish_projectdetail' => $publish_projectdetail,
-                                        'availableProject'      => $availableProject
+                                        'availableProject'      => $availableProject,
+                                        'progressStatus'        => $progressStatus
                                         ]);
         
     }
@@ -100,7 +103,7 @@ class ProjectController extends Controller
         $request['userid'] = session('associateId');
         $request['privatekey'] = 1;
         $request['pagenumber'] = 1;
-        $request['limit'] = 9;
+        $request['limit'] = 10;
         
         $searchKeyword = $request['search_keyword'];
         $projecthistorylist = $apiobj->projectHistory($request,$searchKeyword);
@@ -176,7 +179,7 @@ class ProjectController extends Controller
         $request['userid'] = session('associateId');
         $request['privatekey'] = 1;
         $request['pagenumber'] = 1;
-        $request['limit'] = 9;
+        $request['limit'] = 10;
         $searchKeyword = $request['search_keyword'];
         $availableProject = $apiobj->availableProject($request,$searchKeyword);
         $availableProject = json_decode($availableProject, true);
@@ -260,7 +263,7 @@ class ProjectController extends Controller
         $request['privatekey'] = 1;
         $request['pagenumber'] = $request['pagenumber'];
         $search_keyword = $request['search_keyword'];
-        $request['limit'] = 9;
+        $request['limit'] = 10;
         $availableProject = $apiobj->availableProject($request,$search_keyword);
         $availableProject = json_decode($availableProject, true);
        
@@ -311,7 +314,7 @@ class ProjectController extends Controller
         $request['userid'] = session('associateId');
         $request['privatekey'] = 1;
         $request['pagenumber'] = $request['pagenumber'];
-        $request['limit'] = 9;
+        $request['limit'] = 10;
         $inprogressproject = $apiobj->inProgessProject($request);
         $inprogressproject = json_decode($inprogressproject, true);
         $appendLi = "";
@@ -366,7 +369,7 @@ class ProjectController extends Controller
         $request['userid'] = session('associateId');
         $request['privatekey'] = 1;
         $request['pagenumber'] = $request['pagenumber'];
-        $request['limit'] = 9;
+        $request['limit'] = 10;
         $search_keyword = $request['search_keyword'];
         $projecthistorylist = $apiobj->projectHistory($request,$search_keyword);
         $projecthistorylist = json_decode($projecthistorylist, true);
@@ -429,7 +432,7 @@ class ProjectController extends Controller
         $request['privatekey'] = 1;
         $request['projectid'] = $request['projectid'];
         $request['pagenumber'] = $request['pagenumber'];
-        $request['limit'] = 3;
+        $request['limit'] = 4;
         $projectStatus = $apiobj->inprogressStatus($request);
         $projectStatus = json_decode($projectStatus, true);
         $appendLi = "";
@@ -514,6 +517,8 @@ class ProjectController extends Controller
         $siteaddress = $projectdetail['siteaddress'];
         $instructions = $projectdetail['instructions'];
         $template = $projectdetail['template'];
+        $jobReachCount = $projectdetail['jobReachCount'];
+        $associateTypeId = $projectdetail['associateTypeId'];
         $scope = '';
         foreach ($projectdetail['scopeperformed'] as $value) 
         {
@@ -572,25 +577,25 @@ class ProjectController extends Controller
         if (isset($projectdetail['bidstatus'])) {
             $bidstatus = $projectdetail['bidstatus'];
         }
-
-      
-        $temp =  array('success'        => true, 
-                        'projectname'   =>$projectname,
-                        'projectid'     => $projectid,
-                        'createddate'   => $createddate,
-                        'siteaddress'   => $siteaddress,
-                        'reportduedate' => $reportduedate,
-                        'instructions'  => $instructions,
-                        'template'      => $template,
-                        'scope'         => $scope,
-                        'approxbid'     => $approxbid,
-                        'mybid'         => $mybid,
-                        'onsitedate'    => $onsitedate,
-                        'project_id'    => $projectdetail['projectid'],
-                        'rating'        => $rating,
-                        'comment'       => $comment,
-                        'applydate'     => $applydate,
-                        'bidstatus'     => $bidstatus);
+        $temp =  array('success'          => true, 
+                        'projectname'     =>$projectname,
+                        'projectid'       => $projectid,
+                        'createddate'     => $createddate,
+                        'siteaddress'     => $siteaddress,
+                        'reportduedate'   => $reportduedate,
+                        'instructions'    => $instructions,
+                        'template'        => $template,
+                        'scope'           => $scope,
+                        'approxbid'       => $approxbid,
+                        'mybid'           => $mybid,
+                        'onsitedate'      => $onsitedate,
+                        'project_id'      => $projectdetail['projectid'],
+                        'rating'          => $rating,
+                        'comment'         => $comment,
+                        'applydate'       => $applydate,
+                        'bidstatus'       => $bidstatus,
+                        'jobReachCount'   => $jobReachCount,
+                        'associateTypeId' => $associateTypeId);
         
         if(isset($request['callFunction']))
         {
@@ -640,7 +645,7 @@ class ProjectController extends Controller
         $request['userid'] = session('associateId');
         $request['privatekey'] = 1;
         $request['pagenumber'] = 1;
-        $request['limit'] = 9;
+        $request['limit'] = 10;
         $availableProject = $apiobj->availableProject($request);
         $availableProject = json_decode($availableProject, true);
         if($availableProject['status'] == 1)
@@ -667,6 +672,10 @@ class ProjectController extends Controller
                     ->where('users_id',$request['userid'])
                     ->first();
         $userData = json_decode(json_encode($userData),true);
+        if(!isset($mapAvailableProject['publishprojects']))
+        {
+            $mapAvailableProject['publishprojects'] = '';
+        }
         return view('frontview.projects.mybids',['availableProject'     => $availableProject,
                                                  'projectdetail'        => $projectdetail,
                                                  'mapAvailableProject'  => $mapAvailableProject['publishprojects'],
@@ -680,7 +689,6 @@ class ProjectController extends Controller
         $apiobj = new ApiController;
         $manager = $apiobj->viewProfile($request);
         $manager = json_decode($manager, true);
-
         $temp =  array('success'        => true, 
                        'managername'    => $manager['username'],
                        'manageremail'   => $manager['email'],
@@ -702,6 +710,26 @@ class ProjectController extends Controller
         $bidrequest = json_decode($bidrequest, true);
         return response()->json($bidrequest);
     }
+    public function acceptProject(Request $request)
+    {
+
+        $request['userid'] = session('associateId');
+        $request['privatekey'] = 1;
+        $apiobj = new ApiController;
+        $accept_project = $apiobj->acceptProject($request);
+        $accept_project = json_decode($accept_project, true);
+        return response()->json($accept_project);
+    }
+    public function declineProject(Request $request)
+    {
+
+        $request['userid'] = session('associateId');
+        $request['privatekey'] = 1;
+        $apiobj = new ApiController;
+        $decline_project = $apiobj->declineProject($request);
+        $decline_project = json_decode($decline_project, true);
+        return response()->json($decline_project);
+    }
     public function viewStatus(Request $request)
     {
         $projectid = $request['projectid'];
@@ -710,7 +738,7 @@ class ProjectController extends Controller
         
         $request['privatekey'] = 1;
         $request['pagenumber'] = 1;
-        $request['limit']   = 3;
+        $request['limit']   = 4;
         $apiobj = new ApiController;
         $projectstatus = $apiobj->inprogressStatus($request);
         $projectstatus = json_decode($projectstatus, true);
@@ -798,5 +826,6 @@ class ProjectController extends Controller
         $projectinfo = array('status'=> $status,'projectname' => $projectname);
         return response()->json($projectinfo);
     }
+
 
 }

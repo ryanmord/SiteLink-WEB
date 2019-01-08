@@ -283,7 +283,7 @@ $(document).ready(function () {
             var msg1 = 'Already registered';
             var msg2 = 'Login here';
             var msg3 = 'Forgot password?';
-            $('.txtchng').text(msg1);
+            $('.txtchng').text(msg2);
             $('.h3chng').text(msg2);
             $('.forgot-pass').text(msg3);
          }

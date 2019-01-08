@@ -22,9 +22,9 @@ class AdminUser extends Authenticatable
      *
      * @var array
      */
-    protected $hidden     = [
+    protected $hidden = [
                             'admin_users_password','remember_token',
-                            ];
+                        ];
      public function user()
     {
         return $this->hasOne('App\User', 'users_approved_by');

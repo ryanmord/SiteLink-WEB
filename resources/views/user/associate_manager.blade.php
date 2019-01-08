@@ -46,7 +46,7 @@
                           <th>Address</th>
                         @endif
                         @if(!isset($admin))
-                          <th>Scope(s)</th>
+                          <th width="15%"> Scope(s) </th>
                         @endif
                         <th width="10%">Enrolled </th>
                         <th>Status</th>
@@ -215,7 +215,6 @@
                               <li><a href="{{url('users/user/'.$user['users_id'].'/1')}}" onclick="return confirm('Are you want to sure unblock this user?')">Unblock</a>
                               </li>
                             @else
-
                               <li><a href="{{url('users/user/'.$user['users_id'].'/3')}}" onclick="return confirm('Are you want to sure block this user?')">Block</a>
                             @endif
                             <li><a href="{{url('projects/'.$user['users_id'])}}">Projects</a>

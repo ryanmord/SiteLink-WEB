@@ -11,6 +11,7 @@ use App\UserReview;
 use App\Mail\Approveduser;
 use App\Mail\Rejectapproval;
 use App\Mail\BlockUnblockUser;
+use App\Http\Controllers\ApiController;
 use App\ProjectStatus;
 use App\AssociateType;
 use Illuminate\Support\Facades\Mail;
@@ -295,8 +296,11 @@ class UserController extends Controller
             $id = $request->input('userid');
             User::where('users_id','=', $id)
             ->update(['users_approval_status' => $status,'users_approved_by' => $adminid,'users_approved_date' => $date,'associate_type_id' => $associatetype]);
-            $user=User::where('users_id','=',$id)->first();
+            $user = User::where('users_id','=',$id)->first();
             $useremail = $user->users_email;
+             //to set near by available projects to that user
+            $apiobj = new ApiController;
+            $apiobj->updateavailableProject($id);
             Mail::to($useremail)->send(new Approveduser($user));
         }
         // else part for reject user
@@ -380,13 +384,13 @@ class UserController extends Controller
                             ->where('projects.user_id','=',$userid)
                             ->where('project_status.project_status_type_id','=',5)
                             ->count();
-        $bidmadecount = DB::table('projects')
+       /* $bidmadecount = DB::table('projects')
                             ->leftJoin('project_bids', 'projects.project_id', '=', 'project_bids.project_id')
                             ->where('projects.user_id','=',$userid)
                             ->where('project_bids.project_bid_status','=',1)
-                            ->count();
+                            ->count();*/
         $overdueprojectcount = 0;
-        
+        $inProgressCount = 0;
         $project = Project::where('user_id','=',$userid)->get();
         foreach ($project as $value) 
         {
@@ -408,6 +412,10 @@ class UserController extends Controller
                 {
                     $overdueprojectcount = $overdueprojectcount + 1;
                 
+                }
+                else
+                {
+                    $inProgressCount = $inProgressCount + 1;
                 }                
             }
         }
@@ -415,9 +423,9 @@ class UserController extends Controller
         {
             $totalproject = '0'.(string)$totalproject;
         }
-        if($bidmadecount < 10)
+        if($inProgressCount < 10)
         {
-            $bidmadecount = '0'.(string)$bidmadecount;
+            $inProgressCount = '0'.(string)$inProgressCount;
         }
         if($completeproject < 10)
         {
@@ -430,7 +438,7 @@ class UserController extends Controller
         return view('managerdashboard',['totalproject'            => $totalproject,
                                             'completeproject'     => $completeproject,
                                             'overdueprojectcount' => $overdueprojectcount,
-                                            'bidmadecount'        => $bidmadecount  ]);
+                                            'inProgressCount'     => $inProgressCount  ]);
         exit;
 
     }
@@ -448,13 +456,13 @@ class UserController extends Controller
                             ->where('projects.user_id','=',$userid)
                             ->where('project_status.project_status_type_id','=',5)
                             ->count();
-        $bidmadecount = DB::table('projects')
+        /*$bidmadecount = DB::table('projects')
                             ->leftJoin('project_bids', 'projects.project_id', '=', 'project_bids.project_id')
                             ->where('projects.user_id','=',$userid)
                             ->where('project_bids.project_bid_status','=',1)
-                            ->count();
+                            ->count();*/
         $overdueprojectcount = 0;
-     
+        $inProgressCount = 0;
         $project = Project::where('user_id','=',$userid)->get();
         foreach ($project as $value) 
         {
@@ -476,7 +484,11 @@ class UserController extends Controller
                 {
                     $overdueprojectcount = $overdueprojectcount + 1;
                 
-                }                
+                } 
+                else
+                {
+                    $inProgressCount = $inProgressCount + 1;
+                }               
             }
         }
         $review = UserReview::where('to_user_id','=',$userid)->
@@ -517,9 +529,9 @@ class UserController extends Controller
         {
             $review = '0.0';
         }
-        if($bidmadecount < 10)
+        if($inProgressCount < 10)
         {
-            $bidmadecount = '0'.(string)$bidmadecount;
+            $inProgressCount = '0'.(string)$inProgressCount;
         }
         if($completeproject < 10)
         {
@@ -537,7 +549,7 @@ class UserController extends Controller
         return view('user.edituser',['totalproject'       => $totalproject,
                                     'completeproject'     => $completeproject,
                                     'overdueprojectcount' => $overdueprojectcount,
-                                    'bidmadecount'        => $bidmadecount,
+                                    'inProgressCount'     => $inProgressCount,
                                     'review'              => $review,
                                     'username'            => $username,
                                     'profileimage'        => $profileimage,

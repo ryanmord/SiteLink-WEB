@@ -68,15 +68,15 @@
             <div class="intro-text">
                 <div class="pdding-left">
                     <div class="col-md-7 login-left">
-                        <h2 class="left-title">We're here for you every step of the way.</h2>
-                        <p>It all starts with you</p>
+                        <h2 class="left-title">Your email verifcation for Scoped app is completed successfully.</h2>
+                        <p>Now You can login into the Scoped app.</p>
                     </div>
 
-                    <div class="col-md-4 login-right">
+              <!--       <div class="col-md-4 login-right">
                         <h4 class="h4 txtchng">Email Verification</h4>
                         <div>
                                 <div>
-                                  <p align="left" style="color: #212529;">A verification code has been sent to your email address.
+                                  <p align="left" style="color: #212529;">Your email
                                   <br>
                                   Please enter the verification code into the verfication field.
                                   </p>
@@ -84,6 +84,7 @@
                         
                                 </div>
                             </div>
+
                         <form id="verification-form" method="POST" action="{{ url('/checkVerifyCode') }}" role="form">
                          {{ csrf_field() }}
                              <div class="form-group">
@@ -114,7 +115,7 @@
 
                        
                         
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>

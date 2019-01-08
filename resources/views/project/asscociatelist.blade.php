@@ -14,8 +14,8 @@
       <div class="modal-body">
       
       <input type="text" name="search-user" id="search-user" placeholder="Seach by name" style="border-width: 1px 1px 1px 1px;"><br><br>
-       <input type="hidden" name="associate-ids" id="associate-ids">
-       <input type="hidden" name="pagenumber" id="pagenumber">
+       <input type="hidden" name="associate-ids" id="associate-ids" value=" ">
+       <input type="hidden" name="pagenumber" id="pagenumber" value=" ">
       <div class="table-responsive" id="associatetable" style="max-height: 400px;overflow-y: scroll;">
       
         <table class="table table-bordered table-hover table-striped">

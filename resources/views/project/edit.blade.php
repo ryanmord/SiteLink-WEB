@@ -127,7 +127,7 @@
                           <label>Report Due From Field</label>
                         </div>
                         <div class="form-group col-md-4 {{ $errors->has('reportdate') ? ' has-error' : '' }}">
-                          <input type="text" name="reportdate" id="reportdate" value="{{ $reportdate }}" placeholder="Report Due Date">
+                          <input type="text" name="reportdate" id="reportdate" value="{{ $reportdate }}" placeholder="Report Due Date" autocomplete="off">
                           <i class="fa fa-calendar" aria-hidden="true"></i>
                         </div>
                         <div class="form-group col-md-2">
@@ -135,7 +135,7 @@
                           <label>On Site Date</label>
                         </div>
                         <div class="form-group col-md-3">
-                          <input type="text" name="onsitedate" id="onsitedate" value="{{ $onsitedate }}" placeholder="On Site Date">
+                          <input type="text" name="onsitedate" id="onsitedate" value="{{ $onsitedate }}" placeholder="On Site Date" autocomplete="off">
                           <i class="fa fa-calendar" id="datepickericon"></i>
                         </div>
                       </div>
@@ -197,7 +197,7 @@
                     <?php
                         $temp = explode(",", $project['employee_type_id']);
                       ?>
-                   <div class="row">
+                    <div class="row">
                       <div class="form-group col-md-3">
                         <br>
                           <label>Employee Type</label>
@@ -225,7 +225,7 @@
                               <div class="row">
                               <div class="form-group col-md-3">
                                 
-                                <label>Select Individual(s)</label>
+                                <label id="selectIdLabel">Select Individual(s)</label>
                               </div>
                               <!-- select associate type -->
                               <div class="form-group col-md-9">
@@ -241,7 +241,7 @@
                             <div class="form-group col-md-3">
                               <button type="submit" class="btn btn-success" id="saveproject"> Update   
                             </button>
-                        </div>
+                      </div>
                   </div>
                 </form>
               </div>
@@ -290,6 +290,8 @@
       }
     }
     $(document).ready(function() {
+      document.getElementById("pagenumber").value = 1;
+      document.getElementById("associate-ids").value = 0;
       $(window).keydown(function(event){
         if(event.keyCode == 13) {
           event.preventDefault();
@@ -441,7 +443,7 @@ $('#cancel-user').click(function(){
    $('#add-individuals-users').click(function(){
   
     var idvalue = document.getElementById("associate-ids").value;
-
+    $('#selectIdLabel').html('Selected Individuals').show();
     var checks = $('input[name="associateid[]"]:checked').map(function(){
               return $(this).val();
                 }).get();

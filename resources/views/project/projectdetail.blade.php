@@ -177,7 +177,7 @@
                                 <center>
                                   <button type="button" class="btn red-btn" data-toggle="modal" data-target="#associateprofile">Associate Profile</button>
                                   @if($statuscount != 0)
-                                  <button type="button" class="btn red-btn" data-toggle="modal" data-target="#project-status" id="view-status">View Status</button>
+                                  <button type="button" class="btn red-btn" data-toggle="modal" data-target="#project-status" id="view-status">View Notes</button>
                                   @endif
                                 </center>
                               </div>

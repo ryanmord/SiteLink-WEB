@@ -95,7 +95,6 @@
                                   <input type="text" name="projectname" value="" placeholder="Project Name" required="">
                                  
                                   </div>  
-                                  
                               </div>
                               <div class="row">
                                 <div class="form-group col-md-3">
@@ -136,7 +135,7 @@
                                 <label>Report Due From Field</label>
                               </div>
                               <div class="form-group col-md-4 {{ $errors->has('reportdate') ? ' has-error' : '' }}">
-                                <input type="text" name="reportdate" id="reportdate" value="" placeholder="Report Due Date">
+                                <input type="text" name="reportdate" id="reportdate" value="" placeholder="Report Due Date" autocomplete="off">
                                 <i class="fa fa-calendar" aria-hidden="true">
                                 </i>
                               </div>
@@ -145,7 +144,7 @@
                                 <label>On Site Date</label>
                               </div>
                               <div class="form-group col-md-3">
-                                <input type="text" name="onsitedate" id="onsitedate" value="" placeholder="On Site Date">
+                                <input type="text" name="onsitedate" id="onsitedate" value="" placeholder="On Site Date" autocomplete="off">
                                 <i class="fa fa-calendar" id="datepickericon"></i>
                               </div>
                             </div>
@@ -216,7 +215,7 @@
                                 <div class="row">
                               <div class="form-group col-md-3">
                                 
-                                <label>Select Individual(s)</label>
+                                <label id="selectIdLabel">Select Individual(s)</label>
                               </div>
                               <!-- select associate type -->
                               <div class="form-group col-md-9">
@@ -348,6 +347,8 @@
             });
           });
           $(document).ready(function () {
+            document.getElementById("pagenumber").value = 1;
+            document.getElementById("associate-ids").value = 0;
             $('body').on('click','#saveproject', function (event) {
             event.preventDefault(); 
               $("#createproject").validate({
@@ -461,7 +462,7 @@
    $('#add-individuals-users').click(function(){
   
     var idvalue = document.getElementById("associate-ids").value;
-
+    $('#selectIdLabel').html('Selected Individuals').show();
     var checks = $('input[name="associateid[]"]:checked').map(function(){
               return $(this).val();
                 }).get();

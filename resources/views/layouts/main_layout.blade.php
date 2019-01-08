@@ -10,6 +10,7 @@
 
   <link rel="shortcut icon" href="{{{ asset('img/brick-wall.png') }}}">
     @include('layouts.include_css')
+   
 </head>
 
 <!-- Body -->

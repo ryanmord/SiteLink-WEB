@@ -5949,8 +5949,19 @@ form#lenderpost-form label#max-error {
 .field-multi-select-scope button {
   width: 100%; background:#f4f9f9;     font-weight: 300;
 }
+.field-multi-edit-scope button {
+  width: 100%; background:#f4f9f9;     font-weight: 300;
+}
+
 
 .field-multi-select-scope .multiselect-container {
+  min-width: 370px !important;
+  background:#f4f9f9;
+  margin-top: 30px;
+  border: none;
+  float: left;
+}
+.field-multi-edit-scope .multiselect-container {
   min-width: 370px !important;
   background:#f4f9f9;
   margin-top: 30px;
@@ -5963,8 +5974,19 @@ form#lenderpost-form label#max-error {
   opacity: 1;
   float: left;
   margin-right: 10px;
+ 
 }
-
+.field-multi-edit-scope .multiselect-container input[type=checkbox] {
+  width: 16px;
+  opacity: 1;
+  /*float: left;*/
+  margin-right: 10px;
+}
+.field-multi-edit-scope .multiselect-container label {
+  padding: 3px 10px 3px 15px;
+  font-size: 16px;
+  line-height: 42px;
+}
 .field-multi-select-scope .multiselect-container label {
   padding: 3px 10px 3px 15px;
   font-size: 16px;

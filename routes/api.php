@@ -56,3 +56,6 @@ Route::any('/readNotification', 'ApiController@readNotification');
 Route::any('/projectOnHold', 'ApiController@projectOnHold');
 Route::any('/mapAvailableProject', 'ApiController@mapAvailableProject');
 Route::any('/webpushnotification', 'ApiController@webpushnotification');
+Route::any('/getStatusType', 'ApiController@getStatusType');
+Route::any('/acceptProject', 'ApiController@acceptProject');
+Route::any('/declineProject', 'ApiController@declineProject');

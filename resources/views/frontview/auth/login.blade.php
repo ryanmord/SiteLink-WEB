@@ -129,16 +129,14 @@
           	}
           	if(msg.emailstatus == '0')
           	{
-          		url = '<?php echo route('emailVerify'); ?>';
-          		window.location.replace(url);
+                $("#errmsg").text('Please verify your email for email verification..').show();
+          		  
           	}
           	if(msg.status == '1')
           	{
           		url = '<?php echo route('associateDashboard'); ?>';
           		window.location.replace(url);
           	}
-
-          
         });
 
      }

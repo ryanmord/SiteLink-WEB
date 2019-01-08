@@ -6,7 +6,7 @@
       <!-- Modal Header -->
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Project Status</h4>
+        <h4 class="modal-title">Project Notes</h4>
         
       </div>
 
@@ -14,7 +14,7 @@
       <div class="modal-body">
         <div class="project-level">
           <div id="no_any_status">
-            <p style= "margin-left: 250px;"> There are no any status available</p>
+            <p style= "margin-left: 250px;"> There are no any notes available</p>
           </div>
           <input type="hidden" name="status_pagenumber" id="status_pagenumber">
           <div style="overflow-y: scroll;max-height: 350px; background: white;" id="project-status-list">

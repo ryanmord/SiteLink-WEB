@@ -107,10 +107,10 @@
                     <div class="manager-data">
                       <center>
                         <div class="number-data">
-                          {{ $bidmadecount }}
+                          {{ $inProgressCount }}
                         </div> 
                         <div class="bids-status">
-                          Total Bids Made
+                          Jobs In Progress
                         </div> 
                       </center>   
                     </div>    

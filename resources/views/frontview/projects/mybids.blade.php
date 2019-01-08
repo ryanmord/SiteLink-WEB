@@ -21,7 +21,7 @@
 
                         <div class="pac-card" id="pac-card">            
                           <div id="title">
-                            Job Finder <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            Job Finder <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->
                           </div>
                         </div>
                         <div id="map"></div>
@@ -105,7 +105,7 @@
                                     <!-- ls-project-address -->
 
                                     <div class="ls-scope">
-                                      <h5>Scopes</h5>    
+                                      <h5>Scope(s)</h5>    
                                       <ul><li id="scope">{{$projectdetail['scope']}}</li></ul> 
                                       <hr>   
                                       <h5>Report Template</h5>    
@@ -126,6 +126,11 @@
                                       <h4>Suggest Bid</h4>
                                       <font id="approxbid"> {{$projectdetail['approxbid']}}</font>   
                                     </div>
+                                    <div class="rs-suggest-bid">
+                                                          <h4>Job Reach</h4>
+                                                          <font id="jobReach" style="font-size: 15px;">
+                                                          {{$projectdetail['jobReachCount']}}&nbsp People</font>   
+                                                      </div>
                                     <hr>  
                                     <div class="rs-make-bid">
                                       <h4>Current Bid</h4> <label id="bidstatus" style="color: #fe5f55;">{{$projectdetail['bidstatus']}}</label><br>
@@ -433,6 +438,9 @@
                         $("#onsitedate").text(projectData['onsitedate']);
                         $("#projectid").text(projectData['projectid']);
                         $("#approxbid").text(projectData['approxbid']);
+                        
+                        var jobReachCount = projectData['jobReachCount'];
+                        $("#jobReach").text(jobReachCount +' '+'People');
                         $("#bidstatus").text(projectData['bidstatus']);
                         $("#template").text(projectData['template']);
                         $("#scope").text(projectData['scope']);
@@ -481,6 +489,8 @@
               $("#template").text(msg.template);
               $("#scope").text(msg.scope);
               $("#approxbid").text(msg.approxbid);
+              var jobReachCount = msg.jobReachCount;
+              $("#jobReach").text(jobReachCount+' '+'People');
               $("#mybid").text(msg.mybid);
               $("#bidstatus").text(msg.bidstatus);
               $("#onsitedate").text(msg.onsitedate);

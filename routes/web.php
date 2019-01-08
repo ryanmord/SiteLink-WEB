@@ -25,7 +25,7 @@ Route::group(['middleware' => 'disablepreventback'],function()
 	Route::get('/login', ['as' => 'admin_users.login', 'uses' => 'LoginController@getadminLogin']);
 	Route::post('/login', ['as' => 'admin_users.auth', 'uses' => 'LoginController@adminAuth']);
 	Route::get('/managerSignup','SignupController@managerSignUp')->name('managerSignup');
-	Route::get('/emailVerification','SignupController@emailverification')->name('emailVerification');
+	Route::get('/emailVerification/{userid}','SignupController@emailverification')->name('emailVerification');
 	Route::post('/checkVerifyCode','SignupController@checkverifycode')->name('checkVerifyCode');
 	Route::post('/resendCode','SignupController@resendcode')->name('resendCode');
 	Route::post('/storeUserDetail','SignupController@storeUserDetail')->name('storeUserDetail');
@@ -67,6 +67,7 @@ Route::group(['middleware' => 'disablepreventback'],function()
 	Route::get('/allProjects/statusPagination','ProjectController@statusPagination')->name('status-Pagination')->middleware(guest::class);
 	Route::get('/allProjects/associateList','ProjectController@associateUserList')->name('associateList')->middleware(guest::class);
 	Route::get('/allProjects/searchAssociate','ProjectController@searchAssociate')->name('searchAssociate')->middleware(guest::class);
+	Route::get('/allProjects/projectAssociate','ProjectController@projectAssociate')->name('projectAssociate')->middleware(guest::class);
 });
 
 Route::get('/forgotPassword/{userid}','LoginController@forgotpassword')->name('forgotPassword');
@@ -118,10 +119,9 @@ Route::get('/home/userReviewPagination','FrontController\UserController@userRevi
 Route::get('/home/statusPagination','FrontController\ProjectController@statusPagination')->name('statusPagination')->middleware(IsAssociate::class);
 Route::get('/home/historyPagination','FrontController\ProjectController@historyPagination')->name('historyPagination')->middleware(IsAssociate::class);
 Route::get('/home/projectInfo','FrontController\ProjectController@projectInfo')->name('projectInfo')->middleware(IsAssociate::class);
-
+Route::get('/home/acceptProject','FrontController\ProjectController@acceptProject')->name('acceptProject')->middleware(IsAssociate::class);
+Route::get('/home/declineProject','FrontController\ProjectController@declineProject')->name('declineProject')->middleware(IsAssociate::class);
 });
-
-
 //Reoptimized class loader: 
 Route::get('/optimize', function() {
    $exitCode = Artisan::call('optimize');

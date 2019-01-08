@@ -48,29 +48,40 @@ class LoginController extends Controller
     {
         
         /*login for  admin user*/
+        $email = $request->input('admin_users_email');  
+        $password = $request->input('admin_users_password');
         
         $usertype = $request->input('customertype');
         if($usertype == 2)
         {
-            $auth = AdminUser::where('admin_users_email', '=', $request->input('admin_users_email') )->where('admin_users_password', '=',$request->input('admin_users_password'))->first();
+            $auth = AdminUser::where('admin_users_email', '=',$email)->first();
             if(isset($auth))
             {
-                session(['loginuser' => $auth->admin_users_email]);
-                session(['loginuserid' => $auth->admin_users_id]);
-                session(['loginusername' => $auth->admin_users_name]);
-                session(['loginusertype' => 'admin']);
+                if(Hash::check($password, $auth->admin_users_password))
+                {
+                    session(['loginuser' => $auth->admin_users_email]);
+                    session(['loginuserid' => $auth->admin_users_id]);
+                    session(['loginusername' => $auth->admin_users_name]);
+                    session(['loginusertype' => 'admin']);
+                }
+                else
+                {
+                    $warning="Your password incorrect";
+                    return response()->json(['error' => $warning]);
+                    exit;
+                }
+                
             }
             else
             {
-                $warning="Your email or password incorrect";
+                $warning="Your email incorrect";
                 return response()->json(['error' => $warning]);
                 exit;
             }
         }
         else
         {
-            $email = $request->input('admin_users_email');  
-            $password = $request->input('admin_users_password');
+            
             /*login for project manager user */
             $user = User::where('users_email','=',$email)->first();
             if(isset($user))
@@ -78,7 +89,6 @@ class LoginController extends Controller
            
                 $emailstatus = $user->email_status;
                 $usertype = $user->user_types_id;
-                
                 /* usertype 1 for project manager and 2 for associate */
                 if($usertype == 1)
                 {
@@ -164,9 +174,16 @@ class LoginController extends Controller
         $userid = base64_decode($user_id);
         $forgotpassword = UserForgetPasswordRequest::where('users_id','=',$userid)
                                                     ->get();
-        foreach($forgotpassword as $value) 
+        if(isset($forgotpassword))
         {
-           $flag = $value->password_updated_flag;
+            foreach($forgotpassword as $value) 
+            {
+                $flag = $value->password_updated_flag;
+            }
+        }
+        else
+        {
+            $forgotpassword = 0;
         }
         return view('password.forgotpassword',['userid'=>$userid,'flag'=>$flag]);
         
@@ -185,12 +202,12 @@ class LoginController extends Controller
         //encrypt password field
         $newpw = Hash::make($request['new_password']);
         $model=User::where('users_id','=',$request['userid'])->update(['users_password' =>$newpw]);
+      
         $date = date('Y-m-d H:i:s');
         $forgotpwd = UserForgetPasswordRequest::where('users_id','=',$request['userid'])->get();
         foreach ($forgotpwd as  $value) {
             $forgotpwdid = $value->user_forget_password_request_id;
         }
-
         $model=UserForgetPasswordRequest::where('users_id','=',$request['userid'])->
         where('user_forget_password_request_id','=',$forgotpwdid)->update(['password_updated_flag' => 1]);
         $model=UserForgetPasswordRequest::where('users_id','=',$request['userid'])->

@@ -19,9 +19,10 @@
           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-8">
             <div class="manager-profile">
               <div class="profile-picture">
-                <img src="{{ $profile['profileimage'] }}" />
+                <img src="{{ $profile['profileimage'] }}" style="height: 100%;width: 100%;" />
               </div> 
-              <h4 class="manager-name">{{ $profile['username'] }}</h4>   
+              <h4 class="manager-name">{{ $profile['username'] }}</h4>
+              <h5 class="manager-name" style="color: #586b6f8a;">{{ $profile['associateType'] }}  </h5> 
               <div class="row">
                 <div class="col-md-3">                            
                   <div class="manager-data">
@@ -216,8 +217,8 @@
               </div>
             </div>
             <div class="col-md-6">
-            <label>Scope Performed</label>
-              <div class="form-group field-multi-select-scope">
+            <label>Scope(s)</label>
+              <div class="form-group field-multi-edit-scope">
                 <select id="ddl_scope_performed" multiple="multiple" name="scope_performed[]">
                   @foreach($scope as $value)
                     <?php $flag = 0;?>
@@ -346,12 +347,12 @@ $('body').on('click','#update-user', function (event) {
     $("#myMapModal").modal("show");
    
   });
- $('#close_mapbtn').on('click', function () {
+  $('#close_mapbtn').on('click', function () {
    // alert('hi');
     // Load up a new modal...
     $('#editprofile').modal('show');
   })
- $('#close_map').on('click', function () {
+  $('#close_map').on('click', function () {
    // alert('hi');
     // Load up a new modal...
     $('#editprofile').modal('show');
