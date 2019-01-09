@@ -94,7 +94,7 @@
                                               </div>
 
                                                    <div class="ls-scope">
-                                                      <h5>Scopes</h5>    
+                                                      <h5>Scope(s)</h5>    
                                                       <ul>
                                                           <li id="publish-scope">{{$publish_projectdetail['scope']}}</li>
                                                          
@@ -119,7 +119,20 @@
                                                           <h4>Suggested Bid</h4>
                                                           <font id="publish-approxbid">{{$publish_projectdetail['approxbid']}}</font>   
                                                       </div>
-                                                        <hr>  
+                                                       <div class="rs-suggest-bid">
+                                                          <h4>Job Reach</h4>
+                                                          <font id="jobReach" style="font-size: 15px;">
+                                                          {{$publish_projectdetail['jobReachCount']}}&nbsp People</font>   
+                                                      </div>
+                                                        <hr> 
+                                                         @if($publish_projectdetail['associateTypeId'] == 1)
+                                                         <div class="rs-btn-bid">
+                                                           
+                                                          <a href="#" class="btn red-btn" id="acceptProject">Accept</a>
+                                                          <a href="#" class="btn red-btn" id="declineProject">Decline</a>
+                                                      </div>
+                                                      
+                                                        @else
                                                        <div class="rs-make-bid">
                                                           <h4>Make a Bid</h4>
                                                             <i class="fa fa-usd" aria-hidden="true"
@@ -136,16 +149,16 @@
                                                       &nbsp &nbsp &nbsp
                                                           <a href="#" class="btn red-btn" id="submitbid">Submit Bid</a>
                                                       </div>
-
+                                                      @endif
                                                       <div class="rs-mr-view-profile">
                                                           <button type="button" class="btn" data-toggle="modal" data-target="#myModal" id="publish-manger">View Project Manager Profile</button>
                                                       </div>        
                                                 </div>
                                             </div>      
-                                        </div>
-                                      </div>    
-                                    </div> 
-                                 @else
+                                          </div>
+                                        </div>    
+                                      </div> 
+                                  @else
                                   <br><br>
                                   <h2 class="center-title">There are no any projects available.
                                   </h2>
@@ -236,7 +249,7 @@
                                             </div>
 
                                                  <div class="ls-scope">
-                                                    <h5>Scopes</h5>    
+                                                    <h5>Scope(s)</h5>    
                                                     <ul>
                                                         <li id="scope">{{$progresProjecDetail['scope']}}</li>
                                                         
@@ -264,11 +277,12 @@
                                                 </div>
                                                 <div class="rs-btn-bid"> 
                                                  &nbsp&nbsp &nbsp
-                                                        <button type="button" class="btn red-btn" data-toggle="modal" data-target="#project-status" id="addstatus">Add Status</button>
+                                                        <button type="button" class="btn red-btn" data-toggle="modal" data-target="#project-status" id="addstatus">Add Notes</button>
                                                     </div>
 
                                                     <div class="rs-mr-view-profile">
-                                                        <button type="button" class="btn" data-toggle="modal" data-target="#myModal" id="managerprofile">View Project Manager Profile</button>
+                                                        <button type="button" class="btn"  id="managerprofile" data-toggle="modal" data-target="#myModal">View Project Manager Profile</button>
+
                                                     </div>        
 
                                             </div>
@@ -372,7 +386,7 @@
                                                 </div>
                                             </div>
                                             <div class="ls-scope">
-                                              <h5>Scopes</h5>    
+                                              <h5>Scope(s)</h5>    
                                               <ul>
                                                 <li id="history_scope" name="history_scope">{{ $history_projectdetail['scope'] }}</li>
                                               </ul> 
@@ -419,42 +433,38 @@
                                                     <hr>  
                                                      <div class="rs-btn-bid"> 
                                                         &nbsp&nbsp &nbsp
-                                                        <button type="button" class="btn red-btn" data-toggle="modal" data-target="#project-status" id="view-status">View Status</button>
+                                                        <button type="button" class="btn red-btn" data-toggle="modal" data-target="#project-status" id="view-status">View Notes</button>
                                                     </div>
                                                  
                                                     <div class="rs-mr-view-profile">
                                                         <button type="button" class="btn" data-toggle="modal" data-target="#myModal" name="project_history_manager" id="project_history_manager">View Project Manager Profile</button>
                                                     </div>        
-
+                                                 </div>
+                                              </div>      
                                             </div>
-                                            
-
-                                      </div>      
-                                  </div>
-                                
-                                </div>    
-                                 </div>  
-                                 @else
-                                  <br><br>
-                                  <h2 class="center-title">There are no any projects available In History.
+                                          </div>    
+                                      </div>  
+                                    @else
+                                    <br><br>
+                                    <h2 class="center-title">There are no any projects available In History.
                                   
-                                  </h2>
+                                    </h2>
                                 
-                              @endif 
-                              </div>
+                                  @endif 
+                                </div>
                                <div class="tab-content col-md-12" id="div-history-no-project">
                                  
-                               </div>
                               </div>
-
                             </div>
-                          </div>
-                        </div>
-                    </div>    
-            </div>
-        </div>
 
-    </header>
+                        </div>
+                      </div>
+                    </div>
+                  </div>    
+                </div>
+            </div>
+
+          </header>
     
 
 
@@ -510,7 +520,7 @@
       <!-- Modal Header -->
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal"><i class="fa fa-angle-left"></i></button>
-        <h4 class="modal-title">Project Status</h4>
+        <h4 class="modal-title">Project Notes</h4>
         
       </div>
 
@@ -518,7 +528,7 @@
       <div class="modal-body">
         <div class="project-level">
           <div id="no_any_status">
-            <p style= "margin-left: 250px;"> There are no any status available</p>
+            <p style= "margin-left: 250px;"> There are no any notes available</p>
           </div>
           <input type="hidden" name="status_pagenumber" id="status_pagenumber">
           <div style="overflow-y: scroll;max-height: 350px; background: white;" id="project-status-list">
@@ -529,7 +539,13 @@
                     {{csrf_field()}}
                     <div class="form-group {{ $errors->has('subjecttxt') ? 'has-error' : '' }}">
                     <input type="hidden" name="project-id" id="project-id">
-                        <input type="text" name="subjecttxt" id="subjecttxt" value="" placeholder="Add Subject" maxlength="255">
+                        <select  name="subjecttxt" id="subjecttxt" class="form-control">
+                        <option value="-1">--Please select status type--</option>
+                          @foreach($progressStatus as $value)
+                          <option value="{{ $value['progress_status_type_id'] }}">{{ $value['progress_status_type'] }}</option>
+                          @endforeach
+                        </select>
+                        
                          <span class="text-danger">{{ $errors->first('subjecttxt') }}</span>
                     </div>
                     <div class="form-group {{ $errors->has('statustxt') ? 'has-error' : '' }}">
@@ -537,7 +553,7 @@
                        <span class="text-danger">{{ $errors->first('statustxt') }}</span>
                     </div>
                      <div class="form-group">
-                      <button type="button" id="add_status" class="btn red-btn">Add</button>
+                      <button type="button" id="add_status" class="btn red-btn">Add Notes</button>
                     </div>
                     </form>
                  </div>                                                                 
@@ -696,10 +712,11 @@
               
             }
         });
-        
-        
       }
-    $('#managerprofile').click(function(){
+    });
+  </script>
+  <script type="text/javascript">
+    $("#managerprofile").click(function(){
       var projectid = document.getElementById("project_id").value;
       $.ajax({
             type: 'GET',
@@ -707,7 +724,6 @@
               data: {projectid:projectid},
               dataType: 'json',
           })
-
           .done(function(msg) {
            $("#managername").text(msg.managername);
            $("#manageremail").text(msg.manageremail);
@@ -716,11 +732,11 @@
            $('#managerimage').attr('src',msg.managerimage );
         });
     });
-  });
   </script>
   <script>
     $(document).ready(function(){
     $('#addstatus').click(function(){
+      $('#subjecttxt').prop('selectedIndex',0);
       var projectid = document.getElementById("project_id").value;
       $("#statuslist").empty();
       $.ajax({
@@ -839,13 +855,13 @@
           
           if(onholdflag == 1)
           {
-            $("#addstatus").text('View Status');
+            $("#addstatus").text('View Notes');
             //document.getElementById("addstatus").value="View Status";
             document.getElementById('add_project_status').style.display='none'; 
           }
           else
           {
-            $("#addstatus").text('Add Status');
+            $("#addstatus").text('Add Notes');
             document.getElementById('add_project_status').style.display='block'; 
           }
           document.getElementById("project_id").value = projectid;
@@ -974,6 +990,9 @@
               $("#publish-template").text(msg.template);
               $("#publish-scope").text(msg.scope);
               $("#publish-approxbid").text(msg.approxbid);
+              var jobReachCount = msg.jobReachCount;
+
+              $("#jobReach").text(jobReachCount+' '+'People');
               $("#publish-onsitedate").text(msg.onsitedate);
           });
       }
@@ -998,6 +1017,9 @@
                   $("#publish-onsitedate").text(projectData['onsitedate']);
                   $("#publish-projectid").text(projectData['projectid']);
                   $("#publish-approxbid").text(projectData['approxbid']);
+                  $("#approxbid").text(projectData['approxbid']);
+                  var jobReachCount = projectData['jobReachCount'];
+                  $("#jobReach").text(jobReachCount+' '+'People');
                   $("#publish-bidstatus").text(projectData['bidstatus']);
                   $("#publish-template").text(projectData['template']);
                   $("#publish-scope").text(projectData['scope']);
@@ -1032,7 +1054,7 @@
               $("#c_tab").hide();
               $("#a_tab").show();
               
-              document.getElementById("publish_pagenumber").value = 1;
+              //document.getElementById("publish_pagenumber").value = 1;
               document.getElementById("a_generalSearch").value = '';
               $("#publish-projects").show();
               $("#publish-project-list").show();
@@ -1051,7 +1073,7 @@
               $("#c_tab").hide();
               $("#b_tab").show();
               
-              document.getElementById("pagenumber").value = 1;
+              //document.getElementById("pagenumber").value = 1;
               var projectid = document.getElementById("project_id").value;
               /*("#project-name-list li a").removeClass('active');*/
               $("#"+projectid).children('a').addClass("active");
@@ -1203,7 +1225,7 @@
           var tabSelected = $(this).attr('id');
           if (tabSelected == 'project-History') {
 
-            document.getElementById("history_pagenumber").value = 1;
+            //document.getElementById("history_pagenumber").value = 1;
              $('#b_tab').hide();
               $("#a_tab").hide();
               $("#c_tab").show();
@@ -1265,6 +1287,48 @@
             }
         });
     }); 
+     $('#acceptProject').click(function(){
+      var projectid = document.getElementById("publish-project-id").value;
+      $.ajax({
+            type: 'GET',
+              url: '<?php echo route('acceptProject'); ?>',
+              data: {projectid:projectid},
+              dataType: 'json',
+          })
+
+          .done(function(msg) {
+            if(msg.status == 1)
+            {
+              alert(msg.message);
+              window.location.reload();
+            }
+            if(msg.status == 0)
+            {
+              alert(msg.message);
+            }
+        });
+    }); 
+     $('#declineProject').click(function(){
+     var projectid = document.getElementById("publish-project-id").value;
+      $.ajax({
+            type: 'GET',
+              url: '<?php echo route('declineProject'); ?>',
+              data: {projectid:projectid},
+              dataType: 'json',
+          })
+
+          .done(function(msg) {
+            if(msg.status == 1)
+            {
+              alert(msg.message);
+              window.location.reload();
+            }
+            if(msg.status == 0)
+            {
+              alert(msg.message);
+            }
+        });
+    }); 
   </script>
 
 
@@ -1276,6 +1340,8 @@
         var $this = $(this);
         var pagenumber1 = document.getElementById('pagenumber').value;
         var pagenumber = ++pagenumber1;
+        document.getElementById('pagenumber').value = '';
+        document.getElementById('pagenumber').value = pagenumber;
         $.ajax({
           type: 'GET',
             url: '<?php echo route('loadInProgressProject'); ?>',
@@ -1296,17 +1362,16 @@
             //var $data = $(data);
             //$data.hide();
             results.append(data.appendLi);
-            pagenumber = pagenumber;
+           // pagenumber = pagenumber;
             //$data.fadeIn();
             //$results.removeData("loading");
           }
-          else
+          /*else
           {
             pagenumber = --pagenumber1;;
             
-          }
-          document.getElementById('pagenumber').value = '';
-          document.getElementById('pagenumber').value = pagenumber;
+          }*/
+          
 
             
         }
@@ -1321,7 +1386,8 @@
         var pagenumber1 = document.getElementById('status_pagenumber').value;
         var pagenumber = ++pagenumber1;
         var projectid = document.getElementById("project_id").value;
-
+        document.getElementById('status_pagenumber').value = '';
+        document.getElementById('status_pagenumber').value = pagenumber;
         //var $results = $("#projectlist");
         //var pagenumber = 1;
         $.ajax({
@@ -1345,17 +1411,16 @@
             //var $data = $(data);
             //$data.hide();
             results.append(data.appendLi);
-            pagenumber = pagenumber;
+            //pagenumber = pagenumber;
             //$data.fadeIn();
             //$results.removeData("loading");
           }
-          else
+          /*else
           {
             pagenumber = --pagenumber1;;
             
-          }
-          document.getElementById('status_pagenumber').value = '';
-          document.getElementById('status_pagenumber').value = pagenumber;
+          }*/
+          
 
             
         }
@@ -1371,6 +1436,8 @@
         var search = document.getElementById('a_generalSearch').value;
       
         var pagenumber = ++pagenumber1;
+        document.getElementById('status_pagenumber').value = '';
+        document.getElementById('status_pagenumber').value = pagenumber;
        //var $results = $("#projectlist");
         //var pagenumber = 1;
         $.ajax({
@@ -1394,17 +1461,16 @@
             //var $data = $(data);
             //$data.hide();
             results.append(data.appendLi);
-            pagenumber = pagenumber;
+            //pagenumber = pagenumber;
             //$data.fadeIn();
             //$results.removeData("loading");
           }
-          else
+          /*else
           {
             pagenumber = --pagenumber1;;
             
-          }
-          document.getElementById('status_pagenumber').value = '';
-          document.getElementById('status_pagenumber').value = pagenumber;
+          }*/
+          
 
             
         }
@@ -1422,6 +1488,8 @@
         var search = document.getElementById('c_generalSearch').value;
         
         var pagenumber = ++pagenumber1;
+        document.getElementById('status_pagenumber').value = '';
+        document.getElementById('status_pagenumber').value = pagenumber;
        //var $results = $("#projectlist");
         //var pagenumber = 1;
         $.ajax({
@@ -1445,17 +1513,16 @@
             //var $data = $(data);
             //$data.hide();
             results.append(data.appendLi);
-            pagenumber = pagenumber;
+            //pagenumber = pagenumber;
             //$data.fadeIn();
             //$results.removeData("loading");
           }
-          else
+         /* else
           {
             pagenumber = --pagenumber1;;
             
-          }
-          document.getElementById('status_pagenumber').value = '';
-          document.getElementById('status_pagenumber').value = pagenumber;
+          }*/
+          
 
             
         }

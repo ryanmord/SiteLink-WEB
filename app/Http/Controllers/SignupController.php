@@ -8,6 +8,8 @@ use App\Mail\UserRegistered;
 use App\EmailVerification;
 use App\UserForgetPasswordRequest;
 use App\Mail\ForgotPassword;
+//use App\AdminForgotPassword;
+use App\AdminUser;
 use Mail;
 use File;
 use Image;
@@ -22,8 +24,11 @@ class SignupController extends Controller
      * @return void
      */
    
-    public function emailverification()
+    public function emailverification($userid)
     {
+        $userid = base64_decode($userid);
+        $flag = User::where('users_id', '=', $userid)
+                    ->update(['email_status' => 1]);
         return view('signup.verifyemail');
     }
     public function checkverifycode(Request $request)
@@ -162,13 +167,16 @@ class SignupController extends Controller
         $model->users_phone = $phone;
         $model->save();
         $user = User::where('users_email','=',$email)->first();
-        $verifycode = str_random(8);
+       /* $verifycode = str_random(8);
         $emailverify = new EmailVerification;
         $emailverify->user_id = $user->users_id;
         $emailverify->verification_code = $verifycode;
         $emailverify->status = 1;
         $emailverify->created_at = date('Y-m-d H:i:s');
-        $emailverify->save();
+        $emailverify->save();*/
+        $userid = base64_encode($user->users_id);
+        //$user_id_d = base64_decode($user_id);
+        $url = url('/emailVerification/'.$userid);
         if(isset($request['scope']))
         {
                     
@@ -180,8 +188,8 @@ class SignupController extends Controller
             $scopeperformed->save();
         }
         $action = 1;
-        Mail::to($email)->send(new UserRegistered($user,$verifycode,$action));
-        return response()->json(['success' => 'user registration successfully']);
+        Mail::to($email)->send(new UserRegistered($user,$url,$action));
+        return response()->json(['success' => 'Please check your email for email verification..']);
         exit;
             
     }
@@ -189,6 +197,7 @@ class SignupController extends Controller
     {
         $email = $request['femail'];
         $user  = User::where('users_email', '=',$email)->first();
+        $adminuser = AdminUser::where('admin_users_email','=',$email)->first();
         if(isset($user))
         {
             $model = new UserForgetPasswordRequest;
@@ -204,6 +213,21 @@ class SignupController extends Controller
             return response()->json(['success' => $warning]);
             exit;
         }
+        /*if(isset($adminuser))
+        {
+            $model = new AdminForgetPasswordRequest;
+            $model->users_id = $user->users_id;
+            $model->request_date = date('Y-m-d H:i:s');
+            $model->save();
+            $username = $user->users_name;
+            $useremail = $user->users_email;
+            $userid = base64_encode($user->users_id);
+            $url = url('/forgotPassword/'.$userid);
+            Mail::to($useremail)->send(new ForgotPassword($user,$url));
+            $warning="password reset link send on your email..please check your email";
+            return response()->json(['success' => $warning]);
+            exit;
+        }*/
         else
         {
             $warning="Please check your email address";

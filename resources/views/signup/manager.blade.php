@@ -280,7 +280,7 @@ $(document).ready(function () {
           		else
           		{
           			alert(msg.success);
-					url = '<?php echo route('emailVerification'); ?>';
+					url = '<?php echo route('cmslogin'); ?>';
             		window.location.replace(url);
           		}
         	});

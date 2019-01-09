@@ -56,10 +56,10 @@
             <div>
               <div style=" height: 100px;width: 220px;background-color:#F5AB35;text-align: center;">
                 <br>
-                <font size="5" color="white"><b>{{$bidmadecount}}</b></font>
+                <font size="5" color="white"><b>{{$inProgressCount}}</b></font>
 
                 <br>
-                <font size="4" color="white"><b><span class="glyphicon glyphicon-briefcase"></span> Total Bids</b></font>
+                <font size="4" color="white"><b><span class="glyphicon glyphicon-briefcase"></span> Jobs In Progress</b></font>
               </div>
             </div>
           </div>

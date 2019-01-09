@@ -16,7 +16,11 @@
         <div class="manager-picture">
         <img src="{{asset('img/users/'.$user['users_profile_image'])}}" alt="" title="" id="managerimage" style="height: 100%;width: 100%;">
         </div>
+        <center>
         <h4 id="managername">{{ $user['users_name'] }}&nbsp{{ $user['last_name'] }}</h4>
+        
+        <h5 id="managername" style="color: #586b6f8a;">{{ $user['associateType'] }}</h5>
+        </center>
         <div class="manager-contact">
             <ul>
                 <li>

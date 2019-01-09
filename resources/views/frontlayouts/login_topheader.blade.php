@@ -45,10 +45,8 @@
                      <li class="nav-item" id="myBids-menu">
                         <a class="nav-link js-scroll-trigger" href="#" id="a-settings">Settings</a>
                     </li>
-
-               
                     <li class="nav-item" id="myProfile-menu">
-                        <a class="nav-link js-scroll-trigger" href="{{url('/home/myProfile')}}">{{ucfirst(session('associateName'))}}<img src="{{asset('img/users/'.session('profileImage'))}}" /></a>
+                        <a class="nav-link js-scroll-trigger" href="{{url('/home/myProfile')}}">{{ucfirst(session('associateName'))}}<img src="{{asset('img/users/'.session('profileImage'))}}"></a>
                         
                     </li>
                     <li class="nav-item">

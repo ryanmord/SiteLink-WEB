@@ -100,14 +100,12 @@
 										</div>
 										<label id="errormsg" class="error" style="color: #b70a0a;"></label>
 									</div>	
-
-									<div class="form-group">
+                  <div class="form-group">
 									 	<button type="submit" class="btn btn-primary svbtn" 
 									 	id="registraion-btn" name="registraion-btn">SUBMIT</button>						
 									</div>   
 								</div>
-								
-							</div>					
+						  </div>					
 		       	</div>
 		      </div>
 				</form>	
@@ -239,8 +237,8 @@ $('body').on('click','#registraion-btn', function (event) {
           	$(".loader").fadeOut("slow");
          	if(msg.status == '1')
          	{
-
-         		url = '<?php echo route('emailVerify'); ?>';
+            alert(msg.message);
+         		url = '<?php echo route('AssociateLogin'); ?>';
           		window.location.replace(url);
          	}
          	else

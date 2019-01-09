@@ -69,7 +69,7 @@
                                                 @if(session('loginusertype') == 'admin')
                                                  <th style="text-align: center;vertical-align: middle;">Project Manager</th>
                                                 @endif
-                                                <th style="text-align: center;vertical-align: middle;">Allocated</th>
+                                                <th style="text-align: center;vertical-align: middle;">Assigned To</th>
                                                 <th style="text-align: center;vertical-align: middle;">Created</th>
                                                
                                                 <th style="text-align: center;vertical-align: middle;">Action</th>
@@ -122,13 +122,13 @@
                                                                 <li><a href="{{url('/allProejcts/projectDetail/'.$project['project_id'])}}">View</a></li>
                                                             @else
                                                             <li><a href="{{url('/allProejcts/projectDetail/'.$project['project_id'])}}">View</a></li>
-                                                            <li><a href="{{url('/allProejcts/projectComplete/'.$project['project_id'])}}" onclick="return confirm('Are you want to sure complete this project?')">Complete</a></li>
+                                                            <li id="complete-menu" data-id="{{ $project['project_id'] }}"><a href="#" data-toggle="modal" data-target="#rating-project">Complete</a></li>
                                                             <li><a href="{{url('/allProejcts/projectCancel/'.$project['project_id'])}}" onclick="return confirm('Are you want to sure cancel this project?')">Cancel</a></li>
                                                             <li><a href="{{url('/allProejcts/projectOnHold/'.$project['project_id'])}}" onclick="return confirm('Are you want to sure hold this project?')">On Hold </a></li>
                                                             @endif
-                                                            @if($project['statuscount'] != 0)
-                                                             <li><a href="{{url('/projectStatus/'.$project['project_id'])}}">Status</a></li>
-                                                            @endif
+                                                           <!--  @if($project['statuscount'] != 0)
+                                                             <li><a href="{{url('/projectStatus/'.$project['project_id'])}}">View Notes</a></li>
+                                                            @endif -->
                                                             </ul>
                                                         </div>
                                                     </td>
@@ -140,6 +140,9 @@
                                         <h6><center>No any project in progress</center></h6>
                                     @endif
                                 </div>
+                                @if(session('loginusertype') != 'admin')
+                                    @include('project.rating')
+                                @endif
                             </div>
                             <div class="tab-pane fade" id="completedproject">
                                 <div class="table-responsive">
@@ -155,7 +158,7 @@
                                         @if(session('loginusertype') == 'admin')
                                         <th style="text-align: center;vertical-align: middle;">Project Manager</th>
                                         @endif
-                                        <th style="text-align: center;vertical-align: middle;">Allocated</th>
+                                        <th style="text-align: center;vertical-align: middle;">Assigned To</th>
                                         <th style="text-align: center;vertical-align: middle;">Created</th>
                                         <th style="text-align: center;vertical-align: middle;">Completed</th>
             
@@ -213,9 +216,9 @@
                                                 right: 100% !important;text-align: center !important;transform: translate(-75%, 0) !important;">
                     
                                                 <li><a href="{{url('/allProejcts/projectDetail/'.$project['project_id'])}}">View</a></li>
-                                                @if($project['statuscount'] != 0)
-                                                    <li><a href="{{url('/projectStatus/'.$project['project_id'])}}">Status</a></li>
-                                                @endif
+                                                <!-- @if($project['statuscount'] != 0)
+                                                    <li><a href="{{url('/projectStatus/'.$project['project_id'])}}">View Notes</a></li>
+                                                @endif -->
                    
                                                 </ul>
                                             </div>
@@ -243,7 +246,7 @@
                                             @if(session('loginusertype') == 'admin')
                                             <th style="text-align: center;vertical-align: middle;">Project Manager</th>
                                             @endif
-                                            <th style="text-align: center;vertical-align: middle;">Allocated</th>
+                                            <th style="text-align: center;vertical-align: middle;">Assigned To</th>
             
                                             <th style="text-align: center;vertical-align: middle;">Created</th>
             
@@ -301,9 +304,9 @@
                                                 right: 100% !important;text-align: center !important;transform: translate(-75%, 0) !important;">
                     
                                                     <li><a href="{{url('/allProejcts/projectDetail/'.$project['project_id'])}}">View</a></li>
-                                                    @if($project['statuscount'] != 0)
-                                                    <li><a href="{{url('/projectStatus/'.$project['project_id'])}}">Status</a></li>
-                                                    @endif
+                                                   <!--  @if($project['statuscount'] != 0)
+                                                    <li><a href="{{url('/projectStatus/'.$project['project_id'])}}">View Noes</a></li>
+                                                    @endif -->
                    
                                                 </ul>
                                             </div>
@@ -330,7 +333,7 @@
                                         @if(session('loginusertype') == 'admin')
                                         <th style="text-align: center;vertical-align: middle;">Project Manager</th>
                                         @endif
-                                        <th style="text-align: center;vertical-align: middle;">Allocated</th>
+                                        <th style="text-align: center;vertical-align: middle;">Assigned To</th>
             
                                         <th style="text-align: center;vertical-align: middle;">Created</th>
                                         <th style="text-align: center;vertical-align: middle;">Action</th>
@@ -381,9 +384,9 @@
                        
                                                     <li><a href="{{url('/allProejcts/projectInProgress/'.$project['project_id'])}}" onclick="return confirm('Are you want to sure In progress this project?')">In Progress</a></li>
                                                     @endif
-                                                    @if($project['statuscount'] != 0)
-                                                        <li><a href="{{url('/projectStatus/'.$project['project_id'])}}">Status</a></li>
-                                                    @endif
+                                                  <!--   @if($project['statuscount'] != 0)
+                                                    <li><a href="{{url('/projectStatus/'.$project['project_id'])}}">View Notes</a></li>
+                                                    @endif -->
                    
                                                 </ul>
                                             </div>
@@ -408,7 +411,9 @@
                                     <th style="text-align: center;vertical-align: middle;">Total Bids</th>
                                     <th style="text-align: center;vertical-align: middle;">Site Address</th>
                                     <th style="text-align: center;vertical-align: middle;" width="10%">Suggested Bid</th>
+                                    @if(session('loginusertype') == 'admin')
                                     <th style="text-align: center;vertical-align: middle;">Project Manager</th>
+                                    @endif
                                     <th style="text-align: center;vertical-align: middle;"> Created </th>
                                     <th style="text-align: center;vertical-align: middle;">Action</th>
                                     </tr>
@@ -436,9 +441,11 @@
                                             <span class="glyphicon glyphicon-usd"></span>
                                             {{ $project['approx_bid'] }}
                                         </td>
+                                        @if(session('loginusertype') == 'admin')
                                         <td style="text-align: left;vertical-align: middle;">
                                             {{ $project['managername'] }}
                                         </td>
+                                        @endif
                                         <?php
                                             $date= date($project['created_at']);
                                             $datetime2 = new DateTime($date);
@@ -455,16 +462,13 @@
                     
                                                     <li><a href="{{url('/allProejcts/projectDetail/'.$project['project_id'])}}">View</a></li>
                                                     @if(session('loginusertype') == 'admin')
-                                                    @if($project['bidcount'] == 0)
+                                                    
                                                     <li><a href="{{url('editProject/'.$project['project_id'])}}">Edit</a></li>
-                                                    @else
-                                                    <li><a href="{{url('projectBid/'.$project['project_id'])}}">Bids</a></li>
                                                     @endif
-                                                    @else
                                                     @if($project['bidcount'] != 0)
                                                     <li><a href="{{url('projectBid/'.$project['project_id'])}}">Bids</a></li>
                                                     @endif
-                                                    @endif
+                                                   
                                                 </ul>
                                             </div>
                                         </td>
@@ -488,11 +492,45 @@
 </div>
     
 </div>
-    @stop
-    @section('script') 
-   <script type="text/javascript">
+@stop
+@section('script') 
+<script type="text/javascript">
+
 $(window).load(function() {
     $(".loader").fadeOut("slow");
+});
+$('body').on('click','#complete-menu', function (event) {
+    var projectid = $(this).attr("data-id");
+          $.ajax({
+            type: 'GET',
+              url: '<?php echo route('projectAssociate'); ?>',
+              data: {projectid:projectid},
+              dataType: 'json',
+          })
+
+          .done(function(msg) {
+            $("#associate-name").text(msg.associatename);
+            $("#associate-email").text(msg.associateemail);
+            $("#associate-company").text(msg.associatecompany);
+            $("#associate-phone").text(msg.associatephone);
+            $('#associate-profile').attr('src',msg.associateimage );
+          });
+   /* var retVal = confirm("Do you want to complete this project?");
+    alert(retVal);
+        if( retVal == false ) {
+            jQuery.noConflict();
+            $('#rating-project').modal('show'); 
+            //return false;
+        } */
+});
+$("#ratingStar > i").hover(function() {
+   // var x = evt.pageX - $('#element').offset().left;
+$(this).prevAll().addClass('fa-star').removeClass('fa-star-half-o')
+
+$(this).addClass('fa-star-half-o').removeClass('fa-star-o')
+$(this).nextAll().addClass('fa-star-o').removeClass('fa-star-half-o')
+var rating = $(this).attr("data-id");
+$('#ratingNumber').html(rating).show();
 });
 </script>
 

@@ -16,13 +16,13 @@ class UserRegistered extends Mailable
      * @return void
      */
     protected $user;
-    protected $password;
+    protected $url;
     protected $action;
     
-    public function __construct($user,$verifycode,$action)
+    public function __construct($user,$url,$action)
     {
         $this->user      = $user;
-        $this->verifycode  = $verifycode;
+        $this->url       = $url;
         $this->action    = $action;
     }
 
@@ -39,23 +39,23 @@ class UserRegistered extends Mailable
             $usertype = $this->user->user_types_id;
             if($usertype == 2)
             {
-                $introLines = array('Your registration for Scoped app is completed successfully');
-                $outroLines = array('Now you can complete your Email Verification step into the Scoped app using following verification code.','Verification code : '.$this->verifycode);
+                $introLines = array('Your registration for Scoped app is completed successfully.');
+                $outroLines = array('Now you can complete your Email Verification step into the Scoped app. Please click on following button.');
            
                 $subject = 'Scoped: Email verification';
                 $greeting = 'Hello '.$this->user->users_name."!";
-                $actionUrl = url('/');
+                $actionUrl = $this->url;
                 return $this->subject($subject)->markdown('email.userRegistration',['level'=>'success','greeting'=>$greeting,'introLines'=>$introLines,'outroLines'=>$outroLines, 'actionText' => 'Site Link' , 'actionUrl' => $actionUrl]);
                 exit;
             }
             else
             {
-                $introLines = array('Your registration for Scoped app is completed successfully');
-                $outroLines = array('Now you can complete your Email Verification step into the Scoped app using following verification code.','Verification code : '.$this->verifycode);
+                $introLines = array('Your registration for Scoped app is completed successfully.');
+                $outroLines = array('Now you can complete your Email Verification step into the Scoped app. Please click on following button.');
            
                 $subject = 'Scoped: Email verification';
                 $greeting = 'Hello '.$this->user->users_name."!";
-                $actionUrl = url('/emailVerification');
+                $actionUrl = $this->url;
                 return $this->subject($subject)->markdown('email.managersignup',['level'=>'success','greeting'=>$greeting,'introLines'=>$introLines,'outroLines'=>$outroLines, 'actionText' => 'Site Link' , 'actionUrl' => $actionUrl]);
                 exit;
             }
