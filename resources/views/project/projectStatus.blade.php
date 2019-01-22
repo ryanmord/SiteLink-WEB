@@ -20,9 +20,11 @@
           <div style="overflow-y: scroll;max-height: 350px; background: white;" id="project-status-list">
             <ul id="statuslist">
              </ul>
-          </div>                                                                                       
-            </div>    
-          </div>
-       </div>
+          </div>  
+                                                                                   
+       
+          </div>  
+        </div>
+      </div>
   </div>
 </div>

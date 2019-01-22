@@ -4,16 +4,14 @@
 <head>
   <meta charset="utf-8">
   <title> Scoped </title>
-  <link href="{{asset('/css/themeCss/map.css')}}" rel="stylesheet">
+ <!--  <link href="{{asset('/css/themeCss/map.css')}}" rel="stylesheet"> -->
   <link rel="shortcut icon" href="{{{ asset('img/brick-wall.png') }}}">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css">
+ <!--  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css"> -->
     @include('layouts.include_css')
+
+  <!-- <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css"> -->
   <link href="{{asset('/css/frontCss/agency.css')}}" rel="stylesheet">
-  <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
-  <script src="//code.jquery.com/jquery-1.10.2.js"></script>
-  <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js">
-  </script>
+  
  
 </head>
 
@@ -176,16 +174,11 @@
                               <div class="edit-btn">
                                 <center>
                                   <button type="button" class="btn red-btn" data-toggle="modal" data-target="#associateprofile">Associate Profile</button>
-                                  @if($statuscount != 0)
                                   <button type="button" class="btn red-btn" data-toggle="modal" data-target="#project-status" id="view-status">View Notes</button>
-                                  @endif
                                 </center>
                               </div>
                              @include('project.associate_profile')
-                             @include('project.projectStatus')
-                           @endif
-                           @if($statuscount != 0)
-                           @endif
+                          @endif
                         </div>
                       </div>
                   </div>
@@ -197,6 +190,20 @@
       </div>
     </div>
   </div>
+  @if(session('loginusertype') == 'admin')
+    @include('project.projectStatus')
+  @else
+    @if($holdstatus == 3)
+      @include('project.addprojectstatus')
+    @else
+      @include('project.projectStatus')
+    @endif
+   @endif
+  <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+  <script src="{{asset('js/frontJs/jquery.validate.js')}}"></script>  
+  <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js">
+  </script>
   <script type="text/javascript">
     $(window).load(function() {
       $(".loader").fadeOut("slow");
@@ -256,6 +263,8 @@
         var $this = $(this);
         var pagenumber1 = document.getElementById('status_pagenumber').value;
         var pagenumber = ++pagenumber1;
+        document.getElementById('status_pagenumber').value = '';
+        document.getElementById('status_pagenumber').value = pagenumber;
         var projectid = document.getElementById("project_id").value;
 
         //var $results = $("#projectlist");
@@ -281,21 +290,78 @@
             //var $data = $(data);
             //$data.hide();
             results.append(data.appendLi);
-            pagenumber = pagenumber;
+            //pagenumber = pagenumber;
             //$data.fadeIn();
             //$results.removeData("loading");
           }
-          else
+          /*else
           {
             pagenumber = --pagenumber1;;
             
-          }
-          document.getElementById('status_pagenumber').value = '';
-          document.getElementById('status_pagenumber').value = pagenumber;
+          }*/
+          
 
             
         }
       });
+    });
+  </script>
+  <script type="text/javascript">
+    $('body').on('click','#add_status', function (event) {
+    event.preventDefault(); 
+    var projectid = document.getElementById("project_id").value;
+    document.getElementById("project-id").value = projectid;
+    $("#status-form").validate({
+
+    rules: {
+            statustxt: {
+                required: true,
+            },subjecttxt: { 
+              required: true,
+            },
+          },messages:{
+            subjecttxt: "Please Select Status",
+            statustxt: "Please Enter Status Details",
+            
+        },errorPlacement: function(error, element) {
+            error.insertAfter(element);
+        }
+      
+
+  });
+     if($("#status-form").valid()) {
+      
+        $.ajax({
+            type: 'POST',
+              url: $("#status-form").attr("action"),
+              data: $('form#status-form').serialize(),
+              dataType: 'json',
+          })
+
+          .done(function(msg) {
+            var status = document.getElementById("statustxt").value;
+            var subject = document.getElementById("subjecttxt").value;
+            document.getElementById('no_any_status').style.display='none'; 
+            $('#project-status-list').show();
+            $('#statuslist').show();
+            var List = $('ul#statuslist');
+             var li = $('<li/>')
+                .appendTo(List);
+                var h55 = $('<h5/>', {
+                  text : subject,
+                 })
+                  .appendTo(li);
+                var pp = $('<p/>', {
+                  text : status,
+                 })
+                  .appendTo(li);
+          document.getElementById("statustxt").value = '';
+          $('#subjecttxt').prop('selectedIndex',0);
+          
+        });
+
+     }
+
     });
   </script>
 </body>

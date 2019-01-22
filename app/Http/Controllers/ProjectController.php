@@ -40,7 +40,6 @@ class ProjectController extends Controller
         
         $request['pagenumber'] = 1;
         $request['limit']   = 3;
-        
         $projectstatus = $this->progressstatus($request);
         $projectstatus = json_decode($projectstatus, true);
         if($projectstatus['status'] == 1)
@@ -181,7 +180,7 @@ class ProjectController extends Controller
         }
         $scopeperformed = ScopePerformed::all();
         $associatetype = AssociateType::all();
-        $user = User::select('users_id','users_name')
+        $user = User::select('users_id','users_name','last_name')
                 ->where('user_types_id','=',1)
                 ->where('users_status','=',1)
                 ->where('users_approval_status','=',2)
@@ -686,7 +685,7 @@ class ProjectController extends Controller
                 WHERE  user_types_id <>1
                 AND associate_type_id IN ($associatetypeid)
                 HAVING distance <= $miles"));
-            //$bidrequest = ProjectBidRequest::where('project_id','=',$projectid)->delete();
+            
             $bidrequeststatus = ProjectBidRequest::where('project_id', '=', $projectid)
                                                   ->update(['bid_request_status' => 1]);
             $scope = explode(",",$scope);
@@ -740,8 +739,8 @@ class ProjectController extends Controller
                 }
             }
             //send notification to selected users
-            $associateid = $request['associate-ids'];
-            if($associateid != 0)
+            //$associateid = $request['associate-ids'];
+            if(!empty($request['associate-ids']))
             {
                 $associateid = $request['associate-ids'];
                 $associateid = explode(",",$associateid);
@@ -770,6 +769,7 @@ class ProjectController extends Controller
                             $notificationtext = 'Scheduler updated project details';
                             $notificationtype = '6';
                             $title = $notificationtext;
+                            $this->sendUserNotification($touserid,$fromuserid,$projectid,$body,$title,$notificationtext,$notificationtype);
                             $bidrequeststatus = ProjectBidRequest::where('project_id', '=', $projectid)
                                 ->where('to_user_id','=',$touserid)->update(['bid_request_status' => 0]);
 
@@ -939,8 +939,7 @@ class ProjectController extends Controller
         {
             $projectid = $value->project_id;
             $projectbid = ProjectBid::where('project_id','=',$projectid)->
-                        where('project_bid_status','=',1)
-                        ->orderBy('project_bid_id','desc')->first();
+                        where('project_bid_status','=',1)->first();
             $bidcount = ProjectBid::where('project_id','=',$projectid)
                                     ->where('project_bid_status','=',2)
                                     ->where('bid_status','=',1)->count();
@@ -1040,13 +1039,13 @@ class ProjectController extends Controller
                 ]);
 
     }
-   
+    //get all pending bids of specific projects
     public function projectbid($projectid)
     {
         $projectbid = ProjectBid::where('project_id','=',$projectid)
                     ->where('project_bid_status','=',2)
                     ->where('bid_status','=',1)
-                    ->orderBy('project_bid_id','desc')->get();
+                    ->orderBy('associate_suggested_bid','desc')->get();
        
         //check project is allocated or not
         $bidaccept = ProjectBid::where('project_id','=',$projectid)
@@ -1088,8 +1087,7 @@ class ProjectController extends Controller
         $projectname = $project->project_name;
         if(isset($projectbid))
         {
-            $project = Project::where('project_id','=',$projectid)->first();
-            $projectname = $project->project_name;
+           
             foreach ($projectbid as $value) 
             {
                 $associateid = $value->user_id;
@@ -1132,7 +1130,58 @@ class ProjectController extends Controller
         }
     }
     
-   
+   //get pending bids for dashboard 
+    //get all pending bids of specific projects
+    public function pendingBids($projectid)
+    {
+        $projectbid = ProjectBid::where('project_id','=',$projectid)
+                    ->where('project_bid_status','=',2)
+                    ->where('bid_status','=',1)
+                    ->orderBy('associate_suggested_bid','desc')->get();
+        $project = Project::where('project_id','=',$projectid)->first();
+        $projectname = $project->project_name;
+        if(isset($projectbid))
+        {
+            foreach ($projectbid as $value) 
+            {
+                $associateid = $value->user_id;
+                $associate = User::where('users_id','=',$associateid)
+                            ->first();
+                
+                if(isset($associate))
+                {
+                    $associatename = $associate->users_name;
+                    $data[] = ['associatename'=> $associatename, 
+                               'associateid'  => $value->user_id,
+                               'projectid'    => $projectid,
+                               'associatebid' =>  number_format($value->associate_suggested_bid,2),
+                               'suggestedbid' => number_format($project->approx_bid, 2),
+                               'createddate'  => $value->created_at
+                               ];
+                }
+
+                
+            }
+
+            if(!isset($data))
+            {
+                $data = null;
+            }
+            return view('project.pendingBids',[
+                    'bids'        => $data, 
+                    'projectname' => $projectname,
+                   
+                ]);
+            exit;
+        }
+        else
+        {
+            return view('project.pendingBids',[
+                
+                    'projectname' => $projectname,
+            ]);
+        }
+    }
     public function bidaccept($projectid,$userid,$status)
     {
      
@@ -1254,7 +1303,8 @@ class ProjectController extends Controller
         /*$pagenumber = $request['pagenumber'];
         $limit = 6;*/
         $userid = session('loginuserid');
-        $projects = Project::where('user_id','=',$userid)->get();
+        $projects = Project::where('user_id','=',$userid)
+                    ->orderBy('project_id','desc')->get();
         $count = $projects->count();
         if($count != 0)
         {
@@ -1532,14 +1582,10 @@ class ProjectController extends Controller
                             ->where('project_bid_status','=',2)
                             ->update(['project_bid_status' => 1,'accepted_rejected_at' => $date]);
             ProjectBid::where('project_id','=',$projectid)
-                            ->where('project_bid_status','<>',1)
+                            ->where('project_bid_status','=',2)
                             ->where('bid_status','=',1)
                             ->update(['project_bid_status' => 0,'accepted_rejected_at' => $date]);
-            ProjectBid::where('project_id','=',$projectid)
-                            ->where('user_id','=',$userid)
-                            ->where('project_bid_status','<>',1)
-                            ->where('bid_status','=',1)
-                            ->update(['bid_status' => 0,'accepted_rejected_at' => $date]);
+            
             $model = new ProjectStatus;
             $model->project_id = $projectid;
             $model->project_status_type_id = 2;
@@ -1582,6 +1628,11 @@ class ProjectController extends Controller
     public function projectDetail($id)
     {
         $project = Project::where('project_id','=',$id)->first();
+        $projectStatus = ProjectStatus::where('project_id','=',$id)->get();
+        foreach ($projectStatus as $value) {
+            $holdstatus = $value->project_status_type_id ;
+        }
+
         $scope = ScopePerformed::all();
         $setting = Setting::where('setting_status','=',1)->first();
         if(isset($setting))
@@ -1626,6 +1677,7 @@ class ProjectController extends Controller
                        'users_phone'           => $users->users_phone,
                        'users_profile_image'   => $users->users_profile_image,
                        'associateType'         => $associateType->associate_type,
+
                         );
             $statuscount = ProjectProgressStatus::where('project_id','=',$id)->count();
         }
@@ -1651,13 +1703,14 @@ class ProjectController extends Controller
                     'onsitedate' => $onsitedate,
                     'finalbid'   => $finalbid,
                     'user'       => $user,
-                    'statuscount'=> $statuscount
+                    'statuscount'=> $statuscount,
+                    'holdstatus' => $holdstatus,
                 ]);
     } 
     //project complete by manager
-    public function projectComplete($id)
+    public function projectComplete(Request $request)
     {
-        $projectid = $id;
+        $projectid = $request['projectid'];
         $model = new ProjectStatus;
         $model->project_id = $projectid;
         $model->project_status_type_id  = 4;
@@ -1674,7 +1727,10 @@ class ProjectController extends Controller
         $title = $msg;
         $this->sendUserNotification($touserid,$userid,$projectid,$body,$title,$msg,$notificationid);
         session()->flash('message', 'Project Completed Successfully!');
-        return redirect()->route('projectList');
+        $temp = array('status'  => 1,
+                      'message' => 'Review submitted successfully'
+                    );
+        return response()->json($temp);
     }
     //project cancel by manager
     public function projectCancel($id)
@@ -1785,5 +1841,54 @@ class ProjectController extends Controller
         
         return response()->json($temp);
     }
-    
+    public function addStatus(Request $request)
+    {
+        $status = $request['statustxt'];
+        $statussubject = $request['subjecttxt'];
+        $projectid   = $request['project-id'];
+        $userid  = session('loginuserid');
+        $inprogress = new ProjectProgressStatus;
+        $inprogress->user_id = $userid;
+        $inprogress->project_id = $projectid;
+        $inprogress->project_progress_status_subject = $statussubject;
+        $inprogress->project_progress_status = $status;
+        $inprogress->save();
+        $associate = ProjectBid::where('project_id','=',$projectid)
+                                ->where('project_bid_status','=',1)
+                                ->where('bid_status','=',1)
+                                ->first();
+        $touserid = $associate->user_id;
+        $text = 'Project manager added new note!';
+        $project = Project::where('project_id','=',$projectid)->first();
+        $body = $project->project_name;
+        $title = $text;
+        $notificationid = '12';
+        $this->sendUserNotification($touserid,$userid,$projectid,$body,$title,$text,$notificationid);
+        $temp =  array('status'  => 1, 
+                       'message' => 'Notes added successfully'
+                      );
+        return response()->json($temp);
+    }
+    public function getAssociatesName(Request $request){
+        $appendtd = '';
+        if(!empty($request['selectedAssociate']))
+        {
+            $selectedUser = $request['selectedAssociate'];
+            $selectedUser = explode(",",$selectedUser);
+            $selectedUser = array_unique($selectedUser);
+            $i = 1;
+            $appendtd .= '<tr>';
+            foreach ($selectedUser as $value) {
+                $user = User::where('users_id','=',$value)->first();
+                $username = $user->users_name.' '.$user->last_name;
+                $appendtd .= '<td style="text-align: left;font-size: 12px;font-weight:normal; color: #2b2929;">'.$username.'</td>';
+                if($i % 3 == 0)
+                {
+                    $appendtd .= '</tr><tr>';
+                }
+                ++$i;
+            }
+        }
+        return response()->json($appendtd);
+    }
 }

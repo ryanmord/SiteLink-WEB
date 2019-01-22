@@ -9,6 +9,7 @@ use App\Http\Controllers\ApiController;
 use App\ProjectStatus;
 use App\ProgressStatusType;
 use App\Project;
+use App\ProjectBid;
 use Illuminate\Support\Facades\DB;
 use DateTime;
 class ProjectController extends Controller
@@ -68,7 +69,6 @@ class ProjectController extends Controller
        
         $projecthistorylist = $apiobj->projectHistory($request);
         $projecthistorylist = json_decode($projecthistorylist, true);
-
         if($projecthistorylist['status'] == 1)
         {
             $projects = $projecthistorylist['projects'];
@@ -82,7 +82,6 @@ class ProjectController extends Controller
            
             $history_projectdetail = $this->show($request);
         }
-        
         if(!isset($history_projectdetail))
         {
             $history_projectdetail = null;
@@ -577,6 +576,22 @@ class ProjectController extends Controller
         if (isset($projectdetail['bidstatus'])) {
             $bidstatus = $projectdetail['bidstatus'];
         }
+        $projectstatus = ProjectBid::where('project_id','=',$request['projectid'])
+                                    ->where('project_bid_status','=',1)
+                                    ->where('bid_status','=',1)
+                                    ->first();
+        if(isset($projectstatus))
+        {
+            $allocatestatus = 1;
+        }
+        else
+        {
+            $allocatestatus = 0;
+        }
+        $ratingflag = 1;
+        if (isset($projectdetail['ratingflag'])) {
+            $ratingflag = $projectdetail['ratingflag'];
+        }
         $temp =  array('success'          => true, 
                         'projectname'     =>$projectname,
                         'projectid'       => $projectid,
@@ -595,7 +610,9 @@ class ProjectController extends Controller
                         'applydate'       => $applydate,
                         'bidstatus'       => $bidstatus,
                         'jobReachCount'   => $jobReachCount,
-                        'associateTypeId' => $associateTypeId);
+                        'associateTypeId' => $associateTypeId,
+                        'allocatestatus'  => $allocatestatus,
+                        'ratingflag'      => $ratingflag);
         
         if(isset($request['callFunction']))
         {
@@ -676,7 +693,7 @@ class ProjectController extends Controller
         {
             $mapAvailableProject['publishprojects'] = '';
         }
-        return view('frontview.projects.mybids',['availableProject'     => $availableProject,
+        return view('frontview.projects.jobFinder',['availableProject'  => $availableProject,
                                                  'projectdetail'        => $projectdetail,
                                                  'mapAvailableProject'  => $mapAvailableProject['publishprojects'],
                                                  'userData'             => $userData
@@ -755,14 +772,7 @@ class ProjectController extends Controller
     }
     public function addStatus(Request $request)
     {
-        $this->validate($request, [
-            'subjecttxt'    => 'required|max:255',
-            'statustxt'     => 'required|max:255',
-            ],
-            ['subjecttxt.required' => 'Subject field is required',
-            'statustxt.required'   => 'Status field is required',
-            'subjecttxt.max'       => 'Subject field lenght is to long',
-            'statustxt.max'        => 'Status field lenght is to long']);
+       
         $request['status'] = $request['statustxt'];
         $request['subject'] = $request['subjecttxt'];
         $request['projectid'] = $request['project-id'];

@@ -299,7 +299,7 @@ $('#txt_name').keypress(function (e) {
     var regex = new RegExp("^[a-zA-Z]+$");
     var key = String.fromCharCode(!e.charCode ? e.which : e.charCode);  
     
-    if(e.keyCode === 8 || e.keyCode === 46)  
+    if(e.keyCode === 8 || e.keyCode === 46 || e.keyCode === 9)  
         return true;                
        	if(!((e.keyCode == 37 && e.which == 0) || (e.keyCode == 39 && e.which == 0) || (e.keyCode == 46 && e.which == 0))){
           	if(!regex.test(key)){
@@ -318,7 +318,7 @@ $('#lastname').keypress(function (e) {
     var regex = new RegExp("^[a-zA-Z]+$");
     var key = String.fromCharCode(!e.charCode ? e.which : e.charCode);  
    
-    if(e.keyCode === 8 || e.keyCode === 46)  
+    if(e.keyCode === 8 || e.keyCode === 46 || e.keyCode === 9)  
         return true;                
         if(!((e.keyCode == 37 && e.which == 0) || (e.keyCode == 39 && e.which == 0) || (e.keyCode == 46 && e.which == 0))){
             if(!regex.test(key)){

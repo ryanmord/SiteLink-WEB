@@ -16,10 +16,10 @@
 
                         <div class="about-us">  
                             <div class="about-icon">
-                                <img src="{{asset('img/front/logo-icon.jpg')}}" />
+                                <img src="{{asset('/img/brick-wall.png')}}" />
                             </div>
                             <div class="about-content">
-                                <h2>Project Bidding</h2>
+                                <h2>SCOPED</h2>
                                 <h4>About us</h4>
                                 <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500</p>
                             </div>        

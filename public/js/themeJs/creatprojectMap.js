@@ -5,34 +5,11 @@
 
 
       function initMap() {
-
-
-        var lat = document.getElementById("latitude").value;
-        var long = document.getElementById("longitude").value;
-        if(lat != '')
-        {
-            var latlng = new google.maps.LatLng(lat, long);
-            var map = new google.maps.Map(document.getElementById('map'), {
-            center: latlng,
-            zoom: 13,
-
-
-        });
         
-        var marker = new google.maps.Marker({position: latlng, map: map});
-        }
-        else
-        {
-          var map = new google.maps.Map(document.getElementById('map'), {
+        var map = new google.maps.Map(document.getElementById('map'), {
           center: {lat: -33.8688, lng: 151.2195},
           zoom: 13
-
-
         });
-        
-        
-        }
-        
        // var card = document.getElementById('pac-card');
          var input = document.getElementById('pac-input');
        // var types = document.getElementById('type-selector');
@@ -70,6 +47,7 @@
           var lng = place.geometry.location.lng();
           var placeId = place.place_id;
           // alert(lng);
+          //document.getElementById("address").value = '';
           document.getElementById("address").value = document.getElementById('pac-input').value;
           document.getElementById("latitude").value = lat;
           document.getElementById("longitude").value = lng;
@@ -107,7 +85,6 @@
 
         });
 
-
         // Sets a listener on a radio button to change the filter type on Places
         // Autocomplete.
        /* function setupClickListener(id, types) {
@@ -128,48 +105,48 @@
               autocomplete.setOptions({strictBounds: this.checked});
             });*/
 
-  google.maps.event.addListener(marker, 'dragend', function(marker) {
-  var latLng = marker.latLng;
+          google.maps.event.addListener(marker, 'dragend', function(marker) {
+          var latLng = marker.latLng;
 
-  currentLatitude = latLng.lat();
-  currentLongitude = latLng.lng();
-  
-  var latlng = {
-    lat: currentLatitude,
-    lng: currentLongitude,
+          currentLatitude = latLng.lat();
+          currentLongitude = latLng.lng();
+          
+          var latlng = {
+            lat: currentLatitude,
+            lng: currentLongitude,
 
-  };
-  var geocoder = new google.maps.Geocoder;
-  geocoder.geocode({
-    'location': latlng
-  }, function(place, status) {
-    if (status === 'OK') {
-      if (place[0]) {
+          };
+          var geocoder = new google.maps.Geocoder;
+          geocoder.geocode({
+            'location': latlng
+          }, function(place, status) {
+            if (status === 'OK') {
+              if (place[0]) {
 
-        input.value = place[0].formatted_address;
-        document.getElementById("address").value = document.getElementById('pac-input').value;
-        document.getElementById("latitude").value = currentLatitude;
-        document.getElementById("longitude").value = currentLongitude;
-        
+                input.value = place[0].formatted_address;
+                document.getElementById("address").value = document.getElementById('pac-input').value;
+                document.getElementById("latitude").value = currentLatitude;
+                document.getElementById("longitude").value = currentLongitude;
+                
 
-         // infowindowContent.children['place-icon'].src = place.icon;
-         var s = place[1].formatted_address;
-         var placename = s.split(', ')
-         var place_name = placename[0]+','+placename[1];
-         var place_address = placename[2];
-        
-        infowindowContent.children['place-name'].textContent = place_name;
-        infowindowContent.children['place-address'].textContent = place_address;
-      } else {
-        window.alert('No results found');
+                 // infowindowContent.children['place-icon'].src = place.icon;
+                 var s = place[1].formatted_address;
+                 var placename = s.split(', ')
+                 var place_name = placename[0]+','+placename[1];
+                 var place_address = placename[2];
+                
+                infowindowContent.children['place-name'].textContent = place_name;
+                infowindowContent.children['place-address'].textContent = place_address;
+              } else {
+                window.alert('No results found');
+              }
+            } else {
+              window.alert('Geocoder failed due to: ' + status);
+            }
+            });
+          });
+
       }
-    } else {
-      window.alert('Geocoder failed due to: ' + status);
-    }
-  });
-});
-
-}
 
       
     

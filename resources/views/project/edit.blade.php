@@ -235,6 +235,20 @@
                               @include('project.asscociatelist')
                               <!-- <div id="err"></div> -->
                               </div>
+                              <div class="row" id="userName-div">
+                                <div class="form-group col-md-3">
+                                  <!-- <label id="selectIdLabel">Selected Individual(s)</label> -->
+                                </div>
+                                <!-- select associate type -->
+                                <div class="form-group col-md-9">
+                                <div class="table-responsive" style="max-height: 100px;overflow: auto;">
+                                 <table class="table table-bordered table-hover table-striped">
+                                    <tbody id="associateNames">
+                                   
+
+                                    </tbody></table></div>
+                                </div>
+                              </div>
                             <div class="row">
                               <div class="form-group col-md-5">
                               </div>
@@ -269,6 +283,7 @@
   </script>
   <script type="text/javascript">
     $(document).ready(function () {
+      $('#userName-div').hide();
     //called when key is pressed in textbox
     $("#projectbid").keypress(function (e) {
       $('#projectbid').keyup(function(e) {
@@ -417,12 +432,16 @@ $('#cancel-user').click(function(){
   });
   $('#add-individuals').click(function(){
     document.getElementById('pagenumber').value = 1;
-    document.getElementById("associate-ids").value = '';
+    var checks = $('input[name="associateid[]"]:checked').map(function(){
+              return $(this).val();
+                }).get();
+    document.getElementById("associate-ids").value = checks;
+    var checks = document.getElementById("associate-ids").value;
     $.ajax({
             type: 'GET',
-              url: '<?php echo route('searchAssociate'); ?>',
-              data: {pagenumber:1,limit:6},
-              dataType: 'json',
+            url: '<?php echo route('searchAssociate'); ?>',
+            data: {selectedAssociate:checks,pagenumber:1,limit:6},
+            dataType: 'json',
           })
 
           .done(function(response) {
@@ -430,12 +449,14 @@ $('#cancel-user').click(function(){
             {
               $('#usertable').html('');
               $('#no_any_user').hide();
+              $('#div-button').show();
               $('#associatetable').show();
               $('#usertable').append(response);
             }
             else
             {
               $('#associatetable').hide();
+              $('#div-button').hide();
               $('#no_any_user').show();
             }
         });
@@ -448,16 +469,28 @@ $('#cancel-user').click(function(){
               return $(this).val();
                 }).get();
     
-    if(idvalue === "")
+   if(checks != "")
     {
       document.getElementById("associate-ids").value = checks;
     }
-    else
-    {
-      document.getElementById("associate-ids").value = idvalue + ',' + checks;
-    }
     
-    checks = document.getElementById("associate-ids").value;
+    var checks = document.getElementById("associate-ids").value;
+
+    $.ajax({
+            type: 'GET',
+            url: '<?php echo route('getAssociatesName'); ?>',
+            data: {selectedAssociate:checks},
+            dataType: 'json',
+          })
+
+          .done(function(response) {
+            if(response != '')
+            {
+              $('#userName-div').show();
+              $('#associateNames').html('');
+              $('#associateNames').append(response);
+            }
+          });
     
   }); 
     $("#search-user").keyup(function () {
@@ -488,11 +521,13 @@ $('#cancel-user').click(function(){
             {
               $('#no_any_user').hide();
               $('#associatetable').show();
+              $('#div-button').show();
               $('#usertable').html('');
               $('#usertable').append(response);
             }
             else
             {
+              $('#div-button').hide();
                $('#associatetable').hide();
                $('#no_any_user').show();
             }

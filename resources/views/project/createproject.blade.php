@@ -83,7 +83,6 @@
                       <div class="create-new-project">  
                         <div class="row">
                           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-9">
-           
                             <form class="new-project" id="createproject" action="{{ url('/saveproject') }}">
                               {{csrf_field()}}
                               <div class="row">
@@ -225,6 +224,20 @@
                               @include('project.asscociatelist')
                               <!-- <div id="err"></div> -->
                               </div>
+                              <div class="row" id="userName-div">
+                                <div class="form-group col-md-3">
+                                  <!-- <label id="selectIdLabel">Selected Individual(s)</label> -->
+                                </div>
+                                <!-- select associate type -->
+                                <div class="form-group col-md-9">
+                                <div class="table-responsive" style="max-height: 100px;overflow: auto;">
+                                 <table class="table table-bordered table-hover table-striped">
+                                    <tbody id="associateNames">
+                                   
+
+                                    </tbody></table></div>
+                                </div>
+                              </div>
                               <div class="row">
                                 <div class="form-group col-md-3">
                                   <br><br>
@@ -236,12 +249,12 @@
                                     @foreach($user as $value)
 
                                       <option value="{{ $value->users_id }}">
-                                      {{ $value->users_name }}</option>
+                                      {{ $value->users_name.' '.$value->last_name }} </option>
 
                                     @endforeach
                                   </select> 
 
-                                  <input type="hidden" id="managerid" name="managerid" value="">
+                                <input type="hidden" id="managerid" name="managerid" value="">
                                 </div>
                               </div>
 
@@ -268,12 +281,9 @@
             </div>
           </div>
         </div>
-
-
         <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCFesVLN0rhPhI0uHrMrQjclKdbyx9X9g0&libraries=places&callback=initMap"
         async defer></script>  
-
-        <script src="{{asset('/js/themeJs/map.js')}}"></script>
+        <script src="{{asset('/js/themeJs/createprojectMap.js')}}"></script>
         <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
         <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/caret/1.0.0/jquery.caret.min.js"></script>
@@ -339,6 +349,7 @@
               }
             }
             $(document).ready(function() {
+              $('#userName-div').hide();
             $(window).keydown(function(event){
               if(event.keyCode == 13) {
                 event.preventDefault();
@@ -352,10 +363,10 @@
             $('body').on('click','#saveproject', function (event) {
             event.preventDefault(); 
               $("#createproject").validate({
-          rules: {
-            projectname: {
+            rules: {
+              projectname: {
                 required: true,
-            },siteaddress: {
+              },siteaddress: {
                 required: true,
             },managerid: { 
               required: true,
@@ -407,10 +418,7 @@
   });
   
     if($("#createproject").valid()) {
-        /*checks = $('input[type="checkbox"]:checked').map(function(){
-              return $(this).val();
-                }).get();
-        document.getElementById("scopeid").value = checks;*/
+       
         $(".loader").fadeIn("slow");
         $.ajax({
             type: 'POST',
@@ -436,12 +444,16 @@
   });
   $('#add-individuals').click(function(){
     document.getElementById('pagenumber').value = 1;
-    document.getElementById("associate-ids").value = '';
+    var checks = $('input[name="associateid[]"]:checked').map(function(){
+              return $(this).val();
+                }).get();
+    document.getElementById("associate-ids").value = checks;
+    var checks = document.getElementById("associate-ids").value;
     $.ajax({
             type: 'GET',
-              url: '<?php echo route('searchAssociate'); ?>',
-              data: {pagenumber:1,limit:6},
-              dataType: 'json',
+            url: '<?php echo route('searchAssociate'); ?>',
+            data: {selectedAssociate:checks,pagenumber:1,limit:6},
+            dataType: 'json',
           })
 
           .done(function(response) {
@@ -449,12 +461,14 @@
             {
               $('#usertable').html('');
               $('#no_any_user').hide();
+              $('#div-button').show();
               $('#associatetable').show();
               $('#usertable').append(response);
             }
             else
             {
               $('#associatetable').hide();
+              $('#div-button').hide();
               $('#no_any_user').show();
             }
         });
@@ -467,18 +481,29 @@
               return $(this).val();
                 }).get();
     
-    if(idvalue === "")
+    if(checks != "")
     {
       document.getElementById("associate-ids").value = checks;
     }
-    else
-    {
-      document.getElementById("associate-ids").value = idvalue + ',' + checks;
-    }
     
-    checks = document.getElementById("associate-ids").value;
-    
-  }); 
+    var checks = document.getElementById("associate-ids").value;
+
+    $.ajax({
+            type: 'GET',
+            url: '<?php echo route('getAssociatesName'); ?>',
+            data: {selectedAssociate:checks},
+            dataType: 'json',
+          })
+
+          .done(function(response) {
+            if(response != '')
+            {
+              $('#userName-div').show();
+              $('#associateNames').html('');
+              $('#associateNames').append(response);
+            }
+          });
+ }); 
     $("#search-user").keyup(function () {
     var idvalue = document.getElementById("associate-ids").value;
 
@@ -497,7 +522,6 @@
       value = $(this).val();
       document.getElementById('pagenumber').value = 1;
       var idvalue = document.getElementById("associate-ids").value;
-      
       $.ajax({
             type: 'GET',
               url: '<?php echo route('searchAssociate'); ?>',
@@ -508,29 +532,20 @@
             if(response != '')
             {
               $('#no_any_user').hide();
+
               $('#associatetable').show();
+              $('#div-button').show();
               $('#usertable').html('');
               $('#usertable').append(response);
             }
             else
             {
                $('#associatetable').hide();
+               $('#div-button').hide();
                $('#no_any_user').show();
             }
         });
     });
-  /* $('input[name="associateid[]"]').click(function(){
-      var value = $(this).val();
-       if($(this).prop("checked") == true){
-                alert(value);
-            }
-            else if($(this).prop("checked") == false){
-                alert(value);
-            }
-     
-    });
-*/
-
       $("#associatetable").scroll(function() {
 
         var value = $('#search-user').val();

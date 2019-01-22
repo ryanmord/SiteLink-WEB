@@ -150,6 +150,7 @@ class ApiController extends Controller
                 else
                 {
                     $userapprovalstatus  = $user->users_approval_status;
+                    $associateTypeId = $user->associate_type_id;
                 }
                 /* emailstatus 1 for verified email 0 for not verified email*/
                 if($emailstatus == 1)
@@ -178,12 +179,13 @@ class ApiController extends Controller
                             $userimage = $user->users_profile_image;
                             if(isset($request['callFrom']))
                             {
-                                $temp = array('status'       => 1,
-                                              'message'      => 'User Login successfully',
-                                              'userid'       => $userid,
-                                              'usertype'     => $usertype,
-                                              'username'     => $username,
-                                              'profileImage' => $userimage);
+                                $temp = array('status'          => 1,
+                                              'message'         => 'User Login successfully',
+                                              'userid'          => $userid,
+                                              'usertype'        => $usertype,
+                                              'username'        => $username,
+                                              'profileImage'    => $userimage,
+                                              'associateTypeId' => $associateTypeId);
                                 return json_encode($temp);
                         
                             }
@@ -234,7 +236,8 @@ class ApiController extends Controller
                                         'privatekey' => $accesskey,
                                         'userid'     => (string)$userid,
                                         'usertype'   => $usertype,
-                                        'deviceid'   => (string)$userdeviceid
+                                        'deviceid'   => (string)$userdeviceid,
+                                        'associateTypeId' => (string)$associateTypeId
                                     );
                             return json_encode($successMsg);
                                       
@@ -440,7 +443,8 @@ class ApiController extends Controller
         }
         $temp = array('status'                => '1',
                       'username'              => $username,
-                      'associateType'         => $associateType->associate_type,
+                      'associateTypeId'       => (string)$associateTypeId,
+                      'associateType'         => strtoupper($associateType->associate_type),
                       'profileimage'          => $profileimage,
                       'totalproject'          => (string)$totalproject,
                       'bidmadecount'          => (string)$bidmadecount,
@@ -651,7 +655,7 @@ class ApiController extends Controller
                           'profileimage'   => $profileimage,
                           'name'           => $name,
                           'lastname'       => $lastname,
-                          'associateType'  => $associateType->associate_type,
+                          'associateType'  => strtoupper($associateType->associate_type),
                           'company'        => $company,
                           'email'          => $email,
                           'phone'          => $phone,
@@ -1074,7 +1078,7 @@ class ApiController extends Controller
         $myprofile = array($jobscompleted,$totalbidcount,$overdueproject,$rating);
         $temp = array('status'                => '1',
                       'username'              => $username,
-                      'associateType'         => $associateType->associate_type,
+                      'associateType'         => strtoupper($associateType->associate_type),
                       'profileimage'          => $profileimage,
                       'bidmadecount'          => (string)$bidmadecount,
                       'completedprojectcount' => (string)$completedprojectcount,
@@ -1314,6 +1318,11 @@ class ApiController extends Controller
     By   : Suvarna*/
     public function projectDetail(Request $request)
     {
+        if(!isset($request['projectid']))
+        {
+            return json_encode(array('status' => '0', 'message' => "Mandatory Parameter is missing."));
+            exit;
+        }
         $user = $this->checkuserprivatekey($request['userid'],$request['privatekey']);
         $userid = $request['userid'];
         $projectid = $request['projectid'];
@@ -1341,9 +1350,31 @@ class ApiController extends Controller
             $associateTypeId = $user->associate_type_id;
             $projectbid = ProjectBid::where('project_id','=',$projectid)
                                 ->where('bid_status','=',1)
+                                ->where('bid_status','<>',2)
                                 ->where('user_id','=',$userid)
                                 ->get();
             $countbid = $projectbid->count();
+            $completeStatus = ProjectStatus::where('project_id','=',$projectid)
+                                            ->where('project_status_type_id','=',4)->first();
+            if(isset($completeStatus))
+            {
+                $managerReview = UserReview::where('from_user_id','=',$userid)
+                                                ->where('project_id','=',$projectid)
+                                                ->first();
+                if(isset($managerReview))
+                {
+                    $ratingflag = '1';
+                }
+                else
+                {
+                    $ratingflag = '0';
+                }
+
+            }
+            else
+            {
+                $ratingflag = '1';
+            }
             $jobReachCount = ProjectBidRequest::where('project_id','=',$projectid)->count();
             if($countbid != 0)
             {
@@ -1359,7 +1390,15 @@ class ApiController extends Controller
                         $bidstatus = 'BID REJECTED';
                         $bidstatusflag = '0';
                     }
-                    else
+                    if($value->project_bid_status == 1)
+                    {
+                        $createddate = (string)$value->created_at;
+                        $datetime2 = new DateTime($createddate);
+                        $biddate= $datetime2->format("Y-m-d");
+                        $bidstatus = 'Bid ACCEPTED';
+                        $bidstatusflag = '1';
+                    }
+                    if($value->project_bid_status == 2)
                     {
                         $createddate = (string)$value->created_at;
                         $datetime2 = new DateTime($createddate);
@@ -1378,11 +1417,13 @@ class ApiController extends Controller
                     $finalbid1 =(string)$finalbid->associate_suggested_bid;
                     $review = userReview::where('to_user_id','=',$userid)
                                         ->where('project_id','=',$projectid)->first();
+                    
                     if(isset($review))
                     {
                         $rating = $review->user_review_ratings;
                         $comment = $review->user_review_comments;
                         $approxbid = number_format($project->approx_bid, 2);
+
                         $temp = array(
                                         'status'         => '1',
                                         'projectid'      => (string)$project->project_id, 
@@ -1396,13 +1437,14 @@ class ApiController extends Controller
                                         'reportduedate'  => $reportduedate,
                                         'template'       => (string)$project->report_template,
                                         'instructions'   => $project->instructions,
-                                        'approxbid'      =>(String)$approxbid,
+                                        'approxbid'      => (String)$approxbid,
                                         'finalbid'       => (string)$finalbid1,
                                         'rating'         => (string)$rating,
                                         'comment'        => $comment,
                                         'scopeperformed' => $data,
-                                        'jobReachCount'  => $jobReachCount,
-                                        'associateTypeId'=> $associateTypeId);
+                                        'jobReachCount'  => (string)$jobReachCount,
+                                        'associateTypeId'=> (string)$associateTypeId,
+                                        'ratingflag'     => $ratingflag);
                        
                         return json_encode($temp);
                         exit;
@@ -1440,8 +1482,9 @@ class ApiController extends Controller
                                 'bidstatus'         => (string)$bidstatus,
                                 'bidstatusflag'     => $bidstatusflag,
                                 'scopeperformed'    => $data,
-                                'jobReachCount'     => $jobReachCount,
-                                'associateTypeId'   => $associateTypeId);
+                                'jobReachCount'     => (string)$jobReachCount,
+                                'associateTypeId'   => (string)$associateTypeId,
+                                'ratingflag'        => $ratingflag);
             
             return json_encode($temp);
             exit;
@@ -1519,7 +1562,8 @@ class ApiController extends Controller
                     $scope = $value->scope_performed_id;
                     $data = $this->getscopeperformed($scope);
                     $projectid = $value->project_id;
-                    $review = UserReview::where('project_id','=',$projectid)->first();
+                    $review = UserReview::where('project_id','=',$projectid)
+                                       ->where('to_user_id','=',$userid)->first();
                     if(isset($review))
                     {
                         $rating = $review->user_review_ratings;
@@ -1537,6 +1581,16 @@ class ApiController extends Controller
                     }
                     else
                     {
+                        $userreview = UserReview::where('project_id','=',$projectid)
+                                                ->where('from_user_id','=',$userid)->first();
+                        if(isset($userReview))
+                        {
+                            $ratingflag = '1';
+                        }
+                        else
+                        {
+                            $ratingflag = '0';
+                        }
                         $statuslabel = 'COMPLETED';
                         $flag = '1';
                     }
@@ -1575,7 +1629,8 @@ class ApiController extends Controller
                                         'rating'         => $rating,
                                         'comment'        => $comment,
                                         'statuslabel'    => $statuslabel,
-                                        'flag'           => $flag
+                                        'flag'           => $flag,
+                                        'ratingflag'     => $ratingflag
                                         ];
                     $cntproject += 1;
                 }
@@ -1605,8 +1660,8 @@ class ApiController extends Controller
                 }
                 
             }
-            else
-            {
+                else
+                {
                     return json_encode(array('status' => '0', 'message' => "There are no job available"));
                     exit;
                 }
@@ -1646,7 +1701,7 @@ class ApiController extends Controller
                         ->offset($items)
                         ->get();   
                 }
-               
+
                 $count = DB::select(DB::raw("SELECT FOUND_ROWS() AS Totalcount;"));
                 $totalRemaingItems = $count[0]->Totalcount - $items;
                 $count = $projects->count();
@@ -1665,13 +1720,26 @@ class ApiController extends Controller
                         {
                             $statuslabel = 'CANCELLED';
                             $flag = '0';
+                            $ratingflag = '1';
                         }
                         else
                         {
+                            $userReview = UserReview::where('from_user_id','=',$userid)
+                                                    ->where('project_id','=',$projectid)
+                                                    ->first();
+                            if(isset($userReview))
+                            {
+                                $ratingflag = '1';
+                            }
+                            else
+                            {
+                                $ratingflag = '0';
+                            }
                             $statuslabel = 'COMPLETED';
                             $flag = '1';
                         }
-                        $review = UserReview::where('project_id','=',$projectid)->first();
+                        $review = UserReview::where('project_id','=',$projectid)
+                                            ->where('to_user_id','=',$userid)->first();
                         if(isset($review))
                         {
                             $rating = $review->user_review_ratings;
@@ -1717,7 +1785,8 @@ class ApiController extends Controller
                                 'rating'         => $rating,
                                 'comment'        => $comment,
                                 'statuslabel'    => $statuslabel,
-                                'flag'           => $flag
+                                'flag'           => $flag,
+                                'ratingflag'     => $ratingflag
                                 ];
                         $cntproject += 1;
                     }
@@ -2541,7 +2610,7 @@ class ApiController extends Controller
                 }
                 else 
                 {
-                    $errorMsg =  array('status' => '1', 'message' => "There are no status available");
+                    $errorMsg =  array('status' => '0', 'message' => "There are no any notes available");
                     
                     return json_encode($errorMsg);
                     exit;
@@ -2550,7 +2619,7 @@ class ApiController extends Controller
         }
         else
         {
-            $errorMsg = array('status' => '0', 'message' => "No any status for this Job");
+            $errorMsg = array('status' => '0', 'message' => "No any notes for this Job");
             
             return json_encode($errorMsg);
             exit;
@@ -2566,13 +2635,8 @@ class ApiController extends Controller
         {
 
             $userid = (int)$request['userid'];
-            $accesskey = $request['privatekey'];
-            $key = UserAccessKey::where('user_access_key','=',$accesskey)
-                ->where('user_access_key_status','=',1)
-                ->where('user_id','=',$userid)->first();
-            $user = User::where('users_id', '=',$userid)->first();
-            if(isset($user) && isset(($key)))
-            {
+            $user = $this->checkuserprivatekey($request['userid'],$request['privatekey']);
+            
                 $projectid = $request['projectid'];
 
                 if($user->user_types_id == 1)
@@ -2616,12 +2680,7 @@ class ApiController extends Controller
                     echo json_encode(array('status' => '0', 'message' => "Mandatory field is required"));
                     exit;
                 }
-            }
-            else
-            {
-                echo json_encode(array('status' => '0', 'message' => "userid or private key is incorrect"));
-                exit;
-            }
+            
         }
         else
         {
@@ -3636,7 +3695,6 @@ class ApiController extends Controller
                     ->setDevicesToken([$deviceid])
                     ->send()
                     ->getFeedback();
-          
                   
         }
         if($devicetype == 1)
@@ -3655,11 +3713,37 @@ class ApiController extends Controller
                     ->setDevicesToken([$deviceid])
                     ->send()
                     ->getFeedback();
-                  
         }
+    }
+    public function testpushnotification()
+    {
+        
+       /* $accesskey = UserAccessKey::where('user_id','=',1)
+                                    ->where('user_access_key_status','=',1)->get();
+        print_r($accesskey);
+        exit;*/
+            $feedback = PushNotification::setService('fcm')
+                    ->setMessage([
+                                'notification' => [
+                                'title'              => 'title',
+                                'body'               => 'welcome',
+                                'notificationid'     => '7',
+                                'dataid'             => '1',
+                                'notificationcount'  => '2'
+                                            ]
+                                ])
+                    ->setApiKey('AAAANdKrzEQ:APA91bHZB_ZC2PomiZ2zjIfcDRF219E7hT29sMX1X9Bi3kCNDfHEY-PZ0vlih6O4_trRs_iUUwOh-edlDGKAjSQYEM74wLhq88bLPLzra6jiRvHvSd_EWsBNza86YnmLoP1Db-hBCrtN')
+                    ->setDevicesToken(['ceYFMcWH92Q:APA91bH7bsMoIUXTteJnfpK_GJoWmhwiTmhrYcVEqUnCv5NowycRZeNZ7B-EWHPOh7QkcZXHKsbMJegIG4peQ_Ut-__gCJbq9XX4OtloC2IGJGE1R25TJ9q9BrIjpYIhh54hhDaFZ89_'])
+                    ->send()
+                    ->getFeedback();
+                print_r($feedback);
+                exit;
+                  
+        
         
 
     }
+    
     public function webpushnotification()
     {
        
@@ -3669,14 +3753,12 @@ class ApiController extends Controller
                                 'title'              => "This is Title",
                                 'body'               => "This is Message",
                                 'icon'               => asset("/images/logo-icon.jpg")
-                                            ]
+                                    ]
                                 ])
                     ->setApiKey('AAAA1XC4TOY:APA91bFz5hGNBaAmj9kFuaWP5LDA7CP5k4wqwka2WxSXYl1gBMF2U8DXEXdnZvie_JQ5kRU8HZE7k3d5VtbZxFgPP-yKcPp_kaYJTEwV-WwzMz7ak3pbo-aQsTabMLFUi5WGuMCq9U16')
                     ->setDevicesToken(['fxYXSiGopQM:APA91bF8VO03yQLuiEp7QHLmpUXlOvsRHahQMBGxlM6ezKG8-Ahv4Gqd74SKYz661mrEG4mRQL5e2sWliQBz2qDmVne_0-zW4aJOKiHSt8lewcnWC5clJd1Xzyqn7kEgtEJilQZ0U9sJ'])
                     ->send()
                     ->getFeedback();
-
-          
                 echo json_encode(array('status' => '0', 'message' => $feedback));
                 exit;  
         
@@ -3807,10 +3889,240 @@ class ApiController extends Controller
         }
         else
         {
-            return json_encode(array('status' => '0','message' => 'Only employee can accepted this job'));
+            return json_encode(array('status' => '0','message' => 'Only employee can Declined this job'));
             exit;
         }
     }
-    
-    
+
+    /*Name : associate bids
+    Url  :http://103.51.153.235/project_management/public/index.php/api/activeBids?userid=181&privatekey=WOIBYa5i66feh8N1
+    Date : 09-01-2019
+    By   : Suvarna*/
+    public function activeBids(Request $request)
+    {
+        $user = $this->checkuserprivatekey($request['userid'],$request['privatekey']);
+        $userid = $request['userid'];
+        if(!isset($request['limit']) || !isset($request['pagenumber'])) 
+        {
+            echo json_encode(array('status' => '0', 'message' => "Mandatory Parameter is missing."));
+            exit;
+        }
+        $limit = $request['limit']; 
+        $pageno = $request['pagenumber'];   
+        if ($pageno < 1) 
+        {
+            $pageno = 1;
+        }
+        $start = ($pageno + 1);     
+        $items = $limit * ($pageno - 1);
+        $bids = DB::table('project_bids')
+                            ->select(DB::raw('SQL_CALC_FOUND_ROWS project_bid_id'),
+                             'project_id', 'user_id','project_bid_status','created_at','associate_suggested_bid')
+                            ->where('user_id','=',$userid)
+                            ->where('project_bid_status','=',2)
+                            ->where('bid_status','=',1)
+                            ->orderBy('project_bid_id', 'desc')
+                            ->limit($limit)
+                            ->offset($items)
+                            ->get();
+
+        $count = DB::select(DB::raw("SELECT FOUND_ROWS() AS Totalcount;"));
+        $totalRemaingItems = $count[0]->Totalcount - $items;
+        $count = $bids->count();
+        $cntbids = 0;
+        $totalbids = 0;
+        if($count != 0) 
+        {
+            foreach($bids as $value) 
+            {
+                $projectid = $value->project_id;
+                $projectapprove = ProjectBid::where('project_id','=',$projectid)
+                                        ->where('project_bid_status','=',1)->first();
+                if(isset($projectapprove))
+                {
+                    $projectstatus = '1';
+                }
+                else
+                {
+                    $projectstatus = '0';
+                }
+                $project = Project::where('project_id','=',$projectid)->first();
+                $projectname = $project->project_name;
+                $siteaddress = $project->project_site_address;
+                if($value->project_bid_status == 1)
+                {
+                    $bidstatus = "BID ACCEPTED";
+                }
+                elseif($value->project_bid_status == 0)
+                {
+                    $bidstatus = "BID REJECTED";
+                }
+                else
+                {
+                    $bidstatus = "AWAITING RESPONSE";
+                }
+                $bid = number_format($value->associate_suggested_bid, 2);
+               
+                $mybids[] = ['projectid' => (string)$projectid, 
+                            'projectname' => $projectname,
+                            'siteaddress' => $siteaddress,
+                            'yourbid' => (string)$bid, 
+                            'bidstatus' => $bidstatus,
+                            'bidstatusflag' => (string)$value->project_bid_status,
+                            'projectallocatedstatus' => $projectstatus];
+                $cntbids += 1;
+            }
+
+            if ($count != 0) 
+            {
+                $itemsremaining = $totalRemaingItems - $limit;
+                if ($totalRemaingItems > 0) 
+                {
+                    if ($itemsremaining < 0) 
+                    {
+                        $itemsremaining = 0;
+                    }
+                    return json_encode(array('status' => '1', 'nextpagenumber' => $start, 'bidscount' => (string)$cntbids,'itemsremaining' => $itemsremaining,'mybids' => $mybids));
+                    exit;
+                }
+                else 
+                {
+                    return json_encode(array('status' => '0', 'message' => "There are no bids available"));
+                    exit;
+                }
+            }
+                
+        }
+        else
+        {
+            return json_encode(array('status' => '0', 'message' => "There are no bids available"));
+            exit;   
+        }
+    }
+     /*Name : associate bids
+    Url  :http://103.51.153.235/project_management/public/index.php/api/bidHistory?userid=181&privatekey=WOIBYa5i66feh8N1
+    Date : 09-01-2019
+    By   : Suvarna*/
+    public function bidHistory(Request $request,$searchKeyword = '')
+    {
+        $user = $this->checkuserprivatekey($request['userid'],$request['privatekey']);
+        $userid = $request['userid'];
+        if(!isset($request['limit']) || !isset($request['pagenumber'])) 
+        {
+            echo json_encode(array('status' => '0', 'message' => "Mandatory Parameter is missing."));
+            exit;
+        }
+        $limit = $request['limit']; 
+        $pageno = $request['pagenumber'];   
+        if ($pageno < 1) 
+        {
+            $pageno = 1;
+        }
+        $start = ($pageno + 1);     
+        $items = $limit * ($pageno - 1);
+            $where_condition = "1 = 1";
+        if($searchKeyword != "") {
+            $where_condition = "  (projects.project_name Like  '%$searchKeyword%')";
+            $bids = DB::table('project_bids')
+                        ->select(DB::raw('SQL_CALC_FOUND_ROWS project_bids.project_bid_id'),'project_bids.project_id','project_bids.user_id','project_bids.project_bid_status','project_bids.bid_status',
+                            'project_bids.created_at','project_bids.associate_suggested_bid')
+                        ->leftJoin('projects', 'project_bids.project_id', '=', 'projects.project_id')
+                        ->where('project_bids.user_id','=',$userid)
+                        ->where('project_bids.project_bid_status','<>',2)
+                        ->where('project_bids.bid_status','=',1)
+                        ->whereRaw($where_condition)
+                        ->orderBy('project_bids.project_bid_id', 'desc')
+                        ->limit($limit)
+                        ->offset($items)
+                        ->get();
+                
+        }
+        else{
+            $bids = DB::table('project_bids')
+                            ->select(DB::raw('SQL_CALC_FOUND_ROWS project_bid_id'),
+                             'project_id', 'user_id','project_bid_status','created_at','associate_suggested_bid')
+                            ->where('user_id','=',$userid)
+                            ->where('project_bid_status','<>',2)
+                            ->where('bid_status','=',1)
+                            ->orderBy('project_bid_id', 'desc')
+                            ->limit($limit)
+                            ->offset($items)
+                            ->get();
+
+        }
+        
+        $count = DB::select(DB::raw("SELECT FOUND_ROWS() AS Totalcount;"));
+        $totalRemaingItems = $count[0]->Totalcount - $items;
+        $count = $bids->count();
+        $cntbids = 0;
+        $totalbids = 0;
+        if($count != 0) 
+        {
+            foreach($bids as $value) 
+            {
+                $projectid = $value->project_id;
+                $projectapprove = ProjectBid::where('project_id','=',$projectid)
+                                        ->where('project_bid_status','=',1)->first();
+                if(isset($projectapprove))
+                {
+                    $projectstatus = '1';
+                }
+                else
+                {
+                    $projectstatus = '0';
+                }
+                $project = Project::where('project_id','=',$projectid)->first();
+                $projectname = $project->project_name;
+                $siteaddress = $project->project_site_address;
+                if($value->project_bid_status == 1)
+                {
+                    $bidstatus = "BID ACCEPTED";
+                    $projectstatus = '0';
+                }
+                elseif($value->project_bid_status == 0)
+                {
+                    $bidstatus = "BID REJECTED";
+                }
+                else
+                {
+                    $bidstatus = "AWAITING RESPONSE";
+                }
+                $bid = number_format($value->associate_suggested_bid, 2);
+               
+                $mybids[] = ['projectid' => (string)$projectid, 
+                            'projectname' => $projectname,
+                            'siteaddress' => $siteaddress,
+                            'yourbid' => (string)$bid, 
+                            'bidstatus' => $bidstatus,
+                            'bidstatusflag' => (string)$value->project_bid_status,
+                            'projectallocatedstatus' => $projectstatus];
+                $cntbids += 1;
+            }
+
+            if ($count != 0) 
+            {
+                $itemsremaining = $totalRemaingItems - $limit;
+                if ($totalRemaingItems > 0) 
+                {
+                    if ($itemsremaining < 0) 
+                    {
+                        $itemsremaining = 0;
+                    }
+                    return json_encode(array('status' => '1', 'nextpagenumber' => $start, 'bidscount' => (string)$cntbids,'itemsremaining' => $itemsremaining,'mybids' => $mybids));
+                    exit;
+                }
+                else 
+                {
+                    return json_encode(array('status' => '0', 'message' => "There are no bids available"));
+                    exit;
+                }
+            }
+                
+        }
+        else
+        {
+            return json_encode(array('status' => '0', 'message' => "There are no bids available"));
+            exit;   
+        }
+    }
 }

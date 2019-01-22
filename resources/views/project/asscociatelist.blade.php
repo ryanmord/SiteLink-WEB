@@ -33,13 +33,15 @@
               </tbody>
               
               </table>
+
             </div>
-            <center>
+            <div id="div-button">
+           <center>
               <button type="button" data-dismiss="modal" id="add-individuals-users" class="btn red-btn">Add</button>&nbsp &nbsp 
                 &nbsp &nbsp
                 <button type="button" data-dismiss="modal" id="cancel-user" class="btn red-btn">Cancel</button>  
             </center>
-            
+            </div>
             <div id="no_any_user">
               <p style= "margin-left: 250px;">There are no any associate available</p>
             </div>

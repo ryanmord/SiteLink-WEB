@@ -57,7 +57,8 @@ Route::group(['middleware' => 'disablepreventback'],function()
 	Route::get('/projectStatus/{id}', 'ProjectController@projectstatus')->middleware(guest::class);
 	Route::get('/allProejcts/projectOnHold/{id}', 'ProjectController@projectOnHold')->middleware(guest::class);
 	Route::get('/allProejcts/projectInProgress/{id}', 'ProjectController@projectInProgress')->middleware(guest::class);
-	Route::get('/allProejcts/projectComplete/{id}', 'ProjectController@projectComplete')->middleware(guest::class);
+	Route::get('/allProejcts/projectComplete', 'ProjectController@projectComplete')->
+	name('projectComplete')->middleware(guest::class);
 	Route::get('/allProejcts/projectCancel/{id}', 'ProjectController@projectCancel')->middleware(guest::class);
 	Route::get('/editUser', 'UserController@edituser')->name('editUser')->middleware(guest::class);
 	Route::post('/updateUser', 'UserController@update')->name('updateUser')->middleware(guest::class);
@@ -68,6 +69,12 @@ Route::group(['middleware' => 'disablepreventback'],function()
 	Route::get('/allProjects/associateList','ProjectController@associateUserList')->name('associateList')->middleware(guest::class);
 	Route::get('/allProjects/searchAssociate','ProjectController@searchAssociate')->name('searchAssociate')->middleware(guest::class);
 	Route::get('/allProjects/projectAssociate','ProjectController@projectAssociate')->name('projectAssociate')->middleware(guest::class);
+	Route::post('/allProjects/addStatus','ProjectController@addStatus')->name('managerAddStatus')->middleware(guest::class);
+	Route::get('/pendingBids/{projectid}','ProjectController@pendingBids')->name('pendingBids')->middleware(guest::class);
+	Route::get('/allProjects/managerReviewStore','UserReviewController@managerReviewStore')
+	->name('managerReviewStore')->middleware(guest::class);
+	Route::get('/allProjects/getAssociatesName','ProjectController@getAssociatesName')->name('getAssociatesName')->middleware(guest::class);
+	
 });
 
 Route::get('/forgotPassword/{userid}','LoginController@forgotpassword')->name('forgotPassword');
@@ -87,12 +94,10 @@ Route::post('/home/associateLogin','FrontController\LoginController@login')->nam
 Route::get('/home/forgotPassword','FrontController\LoginController@forgotPassword')->name('ForgotPassword');
 Route::group(['middleware' => 'disablepreventback'],function()
 {
-
-
 Route::get('/home/dashboard','FrontController\LoginController@dashboard')->name('associateDashboard')->middleware(IsAssociate::class);
 Route::get('/home/projects','FrontController\ProjectController@index')
 ->name('associateProjects')->middleware(IsAssociate::class);
-Route::get('/home/myBids','FrontController\ProjectController@projectbids')->middleware(IsAssociate::class);
+Route::get('/home/jobFinder','FrontController\ProjectController@projectbids')->name('jobFinder')->middleware(IsAssociate::class);
 Route::get('/home/myProfile','FrontController\UserController@edit')->name('associateProfile')->middleware(IsAssociate::class);
 Route::post('/home/updateProfile','FrontController\UserController@update')->name('updateProfile')->middleware(IsAssociate::class);
 Route::post('/home/updatePassword','FrontController\UserController@updatePassword')->name('update_password')->middleware(IsAssociate::class);
@@ -121,6 +126,11 @@ Route::get('/home/historyPagination','FrontController\ProjectController@historyP
 Route::get('/home/projectInfo','FrontController\ProjectController@projectInfo')->name('projectInfo')->middleware(IsAssociate::class);
 Route::get('/home/acceptProject','FrontController\ProjectController@acceptProject')->name('acceptProject')->middleware(IsAssociate::class);
 Route::get('/home/declineProject','FrontController\ProjectController@declineProject')->name('declineProject')->middleware(IsAssociate::class);
+Route::get('/home/myBids','FrontController\MybidController@index')->name('myBids')->middleware(IsAssociate::class);
+Route::get('/home/searchBidHistory','FrontController\MybidController@searchBidHistory')->name('searchBidHistory')->middleware(IsAssociate::class);
+Route::get('/home/searchActiveBids','FrontController\MybidController@searchActiveBids')->name('searchActiveBids')->middleware(IsAssociate::class);
+Route::get('/home/activeBidPagination','FrontController\MybidController@activeBidPagination')->name('activeBidPagination')->middleware(IsAssociate::class);
+Route::get('/home/associateReviewStore','UserReviewController@associateReviewStore')->name('associateReviewStore')->middleware(IsAssociate::class);
 });
 //Reoptimized class loader: 
 Route::get('/optimize', function() {
