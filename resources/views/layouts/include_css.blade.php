@@ -33,6 +33,23 @@
         font-weight:normal;
         color: #2b2929;
       }
-
+      .live-user-td
+      {
+        border-left: none;
+        text-align: left;
+        vertical-align: middle;
+      }
+      .live-user-image
+      {
+        max-width:20px;
+        max-height:20px;
+        min-width:20px;
+        min-height:20px;
+      }
+     
+    
+    label.required:after{content:" *";color:red;}
+  
+ 
   </style>
    

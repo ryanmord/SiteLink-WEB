@@ -74,13 +74,18 @@ Route::group(['middleware' => 'disablepreventback'],function()
 	Route::get('/allProjects/managerReviewStore','UserReviewController@managerReviewStore')
 	->name('managerReviewStore')->middleware(guest::class);
 	Route::get('/allProjects/getAssociatesName','ProjectController@getAssociatesName')->name('getAssociatesName')->middleware(guest::class);
-	
+	Route::get('/getAssociatesProfile','ProjectController@getAssociatesProfile')->name('getAssociatesProfile')->middleware(guest::class);
+	Route::get('/schedulingProject/{id}','ProjectController@schedulingProject')
+							->middleware(guest::class);
+	Route::get('/schedulingNotification','ProjectController@schedulingNotification')->name('schedulingNotification')->middleware(guest::class);
+	Route::get('/rejectLiveUser','ProjectController@rejectLiveUser')
+		->name('rejectLiveUser')->middleware(guest::class);
+	Route::get('/getLiveUserList','ProjectController@getLiveUserList')->name('getLiveUserList')->middleware(guest::class);
+	Route::get('/changeCheckStatus','ProjectController@changeCheckStatus')->name('changeCheckStatus')->middleware(guest::class);
+	Route::get('/sendProjectNotification','ProjectController@sendProjectNotification')->name('sendProjectNotification')->middleware(guest::class);
 });
-
 Route::get('/forgotPassword/{userid}','LoginController@forgotpassword')->name('forgotPassword');
 Route::post('/changepassword','LoginController@changepassword');
-
-
 // Route for front view
 Route::get('/home','FrontController\HomeController@index')->name('home');
 Route::get('/aboutus','FrontController\HomeController@aboutus')->name('aboutus');
@@ -94,9 +99,9 @@ Route::post('/home/associateLogin','FrontController\LoginController@login')->nam
 Route::get('/home/forgotPassword','FrontController\LoginController@forgotPassword')->name('ForgotPassword');
 Route::group(['middleware' => 'disablepreventback'],function()
 {
-Route::get('/home/dashboard','FrontController\LoginController@dashboard')->name('associateDashboard')->middleware(IsAssociate::class);
-Route::get('/home/projects','FrontController\ProjectController@index')
-->name('associateProjects')->middleware(IsAssociate::class);
+	Route::get('/home/dashboard','FrontController\LoginController@dashboard')->name('associateDashboard')->middleware(IsAssociate::class);
+	Route::get('/home/projects','FrontController\ProjectController@index')
+	->name('associateProjects')->middleware(IsAssociate::class);
 Route::get('/home/jobFinder','FrontController\ProjectController@projectbids')->name('jobFinder')->middleware(IsAssociate::class);
 Route::get('/home/myProfile','FrontController\UserController@edit')->name('associateProfile')->middleware(IsAssociate::class);
 Route::post('/home/updateProfile','FrontController\UserController@update')->name('updateProfile')->middleware(IsAssociate::class);

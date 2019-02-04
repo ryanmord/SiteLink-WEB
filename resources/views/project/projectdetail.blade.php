@@ -41,146 +41,246 @@
       <div class="container-fluid pt-20">
       <div class="container">
         <div class="intro-text">
-           <div class="row">
-        <div class="col-xs-12 col-sm-9 content">
-          <div class="panel panel-success" style="text-align: left;">
-            <div class="panel-heading">
-              <div class="panel-title">
-                <a href="{{ url()->previous() }}">Back</a>
-                      &nbsp &nbsp
-                <b>Project Details</b>
-              </div>
-              <div class="panel-options">
-                <a class="bg" data-target="#sample-modal-dialog-1" data-toggle="modal" href="#sample-modal"><i class="entypo-cog"></i></a>
-                <a data-rel="collapse" href="#"><i class="entypo-down-open"></i></a>
-                <a data-rel="close" href="#!/tasks" ui-sref="Tasks"><i class="entypo-cancel"></i></a>
-              </div>
-            </div>
-            <div class="panel-body">
-              <header class="masthead dashbord-screen">
-                <div class="create-new-project">  
-                  <div class="row">
-                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-10">
-                     
-                        {{csrf_field()}}
-                        <div class="row">
-                        <input type="hidden" name="project_id" id="project_id" value="{{ $project['project_id'] }}">
-                          <div class="form-group col-md-3">
-                            <br>
-                            <label>Project Name</label>
-                          </div>
-                          <div class="form-group col-md-9 ">
-                            <input type="text" value="{{ $project->project_name }}" placeholder="Project Name" readonly>
-                              
-                          </div>
-                        </div>
-                        <div class="row">
-                          <div class="form-group col-md-3">
-                            <br>
-                            <label>Site Address</label>
-                          </div>
-                          <div class="form-group col-md-9">
-                            <input type="text" readonly="" value="{{ $project->project_site_address }}" placeholder="site Address">
-                          </div>
-                        </div>
-                        <div class="row">
-                          <div class="form-group col-md-3">
-                            
-                            <label>Report Due From Field</label>
-                          </div>
-                          <div class="form-group col-md-9">
-                            <input type="text" value="{{ $reportdate }}" placeholder="Report Due Date" readonly>
-                            <i class="fa fa-calendar" aria-hidden="true"></i>
-                          </div>
+          <div class="row">
+            <div class="col-xs-12 col-sm-9 content">
+              <div class="panel panel-success" style="text-align: left;">
+                <div class="panel-heading">
+                  <div class="panel-title">
+                    <b>Project Details</b>
+                  </div>
+                  <div class="panel-options">
+                    <a class="bg" data-target="#sample-modal-dialog-1" data-toggle="modal" href="#sample-modal"><i class="entypo-cog"></i></a>
+                    <a data-rel="collapse" href="#"><i class="entypo-down-open"></i></a>
+                    <a data-rel="close" href="#!/tasks" ui-sref="Tasks"><i class="entypo-cancel"></i></a>
+                  </div>
+                </div>
+                <div class="panel-body">
+                  <header class="masthead dashbord-screen">
+                    <div class="create-new-project">  
+                      <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                          <div class="row" style="background-color: #E6E9ED;">
+                            PROJECT INFORMATION
                           </div>
                           <div class="row">
-                          <div class="form-group col-md-3">
-                            <label>On Site Date</label>
+                            <br>
+                            <input type="hidden" name="project_id" id="project_id" value="{{ $project['project_id'] }}">
+                            <div class="col-md-3">
+                              <label style="font-size: 15px;">Project Name</label>
+                            </div>
+                            <div class="col-md-4">
+                              <p style="font-size: 15px;">{{ $project->project_name }}</p>
+                            </div>
+                            <div class="col-md-3">
+                              <label style="font-size: 15px;">Project No.</label>
+                            </div>
+                            <div class="col-md-2">
+                              <p style="font-size: 15px;">#{{ $project['project_id'] }}</p>
+                            </div>
                           </div>
-                          <div class="form-group col-md-9">
-                              <input type="text" value="{{ $onsitedate }}" placeholder="On Site Date" readonly>
-                              <i class="fa fa-calendar" id="datepickericon"></i>
-                          </div>
-                        </div>
-                        <div class="row">
-                          <div class="form-group col-md-3">
-                            
-                            <label>Report Template</label>
-                          </div>
-                          <div class="form-group col-md-9">
-                            <input type="text" value="{{ $project->report_template }}" placeholder="Report template" readonly>
-                          </div>
-                        </div>
-                        <div class="row">
-                          <div class="form-group col-md-3">
-                           
-                            <label>Special Instructions</label>
-                          </div>
-                          <div class="form-group col-md-9">
-                            <input type="text" value="{{ $project->instructions }}" placeholder="Special instruction" readonly>
-                          </div>
-                        </div>
-                        <div class="row">
-                          <div class="form-group col-md-3">
-                            <label>Suggested Bid</label>
-                          </div>
-                          <div class="form-group col-md-9">
-                          <?php 
-                          $suggestedbid = number_format($project->approx_bid, 2);
-                          ?>
-                            <input type="text" value="{{ $suggestedbid }}" style="padding-left: 12px;" readonly>
-                            <i class="glyphicon glyphicon-usd form-control-feedback" style="left: 0; line-height: 27px;"></i>
-                          </div>
-                        </div>
-                        @if($finalbid > 0)
                           <div class="row">
-                            <div class="form-group col-md-3">
-                              
-                              <label>Final Bid</label>
+                            <div class="col-md-3">
+                              <label style="font-size: 15px;">On Site Date</label>
                             </div>
-                            <div class="form-group col-md-9">
-                            <?php 
-                          $associatebid = number_format($finalbid, 2);
-                          ?>
-                              <input type="text" name="projectbid" id="projectbid" value="{{ $associatebid }}" placeholder="Suggest a bid" style="padding-left: 12px;" readonly>
-                                 <i class="glyphicon glyphicon-usd form-control-feedback" style="left: 0; line-height: 27px;"></i>
+                            <div class="col-md-4">
+                              <p style="font-size: 15px;">{{ $onsitedate }}</p>
+                            </div>
+                            <div class="col-md-3">
+                              <label style="font-size: 15px;">Report Due From Field</label>
+                            </div>
+                            <div class="col-md-2">
+                              <p style="font-size: 15px;">{{ $reportdate }}</p>
                             </div>
                           </div>
-                        @endif
-                        <?php
-                          $temp = explode(",", $project['scope_performed_id']);
-                        ?>
-                        <div class="row">
-                          <div class="form-group col-md-3">
-                            <br><br><br>
-                            <label>Scope(s)</label>
+                          <div class="row">
+                            <div class="col-md-3">
+                              <label style="font-size: 15px;">Project Address</label>
+                            </div>
+                            <div class="col-md-9">
+                              <p style="font-size: 15px;">{{ $project->project_site_address }}</p>
+                            </div>
                           </div>
-                          <div class="form-group col-md-9">
+                          <div class="row">
+                            <div class="col-md-3">
+                              <label style="font-size: 15px;">Report Template</label>
+                            </div>
+                            <div class="col-md-9">
+                              <p style="font-size: 15px;">{{ $project->report_template }}</p>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-md-3">
+                              <label style="font-size: 15px;">Special Instruction</label>
+                            </div>
+                            <div class="col-md-9">
+                              <p style="font-size: 15px;">{{ $project->instructions }}</p>
+                            </div>
+                          </div>
+                          <div class="row" style="background-color: #E6E9ED;">
+                            PROPERTY INFORMATION
+                          </div>
+                          <div class="row">
+                            <br>
+                            <div class="col-md-2">
+                              <label style="font-size: 15px;">Project Type</label>
+                            </div>
+                            <div class="col-md-9">
+                              <p style="font-size: 15px;">{{ $project->property_type }}</p>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-md-2">
+                              <label style="font-size: 15px;">No. Units</label>
+                            </div>
+                            <div class="col-md-2">
+                              <p style="font-size: 15px;">{{ $project->no_of_units }}</p>
+                            </div>
+                            <div class="col-md-2">
+                              <label style="font-size: 15px;">Sq. Footage</label>
+                            </div>
+                            <div class="col-md-2">
+                              <p style="font-size: 15px;">{{ $project->squareFootage }}</p>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-md-2">
+                              <label style="font-size: 15px;">No. Buildings</label>
+                            </div>
+                            <div class="col-md-2">
+                              <p style="font-size: 15px;">{{ $project->no_of_buildings }}</p>
+                            </div>
+                            <div class="col-md-2">
+                              <label style="font-size: 15px;">Land Area</label>
+                            </div>
+                            <div class="col-md-2">
+                              <p style="font-size: 15px;">{{ $project->land_area }}</p>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-md-2">
+                              <label style="font-size: 15px;">No. Stories</label>
+                            </div>
+                            <div class="col-md-2">
+                              <p style="font-size: 15px;">{{ $project->no_of_stories }}</p>
+                            </div>
+                            <div class="col-md-2">
+                              <label style="font-size: 15px;">Year Built</label>
+                            </div>
+                            <div class="col-md-2">
+                              <p style="font-size: 15px;">{{ $project->year_built }}</p>
+                            </div>
+                          </div>
+                          @if(session('loginusertype') == 'admin')
+                          <div class="row" style="background-color: #E6E9ED;">
+                            BID INFORMATION
+                          </div>
+                          <div class="row">
+                            <br>
+                            <div class="col-md-2">
+                              <label style="font-size: 15px;">Scope Budget</label>
+                            </div>
+                            <div class="col-md-9">
+                               <?php 
+                              $budget = number_format($project->budget, 2);
+                              ?>
+                              <p style="font-size: 15px;">${{ $budget }}</p>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-md-2">
+                              <label style="font-size: 15px; text-align: left;" >Suggested Bid</label>
+                            </div>
+                            <div class="col-md-3">
+                              <?php 
+                              $suggestedbid = number_format($project->approx_bid, 2);
+                              ?>
+                              <p style="font-size: 15px;">${{ $suggestedbid }}</p>
+                            </div>
+                          </div>
+                          @endif
+                          <div class="row" style="background-color: #E6E9ED;">
+                            NOTIFICATIONS
+                          </div>
+                          <div class="row">
+                            <br>
+                            <div class="col-md-2">
+                            <label style="font-size: 15px;">Scope</label>
+                          </div>
+                          <div class="col-md-9">
+                            <?php
+                            $temp = explode(",", $project['scope_performed_id']);
+                            $count = count($temp);
+                            $i = 1;
+                            ?>
+                            <p style="font-size: 15px;">
                             @foreach($scope as $value)
                               @if(in_array("$value->scope_performed_id", $temp))
-                                <label class="checkbox" style="color: grey;">
-                                    <input type="checkbox" value="{{ $value->scope_performed_id }}" name="scopeperformedid[]" checked disabled>
-                                        {{ $value->scope_performed }} 
-                                </label>
-                              @else 
-                                <label class="checkbox" style="color: grey;">
-                                  <input type="checkbox" value="{{ $value->scope_performed_id }}" name="scopeperformedid[]" disabled>
-                                      {{ $value->scope_performed }} 
-                                </label>
+                                {{ $value->scope_performed }}
+                                @if($i == $count)
+                              @else
+                              ,&nbsp
+                              @endif
+                                 <?php $i++;?>
+
                               @endif
                             @endforeach
+                          </p>
+                        </div>
+                      </div>
+                      @if(isset($project->milesrange))
+                      <div class="row">
+                        <div class="col-md-2">
+                          <label style="font-size: 15px;">Radius</label>
+                        </div>
+
+                        <div class="col-md-9">
+                          <p style="font-size: 15px;">{{ $project->milesrange }} Miles</p>
+                        </div>
+                        </div>
+                        @endif
+                        @if(isset($project->employee_type_id))
+                        <div class="row">
+                          <div class="col-md-2">
+                            <label style="font-size: 15px;">User Type</label>
                           </div>
-                            @if($finalbid != 0)
-                              <div class="edit-btn">
+                          <div class="col-md-9">
+                          <?php
+                            $temp = explode(",", $project['employee_type_id']);
+                            $count = count($temp);
+                            $i = 1;
+                            ?>
+                            <p style="font-size: 15px;">
+                            @foreach($associateType as $value)
+                              @if(in_array("$value->associate_type_id", $temp))
+                                {{ $value->associate_type }}
+                                @if($i == $count)
+                              @else
+                              ,&nbsp
+                              @endif
+                                 <?php $i++;?>
+
+                              @endif
+                            @endforeach
+                          </p>
+                          </div>
+                          
+                        </div>
+                        @endif
+                          @if($finalbid != 0)
+                          <div class="row">
+                          <div class="col-md-12">
+                          <div class="edit-btn">
                                 <center>
                                   <button type="button" class="btn red-btn" data-toggle="modal" data-target="#associateprofile">Associate Profile</button>
                                   <button type="button" class="btn red-btn" data-toggle="modal" data-target="#project-status" id="view-status">View Notes</button>
                                 </center>
                               </div>
-                             @include('project.associate_profile')
-                          @endif
+                              @include('project.associate_profile')
                         </div>
+                        </div>
+                        @endif
                       </div>
+                    </div>
                   </div>
                 </div>
               </header>

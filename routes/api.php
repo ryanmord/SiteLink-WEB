@@ -62,3 +62,5 @@ Route::any('/acceptProject', 'ApiController@acceptProject');
 Route::any('/declineProject', 'ApiController@declineProject');
 Route::any('/activeBids','ApiController@activeBids');
 Route::any('/bidHistory','ApiController@bidHistory');
+Route::any('/getLAtLong','ApiController@getLAtLong');
+Route::any('/apiGeneratedToken','ApiController@apiGeneratedToken');

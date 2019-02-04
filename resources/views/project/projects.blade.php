@@ -502,8 +502,9 @@
                     
                                                     <li><a href="{{url('/allProejcts/projectDetail/'.$project['project_id'])}}">View</a></li>
                                                     @if(session('loginusertype') == 'admin')
-                                                    
+                                                        @if($project['createdBy'] == 2)
                                                     <li><a href="{{url('editProject/'.$project['project_id'])}}">Edit</a></li>
+                                                        @endif
                                                     @endif
                                                     @if($project['bidcount'] != 0)
                                                     <li><a href="{{url('projectBid/'.$project['project_id'])}}">Bids</a></li>
@@ -678,7 +679,7 @@ $(function() {
 $(function () {
     // Number of items and limits the number of items per page
     var projectcount = $('#allocated-count').text();
-    var limitPerPage = 8;
+    var limitPerPage = 9;
     var totalPages = (Math.ceil(projectcount / limitPerPage));
     var paginationSize = 7; 
     var currentPage;
@@ -772,7 +773,7 @@ $(function () {
 $(function () {
     // Number of items and limits the number of items per page
     var projectcount = $('#complete-count').text();
-    var limitPerPage = 8;
+    var limitPerPage = 9;
     var totalPages = (Math.ceil(projectcount / limitPerPage));
     var paginationSize = 7; 
     var currentPage;
@@ -866,7 +867,7 @@ $(function () {
 $(function () {
     // Number of items and limits the number of items per page
     var projectcount = $('#open-count').text();
-    var limitPerPage = 8;
+    var limitPerPage = 9;
     var totalPages = (Math.ceil(projectcount / limitPerPage));
     var paginationSize = 7; 
     var currentPage;
@@ -960,7 +961,7 @@ $(function () {
 $(function () {
     // Number of items and limits the number of items per page
     var projectcount = $('#onhold-count').text();
-    var limitPerPage = 8;
+    var limitPerPage = 9;
     var totalPages = (Math.ceil(projectcount / limitPerPage));
     var paginationSize = 7; 
     var currentPage;
@@ -1054,7 +1055,7 @@ $(function () {
 $(function () {
     // Number of items and limits the number of items per page
     var projectcount = $('#cancel-count').text();
-    var limitPerPage = 8;
+    var limitPerPage = 9;
     var totalPages = (Math.ceil(projectcount / limitPerPage));
     var paginationSize = 7; 
     var currentPage;

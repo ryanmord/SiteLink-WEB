@@ -185,9 +185,29 @@ class UserController extends Controller
             $projectid = $value->project_id;
             $projectbid = ProjectBid::where('project_id','=',$projectid)->
                         where('project_bid_status','=',1)->first();
+            $projectStatus = ProjectStatus::where('project_status_type_id','=',7)
+                                            ->where('project_id','=',$projectid)->first();
+            if(!isset($projectbid) && isset($projectStatus))
+            {
+                $managerid = $value->user_id;
+                $user = User::where('users_id','=',$managerid)->first();
+               
+                $managername = $user->users_name.' '.$user->last_name;
+                    //newly created projects
+                    $schedulingProject[] = ['project_name' => $value->project_name, 
+                            'project_id'           => $value->project_id,
+                            'project_site_address' =>  $value['project_site_address'],
+                            'budget'               => number_format($value->budget, 2),
+                            'managername'          => $managername,
+                            'created_at'           => $value->created_at,
+                           ];
+                
+                
+            }
             $bidcount = ProjectBid::where('project_id','=',$projectid)
                                     ->where('project_bid_status','=',2)
                                     ->where('bid_status','=',1)->count();
+
             if(empty($projectbid))
             {
                 if($bidcount > 0)
@@ -211,31 +231,42 @@ class UserController extends Controller
            
         }           
         if(isset($nonallocatedproject))
-            {
-                $bidsrequestcount = ProjectBid::where('project_bid_status','=',2)
+        {
+            $bidsrequestcount = ProjectBid::where('project_bid_status','=',2)
                                                 ->where('bid_status','=',1)->count();
-            }
-            else
-            {
-                $bidsrequestcount = 0;
-                $nonallocatedproject = null;
-            }
-                
+        }
+        else
+        {
+            $bidsrequestcount = 0;
+            $nonallocatedproject = null;
+        }
+        if(isset($schedulingProject))
+        {
+            $schedulingProjectCount = count($schedulingProject);
+        }
+        else
+        {
+            $schedulingProject = null;
+            $schedulingProjectCount = 0;
+        }     
         
        /* print_r($nonallocatedproject);
         exit;*/
         /*echo json_encode(array('publishprojects' => $bids));
             exit;  */
         return view('dashboard',[
-                    'associate'           => $associate, 
-                    'schedular'           => $schedular,
-                    'project'             => $projectcount,
-                    'projectbid'          => $projectbidcount,
-                    'users'               => $users,
-                    'bidsrequestcount'    => $bidsrequestcount,
-                    'nonallocatedproject' => $nonallocatedproject,
-                    'associatetype'       => $associatetype
-        ]);
+                    'associate'              => $associate, 
+                    'schedular'              => $schedular,
+                    'project'                => $projectcount,
+                    'projectbid'             => $projectbidcount,
+                    'users'                  => $users,
+                    'bidsrequestcount'       => $bidsrequestcount,
+                    'nonallocatedproject'    => $nonallocatedproject,
+                    'associatetype'          => $associatetype,
+                    'schedulingProject'      => $schedulingProject,
+                    'schedulingProjectCount' => $schedulingProjectCount
+                 ]);
+        
   
     }
     public function approveduser($id,$status,Request $request)

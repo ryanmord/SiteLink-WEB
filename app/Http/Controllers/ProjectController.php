@@ -213,7 +213,6 @@ class ProjectController extends Controller
             $selectedUser = explode(",",$selectedUser);
             $selectedUser = array_unique($selectedUser);
         }
-       
         if ($pageno < 1) 
         {
             $pageno = 1;
@@ -252,33 +251,42 @@ class ProjectController extends Controller
         if($usercount != 0)
         {
             foreach ($userlist as $value) {
-                if(isset($selectedUser))
+                if(isset($request['projectid']))
                 {
-                    if(in_array($value->users_id, $selectedUser))
-                {
-                    $appendtd .= ' <tr class="content">
-                    <td><input type="checkbox"  value="'.$value->users_id.'" name="associateid[]" id="associateid[]" style="height: 15px;width: 15px;" checked>
-                    </td>
-                    <td>';
+                    $bidrequest = ProjectBidRequest::where('to_user_id','=',$value->users_id)
+                                                ->where('project_id','=',$request['projectid'])->first();
                 }
-                else{
+                if(isset($bidrequest))
+                {
                     $appendtd .= ' <tr class="content">
-                    <td><input type="checkbox" value="'.$value->users_id.'" name="associateid[]" id="associateid[]" style="height: 15px;width: 15px;">
-                    </td>
-                    <td>';
-                }  
+                                     <td><input type="checkbox" class="usercheck" value="'.$value->users_id.'" name="associateid[]" id="associateid[]" style="height: 15px;width: 15px;" checked>
+                                     </td><td>';
                 }
                 else
                 {
-                    $appendtd .= ' <tr class="content">
-                    <td><input type="checkbox" value="'.$value->users_id.'" name="associateid[]" id="associateid[]" style="height: 15px;width: 15px;">
-                    </td>
-                    <td>';
+                    if(isset($selectedUser))
+                    {
+                        if(in_array($value->users_id, $selectedUser))
+                        {
+                            $appendtd .= ' <tr class="content">
+                                     <td><input type="checkbox" class="usercheck" value="'.$value->users_id.'" name="associateid[]" id="associateid[]" style="height: 15px;width: 15px;" checked>
+                                     </td><td>';
+                        }
+                        else{
+                        $appendtd .= ' <tr class="content">
+                                    <td><input type="checkbox" class="usercheck" value="'.$value->users_id.'" name="associateid[]" id="associateid[]" style="height: 15px;width: 15px;"></td><td>';
+                        }  
+                    }
+                    else
+                    {
+                        $appendtd .= ' <tr class="content">
+                                    <td><input type="checkbox" class="usercheck" value="'.$value->users_id.'" name="associateid[]" id="associateid[]" style="height: 15px;width: 15px;">
+                                    </td>
+                                    <td>';
+                    }
                 }
-                 
-                
-                    $imagepath = asset("/img/users/" . $value->users_profile_image); 
-                    $appendtd .= '<img class="img-rounded" style="max-width:50px;max-height:50px;min-width:50px;min-height:50px;" src= "'.$imagepath.'" /></td>
+                $imagepath = asset("/img/users/" . $value->users_profile_image); 
+                $appendtd .= '<img class="img-rounded" style="max-width:50px;max-height:50px;min-width:50px;min-height:50px;" src= "'.$imagepath.'" /></td>
                     <td style="text-align: left;color: #11121380;font-size: 15px;">
                     '.ucfirst($value->users_name).'&nbsp'.ucfirst($value->last_name).'</td>
                     <td style="text-align: left;color: #11121380;font-size: 15px;">'.$value->users_company.'</td><td style="text-align: left;color: #11121380;font-size: 15px;">'.$value->users_email.'<br>
@@ -302,7 +310,6 @@ class ProjectController extends Controller
     //store project details
     public function store(Request $request)
     {
-       
         $project = new Project;
         $project->project_name = $request->input('projectname');
         $project->project_site_address = $request->input('siteaddress');
@@ -327,12 +334,27 @@ class ProjectController extends Controller
         {
             $project->instructions = $request->input('instruction');
         }
+        $footage_txt   = (string)$request->input('footage_txt');
+        $footage       = str_replace( ',', '', $footage_txt );
+        $projectbid    = (string)$request->input('projectbid');
+        $projectbid    = str_replace( ',', '', $projectbid );
+        $budget        = (string)$request->input('budget_txt');
+        $budget        = str_replace( ',', '', $budget );
         $project->report_due_date = $reportdate;
         $project->report_template = $request->input('template');
-        $project->approx_bid = $request->input('projectbid');
+        $project->approx_bid = (double)$projectbid;
         $project->scope_performed_id = $scope;
         $project->user_id = $request->input('managerid');
+        $project->property_type = $request->input('projectType');
+        $project->no_of_units = $request->input('units_txt');
+        $project->squareFootage = (double)$footage;
+        $project->no_of_buildings = $request->input('building_txt');
+        $project->land_area = $request->input('area_txt');
+        $project->no_of_stories = $request->input('stories_txt');
+        $project->year_built = $request->input('built_txt');
+        $project->budget = (double)$budget;
         $project->employee_type_id = $associatetypeid;
+        $project->created_by = 2;
         $project->save();
         $projectname = $request->input('projectname');
         $address = $request->input('siteaddress');
@@ -404,6 +426,7 @@ class ProjectController extends Controller
                     $bidrequest->project_id = $projectid;
                     $bidrequest->to_user_id = $touserid;
                     $bidrequest->from_user_id = $fromuserid;
+                    $bidrequest->request_send_status = 1;
                     $bidrequest->created_at = date('Y-m-d H:i:s');
                     $bidrequest->save();
 
@@ -435,6 +458,7 @@ class ProjectController extends Controller
                 $bidrequest->project_id = $projectid;
                 $bidrequest->to_user_id = $touserid;
                 $bidrequest->from_user_id = $fromuserid;
+                $bidrequest->request_send_status = 1;
                 $bidrequest->created_at = date('Y-m-d H:i:s');
                 $bidrequest->save();
                 }
@@ -537,7 +561,7 @@ class ProjectController extends Controller
                                     'created_at'           => $value->created_at,
                                     'status'               => $status1,
                                     'usertype'             => 2
-                    ];
+                                    ];
                 }
             }
             else
@@ -646,8 +670,19 @@ class ProjectController extends Controller
         {
             $instructions = null;
         }
-        $report_template = $request->input('template');
-        $approx_bid = $request->input('projectbid');
+        $report_template   = $request->input('template');
+        $approx_bid        = (string)$request->input('projectbid');
+        $approx_bid        = str_replace( ',', '', $approx_bid );
+        $property_type     = $request->input('projectType');
+        $no_of_units       = $request->input('units_txt');
+        $squareFootage     = (string)$request->input('footage_txt');
+        $squareFootage     = str_replace( ',', '', $squareFootage );
+        $no_of_buildings   = $request->input('building_txt');
+        $land_area         = $request->input('area_txt');
+        $no_of_stories     = $request->input('stories_txt');
+        $year_built        = $request->input('built_txt');
+        $budget            = (string)$request->input('budget_txt');
+        $budget            = str_replace( ',', '', $budget );
         $project = Project::where('project_id', '=', $projectid)
                     ->update(['project_name'       => $project_name,
                             'project_site_address' => $project_site_address,
@@ -658,9 +693,17 @@ class ProjectController extends Controller
                             'on_site_date'         => $onsitedate,
                             'report_template'      => $report_template,
                             'instructions'         => $instructions,
-                            'approx_bid'           => $approx_bid,
+                            'approx_bid'           => (double)$approx_bid,
                             'scope_performed_id'   => $scope,
-                            'employee_type_id'     => $associatetypeid
+                            'employee_type_id'     => $associatetypeid,
+                            'property_type'        => $property_type,
+                            'no_of_units'          => $no_of_units,
+                            'squareFootage'        => (double)$squareFootage,
+                            'no_of_buildings'      => $no_of_buildings,
+                            'land_area'            => $land_area,
+                            'no_of_stories'        => $no_of_stories,
+                            'year_built'           => $year_built,
+                            'budget'               => (double)$budget
                             ]);
         
         if($project != 0)
@@ -678,7 +721,6 @@ class ProjectController extends Controller
             $latitude = $request->input('latitude');
             $longitude = $request->input('longitude');
             $miles = (int)$request->input('milesrange');
-            
             //find nearby associates to send paroject available notification
             $result =  DB::select(DB::raw("SELECT users_id , ( 3956 *2 * ASIN( SQRT( POWER( SIN( ( $latitude - latitude ) * PI( ) /180 /2 ) , 2 ) + COS( $latitude * PI( ) /180 ) * COS( latitude * PI( ) /180 ) * POWER( SIN( ( $longitude - longitude ) * PI( ) /180 /2 ) , 2 ) ) ) ) AS distance
                 FROM users
@@ -718,8 +760,7 @@ class ProjectController extends Controller
                         if(isset($bidrequest))
                         {
                             $this->sendUserNotification($touserid,$fromuserid,$projectid,$body,$title,$notificationtext,$notificationtype);
-                            $bidrequeststatus = ProjectBidRequest::where('project_id', '=', $projectid)
-                                ->where('to_user_id','=',$touserid)->update(['bid_request_status' => 0]);
+                            $bidrequeststatus = ProjectBidRequest::where('project_id', '=', $projectid)->where('to_user_id','=',$touserid)->update(['bid_request_status' => 0,'request_send_status' => 1]);
                         }
                         else
                         {
@@ -731,6 +772,7 @@ class ProjectController extends Controller
                             $bidrequest->project_id = $projectid;
                             $bidrequest->to_user_id = $touserid;
                             $bidrequest->from_user_id = $fromuserid;
+                            $bidrequest->request_send_status = 1;
                             $bidrequest->created_at = date('Y-m-d H:i:s');
                             $bidrequest->save();
                         }
@@ -759,6 +801,7 @@ class ProjectController extends Controller
                         $bidrequest->project_id = $projectid;
                         $bidrequest->to_user_id = $touserid;
                         $bidrequest->from_user_id = $fromuserid;
+                        $bidrequest->request_send_status = 1;
                         $bidrequest->created_at = date('Y-m-d H:i:s');
                         $bidrequest->save();
                     }
@@ -943,7 +986,10 @@ class ProjectController extends Controller
             $bidcount = ProjectBid::where('project_id','=',$projectid)
                                     ->where('project_bid_status','=',2)
                                     ->where('bid_status','=',1)->count();
-            if(!isset($projectbid))
+            $createdBy = $value->created_by;
+            $projectStatus = ProjectStatus::where('project_status_type_id','=',1)
+                                            ->where('project_id','=',$projectid)->first();
+            if(!isset($projectbid) && isset($projectStatus))
             {
                 $managerid = $value->user_id;
                 $user = User::where('users_id','=',$managerid)->first();
@@ -956,10 +1002,9 @@ class ProjectController extends Controller
                             'approx_bid'           => number_format($value->approx_bid, 2),
                             'managername'          => $managername,
                             'created_at'           => $value->created_at,
-                            'bidcount'             => $bidcount
+                            'bidcount'             => $bidcount,
+                            'createdBy'            => $createdBy
                             ];
-                
-                
             }
            
         }
@@ -1440,7 +1485,7 @@ class ProjectController extends Controller
                     $managerid = $value->user_id;
                     $user = User::where('users_id','=',$managerid)->first();
                     $managername = $user->users_name;
-                    $nonallocatedproject[] = ['project_name' => $value->project_name, 
+                    $nonallocatedproject[] =['project_name' => $value->project_name, 
                                             'project_id' => $value->project_id,
                                             'project_site_address' =>  $value['project_site_address'],
                                             'report_due_date' => $value->report_due_date,
@@ -1451,8 +1496,8 @@ class ProjectController extends Controller
                                             'managername' => $managername,
                                             'created_at' => $value->created_at,
                                             'updated_at' => $value->updated_at,
-                                            'bidcount'   => $bidcount
-                                           
+                                            'bidcount'   => $bidcount,
+                                            'createdBy'  => $value->created_by
                                             ];
                 }
             }
@@ -1694,6 +1739,7 @@ class ProjectController extends Controller
         {
             $statuscount = 0;
         }
+        $associateType = AssociateType::all();
         return view('project.projectdetail',[
                     'scope'      => $scope, 
                     'project'    => $project,
@@ -1705,6 +1751,8 @@ class ProjectController extends Controller
                     'user'       => $user,
                     'statuscount'=> $statuscount,
                     'holdstatus' => $holdstatus,
+                    'associateType' => $associateType,
+
                 ]);
     } 
     //project complete by manager
@@ -1890,5 +1938,322 @@ class ProjectController extends Controller
             }
         }
         return response()->json($appendtd);
+    }
+    public function getAssociatesProfile(Request $request){
+        $appendtd = '';
+        if(!empty($request['selectedAssociate']))
+        {
+            $selectedUser = $request['selectedAssociate'];
+            $selectedUser = explode(",",$selectedUser);
+            $selectedUser = array_unique($selectedUser);
+            foreach ($selectedUser as $value) {
+                $user = User::where('users_id','=',$value)->first();
+                $associatename = $user->users_name.' '.$user->last_name;
+                $associateTypeId = $user->associate_type_id;
+                $associateType = AssociateType::where('associate_type_id','=',$associateTypeId)->first();
+                $associate_type = $associateType->associate_type;
+                $profile = $user->users_profile_image;
+                $profileimage = asset("/img/users/" . $profile);
+                $appendtd .= '<tr><td width="50" class="live-user-td"><img class="img-rounded live-user-image" src="'.$profileimage.'"/></td>
+                    <td width="250" class="live-user-td">'.$associatename.'</td>
+                    <td width="220" class="live-user-td">'.$associate_type.'</td>
+                    <td width="50" class="live-user-td"><button type="button" class="close"  style="color: red;font-size: 25px;">&times;</button></td></tr>';
+               
+            }
+        }
+        return response()->json($appendtd);
+    }
+    public function schedulingProject($id)
+    {
+        $project = Project::where('project_id','=',$id)->first();
+        $projectbidrequest = ProjectBidRequest::where('project_id','=',$id)->get();
+        if(isset($projectbidrequest))
+        {
+            $resetbidrequest = ProjectBidRequest::where('project_id','=',$id)->delete();
+        }
+        $scope = ScopePerformed::all();
+        $setting = Setting::where('setting_status','=',1)->first();
+        if(isset($setting))
+        {
+            $minvalue = (string)$setting->min_miles;
+            $maxvalue = (string)$setting->max_miles;
+        }
+        else
+        {
+            $minvalue = 0;
+            $maxvalue = 0;
+        }
+        $date2= date($project->report_due_date);
+        $datetime2 = new DateTime($date2);
+        $reportdate= $datetime2->format("m/d/Y");
+        if(isset($project->on_site_date))
+        {
+            $date2= date($project->on_site_date);
+            $datetime2 = new DateTime($date2);
+            $onsitedate= $datetime2->format("m/d/Y");    
+        }
+        else
+        {
+            $onsitedate= '   -';
+        }
+        $projectbid = ProjectBid::where('project_id','=',$id)
+                                ->where('project_bid_status','=',1)
+                                ->first();
+        $associateType = AssociateType::all();
+        return view('project.schedulingProject',[
+                    'scope'         => $scope, 
+                    'project'       => $project,
+                    'minvalue'      => $minvalue,
+                    'maxvalue'      => $maxvalue,
+                    'reportdate'    => $reportdate,
+                    'onsitedate'    => $onsitedate,
+                    'associateType' => $associateType,
+
+                ]);
+    }
+    public function schedulingNotification(Request $request)
+    {
+       
+        
+        $projectId = $request['projectId'];
+        if(!empty($request['miles']) && !empty($request['projectId']))
+        {
+            $miles = $request['miles'];
+            if(empty($request['associateTypeId']))
+            {
+                $associateTypeId = 0;
+            }
+            else
+            {
+                $associateTypeId = $request['associateTypeId'];
+            }
+            
+            //$associateTypeId = array(1,2,3);
+            $bidRequests = ProjectBidRequest::where('project_id','=',$projectId)
+                                            ->where('check_status','=',0)->delete();
+            $project = Project::where('project_id','=',$projectId)->first();
+            $latitude = $project->latitude;
+            $longitude = $project->longitude;
+            $scopeId = $project->scope_performed_id;
+            $managerId = $project->user_id;
+            //$associatetypeid = implode (",",$associateTypeId);
+            $result =  DB::select(DB::raw("SELECT users_id , ( 3956 *2 * ASIN( SQRT( POWER( SIN( ( $latitude - latitude ) * PI( ) /180 /2 ) , 2 ) + COS( $latitude * PI( ) /180 ) * COS( latitude * PI( ) /180 ) * POWER( SIN( ( $longitude - longitude ) * PI( ) /180 /2 ) , 2 ) ) ) ) AS distance
+                FROM users
+                WHERE  user_types_id <>1
+                AND associate_type_id IN ($associateTypeId)
+                HAVING distance <= $miles"));
+            $appendtd ='';
+            /* print_r($result);
+            exit;*/
+            if(isset($result))
+            {
+                  foreach($result as $value) 
+                {
+                    $userId = $value->users_id;
+                    $scope_Id = UserScopePerformed::where('users_id','=',$userId)->first();
+                    $userScopeId = (string)$scope_Id->scope_performed_id;
+                    $userScopeId = explode(",",$userScopeId);
+                    $scope = explode(",", $scopeId);
+                    $scopeflag = 1;
+                    //check user scope performed is matches or not
+                    foreach ($scope as $scopeid) {
+                        if(in_array($scopeid, $userScopeId))
+                        {
+                            $scopeflag = 1;
+                        }
+                        else
+                        {
+                            $scopeflag = 0;
+                            break;
+                        } 
+                    }
+                    if($scopeflag == 1)
+                    {
+                        $bidrequest = ProjectBidRequest::where('project_id','=',$projectId)
+                                            ->where('to_user_id','=',$userId)->first();
+                
+                        if(isset($bidrequest))
+                        {
+                            $status = $bidrequest->disregarded_status;
+                        }
+                        else
+                        {
+                            $model = new ProjectBidRequest;
+                            $model->from_user_id = $managerId;
+                            $model->to_user_id = $userId;
+                            $model->project_id = $projectId;
+                            $date = date('Y-m-d H:i:s');
+                            $model->created_at = $date;
+                            $model->save();
+                            $status = 0;
+                        }
+                    
+                    }
+                }
+            }
+          
+            $bidrequest = ProjectBidRequest::where('project_id','=',$projectId)
+                                        ->where('disregarded_status','=',0)
+                                        ->where('bid_request_status','=',0)
+                                        ->get();
+            $appendtd = '';
+            foreach ($bidrequest as $value) {
+                $userId = $value->to_user_id;
+                $user = User::where('users_id','=',$userId)->first();
+                $associatename = $user->users_name.' '.$user->last_name;
+                $associateTypeId = $user->associate_type_id;
+                $associateType = AssociateType::where('associate_type_id','=',$associateTypeId)->first();
+                $associate_type = $associateType->associate_type;
+                $profile = $user->users_profile_image;
+                $profileimage = asset("/img/users/" . $profile);
+                $appendtd .= '<tr><td width="50" class="live-user-td"><img class="img-rounded   live-user-image" src="'.$profileimage.'"/></td>
+                    <td width="250" class="live-user-td">'.$associatename.'</td>
+                    <td width="220" class="live-user-td">'.$associate_type.'</td>
+                    <td width="50" class="live-user-td"><button type="button" class="close" onclick="rejectUser('.$userId.')" style="color: red;font-size: 25px;" name="reject-btn">&times;</button></td>
+                    </tr>';
+           
+            }
+            return response()->json($appendtd);
+        }
+        else{
+            $appendtd ='';
+            return response()->json($appendtd);
+        }
+        
+    }
+    public function rejectLiveUser(Request $request)
+    {
+        $userId = $request['userId'];
+        $projectId = $request['projectId'];
+        $updatebidrequest = ProjectBidRequest::where('to_user_id','=',$userId)
+                                        ->where('project_id','=',$projectId)
+                                        ->update(['disregarded_status'=> 1,
+                                                  'check_status' =>0]);
+        $bidrequest = ProjectBidRequest::where('project_id','=',$projectId)
+                                        ->where('disregarded_status','=',0)
+                                        ->where('bid_request_status','=',0)
+                                        ->get();
+        $appendtd = '';
+        foreach ($bidrequest as $value) {
+            $userId = $value->to_user_id;
+            $userBidRequest = ProjectBidRequest::where('project_id','=',$userId)
+                                                ->where('to_user_id','=',$userId)->first();
+
+            $user = User::where('users_id','=',$userId)->first();
+            $associatename = $user->users_name.' '.$user->last_name;
+            $associateTypeId = $user->associate_type_id;
+            $associateType = AssociateType::where('associate_type_id','=',$associateTypeId)
+                                            ->first();
+            $associate_type = $associateType->associate_type;
+            $profile = $user->users_profile_image;
+            $profileimage = asset("/img/users/" . $profile);
+            $appendtd .= '<tr><td width="50" class="live-user-td"><img class="img-rounded   live-user-image" src="'.$profileimage.'"/></td>
+                <td width="250" class="live-user-td">'.$associatename.'</td>
+                <td width="220" class="live-user-td">'.$associate_type.'</td>
+                <td width="50" class="live-user-td"><button type="button" class="close" onclick="rejectUser('.$userId.')" style="color: red;font-size: 25px;" name="reject-btn">&times;</button></td>
+                </tr>';
+           
+        }
+        return response()->json($appendtd);
+    }
+    public function getLiveUserList(Request $request)
+    {
+        $projectid = $request['projectid'];
+        $bidrequest = ProjectBidRequest::where('project_id','=',$projectid)
+                                        ->where('disregarded_status','=',0)
+                                        ->where('bid_request_status','=',0)
+                                        ->get();
+        $appendtd = '';
+        foreach ($bidrequest as $value) {
+            $userId = $value->to_user_id;
+            $user = User::where('users_id','=',$userId)->first();
+            $associatename = $user->users_name.' '.$user->last_name;
+            $associateTypeId = $user->associate_type_id;
+            $associateType = AssociateType::where('associate_type_id','=',$associateTypeId)->first();
+            $associate_type = $associateType->associate_type;
+            $profile = $user->users_profile_image;
+            $profileimage = asset("/img/users/" . $profile);
+            $appendtd .= '<tr><td width="50" class="live-user-td"><img class="img-rounded   live-user-image" src="'.$profileimage.'"/></td>
+                    <td width="250" class="live-user-td">'.$associatename.'</td>
+                    <td width="220" class="live-user-td">'.$associate_type.'</td>
+                    <td width="50" class="live-user-td"><button type="button" class="close" onclick="rejectUser('.$userId.')" style="color: red;font-size: 25px;" name="reject-btn">&times;</button></td>
+                    </tr>';
+           
+        }
+        return response()->json($appendtd);
+    }
+    public function changeCheckStatus(Request $request)
+    {
+        $projectid = $request['projectid'];
+        $userid = $request['userid'];
+        $status = $request['status'];
+        $project = Project::where('project_id','=',$projectid)->first();
+        $managerId = $project->user_id;
+        $bidrequest = ProjectBidRequest::where('project_id','=',$projectid)
+                                        ->where('to_user_id','=',$userid)->first();
+        if(isset($bidrequest))
+        {
+            $bidmodel = ProjectBidRequest::where('project_id','=',$projectid)
+                                        ->where('to_user_id','=',$userid)
+                                        ->update(['check_status']);
+        }
+        else
+        {
+            $model = new ProjectBidRequest;
+            $model->to_user_id = $userid;
+            $model->from_user_id = $managerId;
+            $model->check_status = 1;
+            $model->project_id = $projectid;
+            $date = date('Y-m-d H:i:s');
+            $model->created_at = $date;
+            $model->save();
+
+        }
+        return response()->json(array('status' => 1));
+    }
+    public function sendProjectNotification(Request $request)
+    {
+        $projectid = $request['projectid'];
+        $miles = $request['miles'];
+        $associate_type_id = $request['associate_type_id'];
+        $bid = $request['bid'];
+        $updateProject = Project::where('project_id','=',$projectid)
+                                ->update(['milesrange'       => $miles,
+                                          'employee_type_id' => $associate_type_id,
+                                          'approx_bid'       => $bid]);
+        $project = Project::where('project_id','=',$projectid)->first();
+        $fromuserid = $project->user_id;
+        $updatebidrequest = ProjectBidRequest::where('project_id','=',$projectid)
+                                        ->where('disregarded_status','=',0)
+                                        ->where('bid_request_status','=',0)
+                                        ->update(['request_send_status' => 1]);
+        $bidrequest = ProjectBidRequest::where('project_id','=',$projectid)
+                                        ->where('disregarded_status','=',0)
+                                        ->where('bid_request_status','=',0)
+                                        ->get();
+        if(isset($bidrequest))
+        {
+            foreach ($bidrequest as $value) {
+                $touserid = $value->to_user_id;
+                $notificationtext = 'New project listed in your area!';
+                $notificationtype = '1'; //1 for create project
+                $projectid = (string)$projectid;
+                //$fromuserid = $request->input('managerid');
+                $body = $project->project_name;
+                $title = 'New project listed in your area!';
+                $this->sendUserNotification($touserid,$fromuserid,$projectid,$body,$title,$notificationtext,$notificationtype);
+            }
+        }
+        $updateStatus = ProjectStatus::where('project_id','=',$projectid)
+                                    ->where('project_status_type_id','=',7)
+                                    ->update(['project_status_type_id' => 1]);
+        return response()->json(array('status' => 1,'message' => 'Project scheduled successfully'));
+
+        /*$model = new ProjectStatus;
+        $model->project_id = $projectid;
+        $model->project_status_type_id = 1;
+        $date = date('Y-m-d H:i:s');
+        $model->created_at = $date;
+        $model->save();*/
     }
 }

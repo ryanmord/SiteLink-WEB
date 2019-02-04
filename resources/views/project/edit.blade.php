@@ -158,16 +158,90 @@
                         </div>
                       </div>
                       <div class="row">
-                        <div class="form-group col-md-3">
+                        <div class="form-group col-md-3"  field-customers-first_name>
                           <br>
-                          <label>Suggest A Bid</label>
+                          <label>Project Type</label>
                         </div>
                         <div class="form-group col-md-9">
-                          <input type="text" name="projectbid" id="projectbid" value="{{ $project->approx_bid }}" placeholder="Suggest a bid" required="" style="padding-left: 12px;">
-                          <i class="glyphicon glyphicon-usd form-control-feedback" style="left: 0; line-height: 27px;"></i>
-                          &nbsp<span id="errmsg"></span>
+                          <input type="text" name="projectType" id="projectType" placeholder="Project Type" id="projectType" value="{{ $project->property_type}}">
                         </div>
                       </div>
+                      <div class="row">
+                        <div class="form-group col-md-3">
+                          <br>
+                          <label>No. Units</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                          <input type="text" name="units_txt" id="units_txt" value="{{ $project->no_of_units }}"  placeholder="  No.of units" required="" style="padding-left: 12px;">
+                        </div>
+                        <div class="form-group col-md-2">
+                          <br>
+                          <label>Sq. Footage</label>
+                        </div>
+                        <?php 
+                          $squareFootage = number_format($project->squareFootage, 2);
+                        ?>
+                        <div class="form-group col-md-4">
+                          <input type="text" name="footage_txt" id="footage_txt" placeholder="  Sq. Footage" value="{{ $squareFootage }}" required="" style="padding-left: 12px;">
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="form-group col-md-3">
+                          <br>
+                            <label>No. Buildings</label>
+                              </div>
+                              <div class="form-group col-md-3">
+                                <input type="text" name="building_txt" id="building_txt"  placeholder="  No.BUildings" required="" value="{{ $project->no_of_buildings }}" style="padding-left: 12px;">
+                              </div>
+                              <div class="form-group col-md-2">
+                                <br>
+                                <label>Land Area</label>
+                              </div>
+                              <div class="form-group col-md-4">
+                                <input type="text" name="area_txt" id="area_txt"placeholder="  Land Area" required="" value="{{ $project->land_area }}" style="padding-left: 12px;">
+                              </div>
+                            </div>
+                              <div class="row">
+                                <div class="form-group col-md-3">
+                                  <br>
+                                  <label>No. Stories</label>
+                                </div>
+                                <div class="form-group col-md-3">
+                                <input type="text" name="stories_txt" id="stories_txt"  placeholder="  No. Stories" value="{{ $project->no_of_stories }}" required="" style="padding-left: 12px;">
+                              </div>
+                               <div class="form-group col-md-2">
+                                <br>
+                                <label>Year Built</label>
+                              </div>
+                              <div class="form-group col-md-4">
+                                <input type="text" name="built_txt" id="built_txt" placeholder="  Year Built" value="{{ $project->year_built }}" required="" style="padding-left: 12px;">
+                              </div>
+                            </div> 
+                            <div class="row">
+                              <div class="form-group col-md-3">
+                                <br>
+                                <label>Budget</label>
+                              </div>
+                              <div class="form-group col-md-3">
+                               <?php 
+                              $budget = number_format($project->budget, 2);
+                              ?>
+                                <input type="text" name="budget_txt" id="budget_txt" placeholder="  Budget" value="{{ $budget }}" required="" style="padding-left: 12px;">
+                                <i class="glyphicon glyphicon-usd form-control-feedback" style="left: 0; line-height: 27px;"></i>
+                              </div>
+                               <div class="form-group col-md-2">
+                                <br>
+                                <label>Suggest A Bid</label>
+                              </div>
+                              <div class="form-group col-md-4">
+                               <?php 
+                              $approx_bid = number_format($project->approx_bid, 2);
+                              ?>
+                                <input type="text" name="projectbid" id="projectbid" placeholder="  Suggest a bid" value="{{ $approx_bid }}" required="" style="padding-left: 12px;">
+                                <i class="glyphicon glyphicon-usd form-control-feedback" style="left: 0; line-height: 27px;"></i>
+                          </div>
+                        </div>
+                    
                       <?php
                         $temp = explode(",", $project['scope_performed_id']);
                       ?>
@@ -362,6 +436,14 @@
               
             },
             template:"Please Enter Template",
+            projectType:"Please Enater Project Type",
+            built_txt:"Please Enter Year Built",
+            building_txt:"Please Enter No.of Buildings",
+            stories_txt:"Please Enter No. of Stories",
+            footage_txt:"Please Enter No. of Footage",
+            area_txt:"Please Enter Land Area",
+            budget_txt:"Please Enter Budget",
+            units_txt:"Please Enter No. of Units",
             selectmanger:"Please Select Manager",
             projectbid:{
               required : "Please Enter Project Bid",
@@ -572,7 +654,116 @@ $('#cancel-user').click(function(){
       });
     });
 </script>
- 
+ <script type="text/javascript">
+    $("#projectbid").keypress(function (e) {
+      
+      $('#projectbid').keyup(function(e) {
+      if ($(this).val().indexOf('.') == 0 || $(this).val().indexOf('0') == 0) {
+        $(this).val($(this).val().substring(1));
+                  }
+                });
+                var regex = new RegExp("^[0-9\.\]+$");
+                var key = String.fromCharCode(!e.charCode ? e.which : e.charCode);  
+                if(e.keyCode === 8 || e.keyCode === 46)  
+                  return true;                
+                if(!((e.keyCode == 37 && e.which == 0) || (e.keyCode == 39 && e.which == 0) || (e.keyCode == 46 && e.which == 0))){
+                  if(!regex.test(key)){
+                    return false;      
+                  }
+                }
+            });
+    $("#budget_txt").keypress(function (e) {
+      
+      $('#budget_txt').keyup(function(e) {
+      if ($(this).val().indexOf('.') == 0 || $(this).val().indexOf('0') == 0) {
+        $(this).val($(this).val().substring(1));
+                  }
+                });
+                var regex = new RegExp("^[0-9\.\]+$");
+                var key = String.fromCharCode(!e.charCode ? e.which : e.charCode);  
+                if(e.keyCode === 8 || e.keyCode === 46)  
+                  return true;                
+                if(!((e.keyCode == 37 && e.which == 0) || (e.keyCode == 39 && e.which == 0) || (e.keyCode == 46 && e.which == 0))){
+                  if(!regex.test(key)){
+                    return false;      
+                  }
+                }
+            });
+    $("#units_txt").keypress(function (e) {
+      
+      
+                var regex = new RegExp("^[0-9\.\]+$");
+                var key = String.fromCharCode(!e.charCode ? e.which : e.charCode);  
+                if(e.keyCode === 8 || e.keyCode === 46)  
+                  return true;                
+                if(!((e.keyCode == 37 && e.which == 0) || (e.keyCode == 39 && e.which == 0) || (e.keyCode == 46 && e.which == 0))){
+                  if(!regex.test(key)){
+                    return false;      
+                  }
+                }
+            });
+    $("#footage_txt").keypress(function (e) {
+      
+      
+                var regex = new RegExp("^[0-9\.\]+$");
+                var key = String.fromCharCode(!e.charCode ? e.which : e.charCode);  
+                if(e.keyCode === 8 || e.keyCode === 46)  
+                  return true;                
+                if(!((e.keyCode == 37 && e.which == 0) || (e.keyCode == 39 && e.which == 0) || (e.keyCode == 46 && e.which == 0))){
+                  if(!regex.test(key)){
+                    return false;      
+                  }
+                }
+            });
+    $("#building_txt").keypress(function (e) {
+      
+     
+                var regex = new RegExp("^[0-9\.\]+$");
+                var key = String.fromCharCode(!e.charCode ? e.which : e.charCode);  
+                if(e.keyCode === 8 || e.keyCode === 46)  
+                  return true;                
+                if(!((e.keyCode == 37 && e.which == 0) || (e.keyCode == 39 && e.which == 0) || (e.keyCode == 46 && e.which == 0))){
+                  if(!regex.test(key)){
+                    return false;      
+                  }
+                }
+            });
+    $("#area_txt").keypress(function (e) {
+      
+     
+                var regex = new RegExp("^[0-9\.\]+$");
+                var key = String.fromCharCode(!e.charCode ? e.which : e.charCode);  
+                if(e.keyCode === 8 || e.keyCode === 46)  
+                  return true;                
+                if(!((e.keyCode == 37 && e.which == 0) || (e.keyCode == 39 && e.which == 0) || (e.keyCode == 46 && e.which == 0))){
+                  if(!regex.test(key)){
+                    return false;      
+                  }
+                }
+            });
+    $("#stories_txt").keypress(function (e) {
+      var regex = new RegExp("^[0-9\.\]+$");
+      var key = String.fromCharCode(!e.charCode ? e.which : e.charCode);  
+      if(e.keyCode === 8 || e.keyCode === 46)  
+                  return true;                
+      if(!((e.keyCode == 37 && e.which == 0) || (e.keyCode == 39 && e.which == 0) || (e.keyCode == 46 && e.which == 0))){
+                  if(!regex.test(key)){
+                    return false;      
+                  }
+                }
+            });
+    $("#built_txt").keypress(function (e) {
+      var regex = new RegExp("^[0-9\.\]+$");
+      var key = String.fromCharCode(!e.charCode ? e.which : e.charCode);  
+                if(e.keyCode === 8 || e.keyCode === 46)  
+                  return true;                
+                if(!((e.keyCode == 37 && e.which == 0) || (e.keyCode == 39 && e.which == 0) || (e.keyCode == 46 && e.which == 0))){
+                  if(!regex.test(key)){
+                    return false;      
+                  }
+                }
+            });
+  </script>
   </body>
 </html>
                     
