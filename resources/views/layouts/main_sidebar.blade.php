@@ -3,7 +3,7 @@
     <!--documents-->
   <div class="row row-offcanvas row-offcanvas-left">
     <div class="col-xs-6 col-sm-3 sidebar-offcanvas" role="navigation">
-      <ul class="list-group panel">
+      <ul class="list-group panel" style="height: 720px;">
         <li class="list-group-item"><i class="glyphicon glyphicon-align-justify"></i> <b>SIDE PANEL</b></li>
                 <!-- <li class="list-group-item"><input type="text" class="form-control search-query" placeholder="Search Something"></li> -->
         @if(session('loginusertype') == 'admin')
@@ -24,5 +24,7 @@
         <a href="{{ url('/editUser') }}"><i class="fa fa-user"></i>My Profile</a>
         </li>
         @endif
+        <li class="list-group-item">
+        </li>
       </ul>
     </div>

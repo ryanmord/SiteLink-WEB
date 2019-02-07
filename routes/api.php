@@ -17,6 +17,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 Route::any('/userSignup', 'ApiController@signup');
+Route::any('/testpushnotification', 'ApiController@testpushnotification');
 Route::any('/userLogin', 'ApiController@userlogin');
 Route::any('/dashboard', 'ApiController@dashboard');
 Route::any('/scopeperformed', 'ApiController@scopeperformed');
@@ -59,3 +60,7 @@ Route::any('/webpushnotification', 'ApiController@webpushnotification');
 Route::any('/getStatusType', 'ApiController@getStatusType');
 Route::any('/acceptProject', 'ApiController@acceptProject');
 Route::any('/declineProject', 'ApiController@declineProject');
+Route::any('/activeBids','ApiController@activeBids');
+Route::any('/bidHistory','ApiController@bidHistory');
+Route::any('/getLAtLong','ApiController@getLAtLong');
+Route::any('/apiGeneratedToken','ApiController@apiGeneratedToken');

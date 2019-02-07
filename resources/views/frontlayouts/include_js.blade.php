@@ -28,6 +28,8 @@
 </script>
 
 
+ <script src="{{asset('/js/ratingsJs/jquery.star-rating-svg.js')}}"></script>
+ <script src="{{asset('/js/ratingsJs/jquery.star-rating-svg.min.js')}}"></script>
 <script type="text/javascript">
 
   	

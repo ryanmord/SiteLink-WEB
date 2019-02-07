@@ -6961,7 +6961,7 @@ Due to the split circle of progress-left and progress right, we must use the ani
 .rating-message{display: table;width: 100%;background: #f4f9f9;padding: 15px;}
 .rating-label label{float: left;padding-right: 15px;}
 .rating-label .fa{color: #efce4a;padding-right: 10px;font-size: 20px;}
-.rating-number{    float: right;
+.rating-number{    float: left;
     background: #efce4a;
     color: #fff;
     font-weight: 400;

@@ -32,13 +32,13 @@ class UserController extends Controller
     public function index()
     {
         $associate = User::Where('users_approval_status','<>','0')
-        ->where('user_types_id','=','2')
-        ->orderBy('users_id','desc')
-        ->paginate(8);
+                    ->where('user_types_id','=','2')
+                    ->orderBy('users_id','desc')
+                    ->get();
         $manager = User::Where('users_approval_status','<>','0')
-        ->where('user_types_id','=','1')
-        ->orderBy('users_id','desc')
-        ->paginate(8);
+                        ->where('user_types_id','=','1')
+                        ->orderBy('users_id','desc')
+                        ->get();
         $managercount = $manager->count();
         $associatecount = $associate->count();
         //$usertype = UserType::all();
@@ -172,116 +172,101 @@ class UserController extends Controller
         $associate = User::where('user_types_id','=','2')
                     ->where('users_approval_status','=',1)->count();
         $schedular = User::where('user_types_id','=','1')->count();
-        $project = Project::all();
+        $project = Project::orderBy('project_id','desc')->get();
         $associatetype = AssociateType::all();
-        $projectbidcount = ProjectBid::where('bid_status','=',1)->count();
+        $projectbidcount = ProjectBid::where('bid_status','=',1)
+                                       ->count();
         $projectcount = $project->count();
         $users = User::where('users_approval_status','=',2)
                         ->where('user_types_id','=',2)
                         ->orderBy('users_id','desc')->get();
-        if(isset($project))
+        foreach ($project as $value) 
         {
-            foreach($project as $value)
+            $projectid = $value->project_id;
+            $projectbid = ProjectBid::where('project_id','=',$projectid)->
+                        where('project_bid_status','=',1)->first();
+            $projectStatus = ProjectStatus::where('project_status_type_id','=',7)
+                                            ->where('project_id','=',$projectid)->first();
+            if(!isset($projectbid) && isset($projectStatus))
             {
-                $managerid = User::where('users_id','=',$value->user_id)
-                ->first();
-                if(isset($managerid))
-                {
-                    $managername = $managerid->users_name;
-                }
-                $projectid = $value->project_id;
-                $status = ProjectStatus::where('project_id','=',$projectid)->get();
-                foreach($status as $value) 
-                {
-                    $statusvalue = $value->project_status_type_id;
-                }
-                if($statusvalue == 1)
-                {
-                    $publishproject = Project::where('project_id','=', $value->project_id)
-                                                ->orderBy('project_id','desc')->first();
-                    if(isset($publishproject))
-                    {
-                    $scope = $publishproject->scope_performed_id;
-                    $data = [];
-                    $temp = explode(",", $scope);
-                    foreach($temp as $value) 
-                    {
-                        $scopeperformed = ScopePerformed::select('scope_performed_id','scope_performed')->where('scope_status','=','1')
-                                 ->where('scope_performed_id','=',(int)$value)->first();
-                                    $data[] = $scopeperformed->scope_performed;
-                    }
-                    $reportduedate = $publishproject['report_due_date'];
-                    $datetime2 = new DateTime($reportduedate);
-                    $reportduedate= $datetime2->format("Y-m-d");
-                    $created_at = (String)$publishproject->created_at;
-                    $datetime2 = new DateTime($created_at);
-                    $created_at= $datetime2->format("Y-m-d");
-                    $projectbid = ProjectBid::where('project_id','=',$projectid)
-                    ->where('project_bid_status','=',2)
-                    ->where('bid_status','=',1)->get();
-                    $currentbidcount = $projectbid->count();
-                    if($currentbidcount > 0)
-                    {
-                    foreach ($projectbid as $bid) 
-                    {
-                        $approxbid = number_format($publishproject->approx_bid, 2);
-                        $associateid = $bid->user_id;
-                        $user = User::where('users_id','=',$associateid)->first();
-                        $associatebid = number_format($bid->associate_suggested_bid, 2);
-                        $bids[] = ['projectid' => $bid->project_id, 
-                        'associateid'   =>$associateid, 
-                        'projectname'   => $publishproject->project_name,
-                        'managername'   => $managername, 
-                        'associatename' => $user->users_name,
-                        'suggestedbid'  => $associatebid,
-                        'approx_bid'    => $approxbid];
-                    }
-                    
-                                  
-                }
-
+                $managerid = $value->user_id;
+                $user = User::where('users_id','=',$managerid)->first();
+               
+                $managername = $user->users_name.' '.$user->last_name;
+                    //newly created projects
+                    $schedulingProject[] = ['project_name' => $value->project_name, 
+                            'project_id'           => $value->project_id,
+                            'project_site_address' =>  $value['project_site_address'],
+                            'budget'               => number_format($value->budget, 2),
+                            'managername'          => $managername,
+                            'created_at'           => $value->created_at,
+                           ];
                 
-
-                    
-                }
-
-            }
-            
-                        
-            }
-                   
-            }
-            
-            if(isset($projectbid))
-            {
-                if(isset($bids))
-                {
-                    $bidsrequestcount = count($bids);
-                }
-                else
-                {
-                    $bidsrequestcount = 0;
-                    $bids = null;
-                }
                 
-            }  
-            else
-            {
-                  $bidsrequestcount = 0;
-                  $bids = null;
             }
+            $bidcount = ProjectBid::where('project_id','=',$projectid)
+                                    ->where('project_bid_status','=',2)
+                                    ->where('bid_status','=',1)->count();
+
+            if(empty($projectbid))
+            {
+                if($bidcount > 0)
+                {
+                    $managerid = $value->user_id;
+                    $user = User::where('users_id','=',$managerid)->first();
+               
+                    $managername = $user->users_name.' '.$user->last_name;
+                    //newly created projects
+                    $nonallocatedproject[] = ['project_name' => $value->project_name, 
+                            'project_id'           => $value->project_id,
+                            'project_site_address' =>  $value['project_site_address'],
+                            'approx_bid'           => number_format($value->approx_bid, 2),
+                            'managername'          => $managername,
+                            'created_at'           => $value->created_at,
+                            'bidcount'             => $bidcount
+                            ];
+                
+                }
+            }
+           
+        }           
+        if(isset($nonallocatedproject))
+        {
+            $bidsrequestcount = ProjectBid::where('project_bid_status','=',2)
+                                                ->where('bid_status','=',1)->count();
+        }
+        else
+        {
+            $bidsrequestcount = 0;
+            $nonallocatedproject = null;
+        }
+        if(isset($schedulingProject))
+        {
+            $schedulingProjectCount = count($schedulingProject);
+        }
+        else
+        {
+            $schedulingProject = null;
+            $schedulingProjectCount = 0;
+        }     
+        
+       /* print_r($nonallocatedproject);
+        exit;*/
         /*echo json_encode(array('publishprojects' => $bids));
             exit;  */
         return view('dashboard',[
-                    'associate'         => $associate, 
-                    'schedular'         => $schedular,
-                    'project'           => $projectcount,
-                    'projectbid'        => $projectbidcount,
-                    'users'             => $users,
-                    'bidsrequestcount'  => $bidsrequestcount,
-                    'bids'              => $bids,
-                    'associatetype'     => $associatetype
-        ]);
+                    'associate'              => $associate, 
+                    'schedular'              => $schedular,
+                    'project'                => $projectcount,
+                    'projectbid'             => $projectbidcount,
+                    'users'                  => $users,
+                    'bidsrequestcount'       => $bidsrequestcount,
+                    'nonallocatedproject'    => $nonallocatedproject,
+                    'associatetype'          => $associatetype,
+                    'schedulingProject'      => $schedulingProject,
+                    'schedulingProjectCount' => $schedulingProjectCount
+                 ]);
+        
   
     }
     public function approveduser($id,$status,Request $request)
@@ -566,7 +551,6 @@ class UserController extends Controller
         $password = $request['new_password'];
         $confirm_password = $request['confirm_password'];
         $flag = strcmp($password, $confirm_password); 
-        
         if($flag != 0)
         {
             $warning="Your password and confirm password does not match";
@@ -592,6 +576,4 @@ class UserController extends Controller
             
         }
     }
-    
-    
 }

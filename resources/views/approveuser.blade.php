@@ -4,8 +4,9 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title" style="text-align: left;">Assign the category to associate
+        <h4 class="modal-title" style="text-align: left;margin-left: 50px;">Assign the category to associate
         </h4>
+        <br>
       </div>
       <div class="modal-body">
         <form role="form" class="form-horizontal" id="associateapprove" method="Post" action="{{url('dashboard/user/'.$user['users_id'].'/1')}}">

@@ -11,7 +11,7 @@
                     <div class="col-md-12">
                         <div class="row">
                             <!-- Nav left -->
-                            <ul class="horizontal-tabs nav col-md-10" id="leftTabs">
+                            <ul class="horizontal-tabs nav col-md-12" id="leftTabs">
                               <li id="job_finder">
                                 <a href="#a_tab" class="active" data-toggle="tab">
                                   <img src={{asset('img/front/icon1.png')}} alt="" /> Job Finder
@@ -65,8 +65,7 @@
                                   <!-- Nav tabs content -->
                                   <div class="tab-content col-md-9" id="div-project">
                                     <div id="project1" class="tab-pane active">
-                                        
-                                        <div class="project-detail">
+                                      <div class="project-detail">
                                            <div class="ls-project">
                                               <div class="ls-project-address">    
                                                   <div class="ls-title">
@@ -247,18 +246,16 @@
                                                     </div>
                                                 </div>
                                             </div>
-
-                                                 <div class="ls-scope">
-                                                    <h5>Scope(s)</h5>    
-                                                    <ul>
-                                                        <li id="scope">{{$progresProjecDetail['scope']}}</li>
-                                                        
-                                                    </ul> 
-                                                     <hr>   
-                                                    <h5>Report Template</h5>    
-                                                    <ul>
-                                                        <li id="template">{{$progresProjecDetail['template']}}</li>
-                                                    </ul>    
+                                            <div class="ls-scope">
+                                              <h5>Scope(s)</h5>    
+                                                <ul>
+                                                  <li id="scope">{{$progresProjecDetail['scope']}}</li>
+                                                </ul> 
+                                                <hr>   
+                                                <h5>Report Template</h5>    
+                                                <ul>
+                                                  <li id="template">{{$progresProjecDetail['template']}}</li>
+                                                </ul>    
                                                  </div>
                                                  <div class="ls-instrucation">
                                                      <h5>Special Instruction</h5>
@@ -285,11 +282,10 @@
 
                                                     </div>        
 
-                                            </div>
-                                        </div>      
-                                  </div>
-                                 
-                                </div>    
+                                                </div>
+                                            </div>      
+                                        </div>
+                                      </div>    
                                  </div> 
                                  @else
                                   <br><br>
@@ -404,8 +400,7 @@
                                              </div>
  
                                             <div class="rs-project rs-history">
-
-                                                    <div class="rs-suggest-bid">
+                                                <div class="rs-suggest-bid">
                                                         <h4>Suggested Bid</h4>
                                                         <font id="history_approxbid" name="history_approxbid"> {{ $history_projectdetail['approxbid'] }}</font>   
                                                     </div>
@@ -431,13 +426,15 @@
                                                         </p>
                                                     </div>
                                                     <hr>  
-                                                     <div class="rs-btn-bid"> 
-                                                        &nbsp&nbsp &nbsp
+                                                     <div class="rs-btn-bid" id="button-div"> 
                                                         <button type="button" class="btn red-btn" data-toggle="modal" data-target="#project-status" id="view-status">View Notes</button>
+                                                       <!--  @if($history_projectdetail['ratingflag'] == 0)
+                                                        <button type="button" class="btn red-btn" data-toggle="modal" data-target="#completed-project" id="rating-btn">Add Rating</button>
+                                                      @endif -->
                                                     </div>
-                                                 
+                                                    
                                                     <div class="rs-mr-view-profile">
-                                                        <button type="button" class="btn" data-toggle="modal" data-target="#myModal" name="project_history_manager" id="project_history_manager">View Project Manager Profile</button>
+                                                      <button type="button" class="btn" data-toggle="modal" data-target="#myModal" name="project_history_manager" id="project_history_manager">View Project Manager Profile</button>
                                                     </div>        
                                                  </div>
                                               </div>      
@@ -453,11 +450,9 @@
                                   @endif 
                                 </div>
                                <div class="tab-content col-md-12" id="div-history-no-project">
-                                 
                               </div>
                             </div>
-
-                        </div>
+                          </div>
                       </div>
                     </div>
                   </div>    
@@ -540,9 +535,9 @@
                     <div class="form-group {{ $errors->has('subjecttxt') ? 'has-error' : '' }}">
                     <input type="hidden" name="project-id" id="project-id">
                         <select  name="subjecttxt" id="subjecttxt" class="form-control">
-                        <option value="-1">--Please select status type--</option>
+                        <option value="">--Please select status type--</option>
                           @foreach($progressStatus as $value)
-                          <option value="{{ $value['progress_status_type_id'] }}">{{ $value['progress_status_type'] }}</option>
+                          <option value="{{ $value['progress_status_type'] }}">{{ $value['progress_status_type'] }}</option>
                           @endforeach
                         </select>
                         
@@ -560,6 +555,61 @@
             </div>    
           </div>
        </div>
+  </div>
+</div>
+
+
+<!-- Project Status Popup -->
+<div class="modal fade" id="completed-project">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><i class="fa fa-angle-left"></i></button>
+        <h4 class="modal-title">Project Complete</h4>
+      </div>
+      <span style="text-align: center;font-size: 16px;letter-spacing: 2px; color: #4b5f5f;font-weight: 300;">Rate&Review the Project Manager</span>
+      <!-- Modal body -->  
+      <div class="modal-body">
+        
+        <div class="associate-manager-profile">
+            <div class="manager-profile">
+              <img alt="" title="" id="review-manager-profile">
+            </div> 
+            <div class="manager-data row">
+              <div class="col-md-12">
+                <h4 id="review-manager-name">George Sabastain</h4>
+              </div>
+              <div class="col-md-12">
+                <h5>Email</h5>
+                <p id="review-manager-email">sabastina@gmail.com</p>
+              </div>
+              <div class="col-md-6">
+                <h5>Phone Number</h5>
+                <p id="review-manager-phone">(123)123456</p>
+              </div>
+              <div class="col-md-6">
+               <h5>Company</h5>
+                <p id="review-manager-company">ABC</p>
+              </div>
+            </div>  
+        </div>
+       
+        <div class="rating-message">
+          <div class="rating-label"><br>
+            <label>Your Rating</label>
+            <div class="svg-star-rating" data-rating="0.0" id="rating-star"></div>
+            <h5 class="rating-number" id="ratingNumber">0.0</h5>
+          </div>
+          <textarea name="projectreview" placeholder="Please Type Your Review..." id="projectreview"></textarea>
+           <p style="color: #fe5f55;" id="reviewerror"></p>
+          <div class="rs-btn-bid">
+            <button type="button" class="btn red-btn" id="submit-review" style="margin-left: 300px;">Submit</button>
+          </div>
+        </div>    
+      </div>
+    </div>
   </div>
 </div>
   @include('frontlayouts.include_js')
@@ -738,6 +788,7 @@
     $('#addstatus').click(function(){
       $('#subjecttxt').prop('selectedIndex',0);
       var projectid = document.getElementById("project_id").value;
+      document.getElementById('status_pagenumber').value = 1;
       $("#statuslist").empty();
       $.ajax({
             type: 'GET',
@@ -781,6 +832,7 @@
     });
     $('body').on('click','#add_status', function (event) {
     event.preventDefault(); 
+
     var projectid = document.getElementById("project_id").value;
     document.getElementById("project-id").value = projectid;
     $("#status-form").validate({
@@ -789,14 +841,15 @@
                 required: true,
             },subjecttxt: { 
               required: true,
-            },messages:{
-            subjecttxt: "Please Enter Subject",
-            statustxt: "Please Enter Status",
+            },
+          },messages:{
+            subjecttxt: "Please Select Status",
+            statustxt: "Please Enter Status Details",
             
         },errorPlacement: function(error, element) {
             error.insertAfter(element);
         }
-      }
+      
 
   });
      if($("#status-form").valid()) {
@@ -810,7 +863,9 @@
 
           .done(function(msg) {
             var status = document.getElementById("statustxt").value;
+
             var subject = document.getElementById("subjecttxt").value;
+           
             document.getElementById('no_any_status').style.display='none'; 
             $('#statuslist').show();
             var List = $('ul#statuslist');
@@ -824,9 +879,10 @@
                   text : status,
                  })
                   .appendTo(li);
+                
 
           document.getElementById("statustxt").value = '';
-          document.getElementById("subjecttxt").value = '';
+          $('#subjecttxt').prop('selectedIndex',0);
           
         });
 
@@ -911,9 +967,32 @@
            $('#managerimage').attr('src',msg.managerimage );
         });
     });
+
+    $('#rating-btn').click(function(){
+
+      var projectid = document.getElementById("project_history_id").value;
+      $('#rating-star').starRating('setRating', 0.0);
+      $('#ratingNumber').html('0.0');
+      document.getElementById("projectreview").value = '';
+      $.ajax({
+            type: 'GET',
+              url: '<?php echo route('viewManagerProfile'); ?>',
+              data: {projectid:projectid},
+              dataType: 'json',
+          })
+
+          .done(function(msg) {
+           $("#review-manager-name").text(msg.managername);
+           $("#review-manager-email").text(msg.manageremail);
+           $("#review-manager-company").text(msg.managercompany);
+           $("#review-manager-phone").text(msg.managerphone);
+           $('#review-manager-profile').attr('src',msg.managerimage );
+        });
+    });
+   
     $('#view-status').click(function(){
       var projectid = document.getElementById("project_history_id").value;
-      $("#statuslist").empty();
+    $("#statuslist").empty();
       document.getElementById('add_project_status').style.display='none'; 
      $.ajax({
             type: 'GET',
@@ -1033,7 +1112,6 @@
                   $("#publish-project-list").html(response['appendLi']);
               }
               else{
-                  
                   $("#div-project").hide();
                   $("#publish-project-list").hide();
                   $("#publish-projects").hide();
@@ -1048,8 +1126,8 @@
       
       //ON click of tab update project details
       $(document).on("click", "#leftTabs li", function(event) {
-          var tabSelected = $(this).attr('id');
-          if (tabSelected == 'job_finder') {
+        var tabSelected = $(this).attr('id');
+        if (tabSelected == 'job_finder') {
               $('#b_tab').hide();
               $("#c_tab").hide();
               $("#a_tab").show();
@@ -1144,6 +1222,19 @@
                   }
                 }
                 $("#history_comment").text(msg.comment);
+                /*if(msg.ratingflag == 0)
+                {
+                  $('#button-div').html('');
+                  $('#button-div').append('<button type="button" class="btn red-btn" data-toggle="modal" data-target="#project-status" id="view-status">View Notes</button>');
+                  $('#button-div').append('<button type="button" class="btn red-btn" data-toggle="modal" data-target="#completed-project" id="rating-btn">Add Rating</button>');
+                }
+                else
+                {
+                  $('#button-div').html('');
+                  $('#button-div').append('<button type="button" class="btn red-btn" data-toggle="modal" data-target="#project-status" id="view-status">View Notes</button>');
+
+                }
+           */
           });
       }
 
@@ -1195,6 +1286,19 @@
                     $("#ratingstar").append('<i class="fa fa-star-half"></i>');
                   }
               }
+
+             /* if(projectData['ratingflag'] == 0)
+              {
+                $('#button-div').html('');
+                $('#button-div').append('<button type="button" class="btn red-btn" data-toggle="modal" data-target="#project-status" id="view-status">View Notes</button>');
+                $('#button-div').append('<button type="button" class="btn red-btn" data-toggle="modal" data-target="#completed-project" id="rating-btn">Add Rating</button>');
+              }
+              else
+              {
+                $('#button-div').html('');
+                $('#button-div').append('<button type="button" class="btn red-btn" data-toggle="modal" data-target="#project-status" id="view-status">View Notes</button>');
+
+              }*/
            
               $("#history_comment").text(projectData['comment']);
                   
@@ -1204,6 +1308,7 @@
                   $("#project-history-list").html('');
                   $("#project-history-list").html(response['appendLi']);
                   $("#div-history-no-project").hide();
+
               }
               else{
                   // $("#publish-projects").html("");
@@ -1530,6 +1635,57 @@
       
     });
     </script>
-  </body>
+    <script type="text/javascript">
+    $(function() {
+
+      $(".svg-star-rating").starRating({
+        totalStars: 5,
+        starShape: 'rounded',
+        starSize: 20,
+        emptyColor: '#D8D8D8',
+        hoverColor: '#efce4a',
+        activeColor: '#efce4a',
+        ratedColor:'#efce4a',
+        useGradient: false,
+        disableAfterRate:false
+      });
+    });
+    $("#rating-star").click(function() {
+    var rating = $('#rating-star').starRating('getRating');
+    var rating = rating.toFixed(1);
+    $('#ratingNumber').html(rating);
+});
+
+//store user reviews 
+$('#submit-review').click(function(){
+    $(".loader").fadeIn("slow");
+        var projectid = document.getElementById("project_history_id").value;
+       
+        var rating = $('#ratingNumber').html();
+        var comment  = document.getElementById("projectreview").value;
+        if(comment == '')
+        {
+            $(".loader").fadeOut("slow");
+            $("#reviewerror").text('Please give comment');
+            $("#projectreview").focus();
+            return false;
+        }
+        $.ajax({
+            type: 'GET',
+            url: '<?php echo route('associateReviewStore'); ?>',
+            data: {projectid:projectid,rating:rating,comment:comment},
+            dataType: 'json',
+        })
+        .done(function(msg) {
+            $(".loader").fadeOut("slow");
+            if(msg.status == 1)
+            {
+                alert(msg.message);
+                $("#completed-project").modal("hide");
+            }
+    });
+});
+  </script>
+</body>
 
 </html>

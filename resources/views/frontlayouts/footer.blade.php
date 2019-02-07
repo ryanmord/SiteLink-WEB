@@ -2,7 +2,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-6">
-                    <span class="copyright">©2018 Scoped</span>
+                    <span class="copyright">©2019 Scoped</span>
                 </div>
 
                 <div class="col-md-6">

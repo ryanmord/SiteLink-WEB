@@ -6,29 +6,33 @@
 
       function initMap() {
 
-        getLocation();
-        function getLocation() {
-        if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(showPosition);
-        } else { 
-          alert( "Geolocation is not supported by this browser.");
-        }
-      }
 
-      function showPosition(position) {
-      var lat = position.coords.latitude;
-      var long = position.coords.longitude;
-      document.getElementById("latitude").value = lat;
-      document.getElementById("longitude").value = long;
-     }
         var lat = document.getElementById("latitude").value;
         var long = document.getElementById("longitude").value;
-        var latlng = new google.maps.LatLng(lat, long);
-        var map = new google.maps.Map(document.getElementById('map'), {
-          center: latlng,
-          zoom: 13,
+        if(lat != '')
+        {
+            var latlng = new google.maps.LatLng(lat, long);
+            var map = new google.maps.Map(document.getElementById('map'), {
+            center: latlng,
+            zoom: 13,
+
 
         });
+        
+        var marker = new google.maps.Marker({position: latlng, map: map});
+        }
+        else
+        {
+          var map = new google.maps.Map(document.getElementById('map'), {
+          center: {lat: -33.8688, lng: 151.2195},
+          zoom: 13
+
+
+        });
+        
+        
+        }
+        
        // var card = document.getElementById('pac-card');
          var input = document.getElementById('pac-input');
        // var types = document.getElementById('type-selector');
@@ -165,7 +169,7 @@
   });
 });
 
-      }
+}
 
       
     

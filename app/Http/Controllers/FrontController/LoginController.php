@@ -59,6 +59,7 @@ class LoginController extends Controller
             session(['associateId'   => $login['userid']]);
             session(['associateName' => $login['username']]);
             session(['profileImage'  => $login['profileImage']]);
+            session(['associateTypeId' => $login['associateTypeId']]);
             return response()->json($login);
             exit;
         }
@@ -67,8 +68,6 @@ class LoginController extends Controller
             return response()->json($login);
             exit;
         }
-        
-
     }
     public function dashboard()
     {
@@ -158,7 +157,7 @@ class LoginController extends Controller
 
                     elseif($value['notificationflag'] == 3)
                     {
-                        $appendLi .= '<input type="button" name="viewProjectbtn"  class="noti-btn" value="Add status" onclick="viewprojectdetail('.$value['projectid'].','.$value['notificationid'].')">';
+                        $appendLi .= '<input type="button" name="viewProjectbtn"  class="noti-btn" value="Add Note" onclick="viewprojectdetail('.$value['projectid'].','.$value['notificationid'].')">';
                     }
 
                     //4 for reject bid then associate can apply bid again
@@ -211,6 +210,14 @@ class LoginController extends Controller
                     {
                         $appendLi .= '<input type="button" name="viewProjectbtn"  class="noti-btn" value="Add Rating" onclick="viewprojectdetail('.$value['projectid'].','.$value['notificationid'].')">';
                     }
+
+                    //12 for when project manager add any note to the project
+
+                    elseif($value['notificationflag'] == 12)
+                    {
+                        $appendLi .= '<input type="button" name="viewProjectbtn"  class="noti-btn" value="View Note" onclick="viewprojectdetail('.$value['projectid'].','.$value['notificationid'].')">';
+                    }
+
 
                    //13 for when project do the project in on hold
 

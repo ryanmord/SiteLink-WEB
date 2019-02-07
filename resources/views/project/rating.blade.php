@@ -13,10 +13,10 @@
       <span style="font-size: 16px;letter-spacing: 2px; color: #4b5f5f;font-weight: 300;">Rate&Review the Associate</span></center>
       <!-- Modal body -->  
       <div class="modal-body">
-        
+        <input type="hidden" id="review-project-id">
         <div class="associate-manager-profile">
           <div class="manager-profile">
-            <img src="{{asset('img/front/manager.jpg')}}" alt="" title="" id="associate-profile">
+            <img src="{{asset('img/front/manager.jpg')}}" alt="" title="" id="associate-profile" style="height: 100%;width: 100%;">
           </div> 
 
             <div class="manager-data row">
@@ -39,24 +39,17 @@
         </div>
 
         <div class="rating-message">
-          
           <div class="rating-label"><br>
             <label>Your Rating</label>
-            <div class="rating-star" id="ratingStar">
-              <i class="fa fa-star-o" data-id = "1.0"></i>
-              <i class="fa fa-star-o" data-id = "2.0"></i>
-              <i class="fa fa-star-o" data-id = "3.0"></i>
-              <i class="fa fa-star-o" data-id = "4.0"></i>
-              <i class="fa fa-star-o" data-id = "5.0"></i>
-              <i class="fa fa-star-o" data-id = "5.0"></i>
-            </div>
+            
+            <div class="svg-star-rating" data-rating="0.0" id="star-rating"></div>
             <h5 class="rating-number" id="ratingNumber">0.0</h5>
           </div>
-
-          <textarea name="" placeholder="Enter Review..."></textarea><br><br>
+          <textarea name="projectreview" placeholder="Please Type Your Review..." id="projectreview"></textarea><br><br>
+           <p style="color: #fe5f55;" id="reviewerror"></p>
           <div class="rs-btn-bid">
           <center> 
-              <button type="button" class="btn red-btn">Submit</button></center>
+              <button type="button" class="btn red-btn" id="submit-review">Submit</button></center>
           </div>
         </div>  
       </div>

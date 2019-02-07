@@ -248,7 +248,6 @@ $(document).ready(function () {
             	required:true
             	
             }
-            
         }
        
     });
@@ -286,10 +285,10 @@ $(document).ready(function () {
         	});
 		  }
     });
-    $('#first_name').keypress(function (e) {
+    /*$('#first_name').keypress(function (e) {
         var regex = new RegExp("^[a-zA-Z ]+$");
          var key = String.fromCharCode(!e.charCode ? e.which : e.charCode);  
-         if(e.keyCode === 8 || e.keyCode === 46)  
+         if(e.keyCode === 8 || e.keyCode === 46 || e.keyCode === 9)  
           return true;                
         if(!((e.keyCode == 37 && e.which == 0) || (e.keyCode == 39 && e.which == 0) || (e.keyCode == 46 && e.which == 0))){
           if(!regex.test(key)){
@@ -300,7 +299,7 @@ $(document).ready(function () {
      
    }
 
-    });
+    });*/
  });
 $('#customers_phone').focus(function () {
     document.getElementById("customers_phone").value = '+1 (';
@@ -309,7 +308,7 @@ $('#customers_phone').focus(function () {
 $("#customers_phone").keypress(function (e) {
   var regex = new RegExp("^[0-9]*$");
      var key = String.fromCharCode(!e.charCode ? e.which : e.charCode);     
-     if(e.keyCode === 8 || e.keyCode === 46)  
+     if(e.keyCode === 8 || e.keyCode === 46 || e.keyCode === 9)  
       return true;      
       if(!((e.keyCode == 37 && e.which == 0) || (e.keyCode == 39 && e.which == 0) || (e.keyCode == 46 && e.which == 0))){
       if(!regex.test(key)){
@@ -331,9 +330,6 @@ $("#customers_phone").keypress(function (e) {
     }
            
   }
-  
-  
-	
 });
 </script>
 <script type="text/javascript">
@@ -355,7 +351,7 @@ $("#customers_phone").keypress(function (e) {
     var regex = new RegExp("^[a-zA-Z]+$");
     var key = String.fromCharCode(!e.charCode ? e.which : e.charCode);  
    
-    if(e.keyCode === 8 || e.keyCode === 46)  
+    if(e.keyCode === 8 || e.keyCode === 46 || e.keyCode === 9)  
         return true;                
         if(!((e.keyCode == 37 && e.which == 0) || (e.keyCode == 39 && e.which == 0) || (e.keyCode == 46 && e.which == 0))){
             if(!regex.test(key)){
@@ -374,7 +370,7 @@ $("#customers_phone").keypress(function (e) {
     var regex = new RegExp("^[a-zA-Z]+$");
     var key = String.fromCharCode(!e.charCode ? e.which : e.charCode);  
    
-    if(e.keyCode === 8 || e.keyCode === 46)  
+    if(e.keyCode === 8 || e.keyCode === 46 || e.keyCode === 9)  
         return true;                
         if(!((e.keyCode == 37 && e.which == 0) || (e.keyCode == 39 && e.which == 0) || (e.keyCode == 46 && e.which == 0))){
             if(!regex.test(key)){

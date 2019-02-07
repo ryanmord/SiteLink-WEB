@@ -81,7 +81,7 @@
                     <!--  3 for when bid is accepted then associate can enter the status -->
 
                     @elseif($value['notificationflag'] == 3)
-                      <input type="button" name="viewProjectbtn" onclick="viewprojectdetail({{ $value['projectid'] }},{{ $value['notificationid']}})" class="noti-btn" value="Add status">
+                      <input type="button" name="viewProjectbtn" onclick="viewprojectdetail({{ $value['projectid'] }},{{ $value['notificationid']}})" class="noti-btn" value="Add Note">
                       
                        <!--  4 for reject bid then associate can apply bid again -->
 
@@ -115,6 +115,11 @@
 
                     @elseif($value['notificationflag'] == 11)
                       <input type="button" name="viewProjectbtn" onclick="viewprojectdetail({{ $value['projectid'] }},{{ $value['notificationid'] }})" class="noti-btn" value="View Rating"> 
+                       <!--  12 for when project manager gives rating and review to associate -->
+
+
+                    @elseif($value['notificationflag'] == 12)
+                      <input type="button" name="viewProjectbtn" onclick="viewprojectdetail({{ $value['projectid'] }},{{ $value['notificationid'] }})" class="noti-btn" value="View Note">
 
                      <!--  13 for when project manager do project is on hold -->
                        

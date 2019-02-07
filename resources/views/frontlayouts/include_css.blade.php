@@ -14,6 +14,8 @@
 <link href="{{asset('/css/frontCss/bootstrap-multiselect.css')}}" rel="stylesheet">
 
 <link href="{{asset('/css/frontCss/bootstrap-toggle.min.css')}}" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="{{asset('/css/ratings/star-rating-svg.css')}}">
+<link rel="stylesheet" type="text/css" href="{{asset('/css/ratings/demo.css')}}">
 <style>
 #login_email-error
 {

@@ -102,14 +102,15 @@
                 email:true,
             },login_password: { 
               required: true,
-            },messages:{
-            login_email: "Please Enter Username",
+            },
+          },messages:{
+            login_email: "Please Enter Email Id",
             login_password: "Please Enter Password",
             
         },errorPlacement: function(error, element) {
             error.insertAfter(element);
         }
-      }
+      
 
   });
      if($("#login-form").valid()) {

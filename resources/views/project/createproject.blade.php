@@ -83,13 +83,12 @@
                       <div class="create-new-project">  
                         <div class="row">
                           <div class="col-xs-12 col-sm-12 col-md-12 col-lg-9">
-           
                             <form class="new-project" id="createproject" action="{{ url('/saveproject') }}">
                               {{csrf_field()}}
                               <div class="row">
                                 <div class="form-group col-md-3">
                                   <br>
-                                  <label>Project Name</label>
+                                  <label class="required">Project Name</label>
                                 </div>
                                 <div class="form-group col-md-9">
                                   <input type="text" name="projectname" value="" placeholder="Project Name" required="">
@@ -99,7 +98,7 @@
                               <div class="row">
                                 <div class="form-group col-md-3">
                                   <br>
-                                  <label>Site Address</label>
+                                  <label class="required">Site Address</label>
                                 </div>
                                 <div class="form-group col-md-7">
                                   <input type="text" name="siteaddress" readonly="" id="address" value="" placeholder="site Address" data-toggle="modal" data-target="#myModal" required="">
@@ -116,7 +115,7 @@
                               <div class="row">
                               <div class="form-group col-md-3">
                                 <br><br>
-                                <label>Miles Range</label>
+                                <label class="required">Miles Range</label>
                               </div>
                               <div class="form-group col-md-9">
                                 <output style="float: left;">Radius&nbsp</output>
@@ -132,7 +131,7 @@
                             <div class="row">
                               <div class="form-group col-md-3">
                                 <br>
-                                <label>Report Due From Field</label>
+                                <label class="required">Report Due From Field</label>
                               </div>
                               <div class="form-group col-md-4 {{ $errors->has('reportdate') ? ' has-error' : '' }}">
                                 <input type="text" name="reportdate" id="reportdate" value="" placeholder="Report Due Date" autocomplete="off">
@@ -151,7 +150,7 @@
                             <div class="row">
                               <div class="form-group col-md-3">
                                 <br>
-                                <label>Report Template</label>
+                                <label class="required">Report Template</label>
                               </div>
                               <div class="form-group col-md-9">
                                 <input type="text" name="template" value="" placeholder="Report template" required="">
@@ -166,12 +165,79 @@
                                 <input type="text" name="instruction" value="" placeholder="Special instruction" id="instruction">
                               </div>
                             </div>
+                             <div class="row">
+                              <div class="form-group col-md-3"  field-customers-first_name>
+                                <br>
+                                <label class="required">Project Type</label>
+                              </div>
+                              <div class="form-group col-md-9">
+                                <input type="text" name="projectType" id="projectType" value="" placeholder="Project Type" id="projectType" required="">
+                              </div>
+                            </div>
                             <div class="row">
                               <div class="form-group col-md-3">
                                 <br>
-                                <label>Suggest A Bid</label>
+                                <label class="required">No. Units</label>
                               </div>
-                              <div class="form-group col-md-9">
+                              <div class="form-group col-md-3">
+                                <input type="text" name="units_txt" id="units_txt" value="" placeholder="  No.of units" required="" style="padding-left: 12px;">
+                                
+                              </div>
+                               <div class="form-group col-md-2">
+                                <br>
+                                <label class="required">Sq. Footage</label>
+                              </div>
+                              <div class="form-group col-md-4">
+                                <input type="text" name="footage_txt" id="footage_txt" value="" placeholder="  Sq. Footage" required="" style="padding-left: 12px;">
+                              </div>
+                            </div>
+                            <div class="row">
+                              <div class="form-group col-md-3">
+                                <br>
+                                <label class="required">No. Buildings</label>
+                              </div>
+                              <div class="form-group col-md-3">
+                                <input type="text" name="building_txt" id="building_txt" value="" placeholder="  No.BUildings" required="" style="padding-left: 12px;">
+                                
+                              </div>
+                               <div class="form-group col-md-2">
+                                <br>
+                                <label class="required">Land Area</label>
+                              </div>
+                              <div class="form-group col-md-4">
+                                <input type="text" name="area_txt" id="area_txt" value="" placeholder="  Land Area" required="" style="padding-left: 12px;">
+                              </div>
+                            </div>
+                              <div class="row">
+                              <div class="form-group col-md-3">
+                                <br>
+                                <label class="required">No. Stories</label>
+                              </div>
+                              <div class="form-group col-md-3">
+                                <input type="text" name="stories_txt" id="stories_txt" value="" placeholder="  No.Stories" required="" style="padding-left: 12px;">
+                              </div>
+                               <div class="form-group col-md-2">
+                                <br>
+                                <label class="required">Year Built</label>
+                              </div>
+                              <div class="form-group col-md-4">
+                                <input type="text" name="built_txt" id="built_txt" value="" placeholder="  Year Built" required="" style="padding-left: 12px;">
+                              </div>
+                            </div> 
+                            <div class="row">
+                              <div class="form-group col-md-3">
+                                <br>
+                                <label class="required">Budget</label>
+                              </div>
+                              <div class="form-group col-md-3">
+                                <input type="text" name="budget_txt" id="budget_txt" value="" placeholder="  Budget" required="" style="padding-left: 12px;">
+                                <i class="glyphicon glyphicon-usd form-control-feedback" style="left: 0; line-height: 27px;"></i>
+                              </div>
+                               <div class="form-group col-md-3">
+                                <br>
+                                <label class="required">Suggested Bid</label>
+                              </div>
+                              <div class="form-group col-md-3">
                                 <input type="text" name="projectbid" id="projectbid" value="" placeholder="  Suggest a bid" required="" style="padding-left: 12px;">
                                 <i class="glyphicon glyphicon-usd form-control-feedback" style="left: 0; line-height: 27px;"></i>
                               </div>
@@ -179,7 +245,7 @@
                             <div class="row">
                               <div class="form-group col-md-3">
                                 <br><br><br>
-                                <label>Scope(s)</label>
+                                <label class="required">Scope(s)</label>
                               </div>
                               <div class="form-group col-md-9">
                                 @foreach($scope as $value)
@@ -197,7 +263,7 @@
                               <div class="row">
                               <div class="form-group col-md-3">
                                 <br>
-                                <label>Employee Type</label>
+                                <label class="required">Employee Type</label>
                               </div>
                               <!-- select associate type -->
                               <div class="form-group col-md-9">
@@ -225,6 +291,18 @@
                               @include('project.asscociatelist')
                               <!-- <div id="err"></div> -->
                               </div>
+                              <div class="row" id="userName-div">
+                                <div class="form-group col-md-3">
+                                  <!-- <label id="selectIdLabel">Selected Individual(s)</label> -->
+                                </div>
+                                <!-- select associate type -->
+                                <div class="form-group col-md-9">
+                                <div class="table-responsive" style="max-height: 100px;overflow: auto;">
+                                <table class="table table-bordered table-hover table-striped">
+                                    <tbody id="associateNames">
+                                  </tbody></table></div>
+                                </div>
+                              </div>
                               <div class="row">
                                 <div class="form-group col-md-3">
                                   <br><br>
@@ -236,12 +314,12 @@
                                     @foreach($user as $value)
 
                                       <option value="{{ $value->users_id }}">
-                                      {{ $value->users_name }}</option>
+                                      {{ $value->users_name.' '.$value->last_name }} </option>
 
                                     @endforeach
                                   </select> 
 
-                                  <input type="hidden" id="managerid" name="managerid" value="">
+                                <input type="hidden" id="managerid" name="managerid" value="">
                                 </div>
                               </div>
 
@@ -268,12 +346,9 @@
             </div>
           </div>
         </div>
-
-
         <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCFesVLN0rhPhI0uHrMrQjclKdbyx9X9g0&libraries=places&callback=initMap"
         async defer></script>  
-
-        <script src="{{asset('/js/themeJs/map.js')}}"></script>
+        <script src="{{asset('/js/themeJs/createprojectMap.js')}}"></script>
         <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
         <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/caret/1.0.0/jquery.caret.min.js"></script>
@@ -339,6 +414,7 @@
               }
             }
             $(document).ready(function() {
+              $('#userName-div').hide();
             $(window).keydown(function(event){
               if(event.keyCode == 13) {
                 event.preventDefault();
@@ -352,10 +428,10 @@
             $('body').on('click','#saveproject', function (event) {
             event.preventDefault(); 
               $("#createproject").validate({
-          rules: {
-            projectname: {
+            rules: {
+              projectname: {
                 required: true,
-            },siteaddress: {
+              },siteaddress: {
                 required: true,
             },managerid: { 
               required: true,
@@ -365,7 +441,11 @@
             },template:{
                 required: true,
                
-            },selectmanger:{
+            },projectType:{
+                required: true,
+               
+            },
+           selectmanger:{
                 required: true,
                
             },projectbid:{
@@ -392,6 +472,14 @@
               
             },
             template:"Please Enter Template",
+            projectType:"Please Enater Project Type",
+            built_txt:"Please Enter Year Built",
+            building_txt:"Please Enter No.of Buildings",
+            stories_txt:"Please Enter No. of Stories",
+            footage_txt:"Please Enter No. of Footage",
+            area_txt:"Please Enter Land Area",
+            budget_txt:"Please Enter Budget",
+            units_txt:"Please Enter No. of Units",
             selectmanger:"Please Select Manager",
             projectbid:{
               required : "Please Enter Project Bid",
@@ -407,10 +495,7 @@
   });
   
     if($("#createproject").valid()) {
-        /*checks = $('input[type="checkbox"]:checked').map(function(){
-              return $(this).val();
-                }).get();
-        document.getElementById("scopeid").value = checks;*/
+       
         $(".loader").fadeIn("slow");
         $.ajax({
             type: 'POST',
@@ -436,12 +521,16 @@
   });
   $('#add-individuals').click(function(){
     document.getElementById('pagenumber').value = 1;
-    document.getElementById("associate-ids").value = '';
+    var checks = $('input[name="associateid[]"]:checked').map(function(){
+              return $(this).val();
+                }).get();
+    document.getElementById("associate-ids").value = checks;
+    var checks = document.getElementById("associate-ids").value;
     $.ajax({
             type: 'GET',
-              url: '<?php echo route('searchAssociate'); ?>',
-              data: {pagenumber:1,limit:6},
-              dataType: 'json',
+            url: '<?php echo route('searchAssociate'); ?>',
+            data: {selectedAssociate:checks,pagenumber:1,limit:6},
+            dataType: 'json',
           })
 
           .done(function(response) {
@@ -449,12 +538,14 @@
             {
               $('#usertable').html('');
               $('#no_any_user').hide();
+              $('#div-button').show();
               $('#associatetable').show();
               $('#usertable').append(response);
             }
             else
             {
               $('#associatetable').hide();
+              $('#div-button').hide();
               $('#no_any_user').show();
             }
         });
@@ -467,18 +558,29 @@
               return $(this).val();
                 }).get();
     
-    if(idvalue === "")
+    if(checks != "")
     {
       document.getElementById("associate-ids").value = checks;
     }
-    else
-    {
-      document.getElementById("associate-ids").value = idvalue + ',' + checks;
-    }
     
-    checks = document.getElementById("associate-ids").value;
-    
-  }); 
+    var checks = document.getElementById("associate-ids").value;
+
+    $.ajax({
+            type: 'GET',
+            url: '<?php echo route('getAssociatesName'); ?>',
+            data: {selectedAssociate:checks},
+            dataType: 'json',
+          })
+
+          .done(function(response) {
+            if(response != '')
+            {
+              $('#userName-div').show();
+              $('#associateNames').html('');
+              $('#associateNames').append(response);
+            }
+          });
+ }); 
     $("#search-user").keyup(function () {
     var idvalue = document.getElementById("associate-ids").value;
 
@@ -497,7 +599,6 @@
       value = $(this).val();
       document.getElementById('pagenumber').value = 1;
       var idvalue = document.getElementById("associate-ids").value;
-      
       $.ajax({
             type: 'GET',
               url: '<?php echo route('searchAssociate'); ?>',
@@ -508,29 +609,20 @@
             if(response != '')
             {
               $('#no_any_user').hide();
+
               $('#associatetable').show();
+              $('#div-button').show();
               $('#usertable').html('');
               $('#usertable').append(response);
             }
             else
             {
                $('#associatetable').hide();
+               $('#div-button').hide();
                $('#no_any_user').show();
             }
         });
     });
-  /* $('input[name="associateid[]"]').click(function(){
-      var value = $(this).val();
-       if($(this).prop("checked") == true){
-                alert(value);
-            }
-            else if($(this).prop("checked") == false){
-                alert(value);
-            }
-     
-    });
-*/
-
       $("#associatetable").scroll(function() {
 
         var value = $('#search-user').val();
@@ -559,6 +651,116 @@
         }
       });
     });
+  </script>
+  <script type="text/javascript">
+    $("#projectbid").keypress(function (e) {
+      
+      $('#projectbid').keyup(function(e) {
+      if ($(this).val().indexOf('.') == 0 || $(this).val().indexOf('0') == 0) {
+        $(this).val($(this).val().substring(1));
+                  }
+                });
+                var regex = new RegExp("^[0-9\.\]+$");
+                var key = String.fromCharCode(!e.charCode ? e.which : e.charCode);  
+                if(e.keyCode === 8 || e.keyCode === 46)  
+                  return true;                
+                if(!((e.keyCode == 37 && e.which == 0) || (e.keyCode == 39 && e.which == 0) || (e.keyCode == 46 && e.which == 0))){
+                  if(!regex.test(key)){
+                    return false;      
+                  }
+                }
+            });
+    $("#budget_txt").keypress(function (e) {
+      
+      $('#budget_txt').keyup(function(e) {
+      if ($(this).val().indexOf('.') == 0 || $(this).val().indexOf('0') == 0) {
+        $(this).val($(this).val().substring(1));
+                  }
+                });
+                var regex = new RegExp("^[0-9\.\]+$");
+                var key = String.fromCharCode(!e.charCode ? e.which : e.charCode);  
+                if(e.keyCode === 8 || e.keyCode === 46)  
+                  return true;                
+                if(!((e.keyCode == 37 && e.which == 0) || (e.keyCode == 39 && e.which == 0) || (e.keyCode == 46 && e.which == 0))){
+                  if(!regex.test(key)){
+                    return false;      
+                  }
+                }
+            });
+    $("#units_txt").keypress(function (e) {
+      
+      
+                var regex = new RegExp("^[0-9\.\]+$");
+                var key = String.fromCharCode(!e.charCode ? e.which : e.charCode);  
+                if(e.keyCode === 8 || e.keyCode === 46)  
+                  return true;                
+                if(!((e.keyCode == 37 && e.which == 0) || (e.keyCode == 39 && e.which == 0) || (e.keyCode == 46 && e.which == 0))){
+                  if(!regex.test(key)){
+                    return false;      
+                  }
+                }
+            });
+    $("#footage_txt").keypress(function (e) {
+      
+      
+                var regex = new RegExp("^[0-9\.\]+$");
+                var key = String.fromCharCode(!e.charCode ? e.which : e.charCode);  
+                if(e.keyCode === 8 || e.keyCode === 46)  
+                  return true;                
+                if(!((e.keyCode == 37 && e.which == 0) || (e.keyCode == 39 && e.which == 0) || (e.keyCode == 46 && e.which == 0))){
+                  if(!regex.test(key)){
+                    return false;      
+                  }
+                }
+            });
+    $("#building_txt").keypress(function (e) {
+      
+     
+                var regex = new RegExp("^[0-9\.\]+$");
+                var key = String.fromCharCode(!e.charCode ? e.which : e.charCode);  
+                if(e.keyCode === 8 || e.keyCode === 46)  
+                  return true;                
+                if(!((e.keyCode == 37 && e.which == 0) || (e.keyCode == 39 && e.which == 0) || (e.keyCode == 46 && e.which == 0))){
+                  if(!regex.test(key)){
+                    return false;      
+                  }
+                }
+            });
+    $("#area_txt").keypress(function (e) {
+      
+     
+                var regex = new RegExp("^[0-9\.\]+$");
+                var key = String.fromCharCode(!e.charCode ? e.which : e.charCode);  
+                if(e.keyCode === 8 || e.keyCode === 46)  
+                  return true;                
+                if(!((e.keyCode == 37 && e.which == 0) || (e.keyCode == 39 && e.which == 0) || (e.keyCode == 46 && e.which == 0))){
+                  if(!regex.test(key)){
+                    return false;      
+                  }
+                }
+            });
+    $("#stories_txt").keypress(function (e) {
+      var regex = new RegExp("^[0-9\.\]+$");
+      var key = String.fromCharCode(!e.charCode ? e.which : e.charCode);  
+      if(e.keyCode === 8 || e.keyCode === 46)  
+                  return true;                
+      if(!((e.keyCode == 37 && e.which == 0) || (e.keyCode == 39 && e.which == 0) || (e.keyCode == 46 && e.which == 0))){
+                  if(!regex.test(key)){
+                    return false;      
+                  }
+                }
+            });
+    $("#built_txt").keypress(function (e) {
+      var regex = new RegExp("^[0-9\.\]+$");
+      var key = String.fromCharCode(!e.charCode ? e.which : e.charCode);  
+                if(e.keyCode === 8 || e.keyCode === 46)  
+                  return true;                
+                if(!((e.keyCode == 37 && e.which == 0) || (e.keyCode == 39 && e.which == 0) || (e.keyCode == 46 && e.which == 0))){
+                  if(!regex.test(key)){
+                    return false;      
+                  }
+                }
+            });
   </script>
  
  </body>

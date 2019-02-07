@@ -14,15 +14,17 @@
       <div class="modal-body">
         <div class="project-level">
           <div id="no_any_status">
-            <p style= "margin-left: 250px;"> There are no any notes available</p>
+            <p style= "text-align: center;"> There are no any notes available</p>
           </div>
           <input type="hidden" name="status_pagenumber" id="status_pagenumber">
           <div style="overflow-y: scroll;max-height: 350px; background: white;" id="project-status-list">
             <ul id="statuslist">
              </ul>
-          </div>                                                                                       
-            </div>    
-          </div>
-       </div>
+          </div>  
+                                                                                   
+       
+          </div>  
+        </div>
+      </div>
   </div>
 </div>
