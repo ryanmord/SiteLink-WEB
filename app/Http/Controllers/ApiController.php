@@ -1262,18 +1262,7 @@ class ApiController extends Controller
         {
             $onsitedate = '';
         }
-        $propertyDetail[] = ['label'     => 'NO. OF UNITS',
-                            'noOfUnits'  => (string)$project->no_of_units];
-        $propertyDetail[] = ['label'     => 'NO. OF STORIES',
-                            'noOfStories'=> (string)$project->no_of_stories];
-        $propertyDetail[] = ['label'     => 'NO. OF BUILDINGS',
-                            'noBuildings'=> (string)$project->no_of_buildings];
-        $propertyDetail[] = ['label'     => 'SQ. FOOTAGE',
-                            'sqFootage'  => (string)$project->squareFootage];
-        $propertyDetail[] = ['label'     => 'LAND AREA',
-                            'landArea'   => (string)$project->land_area];
-        $propertyDetail[] = ['label'     => 'YEAR BUILT',
-                            'yearBuilt'  => (string)$project->year_built];
+        
         $reportduedate = (string)$project->report_due_date;
         $datetime2 = new DateTime($reportduedate);
         $reportduedate= $datetime2->format("Y-m-d");
@@ -1385,7 +1374,7 @@ class ApiController extends Controller
                                         'jobReachCount'  => (string)$jobReachCount,
                                         'associateTypeId'=> (string)$associateTypeId,
                                         'ratingflag'     => $ratingflag,
-                                        'propertyDetail' => $propertyDetail);
+                                        );
                        
                         return json_encode($temp);
                         exit;
@@ -1433,7 +1422,7 @@ class ApiController extends Controller
                                 'jobReachCount'     => (string)$jobReachCount,
                                 'associateTypeId'   => (string)$associateTypeId,
                                 'ratingflag'        => $ratingflag,
-                                'propertyDetail' => $propertyDetail);
+                                );
             
             return json_encode($temp);
             exit;
@@ -1466,7 +1455,7 @@ class ApiController extends Controller
                                 'approxbid'      => (String)$approxbid,
                                 'bidcount'       => (string)$bidcount,
                                 'scopeperformed' => $data,
-                                'propertyDetail' => $propertyDetail);
+                                );
            
             return json_encode($temp);
             exit;
@@ -2783,70 +2772,70 @@ class ApiController extends Controller
         exit;
             
     }
-    //public function getLAtLong()
-    //{
+   /* public function getLAtLong()
+    {*/
         /*$address = "Minneapolis, MN, USA";
         //$url = "";
         //$origin = Input::get('origin');
         //$destination = Input::get('destination');
 
         $url = urlencode("https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyCFesVLN0rhPhI0uHrMrQjclKdbyx9X9g0&address=$address&sensor=true");
-        print_r($url);
-        exit;
-        $json = json_decode(($url), true);
+       /* print_r($url);
+        exit;*/
+       /* $json = json_decode(($url), true);
 
         dd($json);
         $client = new GuzzleHttp\Client();
         $res = $client->get('https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyCFesVLN0rhPhI0uHrMrQjclKdbyx9X9g0&address=$address&sensor=true');
         echo $res->getStatusCode(); // 200
         echo $res->getBody();*/
-        
+      
 
-    /*return $response; */
-    /*$address = "Minneapolis, MN, USA";
+    //return $response; 
+   /* $address = "Minneapolis, MN, USA";
     $url = 'https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyCFesVLN0rhPhI0uHrMrQjclKdbyx9X9g0&address='.$address.'&sensor=true';
 */
-  /*
-    Creates a Guzzle Client to make the Google Maps request.
-  */
-  //$client = new \GuzzleHttp\Client();
+  
+    //Creates a Guzzle Client to make the Google Maps request.
+  
+  /*$client = new \GuzzleHttp\Client();*/
 
   /*
     Send a GET request to the Google Maps API and get the body of the
     response.
   */
-  //$geocodeResponse = $client->get( $url )->getBody();
+  /*$geocodeResponse = $client->get( $url )->getBody();*/
 
   /*
     JSON decodes the response
   */
- // $geocodeData = json_decode( $geocodeResponse );
-  /*print_r($geocodeData);
+ /*$geocodeData = json_decode( $geocodeResponse );
+  print_r($geocodeData);
   exit;*/
   /*
     Initializes the response for the GeoCode Location
   */
-  /*$coordinates['lat'] = null;
-  $coordinates['lng'] = null;
-*/
+ // $coordinates['lat'] = null;
+  //$coordinates['lng'] = null;
+
   /*
     If the response is not empty (something returned),
     we extract the latitude and longitude from the
     data.
   */
-  /*if( !empty( $geocodeData )
+ /* if( !empty( $geocodeData )
          && $geocodeData->status != 'ZERO_RESULTS' 
          && isset( $geocodeData->results ) 
          && isset( $geocodeData->results[0] ) ){
     $coordinates['lat'] = $geocodeData->results[0]->geometry->location->lat;
     $coordinates['lng'] = $geocodeData->results[0]->geometry->location->lng;
-  }
-*/
+  }*/
+
   /*
     Return the found coordinates.
   */
-  /*return $coordinates;
-    }*/
+  //return $coordinates;
+   // }
     /*Name : Project Inprogress Status
     Url  :http://103.51.153.235/project_management/public/index.php/api/inprogressStatus?userid=182&privatekey=10l4SesaKyxue87i&projectid=1
     Date : 14-09-18
