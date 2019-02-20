@@ -1,5 +1,4 @@
 <?php
-
 return [
 
     /*
@@ -226,6 +225,8 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'PushNotification' => Edujugon\PushNotification\Facades\PushNotification::class,
+        
     ],
+    'TINYPNG_KEY'    =>  '83q9lPQrJvuExef8Z37lSIP2dWfZEV5M',
 
 ];

@@ -94,6 +94,20 @@
                           </div>
                           <div class="row">
                             <div class="col-md-3">
+                              <label style="font-size: 15px;">Latitude</label>
+                            </div>
+                            <div class="col-md-4">
+                              <p style="font-size: 15px;">{{ $project->latitude }}</p>
+                            </div>
+                            <div class="col-md-3">
+                              <label style="font-size: 15px;">Longitude</label>
+                            </div>
+                            <div class="col-md-2">
+                              <p style="font-size: 15px;">{{ $project->longitude }}</p>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-md-3">
                               <label style="font-size: 15px;">Project Address</label>
                             </div>
                             <div class="col-md-9">

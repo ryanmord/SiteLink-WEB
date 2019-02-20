@@ -80,16 +80,16 @@
           <div class="row">
             <div class="panel panel-title">
               <ul id="myTab1" class="nav nav-tabs nav-justified">
-                <li class="active"><a href="#home1" data-toggle="tab">
-                  Unverified Users <span class="badge" style="background-color:#DB5A6B;" id="user-count">{{ $users->count() }}</span>
+               <li class="active"><a href="#schedulingProjects" data-toggle="tab">Awaiting Scheduling <span class="badge" style="background-color:#DB5A6B;">{{ $schedulingProjectCount }}</span>
                 </a></li>
                 <li><a href="#projectbids" data-toggle="tab"> Pending Bids <span class="badge" style="background-color:#DB5A6B;">{{ $bidsrequestcount }}</span>
                 </a></li>
-                <li><a href="#schedulingProjects" data-toggle="tab">Awaiting Scheduling <span class="badge" style="background-color:#DB5A6B;">{{ $schedulingProjectCount }}</span>
+                <li><a href="#home1" data-toggle="tab">
+                  Unverified Users <span class="badge" style="background-color:#DB5A6B;" id="user-count">{{ $users->count() }}</span>
                 </a></li>
               </ul>
               <div id="myTabContent" class="tab-content">
-                <div class="tab-pane fade active in" id="home1">
+                <div class="tab-pane fade" id="home1">
                   <div class="table-responsive">
                     @if($users->count() > 0)
                       <table class="table table-bordered table-hover table-striped">
@@ -259,7 +259,7 @@
                             @endif
                           </div>
                         </div>
-                        <div class="tab-pane fade" id="schedulingProjects">
+                        <div class="tab-pane fade active in" id="schedulingProjects">
                       
                         <div class="table-responsive">
                         <input type="hidden" name="project-count" id="scheduling-count" value="{{ count($schedulingProject) }}">
