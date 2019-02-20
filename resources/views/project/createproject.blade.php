@@ -183,11 +183,11 @@
                                 <input type="text" name="units_txt" id="units_txt" value="" placeholder="  No.of units" required="" style="padding-left: 12px;">
                                 
                               </div>
-                               <div class="form-group col-md-2">
+                               <div class="form-group col-md-3">
                                 <br>
                                 <label class="required">Sq. Footage</label>
                               </div>
-                              <div class="form-group col-md-4">
+                              <div class="form-group col-md-3">
                                 <input type="text" name="footage_txt" id="footage_txt" value="" placeholder="  Sq. Footage" required="" style="padding-left: 12px;">
                               </div>
                             </div>
@@ -197,14 +197,14 @@
                                 <label class="required">No. Buildings</label>
                               </div>
                               <div class="form-group col-md-3">
-                                <input type="text" name="building_txt" id="building_txt" value="" placeholder="  No.BUildings" required="" style="padding-left: 12px;">
+                                <input type="text" name="building_txt" id="building_txt" value="" placeholder="  No.Buildings" required="" style="padding-left: 12px;">
                                 
                               </div>
-                               <div class="form-group col-md-2">
+                               <div class="form-group col-md-3">
                                 <br>
                                 <label class="required">Land Area</label>
                               </div>
-                              <div class="form-group col-md-4">
+                              <div class="form-group col-md-3">
                                 <input type="text" name="area_txt" id="area_txt" value="" placeholder="  Land Area" required="" style="padding-left: 12px;">
                               </div>
                             </div>
@@ -216,12 +216,12 @@
                               <div class="form-group col-md-3">
                                 <input type="text" name="stories_txt" id="stories_txt" value="" placeholder="  No.Stories" required="" style="padding-left: 12px;">
                               </div>
-                               <div class="form-group col-md-2">
+                               <div class="form-group col-md-3">
                                 <br>
                                 <label class="required">Year Built</label>
                               </div>
-                              <div class="form-group col-md-4">
-                                <input type="text" name="built_txt" id="built_txt" value="" placeholder="  Year Built" required="" style="padding-left: 12px;">
+                              <div class="form-group col-md-3">
+                                <input type="text" name="built_txt" id="built_txt" value="" placeholder="  Year Built" required="" style="padding-left: 12px;" maxlength="4">
                               </div>
                             </div> 
                             <div class="row">
@@ -445,13 +445,37 @@
                 required: true,
                
             },
+            building_txt:{
+              required: true,
+              min:1
+            },
+            built_txt:{
+              required: true,
+              min:4
+            },
+            units_txt:{
+              required: true,
+              min:1
+            },
+            stories_txt:{
+              required: true,
+              min:1
+            },
+            area_txt:{
+              required: true,
+              min:1
+            },
+            footage_txt:{
+              required: true,
+              min:1
+            },
            selectmanger:{
                 required: true,
                
             },projectbid:{
               required: true,
-              number: true,
-              min:1
+              
+              
             },'scopeperformedid[]': 
             {
               required: true, 
@@ -472,7 +496,7 @@
               
             },
             template:"Please Enter Template",
-            projectType:"Please Enater Project Type",
+            projectType:"Please Enter Project Type",
             built_txt:"Please Enter Year Built",
             building_txt:"Please Enter No.of Buildings",
             stories_txt:"Please Enter No. of Stories",
