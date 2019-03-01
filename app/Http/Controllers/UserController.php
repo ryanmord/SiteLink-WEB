@@ -16,6 +16,7 @@ use App\ProjectStatus;
 use App\AssociateType;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
 use DateTime;
 use Session;
 use DB;
@@ -51,7 +52,45 @@ class UserController extends Controller
                     'associatecount'  => $associatecount
                   ]);
     }
-
+    public function setNewPassword(Request $request)
+    {
+        $user_id = $request->userid;
+        $userid  = Crypt::decrypt($user_id);
+        return view('password.setNewPassword',['userid' => $userid]);
+    }
+    public function updateNewPassword(Request $request)
+    {
+        $userid   = $request['userid'];
+        $email    = $request['useremail'];
+        $user     = User::where('users_id','=',$userid)
+                         ->where('users_email','=',$email)->first();
+        if(isset($user))
+        {
+            $password = $request['new_password'];
+            $confirm_password = $request['confirm_password'];
+            //encrypt password field
+            $newpw = Hash::make($request['new_password']);
+            $model = User::where('users_id','=',$userid)
+                    ->where('users_email','=',$email)
+                    ->update(['users_password' =>$newpw]);
+            if(isset($model))
+            {
+                return response()->json(['success' => 'Password Set Successfully']);
+                exit;
+            }
+            else
+            {
+                return response()->json(['failure' => 'Password does not reset successfully']);
+                exit;
+            }
+        }
+        else
+        {
+            $warning="Your email address is incorrect";
+            return response()->json(['error' => $warning]);
+            exit;
+        }
+    }
     /**
      * Show the form for creating a new resource.
      *

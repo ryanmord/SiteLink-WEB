@@ -275,9 +275,11 @@
                             <div class="col-md-2">
                              
                               <label style="font-size: 15px;">Live User List</label>
+                              <br><label style="font-size: 15px;color: #8f8b8b;">Count:</label>
+                              <label id="cntlabel" style="font-size: 15px;color: #8f8b8b;">0</label>
                             </div>
                             <div class="col-md-7">
-                            <div class="table-responsive" style="max-height: 100px;overflow: auto;">
+                            <div class="table-responsive" style="max-height: 200px;overflow: auto;">
                               <table frame="box" rules="rows">
                                 <tbody id="live-user-data">
                               </tbody>
@@ -379,11 +381,12 @@
             dataType: 'json',
           })
           .done(function(response) {
-            if(response != '')
+            $('#cntlabel').text(response.count);
+            if(response.appendtd != '')
             {
               $('#userName-div').show();
               $('#live-user-data').html('');
-              $('#live-user-data').append(response);
+              $('#live-user-data').append(response.appendtd);
             }
       });
     }); 
@@ -465,14 +468,15 @@
           data: {userId:id,projectId:projectid},
               dataType: 'json',
           success: function(response) {
-          if(response === '')
+          $('#cntlabel').text(response.count);
+          if(response.appendtd === '')
           {
              $('#live-user-data').html('');
           }
           else
           {
             $('#live-user-data').html('');
-            $('#live-user-data').append(response);
+            $('#live-user-data').append(response.appendtd);
           }
       }
     });
@@ -505,14 +509,15 @@
           data: {associateTypeId:checks,miles:miles,projectId:projectid},
               dataType: 'json',
           success: function(response) {
-          if(response === '')
+          $('#cntlabel').text(response.count);
+          if(response.appendtd === '')
           {
              
           }
           else
           {
             $('#live-user-data').html('');
-            $('#live-user-data').append(response);
+            $('#live-user-data').append(response.appendtd);
           }
         }
       });

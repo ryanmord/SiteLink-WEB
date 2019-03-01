@@ -77,7 +77,7 @@
                          {{ csrf_field() }}
                             <div class="form-group">
                                 <div class="form-group field-loginform2-password">
-                                    <input type="password" name="new_password" id="new_password" class="form-control" name="" placeholder="New Password" required="">
+                                    <input type="password" name="new_password" id="new_password" class="form-control" placeholder="New Password" required="">
                                    <input type="hidden" id="userid" name="userid" 
                                    value= {{ $userid }}>
                                   
@@ -85,7 +85,7 @@
                             </div>
                             <div class="form-group">
                                 <div class="form-group field-loginform2-password">
-                                    <input type="password" name="confirm_password" id="confirm_password" class="form-control" name="" placeholder="Confirm Password" required="">
+                                    <input type="password" name="confirm_password" id="confirm_password" class="form-control" placeholder="Confirm Password" required="">
                                    
                                 </div>
                               <label id="errormsg" class="error" style="color: #b70a0a;"></label>

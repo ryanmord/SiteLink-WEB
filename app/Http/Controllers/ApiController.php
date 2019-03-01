@@ -23,11 +23,14 @@ use App\ApiGeneratedToken;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Edujugon\PushNotification\Facades\PushNotification;
+use Illuminate\Support\Facades\Crypt;
 use Image;
 use DateTime;
 use App\Mail\UserRegistered;
 use App\Mail\ForgotPassword;
 use App\Mail\NewProject;
+use App\Mail\ManagerRegistered;
+use App\Mail\UpdateManager;
 use Mail;
 use File;
 use Illuminate\Http\Response;
@@ -82,8 +85,8 @@ class ApiController extends Controller
 
                     $image_name = time() . "-" . $file->getClientOriginalName();
 
-                    $path = $file->move($destinationPath, $image_name);
-                    $imageName  =   trim($request->cropped_category_image);
+                    $path         = $file->move($destinationPath, $image_name);
+                    $imageName    =   trim($request->cropped_category_image);
                     $tempfileName = $destinationPath.'/'.$image_name;
                     // Optimise Image using tinypng library
                     $this->tinypng_image_optimize($tempfileName,$image_name);
@@ -307,7 +310,6 @@ class ApiController extends Controller
     By   : Suvarna*/
     public function dashboard(Request $request)
     {
-       
         $user =$this->checkuserprivatekey($request['userid'],$request['privatekey']);
         $userid = $request['userid'];
         $username = $user->users_name;
@@ -1428,36 +1430,36 @@ class ApiController extends Controller
             }
             $approxbid = number_format($project->approx_bid, 2);
             
-            $temp = array('status'     => '1',
-                                'projectid'         => (string)$project->project_id, 
-                                'projectname'       =>  $project->project_name, 
-                                'siteaddress'       => $project->project_site_address,
-                                'latitude'          => $project->latitude,
-                                'longitude'         => $project->longitude,
-                                'milesrange'        => (string)$project->milesrange,
-                                'propertyType'      => $project->property_type,
-                                'noOfUnits'         => (string)$project->no_of_units,
-                                'noOfStories'       => (string)$project->no_of_stories,
-                                'sqFootage'         => (string)$project->squareFootage,
-                                'noBuildings'       => (string)$project->no_of_buildings,
-                                'landArea'          => (string)$project->land_area,
-                                'yearBuilt'         => (string)$project->year_built,
-                                'createddate'       => $createddate1,
-                                'onsitedate'        => $onsitedate,
-                                'reportduedate'     => $reportduedate,
-                                'template'          => (string)$project->report_template,
-                                'instructions'      => $project->instructions,
-                                'approxbid'         => (String)$approxbid,
-                                'previousbid'       => (string)$previousbid,
-                                'applydate'         => (string)$applydate,
-                                'biddate'           => (string)$biddate,
-                                'bidstatus'         => (string)$bidstatus,
-                                'bidstatusflag'     => $bidstatusflag,
-                                'scopeperformed'    => $data,
-                                'jobReachCount'     => (string)$jobReachCount,
-                                'associateTypeId'   => (string)$associateTypeId,
-                                'ratingflag'        => $ratingflag,
-                                );
+            $temp = array('status'          => '1',
+                        'projectid'         => (string)$project->project_id, 
+                        'projectname'       =>  $project->project_name, 
+                        'siteaddress'       => $project->project_site_address,
+                        'latitude'          => $project->latitude,
+                        'longitude'         => $project->longitude,
+                        'milesrange'        => (string)$project->milesrange,
+                        'propertyType'      => $project->property_type,
+                        'noOfUnits'         => (string)$project->no_of_units,
+                        'noOfStories'       => (string)$project->no_of_stories,
+                        'sqFootage'         => (string)$project->squareFootage,
+                        'noBuildings'       => (string)$project->no_of_buildings,
+                        'landArea'          => (string)$project->land_area,
+                        'yearBuilt'         => (string)$project->year_built,
+                        'createddate'       => $createddate1,
+                        'onsitedate'        => $onsitedate,
+                        'reportduedate'     => $reportduedate,
+                        'template'          => (string)$project->report_template,
+                        'instructions'      => $project->instructions,
+                        'approxbid'         => (String)$approxbid,
+                        'previousbid'       => (string)$previousbid,
+                        'applydate'         => (string)$applydate,
+                        'biddate'           => (string)$biddate,
+                        'bidstatus'         => (string)$bidstatus,
+                        'bidstatusflag'     => $bidstatusflag,
+                        'scopeperformed'    => $data,
+                        'jobReachCount'     => (string)$jobReachCount,
+                        'associateTypeId'   => (string)$associateTypeId,
+                        'ratingflag'        => $ratingflag,
+                    );
             
             return json_encode($temp);
             exit;
@@ -1468,36 +1470,33 @@ class ApiController extends Controller
                                     ->where('bid_status','=',1)
                                     ->where('project_bid_status','=',2)->count();
             $approxbid = number_format($project->approx_bid, 2);
-            $temp = array('status'      => '1',
-                                'projectid'      => (string)$project->project_id, 
-                                'projectname'    =>  $project->project_name, 
-                                'siteaddress'    => $project->project_site_address,
-                                'latitude'       => $project->latitude,
-                                'longitude'      => $project->longitude,
-                                'milesrange'     => (string)$project->milesrange,
-                                'propertyType'   => $project->property_type,
-                                'noOfUnits'      => (string)$project->no_of_units,
-                                'noOfStories'    => (string)$project->no_of_stories,
-                                'sqFootage'      => (string)$project->squareFootage,
-                                'noBuildings'    => (string)$project->no_of_buildings,
-                                'landArea'       => (string)$project->land_area,
-                                'yearBuilt'      => (string)$project->year_built,
-                                'createddate'    => $createddate1,
-                                'onsitedate'     => $onsitedate,
-                                'reportduedate'  => $reportduedate,
-                                'template'       => (string)$project->report_template,
-                                'instructions'   => $project->instructions,
-                                'approxbid'      => (String)$approxbid,
-                                'bidcount'       => (string)$bidcount,
-                                'scopeperformed' => $data,
-                                'bidstatusflag'  => $bidstatusflag
-                                );
-           
+            $temp = array('status'       => '1',
+                        'projectid'      => (string)$project->project_id, 
+                        'projectname'    =>  $project->project_name, 
+                        'siteaddress'    => $project->project_site_address,
+                        'latitude'       => $project->latitude,
+                        'longitude'      => $project->longitude,
+                        'milesrange'     => (string)$project->milesrange,
+                        'propertyType'   => $project->property_type,
+                        'noOfUnits'      => (string)$project->no_of_units,
+                        'noOfStories'    => (string)$project->no_of_stories,
+                        'sqFootage'      => (string)$project->squareFootage,
+                        'noBuildings'    => (string)$project->no_of_buildings,
+                        'landArea'       => (string)$project->land_area,
+                        'yearBuilt'      => (string)$project->year_built,
+                        'createddate'    => $createddate1,
+                        'onsitedate'     => $onsitedate,
+                        'reportduedate'  => $reportduedate,
+                        'template'       => (string)$project->report_template,
+                        'instructions'   => $project->instructions,
+                        'approxbid'      => (String)$approxbid,
+                        'bidcount'       => (string)$bidcount,
+                        'scopeperformed' => $data,
+                        'bidstatusflag'  => $bidstatusflag
+                    );
             return json_encode($temp);
             exit;
-            
         }
-            
     }
     /*Name :  Project history
     Url  :http://103.51.153.235/project_management/public/index.php/api/projectHistory?userid=182&privatekey=SsngS44DXdSCz2WK
@@ -2378,14 +2377,23 @@ class ApiController extends Controller
     {
         if(isset($request['client_id']) && !empty($request['client_id']))
         {
-            $apiToken = str_random(8);
-            $model = new ApiGeneratedToken;
-            $model->api_generated_token = $apiToken;
-            $model->status = 1;
-            $model->created_at = date('Y-m-d H:i:s');
-            $model->save();
-            return json_encode(array('status' => '1','apiToken' => $apiToken));
-            exit;
+            $clientId = $request['client_id'];
+            if($clientId == 'jJ9whBMrULZxUQqAMG2WV9WCY8dc7Enf')
+            {
+                $apiToken = str_random(8);
+                $model = new ApiGeneratedToken;
+                $model->api_generated_token = $apiToken;
+                $model->status = 1;
+                $model->created_at = date('Y-m-d H:i:s');
+                $model->save();
+                return json_encode(array('status' => '1','apiToken' => $apiToken));
+                exit;
+            }
+            else
+            {
+                return json_encode(array('status' => '0', 'message' => "Client ID field is Wrong"));
+                exit;
+            }
         }
         else
         {
@@ -2401,7 +2409,7 @@ class ApiController extends Controller
     By   : Suvarna*/
     public function createProjectManager(Request $request)
     {
-        if(isset($request['apiToken']))
+        if(isset($request['apiToken']) && !empty($request['apiToken']))
         {
             $apiToken = $request['apiToken'];
             $apigeneratedToken = ApiGeneratedToken::where('status','=',1)
@@ -2425,34 +2433,34 @@ class ApiController extends Controller
         }
         else
         {
-            return json_encode(array('status' => '0','message' => "Api token id parameter is missing"));
+            return json_encode(array('status' => '0','message' => "Api token id parameter is missing or empty"));
             exit;
         }
-
-       
-            if(!empty($request['email']))
+        if(!empty($request['email']) && isset($request['email']))
+        {
+            $managerEmail = $request['email'];
+            $user = User::where('users_email','=',$managerEmail)
+                         ->first();
+            if(isset($user))
             {
-                
-                $managerEmail = $request['email'];
-                $user = User::where('users_email','=',$managerEmail)
-                              ->first();
-                if(isset($user))
+                $managerId = $user->users_id;
+                return json_encode(array('status' => '0', 'message' => "This Project Manager Already Registered"));
+                exit;
+            }
+            else
+            {
+                if(isset($request['firstName']) && isset($request['lastName']) && isset($request['phone']) && isset($request['company']))
                 {
-                    $managerId = $user->users_id;
-                    return json_encode(array('status' => '0', 'message' => "This Project Manager Already Registered"));
-                    exit;
-                }
-                else
-                {
-                    if(!empty($request['firstName']) && !empty($request['lastName']) && !empty($request['phone']) && !empty($request['company']) && !empty($request['password']))
+                    if(!empty($request['firstName']) && !empty($request['lastName']) && !empty($request['phone']) && !empty($request['company']))
                     {
-                        $managerName = $request['firstName'];
+                        $managerName     = $request['firstName'];
                         $managerlastName = $request['lastName'];
-                        $managerPhone = $request['phone'];
-                        $managerCompany = $request['company'];
-                        $password = $request['password'];
-                        $model = new User;
-                        $file = $request->file('image');
+                        $managerPhone    = $request['phone'];
+                        $managerCompany  = $request['company'];
+                        $password        = str_random(8);
+                        $password2       = $password;
+                        $model           = new User;
+                        $file            = $request->file('image');
                         if(isset($file)) {
                             $file = $request->file('image');
                             $destinationPath = public_path('img/users');
@@ -2473,25 +2481,37 @@ class ApiController extends Controller
                         $model->users_password = Hash::make($password);
                         $model->save();
                         $user = User::where('users_email','=',$managerEmail)->first();
-                        $userid = base64_encode($user->users_id);
-                        $url = url('/emailVerification/'.$userid);
+                        $userid1 = base64_encode($user->users_id);
+                        $userid = Crypt::encrypt($user->users_id);
+                        $url = url('/emailVerification/'.$userid1);
+                        $setPasswordUrl = url('/setNewPassword/'.$userid);
                         $action = 1;
-                        Mail::to($managerEmail)->send(new UserRegistered($user,$url,$action));
+                        Mail::to($managerEmail)->send(new ManagerRegistered($user,$url,$setPasswordUrl,$action));
                         $managerId = $user->users_id;
                         return json_encode(array('status'   => '1',
                                                 'managerId' => (string)$managerId,
-                                                'message'   => "Project manager registered successfully"));
+                                                'message'   => "Project manager registered successfully..Email verification and set password link sent on manager email."));
                         exit;
                     }
                     else
                     {
 
-                        return json_encode(array('status' => '0', 'message' => "Mandatory field is required"));
+                        return json_encode(array('status' => '0', 'message' => "Mandatory field is empty"));
                         exit;
                     }
                 }
+                else
+                {
+                    return json_encode(array('status' => '0', 'message' => "Mandatory field is required"));
+                    exit;
+                }
             }
-      
+        }
+        else
+        {
+            return json_encode(array('status' => '0', 'message' => "Mandatory field is required"));
+            exit;
+        }
     }
     /*Get Project Manager profile */
     /*Name : Create Project Manager
@@ -2500,12 +2520,12 @@ class ApiController extends Controller
     By   : Suvarna*/
     public function getManagerProfile(Request $request)
     {
-        if(isset($request['apiToken']))
+        if(isset($request['apiToken']) && !empty($request['apiToken']))
         {
             $apiToken = $request['apiToken'];
             $apigeneratedToken = ApiGeneratedToken::where('status','=',1)
                                 ->where('api_generated_token','=',$apiToken)->first();
-            if(isset($apigeneratedToken))
+            if(isset($apigeneratedToken) && !empty($apigeneratedToken))
             {
                 $date1 =date("Y-m-d H:i:s");
                 $date2 = date($apigeneratedToken->created_at);
@@ -2553,7 +2573,7 @@ class ApiController extends Controller
         }
         else
         {
-            return json_encode(array('status' => '0','message' => "managerid parameter is missing"));
+            return json_encode(array('status' => '0','message' => "managerid parameter is missing or empty"));
             exit;
         }
 
@@ -2561,17 +2581,17 @@ class ApiController extends Controller
     }
     /*Update Project Manager Profile*/
     /*Name : Update Project Manager
-    Url  :http://103.51.153.235/project_management/public/index.php/api/createProject?userid=153&privatekey=krzzpdel813p0Dip
+    Url  :http://localhost/Scoped/public/index.php/api/updateProjectManager?apiToken=6eF5DEoP&managerId=78&firstName=Suvarnas&lastName=Shinde&company=magneto&phone=+1 (254) 878 7676
     Date : 11-02-19
     By   : Suvarna*/
     public function updateProjectManager(Request $request)
     {
-        if(isset($request['apiToken']))
+        if(isset($request['apiToken']) && !empty($request['apiToken']))
         {
             $apiToken = $request['apiToken'];
             $apigeneratedToken = ApiGeneratedToken::where('status','=',1)
                                 ->where('api_generated_token','=',$apiToken)->first();
-            if(isset($apigeneratedToken))
+            if(isset($apigeneratedToken) && !empty($apigeneratedToken))
             {
                 $date1 =date("Y-m-d H:i:s");
                 $date2 = date($apigeneratedToken->created_at);
@@ -2593,61 +2613,89 @@ class ApiController extends Controller
             return json_encode(array('status' => '0','message' => "Api token id parameter is missing"));
             exit;
         }
-        //$manager = json_decode($request['manager'],true);
-            if(!empty($request['managerId']) && isset($request['managerId']))
+        if(!empty($request['email']) && isset($request['email']) && !empty($request['managerId']) && isset($request['managerId']))
+        {
+            $managerEmail = $request['email'];
+            $managerId = $request['managerId'];
+            $user = User::where('users_id','=',$managerId)
+                            ->first();
+            if(!isset($user) && empty($user))
             {
-                $managerId = $request['managerId'];
-                $user = User::where('users_id','=',$managerId)
-                              ->first();
-                if(isset($user))
-                {
-                    $managerEmail = $user->users_email;
-                    $userid = $managerId;
-                    if(!empty($request['firstName']))
-                    {
-                        $name  = $request['firstName'];
-                        $model = User::where('users_id', '=',$userid)
-                                    ->update(['users_name' => $name]);
-                    }
-                    if(!empty($request['lastName']))
-                    {
-                        $lastname  = $request['lastName'];
-                        $model = User::where('users_id', '=',$userid)
-                                    ->update(['last_name' => $lastname]);
-                    }
-                    if(!empty($request['company']))
-                    {
-                        $company = $request['company'];
-                        $model   = User::where('users_id', '=',$userid)
-                                    ->update(['users_company' => $company]);
-                    }
-                    if(!empty($request['phone']))
-                    {
-                        $phone = (string)$request['phone'];
-                        $model = User::where('users_id', '=',$userid)
-                                    ->update(['users_phone' => $phone]);
-                    }
-                    if(!empty($request['password']))
-                    {
-                        $password = $request['password'];
-                        $newPassword = Hash::make($password);
-                        $model = User::where('users_id', '=',$userid)
-                                    ->update(['users_password' => $newPassword]);
-                    }
-                    return json_encode(array('status'   => '1',
-                                            'managerId' => (string)$managerId,
-                                             'message'  => "Project Manager profile updated successfully"));
-                    exit;
-                }
-                return json_encode(array('status' => '0', 'message' => "Wrong Scoped Project Manager ID"));
+                echo json_encode(array('status' => '0', 'message' => "Wrong Scoped Project Manager ID"));
                 exit;
+            }
+            $pmUser = User::where('users_email','=',$managerEmail)
+                            ->where('users_id','<>',$managerId)->first();
+            if(isset($pmUser) && !empty($pmUser))
+            {
+                echo json_encode(array('status' => '0', 'message' => "This email already registered with other userid"));
+                exit;
+            }
+            $managerUser  = User::where('users_email','=',$managerEmail)
+                                  ->first();
+            if(isset($managerUser) && !empty($managerUser))
+            {
+                $flag = 1;
             }
             else
             {
-                return json_encode(array('status' => '0', 'message' => "Manager Id parameter are missing"));
-                exit;
+                $model = User::where('users_id', '=',$managerId)
+                               ->update(['users_email' => $managerEmail,
+                                        'email_status' => 0]);
+                $flag = 2;
             }
-       
+            $userid = $managerId;
+            if(!empty($request['firstName']))
+            {
+                $name  = $request['firstName'];
+                $model = User::where('users_id', '=',$userid)
+                               ->update(['users_name' => $name]);
+            }
+            if(!empty($request['lastName']))
+            {
+                $lastname  = $request['lastName'];
+                $model = User::where('users_id', '=',$userid)
+                               ->update(['last_name' => $lastname]);
+            }
+            if(!empty($request['company']))
+            {
+                $company = $request['company'];
+                $model   = User::where('users_id', '=',$userid)
+                                 ->update(['users_company' => $company]);
+            }
+            if(!empty($request['phone']))
+            {
+                $phone = (string)$request['phone'];
+                $model = User::where('users_id', '=',$userid)
+                               ->update(['users_phone' => $phone]);
+            }
+            if($flag == 2)
+            {
+                $userid1 = base64_encode($managerId);
+                $userid = Crypt::encrypt($managerId);
+                $url = url('/emailVerification/'.$userid1);
+                $loginUrl = route('cmslogin');
+                $action = 2;
+                Mail::to($managerEmail)->send(new UpdateManager($user,$url,$loginUrl,$action));
+            }
+            else
+            {
+                $userid = Crypt::encrypt($managerId);
+                $url = '';
+                $loginUrl = route('cmslogin');
+                $action = 1;
+                Mail::to($managerEmail)->send(new UpdateManager($user,$url,$loginUrl,$action));
+            }
+            return json_encode(array('status'   => '1',
+                                    'managerId' => (string)$managerId,
+                                    'message'   => "Project Manager profile updated successfully"));
+            exit;
+        }
+        else
+        {
+            return json_encode(array('status' => '0', 'message' => "Manager Id parameter are missing or empty"));
+            exit;
+        }
     }
 
     /*Name : Create Scoped Project
@@ -2658,7 +2706,7 @@ class ApiController extends Controller
     {
         //$user = $this->checkuserprivatekey($request['userid'],$request['privatekey']);
         //$userid = $request['userid'];
-        if(isset($request['apiToken']))
+        if(isset($request['apiToken']) && !empty($request['apiToken']))
         {
             $apiToken = $request['apiToken'];
             $apigeneratedToken = ApiGeneratedToken::where('status','=',1)
@@ -2815,7 +2863,7 @@ class ApiController extends Controller
     public function updateScopedProject(Request $request)
     {
        
-        if(!empty($request['apiToken']))
+        if(isset($request['apiToken']) && !empty($request['apiToken']))
         {
             $apiToken = $request['apiToken'];
             $apigeneratedToken = ApiGeneratedToken::where('status','=',1)
@@ -2841,7 +2889,7 @@ class ApiController extends Controller
         }
         else
         {
-            return json_encode(array('status' => '0','message' => "Api token parameter is missing"));
+            return json_encode(array('status' => '0','message' => "Api token parameter is missing or empty"));
             exit;
         }
         
@@ -2994,7 +3042,7 @@ class ApiController extends Controller
     {
         //$user = $this->checkuserprivatekey($request['userid'],$request['privatekey']);
         //$userid = $request['userid'];
-        if(isset($request['apiToken']))
+        if(isset($request['apiToken']) && !empty($request['apiToken']))
         {
             $apiToken = $request['apiToken'];
             $apigeneratedToken = ApiGeneratedToken::where('status','=',1)
@@ -3018,7 +3066,7 @@ class ApiController extends Controller
         }
         else
         {
-            return json_encode(array('status' => '0','message' => "Api token id parameter is missing"));
+            return json_encode(array('status' => '0','message' => "Api token id parameter is missing or empty"));
             exit;
         }
         if(!empty($request['manager']))
@@ -3188,7 +3236,7 @@ class ApiController extends Controller
     public function updateProject(Request $request)
     {
        
-        if(!empty($request['apiToken']))
+        if(isset($request['apiToken']) && !empty($request['apiToken']))
         {
             $apiToken = $request['apiToken'];
             $apigeneratedToken = ApiGeneratedToken::where('status','=',1)
@@ -3292,7 +3340,7 @@ class ApiController extends Controller
         }
         else
         {
-            return json_encode(array('status' => '0', 'message' => "Scoped project id parameter is missing"));
+            return json_encode(array('status' => '0', 'message' => "Scoped project id parameter is missing or empty"));
             exit;
         }
         if(!empty($request['name']))

@@ -279,7 +279,7 @@ $(document).ready(function () {
           		else
           		{
           			alert(msg.success);
-					url = '<?php echo route('cmslogin'); ?>';
+					      url = '<?php echo route('cmslogin'); ?>';
             		window.location.replace(url);
           		}
         	});

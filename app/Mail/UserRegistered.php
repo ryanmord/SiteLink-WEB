@@ -21,9 +21,9 @@ class UserRegistered extends Mailable
     
     public function __construct($user,$url,$action)
     {
-        $this->user      = $user;
-        $this->url       = $url;
-        $this->action    = $action;
+        $this->user           = $user;
+        $this->url            = $url;
+        $this->action         = $action;
     }
 
     /**
@@ -39,8 +39,8 @@ class UserRegistered extends Mailable
             $usertype = $this->user->user_types_id;
             if($usertype == 2)
             {
-                $introLines = array('Your registration for Scoped app is completed successfully.');
-                $outroLines = array('Now you can complete your Email Verification step into the Scoped app. Please click on following button.');
+                $introLines = array('Thanks for registering with us on Scoped App.');
+                $outroLines = array('Now you need to complete your account Verification in Scoped app. Please click on following button.');
            
                 $subject = 'Scoped: Email verification';
                 $greeting = 'Hello '.$this->user->users_name."!";
@@ -50,8 +50,8 @@ class UserRegistered extends Mailable
             }
             else
             {
-                $introLines = array('Your registration for Scoped app is completed successfully.');
-                $outroLines = array('Now you can complete your Email Verification step into the Scoped app. Please click on following button.');
+                $introLines = array('Thanks for registering with us on Scoped App.');
+                $outroLines = array('Now you need to complete your account Verification in Scoped app. Please click on following button.');
            
                 $subject = 'Scoped: Email verification';
                 $greeting = 'Hello '.$this->user->users_name."!";

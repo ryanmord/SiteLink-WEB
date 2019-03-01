@@ -2043,11 +2043,13 @@ class ProjectController extends Controller
                 AND associate_type_id IN ($associateTypeId)
                 HAVING distance <= $miles"));
             $appendtd ='';
+            $count = '0';
             /* print_r($result);
             exit;*/
             if(isset($result))
             {
-                  foreach($result as $value) 
+                
+                foreach($result as $value) 
                 {
                     $userId = $value->users_id;
                     $scope_Id = UserScopePerformed::where('users_id','=',$userId)->first();
@@ -2097,27 +2099,34 @@ class ProjectController extends Controller
                                         ->where('bid_request_status','=',0)
                                         ->get();
             $appendtd = '';
-            foreach ($bidrequest as $value) {
-                $userId = $value->to_user_id;
-                $user = User::where('users_id','=',$userId)->first();
-                $associatename = $user->users_name.' '.$user->last_name;
-                $associateTypeId = $user->associate_type_id;
-                $associateType = AssociateType::where('associate_type_id','=',$associateTypeId)->first();
-                $associate_type = $associateType->associate_type;
-                $profile = $user->users_profile_image;
-                $profileimage = asset("/img/users/" . $profile);
-                $appendtd .= '<tr><td width="50" class="live-user-td"><img class="img-rounded   live-user-image" src="'.$profileimage.'"/></td>
+            $count = '0';
+            if(isset( $bidrequest))
+            {
+                $count = $bidrequest->count();
+                foreach ($bidrequest as $value) {
+                    $userId = $value->to_user_id;
+                    $user = User::where('users_id','=',$userId)->first();
+                    $associatename = $user->users_name.' '.$user->last_name;
+                    $associateTypeId = $user->associate_type_id;
+                    $associateType = AssociateType::where('associate_type_id','=',$associateTypeId)->first();
+                    $associate_type = $associateType->associate_type;
+                    $profile = $user->users_profile_image;
+                    $profileimage = asset("/img/users/" . $profile);
+                    $appendtd .= '<tr><td width="50" class="live-user-td"><img class="img-rounded   live-user-image" src="'.$profileimage.'"/></td>
                     <td width="250" class="live-user-td">'.$associatename.'</td>
                     <td width="220" class="live-user-td">'.$associate_type.'</td>
                     <td width="50" class="live-user-td"><button type="button" class="close" onclick="rejectUser('.$userId.')" style="color: red;font-size: 25px;" name="reject-btn">&times;</button></td>
                     </tr>';
            
+                }
             }
-            return response()->json($appendtd);
+            
+            return response()->json(array('appendtd' => $appendtd,'count' => $count));
         }
         else{
             $appendtd ='';
-            return response()->json($appendtd);
+            $count = '0';
+            return response()->json(array('appendtd' => $appendtd,'count' => $count));
         }
         
     }
@@ -2134,27 +2143,31 @@ class ProjectController extends Controller
                                         ->where('bid_request_status','=',0)
                                         ->get();
         $appendtd = '';
-        foreach ($bidrequest as $value) {
-            $userId = $value->to_user_id;
-            $userBidRequest = ProjectBidRequest::where('project_id','=',$userId)
+        $count = '0';
+        if(isset($bidrequest))
+        {
+            $count = $bidrequest->count();
+            foreach ($bidrequest as $value) {
+                $userId = $value->to_user_id;
+                $userBidRequest = ProjectBidRequest::where('project_id','=',$userId)
                                                 ->where('to_user_id','=',$userId)->first();
 
-            $user = User::where('users_id','=',$userId)->first();
-            $associatename = $user->users_name.' '.$user->last_name;
-            $associateTypeId = $user->associate_type_id;
-            $associateType = AssociateType::where('associate_type_id','=',$associateTypeId)
-                                            ->first();
-            $associate_type = $associateType->associate_type;
-            $profile = $user->users_profile_image;
-            $profileimage = asset("/img/users/" . $profile);
-            $appendtd .= '<tr><td width="50" class="live-user-td"><img class="img-rounded   live-user-image" src="'.$profileimage.'"/></td>
+                $user = User::where('users_id','=',$userId)->first();
+                $associatename = $user->users_name.' '.$user->last_name;
+                $associateTypeId = $user->associate_type_id;
+                $associateType = AssociateType::where('associate_type_id','=',$associateTypeId)->first();
+                $associate_type = $associateType->associate_type;
+                $profile = $user->users_profile_image;
+                $profileimage = asset("/img/users/" . $profile);
+                $appendtd .= '<tr><td width="50" class="live-user-td"><img class="img-rounded   live-user-image" src="'.$profileimage.'"/></td>
                 <td width="250" class="live-user-td">'.$associatename.'</td>
                 <td width="220" class="live-user-td">'.$associate_type.'</td>
                 <td width="50" class="live-user-td"><button type="button" class="close" onclick="rejectUser('.$userId.')" style="color: red;font-size: 25px;" name="reject-btn">&times;</button></td>
                 </tr>';
            
+            }
         }
-        return response()->json($appendtd);
+        return response()->json(array('appendtd' => $appendtd,'count' => $count));
     }
     public function getLiveUserList(Request $request)
     {
@@ -2163,24 +2176,31 @@ class ProjectController extends Controller
                                         ->where('disregarded_status','=',0)
                                         ->where('bid_request_status','=',0)
                                         ->get();
+
         $appendtd = '';
-        foreach ($bidrequest as $value) {
-            $userId = $value->to_user_id;
-            $user = User::where('users_id','=',$userId)->first();
-            $associatename = $user->users_name.' '.$user->last_name;
-            $associateTypeId = $user->associate_type_id;
-            $associateType = AssociateType::where('associate_type_id','=',$associateTypeId)->first();
-            $associate_type = $associateType->associate_type;
-            $profile = $user->users_profile_image;
-            $profileimage = asset("/img/users/" . $profile);
-            $appendtd .= '<tr><td width="50" class="live-user-td"><img class="img-rounded   live-user-image" src="'.$profileimage.'"/></td>
+        $count = '0';
+        if(isset($bidrequest))
+        {
+            $count = $bidrequest->count();
+            foreach ($bidrequest as $value) {
+                $userId = $value->to_user_id;
+                $user = User::where('users_id','=',$userId)->first();
+                $associatename = $user->users_name.' '.$user->last_name;
+                $associateTypeId = $user->associate_type_id;
+                $associateType = AssociateType::where('associate_type_id','=',$associateTypeId)->first();
+                $associate_type = $associateType->associate_type;
+                $profile = $user->users_profile_image;
+                $profileimage = asset("/img/users/" . $profile);
+                $appendtd .= '<tr><td width="50" class="live-user-td"><img class="img-rounded   live-user-image" src="'.$profileimage.'"/></td>
                     <td width="250" class="live-user-td">'.$associatename.'</td>
                     <td width="220" class="live-user-td">'.$associate_type.'</td>
                     <td width="50" class="live-user-td"><button type="button" class="close" onclick="rejectUser('.$userId.')" style="color: red;font-size: 25px;" name="reject-btn">&times;</button></td>
                     </tr>';
            
+            }
         }
-        return response()->json($appendtd);
+        return response()->json(array('appendtd' => $appendtd,'count' => $count));
+        
     }
     public function changeCheckStatus(Request $request)
     {

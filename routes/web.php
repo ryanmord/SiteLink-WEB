@@ -87,6 +87,8 @@ Route::group(['middleware' => 'disablepreventback'],function()
 Route::get('/forgotPassword/{userid}','LoginController@forgotpassword')->name('forgotPassword');
 Route::post('/changepassword','LoginController@changepassword');
 // Route for front view
+Route::get('/setNewPassword/{userid}','UserController@setNewPassword')->name('setNewPassword');
+Route::post('/updateNewPassword','UserController@updateNewPassword')->name('updateNewPassword');
 Route::get('/home','FrontController\HomeController@index')->name('home');
 Route::get('/aboutus','FrontController\HomeController@aboutus')->name('aboutus');
 Route::get('/howitworks','FrontController\HomeController@howitworks')->name('howitworks');
