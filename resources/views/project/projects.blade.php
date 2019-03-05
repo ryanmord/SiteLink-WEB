@@ -29,7 +29,7 @@
                 <div>
                     <ul id="myTab1" class="nav nav-tabs nav-justified">
                         @if(isset($nonallocatedproject))
-                            <li class="active"><a href="#nonallocatedproject" data-toggle="tab">Open <span class="badge" style="background-color:#DB5A6B;" id="open-count">{{ count($nonallocatedproject) }}</span></a></li>
+                            <li class="active"><a href="#nonallocatedproject" data-toggle="tab">Scheduling <span class="badge" style="background-color:#DB5A6B;" id="open-count">{{ count($nonallocatedproject) }}</span></a></li>
                         @else
                             <li class="active"><a href="#nonallocatedproject" data-toggle="tab">Open </a></li>
                         @endif
@@ -128,7 +128,8 @@
                                                                 <li><a href="{{url('/allProejcts/projectDetail/'.$project['project_id'])}}">View</a></li>
                                                             @else
                                                             <li><a href="{{url('/allProejcts/projectDetail/'.$project['project_id'])}}">View</a></li>
-                                                            <li id="complete-menu" data-id="{{ $project['project_id'] }}"><a href="#" data-toggle="modal" data-target="#rating-project">Complete</a></li>
+                                                            <!-- <li id="complete-menu" data-id="{{ $project['project_id'] }}"><a href="#" data-toggle="modal" data-target="#rating-project">Complete</a></li> -->
+                                                            <li><a href="{{url('/allProejcts/projectComplete/'.$project['project_id'])}}" onclick="return confirm('Are you want to sure complete this project?')">Complete</a></li>
                                                             <li><a href="{{url('/allProejcts/projectCancel/'.$project['project_id'])}}" onclick="return confirm('Are you want to sure cancel this project?')">Cancel</a></li>
                                                             <li><a href="{{url('/allProejcts/projectOnHold/'.$project['project_id'])}}" onclick="return confirm('Are you want to sure hold this project?')">On Hold </a></li>
                                                             @endif
@@ -546,21 +547,17 @@ $(window).load(function() {
 
     $(".loader").fadeOut("slow");
 });
-$('body').on('click','#complete-menu', function (event) {
+/*$('body').on('click','#complete-menu', function (event) {
     $('#star-rating').starRating('setRating', 0.0);
     $('#ratingNumber').html('0.0');
     document.getElementById("projectreview").value = '';
     var projectid = $(this).attr("data-id");
-    /*var r = confirm("Are you want to sure complete this project?");
-    if (r == true) {
-        $("#rating-project").modal("show");
-    }*/
-   // $("#review-project-id").value = projectid;
+   
    $("#reviewerror").text('');
     document.getElementById('review-project-id').value = projectid;
     $.ajax({
             type: 'GET',
-              url: '<?php echo route('projectAssociate'); ?>',
+              url: '<?php //echo route('projectAssociate'); ?>',
               data: {projectid:projectid},
               dataType: 'json',
           })
@@ -572,10 +569,10 @@ $('body').on('click','#complete-menu', function (event) {
             $('#associate-profile').attr('src',msg.associateimage );
           });
 
-});
+});*/
 // fill rating star on mouse hover 
 
-$("#star-rating").click(function() {
+/*$("#star-rating").click(function() {
     var rating = $('#star-rating').starRating('getRating');
     var rating = rating.toFixed(1);
     $('#ratingNumber').html(rating);
@@ -597,7 +594,7 @@ $('#submit-review').click(function(){
         }
         $.ajax({
             type: 'GET',
-              url: '<?php echo route('projectComplete'); ?>',
+              url: '<?php //echo route('projectComplete'); ?>',
               data: {projectid:projectid},
               dataType: 'json',
           })
@@ -606,7 +603,7 @@ $('#submit-review').click(function(){
           });
         $.ajax({
             type: 'GET',
-            url: '<?php echo route('managerReviewStore'); ?>',
+            url: '<?php //echo route('managerReviewStore'); ?>',
             data: {projectid:projectid,rating:rating,comment:comment},
             dataType: 'json',
         })
@@ -618,7 +615,7 @@ $('#submit-review').click(function(){
                 location.reload();
             }
     });
-});
+});*/
 </script>
 <script type="text/javascript">
 $(function() {

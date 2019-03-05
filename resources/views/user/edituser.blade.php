@@ -78,11 +78,12 @@
         <div class="container">
             <div class="intro-text">
               <div class="row">
-              @if($userreview != 0)
+             <!--  @if($userreview != 0)
                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
               @else
                   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-9">
-              @endif
+              @endif -->
+              <div class="col-xs-12 col-sm-12 col-md-12 col-lg-9">
               <div class="manager-profile">
                 <div class="profile-picture">
                   <img src="{{asset('img/users/'.$profileimage)}}" style="height: 100%;width: 100%;" />
@@ -91,7 +92,7 @@
                 <h4 class="manager-name">{{$username}}</h4> 
               </center>  
               <div class="row">
-                <div class="col-md-3" style="float: center;">                            
+                <div class="col-md-4" style="float: center;">                            
                   <div class="manager-data">
                      <center>
                         <div class="number-data">
@@ -103,7 +104,7 @@
                       </center>   
                     </div>    
                   </div> 
-                  <div class="col-md-3">                            
+                  <div class="col-md-4">                            
                     <div class="manager-data">
                       <center>
                         <div class="number-data">
@@ -115,7 +116,7 @@
                       </center>   
                     </div>    
                   </div> 
-                  <div class="col-md-3">                            
+                  <div class="col-md-4">                            
                     <div class="manager-data">
                       <center>
                         <div class="number-data">
@@ -128,7 +129,7 @@
                       </center> 
                     </div>    
                   </div> 
-                  <div class="col-md-3">                            
+                  <!-- <div class="col-md-3">                            
                     <div class="manager-data">
                       <center>
                         <div class="number-data">
@@ -140,7 +141,7 @@
                         </div> 
                       </center>  
                     </div>    
-                  </div>    
+                  </div>   -->  
                 </div>
 
                 <div class="edit-btn">
@@ -155,8 +156,8 @@
               @include('user.changeprofile')
 
             </div>
-            @if($userreview != 0)
-              <div class="col-xs-12 col-sm-12 col-md-12 col-lg-3">
+           <!--  @if($userreview != 0) -->
+             <!--  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-3">
                 <div class="manger-review">
                   <div class="notification-list">
                         
@@ -177,8 +178,8 @@
                          
                     </div>
                   </div>
-                </div>
-              @endif
+                </div> -->
+              <!-- @endif -->
             </div>    
           </div>
         </div>

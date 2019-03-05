@@ -211,7 +211,11 @@ class UserController extends Controller
         $associate = User::where('user_types_id','=','2')
                     ->where('users_approval_status','=',1)->count();
         $schedular = User::where('user_types_id','=','1')->count();
-        $project = Project::orderBy('project_id','desc')->get();
+        $project   = DB::table('projects')
+                        ->select('projects.*')
+                        ->leftJoin('project_status', 'project_status.project_id', '=', 'projects.project_id')
+                        ->orderBy('project_status.created_at','desc')
+                        ->get();
         $associatetype = AssociateType::all();
         $projectbidcount = ProjectBid::where('bid_status','=',1)
                                        ->count();
@@ -235,7 +239,7 @@ class UserController extends Controller
                     //newly created projects
                     $schedulingProject[] = ['project_name' => $value->project_name, 
                             'project_id'           => $value->project_id,
-                            'project_site_address' =>  $value['project_site_address'],
+                            'project_site_address' => $value->project_site_address,
                             'budget'               => number_format($value->budget, 2),
                             'managername'          => $managername,
                             'created_at'           => $value->created_at,
@@ -258,13 +262,12 @@ class UserController extends Controller
                     //newly created projects
                     $nonallocatedproject[] = ['project_name' => $value->project_name, 
                             'project_id'           => $value->project_id,
-                            'project_site_address' =>  $value['project_site_address'],
+                            'project_site_address' => $value->project_site_address,
                             'approx_bid'           => number_format($value->approx_bid, 2),
                             'managername'          => $managername,
                             'created_at'           => $value->created_at,
                             'bidcount'             => $bidcount
                             ];
-                
                 }
             }
            
@@ -339,7 +342,6 @@ class UserController extends Controller
         }
         session()->flash('message', 'Approval status has been updated successfully');
         return redirect()->action('UserController@dashboard');
-
     }
     public function blockUnblockUser($id,$status)
     {

@@ -74,13 +74,13 @@
           </div>
         @endif
         <div class="panel-heading">
-          <h3 class="panel-title">Unverified Users And Pending Bids</h3>
+          <h3 class="panel-title">Pre-Scheduling, Unverified Users And Pending Bids</h3>
         </div>
         <div class="content-row">
           <div class="row">
             <div class="panel panel-title">
               <ul id="myTab1" class="nav nav-tabs nav-justified">
-               <li class="active"><a href="#schedulingProjects" data-toggle="tab">Awaiting Scheduling <span class="badge" style="background-color:#DB5A6B;">{{ $schedulingProjectCount }}</span>
+               <li class="active"><a href="#schedulingProjects" data-toggle="tab">Pre-Scheduling <span class="badge" style="background-color:#DB5A6B;">{{ $schedulingProjectCount }}</span>
                 </a></li>
                 <li><a href="#projectbids" data-toggle="tab"> Pending Bids <span class="badge" style="background-color:#DB5A6B;">{{ $bidsrequestcount }}</span>
                 </a></li>
@@ -153,7 +153,7 @@
                                     <div class="btn-group">
                                       <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown"><center><span class="glyphicon glyphicon-cog"></span></center></button>
                                       <ul class="dropdown-menu" role="menu" style="left: 0% !important;
-                                        right: 100% !important;text-align: center !important;transform: translate(-75%, 0) !important;">
+                                        right: 100% !important;text-align: left !important;transform: translate(-75%, 0) !important;">
                                         <?php $userid = $user->users_id ?>
 
                                         <li><a href="#" id="approve" data-toggle="modal" data-target="#myModal" data-id="{{ $user['users_id'] }}" class="modalLink">Approve</a>
@@ -260,56 +260,96 @@
                           </div>
                         </div>
                         <div class="tab-pane fade active in" id="schedulingProjects">
-                      
+                      <div class="row">
+                          <div class="col-md-6">
+
+                           <!--  <div class="form-search search-only" style="width: 70%;margin-left: 5px;">
+
+                                  <i class="search-icon glyphicon glyphicon-search"></i>
+                                  <input type="text" class="form-control search-query" placeholder="Search here" id="searchUser">
+                              </div> -->
+                              <input type="hidden" name="pagenumber" id="pagenumber">
+                              <input type="hidden" name="usercount" value="" id="usercount">
+                          </div>
+                          <div class="col-md-6">
+
+                              <div class="form-group" style="float: right;">
+                                  <button class="btn btn-normal" type="button" id="archive-btn" disabled>
+                                  <!-- <i class="glyphicon glyphicon-remove-circle"></i> -->
+                                  &nbsp;Archive</button>      
+                                  <!-- <button class="btn btn-info" type="button" id="unblock-btn"><i class="glyphicon glyphicon-ok-circle"></i>&nbsp;Unblock</button> -->
+                                  <input type="hidden" name="projectids" id="projectids">
+                                  &nbsp     
+                              </div>
+                          </div>
+                      </div>
                         <div class="table-responsive">
                         <input type="hidden" name="project-count" id="scheduling-count" value="{{ count($schedulingProject) }}">
                           @if(isset($schedulingProject))
                             <table class="table table-bordered table-hover table-striped" > 
                               <thead>
                                <tr bgcolor="#EEEEEE">
-                                    <th style="text-align: center;vertical-align: middle;">Project ID</th>
-                                    <th style="text-align: center;vertical-align: middle;">Project Name</th>
+                                  <th class="table-td-th" width="50">
+                                      <!-- <input type="checkbox" id="allChecks"> -->
+                                  </th>
+                                    <th class="table-td-th"">Project ID</th>
+                                    <th class="table-td-th">Project Name</th>
                                    
-                                    <th style="text-align: center;vertical-align: middle;">Site Address</th>
-                                    <th style="text-align: center;vertical-align: middle;" width="10%">Budget</th>
-                                    <th style="text-align: center;vertical-align: middle;">Project Manager</th>
-                                    <th style="text-align: center;vertical-align: middle;">Action</th>
-                                    </tr>
-                  
+                                    <th class="table-td-th">Site Address</th>
+                                    <th class="table-td-th" width="10%">Budget</th>
+                                    <th class="table-td-th">Project Manager</th>
+                                    <th class="table-td-th">Action</th>
+                                </tr>
                               </thead>
                               <tbody id="scheduling-data">
                                  @foreach ($schedulingProject as $project)
                                     <tr class="content">
-                                        <td style="text-align: center;vertical-align: middle;">
+                                       <td class="table-td-th">
+                                          <input type="checkbox" name="checkProject" id="checkProject" value="{{ $project['project_id'] }}"></td>
+                                        <td class="table-td-th">
                                             {{ $project['project_id'] }}
                                         </td>
-                                        <td style="text-align: left;vertical-align: middle;">
+                                        <td class="table-td-th" style="text-align: left;">
                                             {{ $project['project_name'] }}
                                         </td>
                                         
-                                        <td style="text-align: left;vertical-align: middle;">
+                                        <td class="table-td-th" style="text-align: left;">
                                             {{ $project['project_site_address'] }}
                 
                                         </td>
-                    
-                   
-                                        <td style="text-align: left;vertical-align: middle;">
+                                        <td class="table-td-th" style="text-align: left;">
                                             <span class="glyphicon glyphicon-usd"></span>
                                             {{ $project['budget'] }}
                                         </td>
-                                        @if(session('loginusertype') == 'admin')
-                                        <td style="text-align: left;vertical-align: middle;">
+                                        
+                                        <td class="table-td-th" style="text-align: left;">
                                             {{ $project['managername'] }}
                                         </td>
-                                        @endif
-                                        <td style="text-align: center;vertical-align: middle;">
+                                        <!-- <td class="table-td-th">
                                           <div class="btn-group">
                                             <a href="{{url('/schedulingProject/'.$project['project_id'])}}">
                                                 <button type="button" class="btn btn-success">
                                                 <center>View</center></button></a>
                                           </div>
-                                        </td>
-                                    </tr>
+                                        </td> -->
+
+                                    <td class="table-td-th">
+                                      <div class="btn-group">
+                                      <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown"><center><span class="glyphicon glyphicon-cog"></span></center></button>
+                                      <ul class="dropdown-menu" role="menu" style="left: 0% !important;
+                                        right: 100% !important;text-align: left !important;transform: translate(-75%, 0) !important;">
+                                        <?php $projectid = $project['project_id'] ?>
+
+                                        <li>
+                                          <a href="{{url('/schedulingProject/'.$project['project_id'])}}">
+                                         View</a>
+                                        </li>
+                                        <li><a href="{{url('/archiveProjects/archive/'.$project['project_id'])}}">Archive</a>
+                                        </li>
+                                      </ul>
+                                    </div>
+                                  </td>
+                                </tr>
                                 @endforeach
                              </tbody>
                             </table>
@@ -576,7 +616,7 @@ $(function () {
 $(function () {
     // Number of items and limits the number of items per page
     var projectcount = document.getElementById("scheduling-count").value;
-    var limitPerPage = 7;
+    var limitPerPage = 6;
     var totalPages = (Math.ceil(projectcount / limitPerPage));
     var paginationSize = 7; 
     var currentPage;
@@ -629,6 +669,53 @@ $(function () {
         return showPage(currentPage-1);
     });
 }); 
+  </script>
+  <script type="text/javascript">
+    $('body').on('click','#checkProject', function (event) {
+        var checks = $('input[name="checkProject"]:checked').map(function(){
+            return $(this).val();
+        }).get();
+        if(checks == '')
+        {
+            document.getElementById("archive-btn").disabled = true;
+            var element = document.getElementById("archive-btn");
+            element.classList.remove("btn-danger");
+            document.getElementById("archive-btn").classList.add('btn-normal');
+        }
+        else
+        {
+          document.getElementById("archive-btn").disabled = false;
+          var element = document.getElementById("archive-btn");
+          element.classList.remove("btn-normal");
+          document.getElementById("archive-btn").classList.add('btn-danger');
+        }
+      });
+    $('body').on('click','#archive-btn', function (event) {
+       var checks = $('input[name="checkProject"]:checked').map(function(){
+            return $(this).val();
+        }).get();
+        if(checks != '')
+        {
+              $(".loader").fadeIn("slow");
+              document.getElementById("projectids").value = checks;
+              var projectid = document.getElementById('projectids').value;
+              $.ajax({
+                  type: 'GET',
+                  url: '<?php echo route('batchArchive'); ?>',
+                  data: {projectid:projectid},
+                   dataType: 'json',
+              })
+              .done(function(msg) {
+                  $(".loader").fadeOut("slow");
+              if(msg.status == '1')
+              {
+                  alert(msg.message);
+                  url = '<?php echo route('archiveProjects'); ?>';
+                  window.location.replace(url);
+              }      
+          });
+        }
+    });
   </script>
 
   @endsection

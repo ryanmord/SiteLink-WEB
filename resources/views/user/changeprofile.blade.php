@@ -80,19 +80,19 @@
             <div class="col-md-9">
               <div class="form-group">
                 <label>First Name</label>
-                <input type="text" name="first_name" id="first_name" value="{{ $user->users_name}}">
+                <input type="text" name="first_name" id="first_name" value="{{ $user->users_name}}" autocomplete="off">
                 <div class="error">{{ $errors->first('first_name') }}</div>
               </div>
               <div class="form-group">
                 <label>Last Name</label>
-                <input type="text" name="lastname" id="lastname" value="{{ $user->last_name}}">
+                <input type="text" name="lastname" id="lastname" value="{{ $user->last_name}}" autocomplete="off">
                 <div class="error">{{ $errors->first('lastname') }}</div>
               </div> 
               </div>
               <div class="col-md-12">
               <div class="form-group">
                 <label>Company Name</label>
-                <input type="text" name="customers_company" id="customers_company" value="{{ $user->users_company}}">
+                <input type="text" name="customers_company" id="customers_company" value="{{ $user->users_company}}" autocomplete="off">
                 <div class="error">{{ $errors->first('customers_company') }}</div>
               </div>    
             </div> 
@@ -107,7 +107,7 @@
             <div class="col-md-6">
               <div class="form-group">
                 <label>Phone Number</label>
-                <input type="text" name="customers_phone" id="customers_phone" value="{{ $user->users_phone}}" maxlength="17">
+                <input type="text" name="customers_phone" id="customers_phone" value="{{ $user->users_phone}}" maxlength="17" autocomplete="off">
                 <div class="error">{{ $errors->first('customers_phone') }}</div>
               </div> 
             </div>

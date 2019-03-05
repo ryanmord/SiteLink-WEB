@@ -57,8 +57,9 @@ Route::group(['middleware' => 'disablepreventback'],function()
 	Route::get('/projectStatus/{id}', 'ProjectController@projectstatus')->middleware(guest::class);
 	Route::get('/allProejcts/projectOnHold/{id}', 'ProjectController@projectOnHold')->middleware(guest::class);
 	Route::get('/allProejcts/projectInProgress/{id}', 'ProjectController@projectInProgress')->middleware(guest::class);
-	Route::get('/allProejcts/projectComplete', 'ProjectController@projectComplete')->
-	name('projectComplete')->middleware(guest::class);
+	/*Route::get('/allProejcts/projectComplete', 'ProjectController@projectComplete')->
+	name('projectComplete')->middleware(guest::class);*/
+	Route::get('/allProejcts/projectComplete/{id}', 'ProjectController@projectComplete')->middleware(guest::class);
 	Route::get('/allProejcts/projectCancel/{id}', 'ProjectController@projectCancel')->middleware(guest::class);
 	Route::get('/editUser', 'UserController@edituser')->name('editUser')->middleware(guest::class);
 	Route::post('/updateUser', 'UserController@update')->name('updateUser')->middleware(guest::class);
@@ -83,6 +84,11 @@ Route::group(['middleware' => 'disablepreventback'],function()
 	Route::get('/getLiveUserList','ProjectController@getLiveUserList')->name('getLiveUserList')->middleware(guest::class);
 	Route::get('/changeCheckStatus','ProjectController@changeCheckStatus')->name('changeCheckStatus')->middleware(guest::class);
 	Route::get('/sendProjectNotification','ProjectController@sendProjectNotification')->name('sendProjectNotification')->middleware(guest::class);
+	Route::get('/archiveProjects','ProjectController@archiveProjects')->name('archiveProjects')->middleware(guest::class);
+	Route::get('/archiveProjects/archive/{id}','ProjectController@archive')->name('archive')->middleware(guest::class);
+	Route::get('/archiveProjects/batchArchive/','ProjectController@batchArchive')->name('batchArchive')->middleware(guest::class);
+	Route::get('/dashboard/scheduled/{id}','ProjectController@scheduled')->name('scheduled')->middleware(guest::class);
+	Route::get('/dashboard/batchScheduled/','ProjectController@batchScheduled')->name('batchScheduled')->middleware(guest::class);
 });
 Route::get('/forgotPassword/{userid}','LoginController@forgotpassword')->name('forgotPassword');
 Route::post('/changepassword','LoginController@changepassword');
@@ -138,7 +144,9 @@ Route::get('/home/searchBidHistory','FrontController\MybidController@searchBidHi
 Route::get('/home/searchActiveBids','FrontController\MybidController@searchActiveBids')->name('searchActiveBids')->middleware(IsAssociate::class);
 Route::get('/home/activeBidPagination','FrontController\MybidController@activeBidPagination')->name('activeBidPagination')->middleware(IsAssociate::class);
 Route::get('/home/associateReviewStore','UserReviewController@associateReviewStore')->name('associateReviewStore')->middleware(IsAssociate::class);
+
 });
+
 //Reoptimized class loader: 
 Route::get('/optimize', function() {
    $exitCode = Artisan::call('optimize');

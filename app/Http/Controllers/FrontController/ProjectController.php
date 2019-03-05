@@ -265,7 +265,6 @@ class ProjectController extends Controller
         $request['limit'] = 10;
         $availableProject = $apiobj->availableProject($request,$search_keyword);
         $availableProject = json_decode($availableProject, true);
-       
         $appendLi = "";
         if($availableProject['status'] == 1) {
 
@@ -604,6 +603,13 @@ class ProjectController extends Controller
                         'approxbid'       => $approxbid,
                         'mybid'           => $mybid,
                         'onsitedate'      => $onsitedate,
+                        'propertyType'    => $projectdetail['propertyType'],
+                        'noOfUnits'       => $projectdetail['noOfUnits'],
+                        'noOfStories'     => $projectdetail['noOfStories'],
+                        'sqFootage'       => $projectdetail['sqFootage'],
+                        'noBuildings'     => $projectdetail['noBuildings'],
+                        'landArea'        => $projectdetail['landArea'],
+                        'yearBuilt'       => $projectdetail['yearBuilt'],
                         'project_id'      => $projectdetail['projectid'],
                         'rating'          => $rating,
                         'comment'         => $comment,

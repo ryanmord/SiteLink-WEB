@@ -179,6 +179,7 @@
                         </div>
                         <?php 
                           $squareFootage = number_format($project->squareFootage, 2);
+                          $squareFootage = str_replace(',', '', $squareFootage);
                         ?>
                         <div class="form-group col-md-3">
                           <input type="text" name="footage_txt" id="footage_txt" placeholder="  Sq. Footage" value="{{ $squareFootage }}" required="" style="padding-left: 12px;">

@@ -121,7 +121,7 @@ class ProjectController extends Controller
             {
                 $subject = $value->project_progress_status_subject;
                 $status = $value->project_progress_status;
-                $date=$value->created_at;
+                $date =$value->created_at;
                 $datetime2 = new DateTime($date);
                 $createddate = $datetime2->format("jS F Y, h:i:s");
                 $progressstatus[] = ['subject' => $subject, 'status' =>  $status, 'createddate' => (string)$createddate];
@@ -386,12 +386,13 @@ class ProjectController extends Controller
         $result =  DB::select(DB::raw("SELECT users_id , ( 3956 *2 * ASIN( SQRT( POWER( SIN( ( $latitude - latitude ) * PI( ) /180 /2 ) , 2 ) + COS( $latitude * PI( ) /180 ) * COS( latitude * PI( ) /180 ) * POWER( SIN( ( $longitude - longitude ) * PI( ) /180 /2 ) , 2 ) ) ) ) AS distance
                 FROM users
                 WHERE  user_types_id <>1
+                AND users_approval_status <> 0
                 AND associate_type_id IN ($associatetypeid)
                 HAVING distance <= $miles"));
         //print_r($result);
        /* return response()->json(['success'=> $associatetypeid]);
         exit;*/
-        if(!empty($result))
+        if(!empty($result) && isset($result))
         {
             $notificationtext = 'New project listed in your area!';
             $notificationtype = '1'; //1 for create project
@@ -404,36 +405,36 @@ class ProjectController extends Controller
             {
                 $touserid = $value->users_id;
                 $scope_Id = UserScopePerformed::where('users_id','=',$touserid)->first();
-                $userScopeId = (string)$scope_Id->scope_performed_id;
-                $userScopeId = explode(",",$userScopeId);
-                $scopeflag = 1;
-                //check user scope performed is matches or not
-                foreach ($scope as $scopeid) {
-                    if(in_array($scopeid, $userScopeId))
-                    {
-                        $scopeflag = 1;
-                    }
-                    else
-                    {
-                        $scopeflag = 0;
-                        break;
-                    } 
-                }
-                if($scopeflag == 1)
+                if(isset($scope_Id) && !empty($scope_Id))
                 {
-                    $this->sendUserNotification($touserid,$fromuserid,$projectid,$body,$title,$notificationtext,$notificationtype);
-                    $bidrequest = new ProjectBidRequest();
-                    $bidrequest->project_id = $projectid;
-                    $bidrequest->to_user_id = $touserid;
-                    $bidrequest->from_user_id = $fromuserid;
-                    $bidrequest->request_send_status = 1;
-                    $bidrequest->created_at = date('Y-m-d H:i:s');
-                    $bidrequest->save();
-
+                    $userScopeId = (string)$scope_Id->scope_performed_id;
+                    $userScopeId = explode(",",$userScopeId);
+                    $scopeflag = 1;
+                    //check user scope performed is matches or not
+                    foreach ($scope as $scopeid) {
+                        if(in_array($scopeid, $userScopeId))
+                        {
+                            $scopeflag = 1;
+                        }
+                        else
+                        {
+                            $scopeflag = 0;
+                            break;
+                        } 
+                    }
+                    if($scopeflag == 1)
+                    {
+                        $this->sendUserNotification($touserid,$fromuserid,$projectid,$body,$title,$notificationtext,$notificationtype);
+                        $bidrequest = new ProjectBidRequest();
+                        $bidrequest->project_id = $projectid;
+                        $bidrequest->to_user_id = $touserid;
+                        $bidrequest->from_user_id = $fromuserid;
+                        $bidrequest->request_send_status = 1;
+                        $bidrequest->created_at = date('Y-m-d H:i:s');
+                        $bidrequest->save();
+                    }
                 }
-
             }
-
         }
         //send notification to selected users
         $associateid = $request['associate-ids'];
@@ -725,13 +726,14 @@ class ProjectController extends Controller
             $result =  DB::select(DB::raw("SELECT users_id , ( 3956 *2 * ASIN( SQRT( POWER( SIN( ( $latitude - latitude ) * PI( ) /180 /2 ) , 2 ) + COS( $latitude * PI( ) /180 ) * COS( latitude * PI( ) /180 ) * POWER( SIN( ( $longitude - longitude ) * PI( ) /180 /2 ) , 2 ) ) ) ) AS distance
                 FROM users
                 WHERE  user_types_id <>1
+                AND users_approval_status <> 0 
                 AND associate_type_id IN ($associatetypeid)
                 HAVING distance <= $miles"));
             
             $bidrequeststatus = ProjectBidRequest::where('project_id', '=', $projectid)
                                                   ->update(['bid_request_status' => 1]);
             $scope = explode(",",$scope);
-            if(!empty($result))
+            if(!empty($result) && isset($result))
             {
                 foreach($result as $value) 
                 {
@@ -1741,22 +1743,29 @@ class ProjectController extends Controller
         }
         $associateType = AssociateType::all();
         return view('project.projectdetail',[
-                    'scope'      => $scope, 
-                    'project'    => $project,
-                    'minvalue'   => $minvalue,
-                    'maxvalue'   => $maxvalue,
-                    'reportdate' => $reportdate,
-                    'onsitedate' => $onsitedate,
-                    'finalbid'   => $finalbid,
-                    'user'       => $user,
-                    'statuscount'=> $statuscount,
-                    'holdstatus' => $holdstatus,
-                    'associateType' => $associateType,
+                    'scope'          => $scope, 
+                    'project'        => $project,
+                    'minvalue'       => $minvalue,
+                    'maxvalue'       => $maxvalue,
+                    'reportdate'     => $reportdate,
+                    'onsitedate'     => $onsitedate,
+                    'finalbid'       => $finalbid,
+                    'propertyType'   => $project->property_type,
+                    'noOfUnits'      => (string)$project->no_of_units,
+                    'noOfStories'    => (string)$project->no_of_stories,
+                    'sqFootage'      => (string)$project->squareFootage,
+                    'noBuildings'    => (string)$project->no_of_buildings,
+                    'landArea'       => (string)$project->land_area,
+                    'yearBuilt'      => (string)$project->year_built,
+                    'user'           => $user,
+                    'statuscount'    => $statuscount,
+                    'holdstatus'     => $holdstatus,
+                    'associateType'  => $associateType,
 
                 ]);
     } 
     //project complete by manager
-    public function projectComplete(Request $request)
+    /*public function projectComplete(Request $request)
     {
         $projectid = $request['projectid'];
         $model = new ProjectStatus;
@@ -1779,7 +1788,29 @@ class ProjectController extends Controller
                       'message' => 'Review submitted successfully'
                     );
         return response()->json($temp);
+    }*/
+    public function projectComplete($id)
+    {
+        $projectid = $id;
+        $model = new ProjectStatus;
+        $model->project_id = $projectid;
+        $model->project_status_type_id  = 4;
+        $model->created_at = date('Y-m-d H:i:s');
+        $model->save();
+        $associate= ProjectBid::where('project_id','=',$projectid)
+                              ->where('project_bid_status','=',1)->first();
+        $userid = session('loginuserid');
+        $touserid = $associate->user_id;
+        $project = Project::where('project_id','=',$projectid)->first();
+        $body = $project->project_name;
+        $msg = 'Project completed by manager!';
+        $notificationid = '7';
+        $title = $msg;
+        $this->sendUserNotification($touserid,$userid,$projectid,$body,$title,$msg,$notificationid);
+        session()->flash('message', 'Project Completed Successfully!');
+        return redirect()->route('projectList');
     }
+
     //project cancel by manager
     public function projectCancel($id)
     {
@@ -2040,13 +2071,14 @@ class ProjectController extends Controller
             $result =  DB::select(DB::raw("SELECT users_id , ( 3956 *2 * ASIN( SQRT( POWER( SIN( ( $latitude - latitude ) * PI( ) /180 /2 ) , 2 ) + COS( $latitude * PI( ) /180 ) * COS( latitude * PI( ) /180 ) * POWER( SIN( ( $longitude - longitude ) * PI( ) /180 /2 ) , 2 ) ) ) ) AS distance
                 FROM users
                 WHERE  user_types_id <>1
+                AND users_approval_status <> 0
                 AND associate_type_id IN ($associateTypeId)
                 HAVING distance <= $miles"));
             $appendtd ='';
             $count = '0';
             /* print_r($result);
             exit;*/
-            if(isset($result))
+            if(isset($result) && !empty($result))
             {
                 
                 foreach($result as $value) 
@@ -2275,5 +2307,91 @@ class ProjectController extends Controller
         $date = date('Y-m-d H:i:s');
         $model->created_at = $date;
         $model->save();*/
+    }
+    public function archiveProjects()
+    {
+        $projects       = ProjectStatus::where('project_status_type_id','=',8)
+                                        ->orderBy('created_at','desc')->get();
+        $projectCount   = $projects->count();
+        $archiveProject = '';
+        if(isset($projects) && !empty($projects))
+        {
+            foreach ($projects as $value) {
+                $project    = Project::where('project_id','=',$value->project_id)->first();
+                $created_at = (String)$project->created_at;
+                $datetime2  = new DateTime($created_at);
+                $created_at = $datetime2->format("Y/m/d");
+                $managerid  = $project->user_id;
+                $user = User::where('users_id','=',$managerid)->first();
+                $managername = $user->users_name.' '.$user->last_name;
+                $archiveProject[] = ['project_name'            => $project->project_name, 
+                                        'project_id'           => $project->project_id,
+                                        'project_site_address' => $project->project_site_address,
+                                        'budget'               => number_format($project->budget, 2),
+                                        'managername'          => $managername,
+                                        'created_at'           => $created_at,
+                                        ];
+            }
+        }
+        return view('project.archiveProjects',['archiveProject' => $archiveProject,
+                                               'projectCount'   => $projectCount]); 
+    }
+    public function archive($id)
+    {
+        $projectid = $id;
+        $projectstatus = ProjectStatus::where('project_id','=',$projectid)
+                                    ->where('project_status_type_id','=',7)
+                                    ->update(['project_status_type_id' => 8,
+                                            'created_at' => date('Y-m-d H:i:s')]);
+        $message = 'Project archived successfully!';
+        session()->flash('message',$message);
+        return redirect()->route('archiveProjects');
+    }
+    public function batchArchive(Request $request)
+    {
+        if(isset($request['projectid']) && !empty($request['projectid']))
+        {
+            $projectids = $request['projectid'];
+            $selectedProject = explode(",",$projectids);
+            $selectedProject = array_unique($selectedProject);
+            foreach ($selectedProject as $value) {
+                $projectid = $value;
+                $projectstatus = ProjectStatus::where('project_id','=',$projectid)
+                                                ->where('project_status_type_id','=',7)
+                                                ->update(['project_status_type_id' => 8,
+                                                        'created_at' => date('Y-m-d H:i:s')]);
+            }
+            $temp = array('status' => 1,'message' => 'Project batch archived successfully!');
+            return json_encode($temp);
+        }
+    }
+    public function scheduled($id)
+    {
+        $projectid = $id;
+        $projectstatus = ProjectStatus::where('project_id','=',$projectid)
+                                    ->where('project_status_type_id','=',8)
+                                    ->update(['project_status_type_id' => 7,
+                                            'created_at' => date('Y-m-d H:i:s')]);
+        $message = 'Project Pre-Scheduled successfully!';
+        session()->flash('message',$message);
+        return redirect()->route('dashboard');
+    }
+    public function batchScheduled(Request $request)
+    {
+        if(isset($request['projectid']) && !empty($request['projectid']))
+        {
+            $projectids = $request['projectid'];
+            $selectedProject = explode(",",$projectids);
+            $selectedProject = array_unique($selectedProject);
+            foreach ($selectedProject as $value) {
+                $projectid = $value;
+                $projectstatus = ProjectStatus::where('project_id','=',$projectid)
+                                                ->where('project_status_type_id','=',8)
+                                                ->update(['project_status_type_id' => 7,
+                                                          'created_at' => date('Y-m-d H:i:s')]);
+            }
+            $temp = array('status' => 1,'message' => 'Project batch Pre-Scheduled successfully!');
+            return json_encode($temp);
+        }
     }
 }

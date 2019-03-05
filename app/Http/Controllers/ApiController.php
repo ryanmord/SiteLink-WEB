@@ -67,7 +67,7 @@ class ApiController extends Controller
         $model = new User;
         $email = $request['email'];
         $user = User::where('users_email','=',$email)->first();
-        if(isset($user)) {
+        if(isset($user) && !empty($user)) {
             $errorMsg = array('status' => '0','message' => "User already registered");
             return json_encode($errorMsg);
             exit;
@@ -75,74 +75,81 @@ class ApiController extends Controller
         }
         else {
             if(isset($request['email']) && isset($request['name']) && isset($request['phone']) && isset($request['usertype']) && isset($request['company']) && isset($request['password'])) {
-                $file = $request->file('image');
-
-                if(isset($file)) {
-
+                if(!empty($request['email']) && !empty($request['name']) && !empty($request['phone']) && !empty($request['usertype']) && !empty($request['company']) && !empty($request['password'])) {
                     $file = $request->file('image');
 
-                    $destinationPath = public_path('img/users');
+                    if(isset($file)) {
 
-                    $image_name = time() . "-" . $file->getClientOriginalName();
+                        $file = $request->file('image');
 
-                    $path         = $file->move($destinationPath, $image_name);
-                    $imageName    =   trim($request->cropped_category_image);
-                    $tempfileName = $destinationPath.'/'.$image_name;
-                    // Optimise Image using tinypng library
-                    $this->tinypng_image_optimize($tempfileName,$image_name);
-                    $model->users_profile_image = $image_name;
+                        $destinationPath = public_path('img/users');
+
+                        $image_name = time() . "-" . $file->getClientOriginalName();
+
+                        $path         = $file->move($destinationPath, $image_name);
+                        $imageName    =   trim($request->cropped_category_image);
+                        $tempfileName = $destinationPath.'/'.$image_name;
+                        // Optimise Image using tinypng library
+                        $this->tinypng_image_optimize($tempfileName,$image_name);
+                        $model->users_profile_image = $image_name;
+                    }
+                    else{
+                        $path = "default.png";
+                        $model->users_profile_image = $path;
+                    }
+                    $password = $request['password'];
+                    $model->users_email = $request['email'];
+                    $model->user_types_id = (int)$request['usertype'];
+                    $model->users_name = $request['name'];
+                    if(isset($request['lastname']))
+                    {
+                        $model->last_name = $request['lastname'];
+                    }
+                    $model->users_company = $request['company'];
+                    $model->users_password = Hash::make($password);
+                    $model->users_phone = $request['phone'];
+                    if(isset($request['address'])){
+                        $model->users_address = $request['address'];
+                    }
+                    else{
+                        $model->users_address = "-";
+                    }
+                    if(isset($request['latitude']) && isset($request['longitude'])) {
+                        $model->latitude = $request['latitude'];
+                        $model->longitude = $request['longitude'];
+                    }
+                    $model->save();
+                    $user = User::where('users_email','=',$email)->first();
+                    /*$verifycode = str_random(8);
+                    $emailverify = new EmailVerification;
+                    $emailverify->user_id = $user->users_id;
+                    $emailverify->verification_code = $verifycode;
+                    $emailverify->status = 1;
+                    $emailverify->created_at = date('Y-m-d H:i:s');
+                    $emailverify->save();*/
+                    $userid = base64_encode($user->users_id);
+                    //$user_id_d = base64_decode($user_id);
+                    $url = url('/emailVerification/'.$userid);
+                    if(isset($request['scope']) && !empty($request['scope'])){
+                        $userid = $user->users_id;
+                        $scopeperformed = new UserScopePerformed;
+                        $scopeperformed->users_id = $userid;
+                        $scopeperformed->scope_performed_id = $request['scope'];
+                        $scopeperformed->last_updated = date('Y-m-d H:i:s');
+                        $scopeperformed->save();
+                    }
+                    $action = 1;
+                    Mail::to($email)->send(new UserRegistered($user,$url,$action));
+                    $successMsg = array('status' => '1','message' => "Please check your email for email verification..");
+                    return json_encode($successMsg);
+                    exit;
+                    
                 }
-                else{
-                    $path = "default.png";
-                    $model->users_profile_image = $path;
-                }
-                $password = $request['password'];
-                $model->users_email = $request['email'];
-                $model->user_types_id = (int)$request['usertype'];
-                $model->users_name = $request['name'];
-                if(isset($request['lastname']))
-                {
-                    $model->last_name = $request['lastname'];
-                }
-                $model->users_company = $request['company'];
-                $model->users_password = Hash::make($password);
-                $model->users_phone = $request['phone'];
-                if(isset($request['address'])){
-                    $model->users_address = $request['address'];
-                }
-                else{
-                    $model->users_address = "-";
-                }
-                if(isset($request['latitude']) && isset($request['longitude'])) {
-                    $model->latitude = $request['latitude'];
-                    $model->longitude = $request['longitude'];
-                }
-                $model->save();
-                $user = User::where('users_email','=',$email)->first();
-                /*$verifycode = str_random(8);
-                $emailverify = new EmailVerification;
-                $emailverify->user_id = $user->users_id;
-                $emailverify->verification_code = $verifycode;
-                $emailverify->status = 1;
-                $emailverify->created_at = date('Y-m-d H:i:s');
-                $emailverify->save();*/
-                $userid = base64_encode($user->users_id);
-                //$user_id_d = base64_decode($user_id);
-                $url = url('/emailVerification/'.$userid);
-                if(isset($request['scope'])){
-                    $userid = $user->users_id;
-                    $scopeperformed = new UserScopePerformed;
-                    $scopeperformed->users_id = $userid;
-                    $scopeperformed->scope_performed_id = $request['scope'];
-                    $scopeperformed->last_updated = date('Y-m-d H:i:s');
-                    $scopeperformed->save();
-                }
-                $action = 1;
-                Mail::to($email)->send(new UserRegistered($user,$url,$action));
-                $successMsg = array('status' => '1','message' => "Please check your email for email verification..");
-                return json_encode($successMsg);
+                else {
+                $errorMsg = array('status' => '0','message' => "Mandatory Parameter is empty");
+                return json_encode($errorMsg);
                 exit;
-                
+                }
             }
             else {
                 $errorMsg = array('status' => '0','message' => "Mandatory Parameter is Missing");
@@ -161,10 +168,10 @@ class ApiController extends Controller
         $password   = $request['password'];
         $deviceid   = $request['deviceid'];
         $devicetype = $request['devicetype'];
-        if(isset($request['email']) && isset($request['password']))
+        if(isset($request['email']) && isset($request['password']) && !empty($request['email']) && !empty($request['password']))
         {
             $user = User::where('users_email','=',$email)->first();
-            if(isset($user))
+            if(isset($user) && !empty($user))
             {
            
                 $emailstatus = $user->email_status;
@@ -223,7 +230,7 @@ class ApiController extends Controller
                             $userdevice = UserDevice::where('user_id','=',$userid)
                             ->where('user_device_unique_id','=',$deviceid)
                             ->where('user_device_type','=',$devicetype)->first();
-                            if(isset($userdevice))
+                            if(isset($userdevice) && !empty($userdevice))
                             {
                                 $userdeviceid = $userdevice->user_device_id;
 
@@ -502,7 +509,7 @@ class ApiController extends Controller
                
         }
             
-        if(isset($scopeperformed))
+        if(isset($scopeperformed) && !empty($scopeperformed))
         {
             echo json_encode(array('status' => '1','scopeperformed' => $scope));
             exit;
@@ -520,12 +527,12 @@ class ApiController extends Controller
    
     public function emailverification(Request $request) 
     {
-        if(isset($request['email']))
+        if(isset($request['email']) && !empty($request['email']))
         {
             $email = $request['email'];
             $verifycode = $request['verifycode'];
             $user = User::where('users_email','=',$email)->first();
-            if(isset($user))
+            if(isset($user) && !empty($user))
             {
                 $emailverification = EmailVerification::where('user_id','=',$user->users_id)->first();
                 $date1=date("Y-m-d H:i:s");
@@ -550,7 +557,7 @@ class ApiController extends Controller
                 if(isset($verification)) 
                 {
                     $flag = User::where('users_email', '=', $email)
-                    ->update(['email_status' => 1]);
+                                ->update(['email_status' => 1]);
                     echo json_encode(array('status' => '1','message' => "email verification successfully"));
                     exit;
                 }
@@ -780,11 +787,16 @@ class ApiController extends Controller
             }
             $file = $request->file('image');
             $image_name = time() . "-" . $file->getClientOriginalName();
-            $path = $file->move($destinationPath, $image_name);
+            /*$path = $file->move($destinationPath, $image_name);*/
             //$path = "img/users/" . $image_name;
+            $path = $file->move($destinationPath, $image_name);
+            $imageName    = trim($request->cropped_category_image);
+            $tempfileName = $destinationPath.'/'.$image_name;
+            // Optimise Image using tinypng library
+            $this->tinypng_image_optimize($tempfileName,$image_name);
             $profileimage = $image_name;
             $model = User::where('users_id', '=',$userid)
-                            ->update(['users_profile_image' => $profileimage]);
+                            ->update(['users_profile_image' => $image_name]);
         }
         if(isset($request['scopeperformed']))
         {
@@ -797,7 +809,6 @@ class ApiController extends Controller
         }
         return json_encode(array('status' => '1','message' => "Profile updated successfully"));
         exit;
-       
     }
     /*Name : Get user availability and notifaction setting value
     Url  :http://103.51.153.235/project_management/public/index.php/api/getSettings?userid=153&privatekey=1SQTsAHCnM5UWB87
@@ -969,6 +980,7 @@ class ApiController extends Controller
                                     ->where('project_status.project_status_type_id','=',4)->count();
             
             $overdueprojectcount = 0;
+            $noOfJobs = 0;
             $projectbid = ProjectBid::where('user_id','=',$userid)->
                                     where('project_bid_status','=',1)->get();
             if(count($projectbid) > 0)
@@ -995,16 +1007,18 @@ class ApiController extends Controller
                         {
                             $overdueprojectcount = $overdueprojectcount + 1;
                         }
-                                
+                        else
+                        {
+                            $noOfJobs = $noOfJobs + 1;
+                        }
                     }
-
                 }
             }
-                       
         }
+        $noOfJobs = $noOfJobs + $overdueprojectcount;
         $review = UserReview::where('to_user_id','=',$userid)->
                             where('user_review_status','=',1)->max('user_review_ratings');
-        if(!isset($review))
+        if(!isset($review) && !empty($review))
         {
             $review = '0.0';
         }
@@ -1020,11 +1034,16 @@ class ApiController extends Controller
         {
             $overdueprojectcount = '0'.(string)$overdueprojectcount;
         }
+        if($noOfJobs < 10)
+        {
+            $noOfJobs = '0'.(string)$noOfJobs;
+        }
         $jobscompleted = (string)$completedprojectcount;
         $totalbidcount = (string)$bidmadecount;
         $overdueproject = (string)$overdueprojectcount;
         $rating = (string)$review;
-        $myprofile = array($jobscompleted,$totalbidcount,$overdueproject,$rating);
+        $noOfJobs = (string)$noOfJobs;
+        $myprofile = array($jobscompleted,$totalbidcount,$overdueproject,$noOfJobs);
         $temp = array('status'                => '1',
                       'username'              => $username,
                       'associateType'         => strtoupper($associateType->associate_type),
@@ -1033,6 +1052,7 @@ class ApiController extends Controller
                       'completedprojectcount' => (string)$completedprojectcount,
                       'overdueprojectcount'   => (string)$overdueprojectcount,
                       'review'                => (string)$review,
+                      'noOfJobs'              => (string)$noOfJobs,
                       'myprofile'             => $myprofile);
         
         return json_encode($temp);
@@ -1630,20 +1650,20 @@ class ApiController extends Controller
                     }
                     else
                     {
-                        return json_encode(array('status' => '1', 'message' => "There are no job available"));
+                        return json_encode(array('status' => '0', 'message' => "There are no jobs available"));
                         exit;
                     }
                 }
                 else 
                 {
-                    return json_encode(array('status' => '0', 'message' => "There are no job available"));
+                    return json_encode(array('status' => '0', 'message' => "There are no job savailable"));
                     exit;
                 }
                 
             }
             else
             {
-                return json_encode(array('status' => '0', 'message' => "There are no job available"));
+                return json_encode(array('status' => '0', 'message' => "There are no jobs available"));
                 exit;
             }
             }
@@ -1760,8 +1780,15 @@ class ApiController extends Controller
                                 'reportduedate'  => $reportduedate,
                                 'template'       => $project->report_template,
                                 'instructions'   => $project->instructions,
-                                'suggestedbid'   =>(String)$approxbid,
+                                'suggestedbid'   => (String)$approxbid,
                                 'finalbid'       => (string)$finalbid,
+                                'propertyType'   => $project->property_type,
+                                'noOfUnits'      => (string)$project->no_of_units,
+                                'noOfStories'    => (string)$project->no_of_stories,
+                                'sqFootage'      => (string)$project->squareFootage,
+                                'noBuildings'    => (string)$project->no_of_buildings,
+                                'landArea'       => (string)$project->land_area,
+                                'yearBuilt'      => (string)$project->year_built,
                                 'scopeperformed' => $data,
                                 'rating'         => $rating,
                                 'comment'        => $comment,
@@ -1786,24 +1813,22 @@ class ApiController extends Controller
                         }
                         else
                         {
-                            return json_encode(array('status' => '1', 'message' => "There are no job available"));
+                            return json_encode(array('status' => '0', 'message' => "There are no jobs available"));
                             exit;
                         }
                     }
                     else {
-                        return json_encode(array('status' => '0', 'message' => "There are no job available"));
+                        return json_encode(array('status' => '0', 'message' => "There are no jobs available"));
                         exit;
                     }
                 
                 }
                 else 
                 {
-                    return json_encode(array('status' => '0', 'message' => "There are no job available"));
+                    return json_encode(array('status' => '0', 'message' => "There are no jobs available"));
                     exit;
                 }
             }
-            
-        
     }
    
     /*Name : In progess projects
@@ -2015,7 +2040,14 @@ class ApiController extends Controller
                                     'reportduedate' => $reportduedate,
                                     'template'      => $inprogressproject->report_template,
                                     'instructions'  => $inprogressproject->instructions,
-                                    'suggestedbid'  =>(String)$approxbid,
+                                    'propertyType'  => $inprogressproject->property_type,
+                                    'noOfUnits'     => (string)$inprogressproject->no_of_units,
+                                    'noOfStories'   => (string)$inprogressproject->no_of_stories,
+                                    'sqFootage'     => (string)$inprogressproject->squareFootage,
+                                    'noBuildings'   => (string)$inprogressproject->no_of_buildings,
+                                    'landArea'      => (string)$inprogressproject->land_area,
+                                    'yearBuilt'     => (string)$inprogressproject->year_built,
+                                    'suggestedbid'  => (String)$approxbid,
                                     'associatebid'  => (string)$associatebid,
                                     'scopeperformed'=> $data,
                                     'onholdflag'    => $flag,
@@ -2216,6 +2248,7 @@ class ApiController extends Controller
                                     ->where('projects.user_id','=',$schedulerid)
                                     ->where('project_status.project_status_type_id','=',4)->count();
             $overdueprojectcount = 0;
+            $noOfJobs = 0;
             $project = Project::where('user_id','=',$schedulerid)->get();
             foreach ($project as $value) 
             {
@@ -2238,11 +2271,16 @@ class ApiController extends Controller
                     {
                         $overdueprojectcount = $overdueprojectcount + 1;
                     }
+                    else
+                    {
+                        $noOfJobs = $noOfJobs + 1;
+                    }
                                 
                 }
 
             }
         }
+        $noOfJobs = $noOfJobs + $overdueprojectcount;
         $review = UserReview::where('to_user_id','=',$schedulerid)->
                     where('user_review_status','=',1)->max('user_review_ratings');
         if(!isset($review))
@@ -2262,11 +2300,16 @@ class ApiController extends Controller
         {
             $overdueprojectcount = '0'.(string)$overdueprojectcount;
         }
+        if($noOfJobs < 10)
+        {
+            $noOfJobs = '0'.(string)$noOfJobs;
+        }
         $jobscompleted = (string)$completedprojectcount;
         $totalbidcount = (string)$bidmadecount;
         $overdueproject = (string)$overdueprojectcount;
         $rating = (string)$review;
-        $myprofile = array($jobscompleted,$totalbidcount,$overdueproject,$rating);
+        $noOfJobs = (string)$noOfJobs; 
+        $myprofile = array($jobscompleted,$totalbidcount,$overdueproject,$noOfJobs);
         $temp = array('status'                 => '1',
                                 'userid'                => (string)$schedulerid,
                                 'username'              => $username,
@@ -2278,6 +2321,7 @@ class ApiController extends Controller
                                 'bidmadecount'          => (string)$bidmadecount,
                                 'completedprojectcount' => (string)$completedprojectcount,
                                 'overdueprojectcount'   => (string)$overdueprojectcount,
+                                //'noOfJobs'              => $noOfJobs,
                                 'review'                => (string)$review,
                                 'myprofile'             => $myprofile);
         
@@ -2772,6 +2816,22 @@ class ApiController extends Controller
                 }
             }
             $model = new Project;
+            if(!empty($request['qaqcDate']) && isset($request['qaqcDate']))
+            {
+                $qaqcDate   = $request['qaqcDate'];
+                $tadayDate  = date('Y-m-d');
+                $qaqcDate   = new DateTime($qaqcDate);
+                $qaqcDate   = $qaqcDate->format("Y-m-d");
+                if($tadayDate > $qaqcDate)
+                {
+                    return json_encode(array('status' => '0', 'message' => "QAQC date should be greater than today's date."));
+                    exit;
+                }
+                else
+                {
+                    $model->qaqc_date = new DateTime($request['qaqcDate']);
+                }
+            }
             $model->user_id = $managerId;
             $model->project_name = $request['name'];
             $model->project_site_address = $request['address'];
@@ -2779,62 +2839,61 @@ class ApiController extends Controller
             $model->latitude = $request['latitude'];
             $model->longitude = $request['longitude'];
             $model->created_by = 1;
-            if(!empty($request['specialInstructions']))
+            if(!empty($request['specialInstructions']) && isset($request['specialInstructions']))
             {
                 $model->instructions = $request['specialInstructions'];
             }
-            if(!empty($request['reportTemplate']))
+            if(!empty($request['reportTemplate']) && isset($request['reportTemplate']))
             {
                 $model->report_template = $request['reportTemplate'];
             }
-            if(!empty($request['scope']))
+            if(!empty($request['scope']) && isset($request['scope']))
             {
                 $model->scope_performed_id = $request['scope'];
             }
-            if(!empty($request['onSiteDate']))
+            if(!empty($request['onSiteDate']) && isset($request['onSiteDate']))
             {
                 $model->on_site_date = new DateTime($request['onSiteDate']);
             }
-            if(!empty($request['type']))
+            if(!empty($request['type']) && isset($request['type']))
             {
                 $model->property_type = $request['type'];
             }
-            if(!empty($request['squareFootage']))
+            if(!empty($request['squareFootage']) && isset($request['squareFootage']))
             {
                 $model->squareFootage = $request['squareFootage'];
             }
-            if(!empty($request['area']))
+            if(!empty($request['area']) && isset($request['area']))
             {
                 $model->land_area = $request['area'];
             }
-            if(!empty($request['yearBuilt']))
+            if(!empty($request['yearBuilt']) && isset($request['yearBuilt']))
             {
                 $model->year_built = $request['yearBuilt'];
             }
-            if(!empty($request['budget']))
+            if(!empty($request['budget']) && isset($request['budget']))
             {
                 $model->budget = (double)$request['budget'];
             }
-            if(!empty($request['units']))
+            if(!empty($request['units']) && isset($request['units']))
             {
                 $model->no_of_units = (double)$request['units'];
             }
-            if(!empty($request['buildings']))
+            if(!empty($request['buildings']) && isset($request['buildings']))
             {
                 $model->no_of_buildings = (double)$request['buildings'];
             }
-            if(!empty($request['stories']))
+            if(!empty($request['stories']) && isset($request['stories']))
             {
                 $model->no_of_stories = (double)$request['stories'];
             }
-            
             $model->save();
             $project = Project::where('user_id','=',$managerId)
                                 ->where('project_name','=',$request['name'])
                                 ->get();
             foreach($project as $value) 
             {
-                $projectid = $value->project_id;
+                $projectid   = $value->project_id;
                 $projectName = $value->project_name;
             }
             $model = new ProjectStatus;
@@ -2901,6 +2960,24 @@ class ApiController extends Controller
         {
             return json_encode(array('status' => '0', 'message' => "Scoped project id parameter is missing"));
             exit;
+        }
+        if(!empty($request['qaqcDate']) && isset($request['qaqcDate']))
+        {
+            $qaqcDate   = $request['qaqcDate'];
+            $tadayDate  = date('Y-m-d');
+            $qaqcDate   = new DateTime($qaqcDate);
+            $qaqcDate   = $qaqcDate->format("Y-m-d");
+            if($tadayDate > $qaqcDate)
+            {
+                return json_encode(array('status' => '0', 'message' => "QAQC date should be greater than today's date."));
+                exit;
+            }
+            else
+            {
+                $date  = new DateTime($request['qaqcDate']);
+                $model = Project::where('project_id', '=',$projectid)
+                                  ->update(['qaqc_date' => $date]);
+            }
         }
         if(!empty($request['projectManagerId']))
         {
@@ -3022,6 +3099,12 @@ class ApiController extends Controller
             $type = $request['type'];
             $model = Project::where('project_id','=',$projectid)
                               ->update(['property_type' => $type]);
+        }
+        if(!empty($request['qaqcDate']) && isset($request['qaqcDate']))
+        {
+           $qaqcDate = new DateTime($request['qaqcDate']);
+           $model = Project::where('project_id','=',$projectid)
+                              ->update(['qaqc_date' => $qaqcDate]);
         }
         $project = Project::where('project_id','=',$projectid)->first();
         $projectName = $project->project_name;
@@ -4289,6 +4372,8 @@ class ApiController extends Controller
         $projects = DB::table('project_status')
                         ->select(DB::raw('SQL_CALC_FOUND_ROWS project_status.project_status_id'),'project_status.project_id','project_status.project_status_type_id')
                         ->leftJoin('projects', 'projects.project_id', '=', 'project_status.project_id')
+                        ->whereNotNull('projects.milesrange')
+                        ->whereNotNull('projects.employee_type_id')
                         ->groupBy('project_status.project_id')
                         ->havingRaw('COUNT(project_status_type_id) = 1')
                         ->get();
@@ -4296,51 +4381,52 @@ class ApiController extends Controller
         if($count != 0)
         {
             $scope_Id = UserScopePerformed::where('users_id','=',$userid)->first();
-            $userScopeId = (string)$scope_Id->scope_performed_id;
-            $userScopeId = explode(",",$userScopeId);
-            foreach ($projects as $value) 
+            if(isset($scope_Id) && !empty($scope_Id))
             {
-                $projectid = $value->project_id;
-                $publishproject = Project::where('project_id','=',$projectid)->first();
-                $latitude = (double)$publishproject->latitude;
-                $longitude = (double)$publishproject->longitude;
-                $miles = (int)$publishproject->milesrange;
-                $employeetype = $publishproject->employee_type_id;
-                $scope = $publishproject->scope_performed_id;
-                $scope = explode(",",$scope);
-                $managerid = $publishproject->user_id;
-                $result =  DB::select(DB::raw("SELECT users_id , ( 3956 *2 * ASIN( SQRT( POWER( SIN( ( $latitude - latitude ) * PI( ) /180 /2 ) , 2 ) + COS( $latitude * PI( ) /180 ) * COS( latitude * PI( ) /180 ) * POWER( SIN( ( $longitude - longitude ) * PI( ) /180 /2 ) , 2 ) ) ) ) AS distance
-                FROM users
-                WHERE  users_id = $userid
-                AND associate_type_id IN ($employeetype)
-                HAVING distance <= $miles"));
-                if(!empty($result))
+                $userScopeId = (string)$scope_Id->scope_performed_id;
+                $userScopeId = explode(",",$userScopeId);
+                foreach ($projects as $value) 
                 {
-                    
-                    
-                    $scopeflag = 1;
-                    //check user scope performed is matches or not
-                    foreach($scope as $scopeid) {
-                        if(in_array($scopeid, $userScopeId))
-                        {
-                            $scopeflag = 1;
-                        }
-                        else
-                        {
-                            $scopeflag = 0;
-                            break;
-                        } 
-                    }
-                    if($scopeflag == 1)
+                    $projectid = $value->project_id;
+                    $publishproject = Project::where('project_id','=',$projectid)->first();
+                    $latitude = (double)$publishproject->latitude;
+                    $longitude = (double)$publishproject->longitude;
+                    $miles = (int)$publishproject->milesrange;
+                    $employeetype = $publishproject->employee_type_id;
+                    $scope = $publishproject->scope_performed_id;
+                    $scope = explode(",",$scope);
+                    $managerid = $publishproject->user_id;
+                    $result =  DB::select(DB::raw("SELECT users_id , ( 3956 *2 * ASIN( SQRT( POWER( SIN( ( $latitude - latitude ) * PI( ) /180 /2 ) , 2 ) + COS( $latitude * PI( ) /180 ) * COS( latitude * PI( ) /180 ) * POWER( SIN( ( $longitude - longitude ) * PI( ) /180 /2 ) , 2 ) ) ) ) AS distance
+                    FROM users
+                    WHERE  users_id = $userid
+                    AND associate_type_id IN ($employeetype)
+                    HAVING distance <= $miles"));
+                    if(!empty($result) && isset($result))
                     {
-                        $bidrequest = new ProjectBidRequest();
-                        $bidrequest->project_id = $projectid;
-                        $bidrequest->to_user_id = $userid;
-                        $bidrequest->from_user_id = $managerid;
-                        $bidrequest->created_at = date('Y-m-d H:i:s');
-                        $bidrequest->save();
+                        $scopeflag = 1;
+                        //check user scope performed is matches or not
+                        foreach($scope as $scopeid) {
+                            if(in_array($scopeid, $userScopeId))
+                            {
+                                $scopeflag = 1;
+                            }
+                            else
+                            {
+                                $scopeflag = 0;
+                                break;
+                            } 
+                        }
+                        if($scopeflag == 1)
+                        {
+                            $bidrequest = new ProjectBidRequest();
+                            $bidrequest->project_id = $projectid;
+                            $bidrequest->to_user_id = $userid;
+                            $bidrequest->from_user_id = $managerid;
+                            $bidrequest->created_at = date('Y-m-d H:i:s');
+                            $bidrequest->save();
+                        }
+                        
                     }
-                    
                 }
             }
         }
@@ -4363,7 +4449,7 @@ class ApiController extends Controller
                             ->orderBy('project_bid_request.project_bid_request_id', 'desc')
                             ->get();
        
-        if(isset($projects))
+        if(isset($projects) && !empty($projects))
         {
             foreach ($projects as $value) 
             {
@@ -4407,7 +4493,7 @@ class ApiController extends Controller
 
         $user = $this->checkuserprivatekey($request['userid'],$request['privatekey']);
         $userid = $request['userid'];
-        if(!isset($request['limit']) || !isset($request['pagenumber'])) 
+        if(!isset($request['limit']) || !isset($request['pagenumber']) || empty($request['limit']) || empty($request['pagenumber'])) 
         {
             return json_encode(array('status' => '0', 'message' => "Mandatory Parameter is missing."));
             exit;
@@ -4549,6 +4635,47 @@ class ApiController extends Controller
         echo json_encode(array('status' => '1', 'message' => $message));
         exit;                                         
             
+    }
+     
+    /*cron api for complete project by checking qaqc date*/
+    public function checkQaqcDate()
+    {
+        $projects = DB::table('project_status')
+                        ->select(DB::raw('SQL_CALC_FOUND_ROWS project_status.project_status_id'),'project_status.project_id','projects.qaqc_date')
+                        ->leftJoin('projects', 'projects.project_id', '=', 'project_status.project_id')
+                        ->whereNotNull('projects.qaqc_date')
+                        ->groupBy('projects.project_id')
+                        ->havingRaw('COUNT(project_status_type_id) = 3')
+                        ->orderBy('project_status.project_status_id', 'desc')
+                       ->get();
+        if(isset($projects) && !empty($projects))
+        {
+            foreach ($projects as $value) {
+                $qaqcDate   = $value->qaqc_date;
+                $tadayDate  = date('Y-m-d');
+                $qaqcDate   = new DateTime($qaqcDate);
+                $qaqcDate   = $qaqcDate->format("Y-m-d");
+                if($tadayDate == $qaqcDate)
+                {
+                    $projectid = $value->project_id;
+                    $model = new ProjectStatus;
+                    $model->project_id = $projectid;
+                    $model->project_status_type_id  = 4;
+                    $model->created_at = date('Y-m-d H:i:s');
+                    $model->save();
+                    $associate= ProjectBid::where('project_id','=',$projectid)
+                                          ->where('project_bid_status','=',1)->first();
+                    $touserid = $associate->user_id;
+                    $project = Project::where('project_id','=',$projectid)->first();
+                    $body = $project->project_name;
+                    $userid  = $project->user_id;
+                    $msg = 'Project completed by manager!';
+                    $notificationid = '7';
+                    $title = $msg;
+                    $this->sendUserNotification($touserid,$userid,$projectid,$body,$title,$msg,$notificationid);
+                }
+            }
+        }
     }
 
     /* function for to check useres private key is valid or not*/
@@ -4918,7 +5045,7 @@ class ApiController extends Controller
                 $projectid = $value->project_id;
                 $projectapprove = ProjectBid::where('project_id','=',$projectid)
                                         ->where('project_bid_status','=',1)->first();
-                if(isset($projectapprove))
+                if(isset($projectapprove) && !empty($projectapprove))
                 {
                     $projectstatus = '1';
                 }
@@ -5043,7 +5170,7 @@ class ApiController extends Controller
                 $projectid = $value->project_id;
                 $projectapprove = ProjectBid::where('project_id','=',$projectid)
                                         ->where('project_bid_status','=',1)->first();
-                if(isset($projectapprove))
+                if(isset($projectapprove) && !empty($projectapprove))
                 {
                     $projectstatus = '1';
                 }
@@ -5069,12 +5196,12 @@ class ApiController extends Controller
                 }
                 $bid = number_format($value->associate_suggested_bid, 2);
                
-                $mybids[] = ['projectid' => (string)$projectid, 
-                            'projectname' => $projectname,
-                            'siteaddress' => $siteaddress,
-                            'yourbid' => (string)$bid, 
-                            'bidstatus' => $bidstatus,
-                            'bidstatusflag' => (string)$value->project_bid_status,
+                $mybids[] = ['projectid'             => (string)$projectid, 
+                            'projectname'            => $projectname,
+                            'siteaddress'            => $siteaddress,
+                            'yourbid'                => (string)$bid, 
+                            'bidstatus'              => $bidstatus,
+                            'bidstatusflag'          => (string)$value->project_bid_status,
                             'projectallocatedstatus' => $projectstatus];
                 $cntbids += 1;
             }

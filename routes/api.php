@@ -69,3 +69,4 @@ Route::any('/updateProjectManager','ApiController@updateProjectManager');
 Route::any('/createScopedProject','ApiController@createScopedProject');
 Route::any('/updateScopedProject','ApiController@updateScopedProject');
 Route::any('/getManagerProfile','ApiController@getManagerProfile');
+Route::any('/checkQaqcDate','ApiController@checkQaqcDate');

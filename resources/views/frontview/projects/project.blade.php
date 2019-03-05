@@ -88,6 +88,35 @@
                                                       <div class="report-date">
                                                           <h5><i class="fa fa-calendar" aria-hidden="true"></i>On site Date</h5>
                                                           <strong id="publish-onsitedate">{{$publish_projectdetail['onsitedate']}}</strong>
+                                                      </div><br><br><br>
+                                                      <div class="report-date" style="float: left;">
+                                                          <h5>Property Type</h5>
+                                                          <strong id="publish-propertyType">{{$publish_projectdetail['propertyType']}}</strong>
+                                                      </div>
+                                                      <br><br><br>
+                                                      <div class="report-date" style="float: left;">
+                                                          <h5>No. Units</h5>
+                                                          <strong id="publish-noOfUnits">{{$publish_projectdetail['noOfUnits']}}</strong>
+                                                      </div>
+                                                      <div class="report-date">
+                                                          <h5>Sq. Footage</h5>
+                                                          <strong id="publish-sqFootage">{{$publish_projectdetail['sqFootage']}}</strong>
+                                                      </div> &nbsp;
+                                                      <div class="report-date" style="float: left;">
+                                                          <h5>No. Buildings</h5>
+                                                          <strong id="publish-noBuildings">{{$publish_projectdetail['noBuildings']}}</strong>
+                                                      </div>
+                                                       <div class="report-date">
+                                                          <h5>Land Area</h5>
+                                                          <strong id="publish-landArea">{{$publish_projectdetail['landArea']}}</strong>
+                                                      </div>
+                                                      <div class="report-date" style="float: left;">
+                                                          <h5>No. Stories</h5>
+                                                          <strong id="publish-noOfStories">{{$publish_projectdetail['noOfStories']}}</strong>
+                                                      </div>
+                                                       <div class="report-date">
+                                                          <h5>Year Built</h5>
+                                                          <strong id="publish-yearBuilt">{{$publish_projectdetail['yearBuilt']}}</strong>
                                                       </div>
                                                   </div>
                                               </div>
@@ -244,6 +273,35 @@
                                                         </h5>
                                                         <strong id="onsitedate">{{$progresProjecDetail['onsitedate']}}</strong>
                                                     </div>
+                                                     <div class="report-date" style="float: left;">
+                                                          <h5><i class="fa fa-calendar" aria-hidden="true"></i>Property Type</h5>
+                                                          <strong id="propertyType">{{$progresProjecDetail['propertyType']}}</strong>
+                                                      </div>
+                                                      <br>
+                                                      <div class="report-date" style="float: left;">
+                                                          <h5>No. Units</h5>
+                                                          <strong id="noOfUnits">{{$progresProjecDetail['noOfUnits']}}</strong>
+                                                      </div>
+                                                      <div class="report-date">
+                                                          <h5>Sq. Footage</h5>
+                                                          <strong id="sqFootage">{{$progresProjecDetail['sqFootage']}}</strong>
+                                                      </div><br>
+                                                      <div class="report-date" style="float: left;">
+                                                          <h5>No. Buildings</h5>
+                                                          <strong id="noBuildings">{{$progresProjecDetail['noBuildings']}}</strong>
+                                                      </div>
+                                                       <div class="report-date">
+                                                          <h5>Land Area</h5>
+                                                          <strong id="landArea">{{$progresProjecDetail['landArea']}}</strong>
+                                                      </div>
+                                                      <div class="report-date" style="float: left;">
+                                                          <h5>No. Stories</h5>
+                                                          <strong id="noOfStories">{{$progresProjecDetail['noOfStories']}}</strong>
+                                                      </div>
+                                                       <div class="report-date">
+                                                          <h5>Year Built</h5>
+                                                          <strong id="yearBuilt">{{$progresProjecDetail['yearBuilt']}}</strong>
+                                                      </div>
                                                 </div>
                                             </div>
                                             <div class="ls-scope">
@@ -379,6 +437,35 @@
                                                         </h5>
                                                         <strong id="history_onsitedate">{{ $history_projectdetail['onsitedate']}}</strong>
                                                     </div>
+                                                     <div class="report-date" style="float: left;">
+                                                          <h5><i class="fa fa-calendar" aria-hidden="true"></i>Property Type</h5>
+                                                          <strong id="history-propertyType">{{$history_projectdetail['propertyType']}}</strong>
+                                                      </div>
+                                                      <br>
+                                                      <div class="report-date" style="float: left;">
+                                                          <h5>No. Units</h5>
+                                                          <strong id="history-noOfUnits">{{$history_projectdetail['noOfUnits']}}</strong>
+                                                      </div>
+                                                      <div class="report-date">
+                                                          <h5>Sq. Footage</h5>
+                                                          <strong id="history-sqFootage">{{$history_projectdetail['sqFootage']}}</strong>
+                                                      </div><br>
+                                                      <div class="report-date" style="float: left;">
+                                                          <h5>No. Buildings</h5>
+                                                          <strong id="history-noBuildings">{{$history_projectdetail['noBuildings']}}</strong>
+                                                      </div>
+                                                       <div class="report-date">
+                                                          <h5>Land Area</h5>
+                                                          <strong id="history-landArea">{{$history_projectdetail['landArea']}}</strong>
+                                                      </div>
+                                                      <div class="report-date" style="float: left;">
+                                                          <h5>No. Stories</h5>
+                                                          <strong id="history-noOfStories">{{$history_projectdetail['noOfStories']}}</strong>
+                                                      </div>
+                                                       <div class="report-date">
+                                                          <h5>Year Built</h5>
+                                                          <strong id="history-yearBuilt">{{$history_projectdetail['yearBuilt']}}</strong>
+                                                      </div>
                                                 </div>
                                             </div>
                                             <div class="ls-scope">
@@ -411,22 +498,23 @@
                                                     </div>
                                                       <hr> 
 
-                                                     <div class="rs-rating">
+                                                    <!--  <div class="rs-rating">
                                                         <h4>Rating Received</h4>
                                                         <mark id="history_rating" name="history_rating">{{ $history_projectdetail['rating'] }}</mark>
 
                                                         <div class="star-rating" id="ratingstar">
 
                                                        </div>   
-                                                    </div>
-                                                    <hr>
+                                                    </div> -->
+                                                   <!--  <hr>
                                                       <div class="rs-review">
                                                         <h4>Manager Review</h4>
                                                         <p id="history_comment" name="history_comment">{{ $history_projectdetail['comment'] }}
                                                         </p>
                                                     </div>
-                                                    <hr>  
+                                                    <hr>   -->
                                                      <div class="rs-btn-bid" id="button-div"> 
+                                                        &nbsp;&nbsp;&nbsp;
                                                         <button type="button" class="btn red-btn" data-toggle="modal" data-target="#project-status" id="view-status">View Notes</button>
                                                        <!--  @if($history_projectdetail['ratingflag'] == 0)
                                                         <button type="button" class="btn red-btn" data-toggle="modal" data-target="#completed-project" id="rating-btn">Add Rating</button>
@@ -560,18 +648,18 @@
 
 
 <!-- Project Status Popup -->
-<div class="modal fade" id="completed-project">
+<!-- <div class="modal fade" id="completed-project">
   <div class="modal-dialog modal-lg">
-    <div class="modal-content">
+    <div class="modal-content"> -->
 
       <!-- Modal Header -->
-      <div class="modal-header">
+      <!-- <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal"><i class="fa fa-angle-left"></i></button>
         <h4 class="modal-title">Project Complete</h4>
       </div>
-      <span style="text-align: center;font-size: 16px;letter-spacing: 2px; color: #4b5f5f;font-weight: 300;">Rate&Review the Project Manager</span>
+      <span style="text-align: center;font-size: 16px;letter-spacing: 2px; color: #4b5f5f;font-weight: 300;">Rate&Review the Project Manager</span> -->
       <!-- Modal body -->  
-      <div class="modal-body">
+      <!-- <div class="modal-body">
         
         <div class="associate-manager-profile">
             <div class="manager-profile">
@@ -608,10 +696,10 @@
             <button type="button" class="btn red-btn" id="submit-review" style="margin-left: 300px;">Submit</button>
           </div>
         </div>    
-      </div>
-    </div>
+      </div> -->
+  <!--   </div>
   </div>
-</div>
+</div> -->
   @include('frontlayouts.include_js')
     <script type="text/javascript">
         $('.owl-carousel').owlCarousel({
@@ -639,7 +727,7 @@
       document.getElementById('status_pagenumber').value = 1;
       document.getElementById('publish_pagenumber').value = 1;
       document.getElementById('history_pagenumber').value = 1;
-      var rating = $("#history_rating").text();
+      /*var rating = $("#history_rating").text();
       if(rating)
       {
          if(rating == '0.0')
@@ -665,7 +753,7 @@
             $("#ratingstar").append('<i class="fa fa-star-half"></i>');
           }
         }
-      }
+      }*/
       var url=window.location.href;
       var arr=url.split('=');
       var id = arr[1];
@@ -968,7 +1056,7 @@
         });
     });
 
-    $('#rating-btn').click(function(){
+   /* $('#rating-btn').click(function(){
 
       var projectid = document.getElementById("project_history_id").value;
       $('#rating-star').starRating('setRating', 0.0);
@@ -976,7 +1064,7 @@
       document.getElementById("projectreview").value = '';
       $.ajax({
             type: 'GET',
-              url: '<?php echo route('viewManagerProfile'); ?>',
+              url: '<?php //echo route('viewManagerProfile'); ?>',
               data: {projectid:projectid},
               dataType: 'json',
           })
@@ -988,7 +1076,7 @@
            $("#review-manager-phone").text(msg.managerphone);
            $('#review-manager-profile').attr('src',msg.managerimage );
         });
-    });
+    });*/
    
     $('#view-status').click(function(){
       var projectid = document.getElementById("project_history_id").value;
@@ -1196,8 +1284,8 @@
                 $("#history_approxbid").text(msg.approxbid);
                 $("#history_mybid").text(msg.mybid);
                 $("#history_onsitedate").text(msg.onsitedate);
-                $("#history_rating").text(msg.rating);
-                var rating = msg.rating;
+                //$("#history_rating").text(msg.rating);
+                /*var rating = msg.rating;
                 if(rating == '0.0')
                 {
                   document.getElementById('ratingstar').innerHTML = "";
@@ -1221,7 +1309,7 @@
                     $("#ratingstar").append('<i class="fa fa-star-half"></i>');
                   }
                 }
-                $("#history_comment").text(msg.comment);
+                $("#history_comment").text(msg.comment);*/
                 /*if(msg.ratingflag == 0)
                 {
                   $('#button-div').html('');
@@ -1261,7 +1349,7 @@
                 $("#history_approxbid").text(projectData['approxbid']);
                 $("#history_mybid").text(projectData['mybid']);
                 $("#history_onsitedate").text(projectData['onsitedate']);
-                $("#history_rating").text(projectData['rating']);
+                /*$("#history_rating").text(projectData['rating']);
                 var rating = projectData['rating'];
                 if(rating == '0.0')
                 {
@@ -1285,7 +1373,7 @@
                   {
                     $("#ratingstar").append('<i class="fa fa-star-half"></i>');
                   }
-              }
+              }*/
 
              /* if(projectData['ratingflag'] == 0)
               {
@@ -1300,7 +1388,7 @@
 
               }*/
            
-              $("#history_comment").text(projectData['comment']);
+             // $("#history_comment").text(projectData['comment']);
                   
                   $("#historyProjectDetail").show();
                   $("#project_history").show();
@@ -1636,7 +1724,7 @@
     });
     </script>
     <script type="text/javascript">
-    $(function() {
+   /* $(function() {
 
       $(".svg-star-rating").starRating({
         totalStars: 5,
@@ -1654,10 +1742,10 @@
     var rating = $('#rating-star').starRating('getRating');
     var rating = rating.toFixed(1);
     $('#ratingNumber').html(rating);
-});
+});*/
 
 //store user reviews 
-$('#submit-review').click(function(){
+/*$('#submit-review').click(function(){
     $(".loader").fadeIn("slow");
         var projectid = document.getElementById("project_history_id").value;
        
@@ -1672,7 +1760,7 @@ $('#submit-review').click(function(){
         }
         $.ajax({
             type: 'GET',
-            url: '<?php echo route('associateReviewStore'); ?>',
+            url: '<?php //echo route('associateReviewStore'); ?>',
             data: {projectid:projectid,rating:rating,comment:comment},
             dataType: 'json',
         })
@@ -1684,7 +1772,7 @@ $('#submit-review').click(function(){
                 $("#completed-project").modal("hide");
             }
     });
-});
+});*/
   </script>
 </body>
 
