@@ -84,9 +84,15 @@ class LoginController extends Controller
             
             /*login for project manager user */
             $user = User::where('users_email','=',$email)->first();
-            if(isset($user))
+            if(isset($user) && !empty($user))
             {
-           
+                $approvalStatus = $user->users_approval_status;
+                if($approvalStatus == 3)
+                {
+                    $warning = "Your profile was bloacked";
+                    return response()->json(['error' => $warning]);
+                    exit;
+                }
                 $emailstatus = $user->email_status;
                 $usertype = $user->user_types_id;
                 /* usertype 1 for project manager and 2 for associate */

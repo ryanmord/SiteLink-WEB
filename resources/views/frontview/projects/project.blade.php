@@ -95,27 +95,28 @@
                                                       </div>
                                                       <br><br><br>
                                                       <div class="report-date" style="float: left;">
-                                                          <h5>No. Units</h5>
+                                                          <h5>No. Units&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h5>  
                                                           <strong id="publish-noOfUnits">{{$publish_projectdetail['noOfUnits']}}</strong>
+
                                                       </div>
-                                                      <div class="report-date">
-                                                          <h5>Sq. Footage</h5>
-                                                          <strong id="publish-sqFootage">{{$publish_projectdetail['sqFootage']}}</strong>
-                                                      </div> &nbsp;
                                                       <div class="report-date" style="float: left;">
-                                                          <h5>No. Buildings</h5>
+                                                          <h5>Sq. Footage&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h5>
+                                                          <strong id="publish-sqFootage">{{$publish_projectdetail['sqFootage']}}</strong>
+                                                      </div>
+                                                      <div class="report-date" style="float: left;">
+                                                          <h5>No. Buildings&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h5>
                                                           <strong id="publish-noBuildings">{{$publish_projectdetail['noBuildings']}}</strong>
                                                       </div>
-                                                       <div class="report-date">
-                                                          <h5>Land Area</h5>
+                                                       <div class="report-date" style="float: left;">
+                                                          <h5>Land Area&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h5>
                                                           <strong id="publish-landArea">{{$publish_projectdetail['landArea']}}</strong>
                                                       </div>
                                                       <div class="report-date" style="float: left;">
-                                                          <h5>No. Stories</h5>
+                                                          <h5>No. Stories&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h5>
                                                           <strong id="publish-noOfStories">{{$publish_projectdetail['noOfStories']}}</strong>
                                                       </div>
-                                                       <div class="report-date">
-                                                          <h5>Year Built</h5>
+                                                       <div class="report-date" style="float: left;">
+                                                          <h5>Year Built&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h5>
                                                           <strong id="publish-yearBuilt">{{$publish_projectdetail['yearBuilt']}}</strong>
                                                       </div>
                                                   </div>
@@ -272,34 +273,35 @@
                                                         <h5><i class="fa fa-calendar" aria-hidden="true"></i>On Site Date
                                                         </h5>
                                                         <strong id="onsitedate">{{$progresProjecDetail['onsitedate']}}</strong>
-                                                    </div>
+                                                    </div><br><br><br>
                                                      <div class="report-date" style="float: left;">
-                                                          <h5><i class="fa fa-calendar" aria-hidden="true"></i>Property Type</h5>
+                                                          <h5>Property Type</h5>
                                                           <strong id="propertyType">{{$progresProjecDetail['propertyType']}}</strong>
                                                       </div>
-                                                      <br>
+                                                      <br><br><br>
                                                       <div class="report-date" style="float: left;">
-                                                          <h5>No. Units</h5>
+                                                          <h5>No. Units&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h5>  
                                                           <strong id="noOfUnits">{{$progresProjecDetail['noOfUnits']}}</strong>
+
                                                       </div>
-                                                      <div class="report-date">
-                                                          <h5>Sq. Footage</h5>
-                                                          <strong id="sqFootage">{{$progresProjecDetail['sqFootage']}}</strong>
-                                                      </div><br>
                                                       <div class="report-date" style="float: left;">
-                                                          <h5>No. Buildings</h5>
+                                                          <h5>Sq. Footage&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h5>
+                                                          <strong id="sqFootage">{{$progresProjecDetail['sqFootage']}}</strong>
+                                                      </div>
+                                                      <div class="report-date" style="float: left;">
+                                                          <h5>No. Buildings&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h5>
                                                           <strong id="noBuildings">{{$progresProjecDetail['noBuildings']}}</strong>
                                                       </div>
-                                                       <div class="report-date">
-                                                          <h5>Land Area</h5>
+                                                       <div class="report-date" style="float: left;">
+                                                          <h5>Land Area&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h5>
                                                           <strong id="landArea">{{$progresProjecDetail['landArea']}}</strong>
                                                       </div>
                                                       <div class="report-date" style="float: left;">
-                                                          <h5>No. Stories</h5>
+                                                          <h5>No. Stories&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h5>
                                                           <strong id="noOfStories">{{$progresProjecDetail['noOfStories']}}</strong>
                                                       </div>
-                                                       <div class="report-date">
-                                                          <h5>Year Built</h5>
+                                                       <div class="report-date" style="float: left;">
+                                                          <h5>Year Built&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h5>
                                                           <strong id="yearBuilt">{{$progresProjecDetail['yearBuilt']}}</strong>
                                                       </div>
                                                 </div>
@@ -436,35 +438,37 @@
                                                         <h5><i class="fa fa-calendar" aria-hidden="true"></i>On Site Date
                                                         </h5>
                                                         <strong id="history_onsitedate">{{ $history_projectdetail['onsitedate']}}</strong>
-                                                    </div>
+                                                    </div><br><br><br>
                                                      <div class="report-date" style="float: left;">
-                                                          <h5><i class="fa fa-calendar" aria-hidden="true"></i>Property Type</h5>
-                                                          <strong id="history-propertyType">{{$history_projectdetail['propertyType']}}</strong>
+                                                          <h5>Property Type</h5>
+                                                          <strong id="history_propertyType">{{$history_projectdetail['propertyType']}}</strong>
                                                       </div>
                                                       <br>
+                                                      <br><br><br>
                                                       <div class="report-date" style="float: left;">
-                                                          <h5>No. Units</h5>
-                                                          <strong id="history-noOfUnits">{{$history_projectdetail['noOfUnits']}}</strong>
-                                                      </div>
-                                                      <div class="report-date">
-                                                          <h5>Sq. Footage</h5>
-                                                          <strong id="history-sqFootage">{{$history_projectdetail['sqFootage']}}</strong>
-                                                      </div><br>
-                                                      <div class="report-date" style="float: left;">
-                                                          <h5>No. Buildings</h5>
-                                                          <strong id="history-noBuildings">{{$history_projectdetail['noBuildings']}}</strong>
-                                                      </div>
-                                                       <div class="report-date">
-                                                          <h5>Land Area</h5>
-                                                          <strong id="history-landArea">{{$history_projectdetail['landArea']}}</strong>
+                                                          <h5>No. Units&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h5>  
+                                                          <strong id="history_noOfUnits">{{$history_projectdetail['noOfUnits']}}</strong>
+
                                                       </div>
                                                       <div class="report-date" style="float: left;">
-                                                          <h5>No. Stories</h5>
-                                                          <strong id="history-noOfStories">{{$history_projectdetail['noOfStories']}}</strong>
+                                                          <h5>Sq. Footage&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h5>
+                                                          <strong id="history_sqFootage">{{$history_projectdetail['sqFootage']}}</strong>
                                                       </div>
-                                                       <div class="report-date">
-                                                          <h5>Year Built</h5>
-                                                          <strong id="history-yearBuilt">{{$history_projectdetail['yearBuilt']}}</strong>
+                                                      <div class="report-date" style="float: left;">
+                                                          <h5>No. Buildings&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h5>
+                                                          <strong id="history_noBuildings">{{$history_projectdetail['noBuildings']}}</strong>
+                                                      </div>
+                                                       <div class="report-date" style="float: left;">
+                                                          <h5>Land Area&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h5>
+                                                          <strong id="history_landArea">{{$history_projectdetail['landArea']}}</strong>
+                                                      </div>
+                                                      <div class="report-date" style="float: left;">
+                                                          <h5>No. Stories&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h5>
+                                                          <strong id="history_noOfStories">{{$history_projectdetail['noOfStories']}}</strong>
+                                                      </div>
+                                                       <div class="report-date" style="float: left;">
+                                                          <h5>Year Built&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h5>
+                                                          <strong id="history_yearBuilt">{{$history_projectdetail['yearBuilt']}}</strong>
                                                       </div>
                                                 </div>
                                             </div>
@@ -1023,6 +1027,13 @@
              $("#createddate").text(msg.createddate);
              $("#siteaddress").text(msg.siteaddress);
              $("#reportduedate").text(msg.reportduedate);
+             $("#propertyType").text(msg.propertyType);
+             $("#noOfUnits").text(msg.noOfUnits);
+             $("#noOfStories").text(msg.noOfStories);
+             $("#sqFootage").text(msg.sqFootage);
+             $("#noBuildings").text(msg.noBuildings);
+             $("#landArea").text(msg.landArea);
+             $("#yearBuilt").text(msg.yearBuilt);
              $("#instructions").text(msg.instructions);
              $("#template").text(msg.template);
              $("#scope").text(msg.scope);
@@ -1153,6 +1164,13 @@
               $("#publish-createddate").text(msg.createddate);
               $("#publish-siteaddress").text(msg.siteaddress);
               $("#publish-reportduedate").text(msg.reportduedate);
+              $("#publish-propertyType").text(msg.propertyType);
+              $("#publish-noOfUnits").text(msg.noOfUnits);
+              $("#publish-noOfStories").text(msg.noOfStories);
+              $("#publish-sqFootage").text(msg.sqFootage);
+              $("#publish-noBuildings").text(msg.noBuildings);
+              $("#publish-landArea").text(msg.landArea);
+              $("#publish-yearBuilt").text(msg.yearBuilt);
               $("#publish-instructions").text(msg.instructions);
               $("#publish-template").text(msg.template);
               $("#publish-scope").text(msg.scope);
@@ -1182,6 +1200,13 @@
                   $("#publish-createddate").text(projectData['createddate']);
                   $("#publish-siteaddress").text(projectData['siteaddress']);
                   $("#publish-onsitedate").text(projectData['onsitedate']);
+                  $("#publish-propertyType").text(projectData['propertyType']);
+                  $("#publish-noOfUnits").text(projectData['noOfUnits']);
+                  $("#publish-noOfStories").text(projectData['noOfStories']);
+                  $("#publish-sqFootage").text(projectData['sqFootage']);
+                  $("#publish-noBuildings").text(projectData['noBuildings']);
+                  $("#publish-landArea").text(projectData['landArea']);
+                  $("#publish-yearBuilt").text(projectData['yearBuilt']);
                   $("#publish-projectid").text(projectData['projectid']);
                   $("#publish-approxbid").text(projectData['approxbid']);
                   $("#approxbid").text(projectData['approxbid']);
@@ -1278,6 +1303,13 @@
                 $("#history_createddate").text(msg.createddate);
                 $("#history_siteaddress").text(msg.siteaddress);
                 $("#history_reportduedate").text(msg.reportduedate);
+                $("#history_propertyType").text(msg.propertyType);
+                $("#history_noOfUnits").text(msg.noOfUnits);
+                $("#history_noOfStories").text(msg.noOfStories);
+                $("#history_sqFootage").text(msg.sqFootage);
+                $("#history_noBuildings").text(msg.noBuildings);
+                $("#history_landArea").text(msg.landArea);
+                $("#history_yearBuilt").text(msg.yearBuilt);
                 $("#history_instructions").text(msg.instructions);
                 $("#history_template").text(msg.template);
                 $("#history_scope").text(msg.scope);
@@ -1343,6 +1375,13 @@
                 $("#history_createddate").text(projectData['createddate']);
                 $("#history_siteaddress").text(projectData['siteaddress']);
                 $("#history_reportduedate").text(projectData['reportduedate']);
+                $("#history_propertyType").text(projectData['propertyType']);
+                $("#history_noOfUnits").text(projectData['noOfUnits']);
+                $("#history_noOfStories").text(projectData['noOfStories']);
+                $("#history_sqFootage").text(projectData['sqFootage']);
+                $("#history_noBuildings").text(projectData['noBuildings']);
+                $("#history_landArea").text(projectData['landArea']);
+                $("#history_yearBuilt").text(projectData['yearBuilt']);
                 $("#history_instructions").text(projectData['instructions']);
                 $("#history_template").text(projectData['template']);
                 $("#history_scope").text(projectData['scope']);

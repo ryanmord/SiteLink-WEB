@@ -490,7 +490,7 @@ class ProjectController extends Controller
                 {
                     $projectid = $value->project_id;
                     $status = ProjectStatus::where('project_id','=',$projectid)
-                    ->get();
+                                ->get();
                     foreach ($status as $projectstatus) 
                     {
                         //get project current status
@@ -523,10 +523,12 @@ class ProjectController extends Controller
                                     'usertype'             => 1
                                     ];
                 }
+               
             }
             else
             {
                 $userproject = null;
+                $projectCount = 0;
             }
         }
         else
@@ -545,7 +547,7 @@ class ProjectController extends Controller
                 {
                     $projectid = $value->project_id;
                     $status = ProjectStatus::where('project_id','=',$projectid)
-                    ->get();
+                                            ->get();
                     foreach ($status as $projectstatus) 
                     {
                         //get project current status
@@ -564,22 +566,30 @@ class ProjectController extends Controller
                                     'usertype'             => 2
                                     ];
                 }
+               
             }
             else
             {
                 $userproject = null;
+                $projectCount = 0;
             }
         }
 
         if(!isset($userproject))
         {
             $userproject = null;
+            $projectCount = 0;
+        }
+        else
+        {
+            $projectCount = count($userproject);
         }
         $scopeperformed= ScopePerformed::all();
         return view('project.index',[
-                    'projects'      => $userproject, 
-                    'user'          =>$username,
-                    'scopeperformed'=>$scopeperformed,
+                    'projects'       => $userproject, 
+                    'user'           => $username,
+                    'scopeperformed' => $scopeperformed,
+                    'projectCount'   => $projectCount,
                 ]);
     }
 
@@ -759,10 +769,10 @@ class ProjectController extends Controller
                         $bidrequest = ProjectBidRequest::where('to_user_id','=',$touserid)
                                                         ->where('project_id','=',$projectid)
                                                         ->first();
-                        if(isset($bidrequest))
+                        if(isset($bidrequest) && !empty($bidrequest))
                         {
                             $this->sendUserNotification($touserid,$fromuserid,$projectid,$body,$title,$notificationtext,$notificationtype);
-                            $bidrequeststatus = ProjectBidRequest::where('project_id', '=', $projectid)->where('to_user_id','=',$touserid)->update(['bid_request_status' => 0,'request_send_status' => 1]);
+                            $bidrequeststatus = ProjectBidRequest::where('project_id', '=', $projectid)->where('to_user_id','=',$touserid)->update(['bid_request_status' => 0]);
                         }
                         else
                         {
@@ -815,6 +825,7 @@ class ProjectController extends Controller
                             $notificationtype = '6';
                             $title = $notificationtext;
                             $this->sendUserNotification($touserid,$fromuserid,$projectid,$body,$title,$notificationtext,$notificationtype);
+
                             $bidrequeststatus = ProjectBidRequest::where('project_id', '=', $projectid)
                                 ->where('to_user_id','=',$touserid)->update(['bid_request_status' => 0]);
 
@@ -1098,9 +1109,9 @@ class ProjectController extends Controller
         $bidaccept = ProjectBid::where('project_id','=',$projectid)
                     ->where('project_bid_status','=',1)
                     ->where('bid_status','=',1)->first();
-        if(isset($bidaccept))
+        if(isset($bidaccept) && !empty($bidaccept))
         {
-            $bidstatus = 1;
+            /*$bidstatus = 1;
             $associateid = $bidaccept->user_id;
             $associate = User::where('users_id','=',$associateid)
                                 ->first();
@@ -1123,7 +1134,7 @@ class ProjectController extends Controller
 
                 ]);
                 exit;
-            }
+            }*/
                 
         }
         else
@@ -1132,7 +1143,7 @@ class ProjectController extends Controller
         }
         $project = Project::where('project_id','=',$projectid)->first();
         $projectname = $project->project_name;
-        if(isset($projectbid))
+        if(isset($projectbid) && !empty($projectbid))
         {
            
             foreach ($projectbid as $value) 
@@ -1140,31 +1151,57 @@ class ProjectController extends Controller
                 $associateid = $value->user_id;
 
                 $associate = User::where('users_id','=',$associateid)
-                ->first();
-                
+                                    ->first();
                 if(isset($associate))
                 {
                     $associatename = $associate->users_name;
-                    $data[] = ['associatename'=> $associatename, 
+                    if($value->is_employee == 0)
+                    {
+                        $data[] = ['associatename'=> $associatename, 
                                'associateid'  => $value->user_id,
                                'projectid'    => $projectid,
                                'associatebid' =>  number_format($value->associate_suggested_bid,2),
                                'suggestedbid' => number_format($project->approx_bid, 2),
                                'createddate'  => $value->created_at
                                ];
+                    }
+                    else
+                    {
+                        $employee[] = ['associatename'=> $associatename, 
+                               'associateid'  => $value->user_id,
+                               'projectid'    => $projectid,
+                               'suggestedbid' => number_format($project->approx_bid, 2),
+                               'createddate'  => $value->created_at
+                               ];
+                    }
+                    
                 }
-
-                
             }
-
-            if(!isset($data))
+            if(!isset($data) && empty($data))
             {
-                $data = null;
+                $data = '';
+                $bidCount = 0;
+            }
+            else
+            {
+                $bidCount = count($data);
+            }
+            if(!isset($employee) && empty($employee))
+            {
+                $employee = '';
+                $employeeCount = 0;
+            }
+            else
+            {
+                $employeeCount = count($employee);
             }
             return view('project.viewbids',[
-                    'bids'        => $data, 
-                    'projectname' => $projectname,
-                    'bidstatus'   => $bidstatus
+                    'bids'          => $data, 
+                    'projectname'   => $projectname,
+                    'bidstatus'     => $bidstatus,
+                    'employee'      => $employee,
+                    'bidCount'      => $bidCount,
+                    'employeeCount' => $employeeCount
                 ]);
             exit;
         }
@@ -1182,42 +1219,67 @@ class ProjectController extends Controller
     public function pendingBids($projectid)
     {
         $projectbid = ProjectBid::where('project_id','=',$projectid)
-                    ->where('project_bid_status','=',2)
-                    ->where('bid_status','=',1)
+                    ->where(['project_bid_status' => 2,'bid_status' => 1])
                     ->orderBy('associate_suggested_bid','desc')->get();
         $project = Project::where('project_id','=',$projectid)->first();
         $projectname = $project->project_name;
-        if(isset($projectbid))
+        if(isset($projectbid) && !empty($projectbid))
         {
             foreach ($projectbid as $value) 
             {
                 $associateid = $value->user_id;
                 $associate = User::where('users_id','=',$associateid)
-                            ->first();
-                
+                                   ->first();
                 if(isset($associate))
                 {
-                    $associatename = $associate->users_name;
-                    $data[] = ['associatename'=> $associatename, 
+                    $associatename = $associate->users_name.' '.$associate->last_name;
+                    if($value->is_employee == 0)
+                    {
+                        $data[] = ['associatename'=> $associatename, 
                                'associateid'  => $value->user_id,
                                'projectid'    => $projectid,
-                               'associatebid' =>  number_format($value->associate_suggested_bid,2),
+                               'associatebid' => number_format($value->associate_suggested_bid,2),
                                'suggestedbid' => number_format($project->approx_bid, 2),
                                'createddate'  => $value->created_at
                                ];
+                    }
+                    else
+                    {
+                        $employee[] = ['associatename'=> $associatename, 
+                               'associateid'  => $value->user_id,
+                               'projectid'    => $projectid,
+                               'suggestedbid' => number_format($project->approx_bid, 2),
+                               'createddate'  => $value->created_at
+                               ];
+                    }
+                    
                 }
-
-                
             }
 
-            if(!isset($data))
+            if(!isset($data) && empty($data))
             {
                 $data = null;
+                $bidCount = 0;
+            }
+            else
+            {
+                $bidCount = count($data);
+            }
+            if(!isset($employee) && empty($employee))
+            {
+                $employee = null;
+                $employeeCount = 0;
+            }
+            else
+            {
+                $employeeCount = count($employee);
             }
             return view('project.pendingBids',[
-                    'bids'        => $data, 
-                    'projectname' => $projectname,
-                   
+                    'bids'          => $data, 
+                    'employee'      => $employee,
+                    'projectname'   => $projectname,
+                    'bidCount'      => $bidCount,
+                    'employeeCount' => $employeeCount
                 ]);
             exit;
         }
@@ -1598,6 +1660,7 @@ class ProjectController extends Controller
     {
         $adminid = session('loginuserid');
         $date    = date("Y-m-d H:i:s");
+        $user = User::where('users_id','=',$userid)->first();
         if($status == 0)
         {
             ProjectBid::where('user_id','=', $userid)
@@ -1606,15 +1669,20 @@ class ProjectController extends Controller
                         ->where('bid_status','=',1)
                         ->update(['project_bid_status' => $status,
                                 'accepted_rejected_at' => $date]);
-            $notificationtext = 'Sorry! Your bid was rejected';
+            if($user->associate_type_id == 1)
+            {
+                $notificationtext = 'Sorry! Your request was rejected!';
+            }
+            else
+            {
+                $notificationtext = 'Sorry! Your bid was rejected!';
+            }
             $project = Project::where('project_id','=',$projectid)->first();
-            $body = $project->project_name;
-            $title = $notificationtext;
+            $body    = $project->project_name;
+            $title   = $notificationtext;
             $notificationid = '4';
             $this->sendUserNotification($userid,$adminid,$projectid,$body,$title,$notificationtext,$notificationid);
-            
             return 0;
-                
         }
         else
         {
@@ -1647,24 +1715,37 @@ class ProjectController extends Controller
             $project = Project::where('project_id','=',$projectid)->first();
             $managerid = $project->user_id;
             $body = $project->project_name;
-            $user = User::where('users_id','=',$userid)->first();
             $projectid = (string)$projectid;
             $title = 'Job is allocated to '.$user->users_name;
             $msg = $title;
             $notificationid = '3';
             $this->sendUserNotification($managerid,$adminid,$projectid,$body,$title,$msg,$notificationid);
-            if(isset($rejectuserbid))
+            if(isset($rejectuserbid) && !empty($rejectuserbid))
             {
-                $title = 'Sorry! Your bid was rejected';
                 $msg = $title;
                 $notificationid = '4';
                 foreach ($rejectuserbid as $value) {
                     $rejectUserid = $value->user_id;
+                    $associate = User::where('users_id','=',$rejectUserid)->first();
+                    if($associate->associate_type_id == 1)
+                    {
+                        $title = 'Sorry! Your request was rejected!';
+                    }
+                    else
+                    {
+                        $title = 'Sorry! Your bid was rejected!';
+                    }
                     $this->sendUserNotification($rejectUserid,$managerid,$projectid,$body,$title,$msg,$notificationid);
                 }
             }
-            
-            $title = 'Congratulations! Your bid was accepted!';
+            if($user->associate_type_id == 1)
+            {
+                $title = 'Congratulations! Your request was accepted!';
+            }
+            else
+            {
+                $title = 'Congratulations! Your bid was accepted!';
+            }
             $msg = $title;
             $notificationid = '3';
             $this->sendUserNotification($userid,$managerid,$projectid,$body,$title,$msg,$notificationid);
@@ -1695,7 +1776,7 @@ class ProjectController extends Controller
         $date2= date($project->report_due_date);
         $datetime2 = new DateTime($date2);
         $reportdate= $datetime2->format("m/d/Y");
-        if(isset($project->on_site_date))
+        if(!is_null($project->on_site_date))
         {
             $date2= date($project->on_site_date);
             $datetime2 = new DateTime($date2);
@@ -1704,6 +1785,15 @@ class ProjectController extends Controller
         else
         {
             $onsitedate= '   -';
+        }
+        if(!is_null($project->qaqc_date))
+        {
+            $qaqcDate = date($project->qaqc_date);
+            $qaqcDate = new DateTime($qaqcDate);
+            $qaqcDate = $qaqcDate->format("m/d/Y");    
+        }
+        else{
+            $qaqcDate = '   -';
         }
         $projectbid = ProjectBid::where('project_id','=',$id)
                                 ->where('project_bid_status','=',1)
@@ -1749,6 +1839,7 @@ class ProjectController extends Controller
                     'maxvalue'       => $maxvalue,
                     'reportdate'     => $reportdate,
                     'onsitedate'     => $onsitedate,
+                    'qaqcDate'       => $qaqcDate,
                     'finalbid'       => $finalbid,
                     'propertyType'   => $project->property_type,
                     'noOfUnits'      => (string)$project->no_of_units,
@@ -2004,7 +2095,7 @@ class ProjectController extends Controller
         }
         $scope = ScopePerformed::all();
         $setting = Setting::where('setting_status','=',1)->first();
-        if(isset($setting))
+        if(isset($setting) && !empty($setting))
         {
             $minvalue = (string)$setting->min_miles;
             $maxvalue = (string)$setting->max_miles;
@@ -2014,18 +2105,27 @@ class ProjectController extends Controller
             $minvalue = 0;
             $maxvalue = 0;
         }
-        $date2= date($project->report_due_date);
+        $date2 = date($project->report_due_date);
         $datetime2 = new DateTime($date2);
-        $reportdate= $datetime2->format("m/d/Y");
-        if(isset($project->on_site_date))
+        $reportdate = $datetime2->format("m/d/Y");
+        if(!is_null($project->on_site_date))
         {
-            $date2= date($project->on_site_date);
+            $date2 = date($project->on_site_date);
             $datetime2 = new DateTime($date2);
-            $onsitedate= $datetime2->format("m/d/Y");    
+            $onsitedate = $datetime2->format("m/d/Y");    
         }
         else
         {
-            $onsitedate= '   -';
+            $onsitedate = '   -';
+        }
+        if(!is_null($project->qaqc_date))
+        {
+            $qaqcDate = date($project->qaqc_date);
+            $qaqcDate = new DateTime($qaqcDate);
+            $qaqcDate = $qaqcDate->format("m/d/Y");    
+        }
+        else{
+            $qaqcDate = '   -';
         }
         $projectbid = ProjectBid::where('project_id','=',$id)
                                 ->where('project_bid_status','=',1)
@@ -2038,6 +2138,7 @@ class ProjectController extends Controller
                     'maxvalue'      => $maxvalue,
                     'reportdate'    => $reportdate,
                     'onsitedate'    => $onsitedate,
+                    'qaqcDate'      => $qaqcDate,
                     'associateType' => $associateType,
 
                 ]);
@@ -2372,7 +2473,7 @@ class ProjectController extends Controller
                                     ->where('project_status_type_id','=',8)
                                     ->update(['project_status_type_id' => 7,
                                             'created_at' => date('Y-m-d H:i:s')]);
-        $message = 'Project Pre-Scheduled successfully!';
+        $message = 'Project Un-Archived successfully!';
         session()->flash('message',$message);
         return redirect()->route('dashboard');
     }
@@ -2390,7 +2491,7 @@ class ProjectController extends Controller
                                                 ->update(['project_status_type_id' => 7,
                                                           'created_at' => date('Y-m-d H:i:s')]);
             }
-            $temp = array('status' => 1,'message' => 'Project batch Pre-Scheduled successfully!');
+            $temp = array('status' => 1,'message' => 'Project batch Un-Archived successfully!');
             return json_encode($temp);
         }
     }

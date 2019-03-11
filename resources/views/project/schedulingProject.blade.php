@@ -94,6 +94,14 @@
                           </div>
                           <div class="row">
                             <div class="col-md-3">
+                              <label style="font-size: 15px;">QAQC Date</label>
+                            </div>
+                            <div class="col-md-9">
+                              <p style="font-size: 15px;">{{ $qaqcDate }}</p>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-md-3">
                               <label style="font-size: 15px;">Latitude</label>
                             </div>
                             <div class="col-md-4">

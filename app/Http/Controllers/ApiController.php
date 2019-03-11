@@ -725,31 +725,31 @@ class ApiController extends Controller
     {
         $user = $this->checkuserprivatekey($request['userid'],$request['privatekey']);
         $userid = $request['userid'];
-        if(isset($request['name']))
+        if(isset($request['name']) && !empty($request['name']))
         {
             $name  = $request['name'];
             $model = User::where('users_id', '=',$userid)
                             ->update(['users_name' => $name]);
         }
-        if(isset($request['lastname']))
+        if(isset($request['lastname']) && !empty($request['lastname']))
         {
             $lastname  = $request['lastname'];
             $model = User::where('users_id', '=',$userid)
                             ->update(['last_name' => $lastname]);
         }
-        if(isset($request['company']))
+        if(isset($request['company']) && !empty($request['company']))
         {
             $company = $request['company'];
             $model   = User::where('users_id', '=',$userid)
                             ->update(['users_company' => $company]);
         }
-        if(isset($request['phone']))
+        if(isset($request['phone']) && !empty($request['phone']))
         {
             $phone = $request['phone'];
             $model = User::where('users_id', '=',$userid)
                             ->update(['users_phone' => $phone]);
         }
-        if(isset($request['latitude']) && isset($request['longitude']))
+        if(isset($request['latitude']) && isset($request['longitude']) && !empty($request['latitude']) && !empty($request['longitude']))
         {
             $latitude = $request['latitude'];
             $longitude = $request['longitude'];
@@ -766,7 +766,7 @@ class ApiController extends Controller
             }
             
         }
-        if(isset($request['address']))
+        if(isset($request['address']) && !empty($request['address']))
         {
             $address = $request['address'];
             $model = User::where('users_id', '=',$userid)
@@ -798,7 +798,7 @@ class ApiController extends Controller
             $model = User::where('users_id', '=',$userid)
                             ->update(['users_profile_image' => $image_name]);
         }
-        if(isset($request['scopeperformed']))
+        if(isset($request['scopeperformed']) && !empty($request['scopeperformed']))
         {
             $scopeperformed = $request['scopeperformed'];
             $user = User::where('users_id','=',$userid)->first();
@@ -2321,7 +2321,7 @@ class ApiController extends Controller
                                 'bidmadecount'          => (string)$bidmadecount,
                                 'completedprojectcount' => (string)$completedprojectcount,
                                 'overdueprojectcount'   => (string)$overdueprojectcount,
-                                //'noOfJobs'              => $noOfJobs,
+                                'noOfJobs'              => (string)$noOfJobs,
                                 'review'                => (string)$review,
                                 'myprofile'             => $myprofile);
         
@@ -2978,6 +2978,11 @@ class ApiController extends Controller
                 $model = Project::where('project_id', '=',$projectid)
                                   ->update(['qaqc_date' => $date]);
             }
+        }
+        else
+        {
+            $model = Project::where('project_id', '=',$projectid)
+                                  ->update(['qaqc_date' => null]);
         }
         if(!empty($request['projectManagerId']))
         {
@@ -3862,33 +3867,33 @@ class ApiController extends Controller
         $user = $this->checkuserprivatekey($request['userid'],$request['privatekey']);
         $userid = $request['userid'];
         $projectid = $request['projectid'];
-        if(isset($request['subject']))
+        if(isset($request['subject']) && isset($request['status']) && !empty($request['subject']) && !empty($request['status']) && isset($request['projectid']) && !empty($request['projectid']))
         {
             $statussubject = $request['subject'];
-        }
-        if(isset($request['status']))
-        {
             $status = $request['status'];
+            $inprogress = new ProjectProgressStatus;
+            $inprogress->user_id = $userid;
+            $inprogress->project_id = $request['projectid'];
+            $inprogress->project_progress_status_subject = $statussubject;
+            $inprogress->project_progress_status = $status;
+            $inprogress->save();
+           /* $scheduler = Project::where('project_id','=',$projectid)
+                                  ->first();
+            $touserid = $scheduler->user_id;
+            $text = 'Associate added new status!';
+            $project = Project::where('project_id','=',$projectid)->first();
+            $body = $project->project_name;
+            $title = $text;
+            $notificationid = '12';
+            $this->sendUserNotification($touserid,$userid,$projectid,$body,$title,$text,$notificationid);*/
+            return json_encode(array('status' => '1', 'message' => "Status added successfully"));
+            exit;
         }
-        $inprogress = new ProjectProgressStatus;
-        $inprogress->user_id = $userid;
-        $inprogress->project_id = $request['projectid'];
-        $inprogress->project_progress_status_subject = $statussubject;
-        $inprogress->project_progress_status = $status;
-        $inprogress->save();
-        $scheduler = Project::where('project_id','=',$projectid)
-                              ->first();
-        $touserid = $scheduler->user_id;
-        $text = 'Associate added new status!';
-        $project = Project::where('project_id','=',$projectid)->first();
-        $body = $project->project_name;
-        $title = $text;
-        $notificationid = '12';
-        $this->sendUserNotification($touserid,$userid,$projectid,$body,$title,$text,$notificationid);
-                
-        return json_encode(array('status' => '1', 'message' => "Status added successfully"));
-        exit;
-            
+        else
+        {
+            return json_encode(array('status' => '0', 'message' => "Mandatory parameter empty"));
+            exit;
+        }
     }
     /*Name : associate bids
     Url  :http://103.51.153.235/project_management/public/index.php/api/myBids?%20userid=181&privatekey=WOIBYa5i66feh8N1
@@ -4756,7 +4761,6 @@ class ApiController extends Controller
         /* find devices where user is login*/
         $accesskey = UserAccessKey::where('user_id','=',$touserid)
                                     ->where('user_access_key_status','=',1)->get();
-        
         $projectid = (string)$projectid;
         $notificationcount = ProjectNotification::where('to_user_id','=',$touserid)
                                                 ->where('read_flag','=',0)->count();
@@ -4855,7 +4859,7 @@ class ApiController extends Controller
     {
        
             $feedback = PushNotification::setService('fcm')
-                    ->setMessage([
+                        ->setMessage([
                                 'notification' => [
                                 'title'              => "This is Title",
                                 'body'               => "This is Message",
@@ -4883,7 +4887,8 @@ class ApiController extends Controller
         $status_Types = ProgressStatusType::all();
         foreach ($status_Types as  $value) 
         {
-            $statusType[] = ['status_id' => (string)$value['progress_status_type_id'], 'status_type' =>  $value['progress_status_type']];
+            $statusType[] = ['status_id' => (string)$value['progress_status_type_id'], 
+                            'status_type' =>  $value['progress_status_type']];
                
         }
         if(isset($statusType))
@@ -4907,19 +4912,35 @@ class ApiController extends Controller
         $projectid = $request['projectid'];
         $employeeType = $user->associate_type_id;
         $userid = $request['userid'];
+        $projectBid = ProjectBid::where(['project_id' => $projectid,
+                                        'user_id'     => $userid])->first();
         if($employeeType == 1)
         {
             $project = Project::where('project_id','=',$projectid)->first();
-            $projectbid = new ProjectBid;
-            $projectbid->project_id = $projectid;
-            $projectbid->user_id = $request['userid'];
-            $projectbid->associate_suggested_bid = $project->approx_bid;
-            $projectbid->project_bid_status = 1;
-            $projectbid->bid_status = 1;
-            $projectbid->created_at = date('Y-m-d H:i:s');
-            $projectbid->accepted_rejected_at = date('Y-m-d H:i:s');
-            $projectbid->save();
-            $date = date('Y-m-d H:i:s');
+            if(isset($projectBid) && !empty($projectBid))
+            {
+                $updatebid = ProjectBid::where(['project_id' => $projectid,
+                                                'user_id'    => $userid])
+                                        ->update(['associate_suggested_bid' => $project->approx_bid,
+                                                ]);
+            }
+            else
+            {
+                $projectbid = new ProjectBid;
+                $projectbid->project_id = $projectid;
+                $projectbid->user_id = $request['userid'];
+                $projectbid->associate_suggested_bid = $project->approx_bid;
+                $projectbid->project_bid_status = 2;
+                $projectbid->bid_status  = 1;
+                $projectbid->is_employee = 1;
+                $projectbid->created_at  = date('Y-m-d H:i:s');
+                $projectbid->accepted_rejected_at = date('Y-m-d H:i:s');
+                $projectbid->save();
+                $updaterequest = ProjectBidRequest::where(['to_user_id' => $userid,
+                                                           'project_id' => $projectid])
+                                                    ->update(['request_send_status' => 0]);
+            }
+            /*$date = date('Y-m-d H:i:s');
             //reject other's bids
             $rejectuserbid = ProjectBid::where('user_id','<>', $userid)
                             ->where('project_id','=',$projectid)
@@ -4953,7 +4974,7 @@ class ApiController extends Controller
             $msg = $title;
             $notificationid = '3';
             $this->sendUserNotification($managerid,$managerid,$projectid,$body,$title,$msg,$notificationid);
-            if(isset($rejectuserbid))
+            if(isset($rejectuserbid) && !empty($rejectuserbid))
             {
                 $title = 'Sorry! Your bid was rejected';
                 $msg = $title;
@@ -4966,7 +4987,7 @@ class ApiController extends Controller
             $title = 'Congratulations! Job was accepted!';
             $msg = $title;
             $notificationid = '3';
-            $this->sendUserNotification($userid,$managerid,$projectid,$body,$title,$msg,$notificationid);
+            $this->sendUserNotification($userid,$managerid,$projectid,$body,$title,$msg,$notificationid);*/
             return json_encode(array('status' => '1','message' => 'job Accepted successfully'));
             exit;
         }

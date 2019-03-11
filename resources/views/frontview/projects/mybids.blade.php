@@ -80,6 +80,37 @@
                                       <h5><i class="fa fa-calendar" aria-hidden="true"></i>On site Date</h5>
                                       <strong id="active-onsitedate">{{$activeProjectDetail['onsitedate']}}</strong>
                                     </div>
+                                    <br><br><br>
+                                                      <div class="report-date" style="float: left;">
+                                                          <h5>Property Type</h5>
+                                                          <strong id="active-propertyType">{{$activeProjectDetail['propertyType']}}</strong>
+                                                      </div>
+                                                      <br><br><br>
+                                                      <div class="report-date" style="float: left;">
+                                                          <h5>No. Units&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h5>  
+                                                          <strong id="active-noOfUnits">{{$activeProjectDetail['noOfUnits']}}</strong>
+
+                                                      </div>
+                                                      <div class="report-date" style="float: left;">
+                                                          <h5>Sq. Footage&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h5>
+                                                          <strong id="active-sqFootage">{{$activeProjectDetail['sqFootage']}}</strong>
+                                                      </div>
+                                                      <div class="report-date" style="float: left;">
+                                                          <h5>No. Buildings&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h5>
+                                                          <strong id="active-noBuildings">{{$activeProjectDetail['noBuildings']}}</strong>
+                                                      </div>
+                                                       <div class="report-date" style="float: left;">
+                                                          <h5>Land Area&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h5>
+                                                          <strong id="active-landArea">{{$activeProjectDetail['landArea']}}</strong>
+                                                      </div>
+                                                      <div class="report-date" style="float: left;">
+                                                          <h5>No. Stories&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h5>
+                                                          <strong id="active-noOfStories">{{$activeProjectDetail['noOfStories']}}</strong>
+                                                      </div>
+                                                       <div class="report-date" style="float: left;">
+                                                          <h5>Year Built&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h5>
+                                                          <strong id="active-yearBuilt">{{$activeProjectDetail['yearBuilt']}}</strong>
+                                                      </div>
                                   </div>
                                 </div>
                                 <div class="ls-scope">
@@ -222,6 +253,37 @@
                                         <h5><i class="fa fa-calendar" aria-hidden="true"></i>On site Date</h5>
                                         <strong id="history-onsitedate">{{$historyProjectDetail['onsitedate']}}</strong>
                                       </div>
+                                      <br><br><br>
+                                                      <div class="report-date" style="float: left;">
+                                                          <h5>Property Type</h5>
+                                                          <strong id="history-propertyType">{{$historyProjectDetail['propertyType']}}</strong>
+                                                      </div>
+                                                      <br><br><br>
+                                                      <div class="report-date" style="float: left;">
+                                                          <h5>No. Units&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h5>  
+                                                          <strong id="history-noOfUnits">{{$historyProjectDetail['noOfUnits']}}</strong>
+
+                                                      </div>
+                                                      <div class="report-date" style="float: left;">
+                                                          <h5>Sq. Footage&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h5>
+                                                          <strong id="history-sqFootage">{{$historyProjectDetail['sqFootage']}}</strong>
+                                                      </div>
+                                                      <div class="report-date" style="float: left;">
+                                                          <h5>No. Buildings&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h5>
+                                                          <strong id="history-noBuildings">{{$historyProjectDetail['noBuildings']}}</strong>
+                                                      </div>
+                                                       <div class="report-date" style="float: left;">
+                                                          <h5>Land Area&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h5>
+                                                          <strong id="history-landArea">{{$historyProjectDetail['landArea']}}</strong>
+                                                      </div>
+                                                      <div class="report-date" style="float: left;">
+                                                          <h5>No. Stories&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h5>
+                                                          <strong id="history-noOfStories">{{$historyProjectDetail['noOfStories']}}</strong>
+                                                      </div>
+                                                       <div class="report-date" style="float: left;">
+                                                          <h5>Year Built&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h5>
+                                                          <strong id="history-yearBuilt">{{$historyProjectDetail['yearBuilt']}}</strong>
+                                                      </div>
                                     </div>
                                   </div>
                                   <div class="ls-scope">
@@ -482,6 +544,13 @@
               $("#active-createddate").text(msg.createddate);
               $("#active-siteaddress").text(msg.siteaddress);
               $("#active-reportduedate").text(msg.reportduedate);
+              $("#active-propertyType").text(msg.propertyType);
+              $("#active-noOfUnits").text(msg.noOfUnits);
+              $("#active-noOfStories").text(msg.noOfStories);
+              $("#active-sqFootage").text(msg.sqFootage);
+              $("#active-noBuildings").text(msg.noBuildings);
+              $("#active-landArea").text(msg.landArea);
+              $("#active-yearBuilt").text(msg.yearBuilt);
               $("#active-instructions").text(msg.instructions);
               $("#active-template").text(msg.template);
               $("#active-scope").text(msg.scope);
@@ -514,6 +583,13 @@
                         $("#active-createddate").text(projectData['createddate']);
                         $("#active-siteaddress").text(projectData['siteaddress']);
                         $("#active-onsitedate").text(projectData['onsitedate']);
+                        $("#active-propertyType").text(projectData['propertyType']);
+                        $("#active-noOfUnits").text(projectData['noOfUnits']);
+                        $("#active-noOfStories").text(projectData['noOfStories']);
+                        $("#active-sqFootage").text(projectData['sqFootage']);
+                        $("#active-noBuildings").text(projectData['noBuildings']);
+                        $("#active-landArea").text(projectData['landArea']);
+                        $("#active-yearBuilt").text(projectData['yearBuilt']);
                         $("#active-projectid").text(projectData['projectid']);
                         $("#active-approxbid").text(projectData['approxbid']);
                         var jobReachCount = projectData['jobReachCount'];
@@ -565,6 +641,13 @@
               $("#history-createddate").text(msg.createddate);
               $("#history-siteaddress").text(msg.siteaddress);
               $("#history-reportduedate").text(msg.reportduedate);
+              $("#history-propertyType").text(msg.propertyType);
+              $("#history-noOfUnits").text(msg.noOfUnits);
+              $("#history-noOfStories").text(msg.noOfStories);
+              $("#history-sqFootage").text(msg.sqFootage);
+              $("#history-noBuildings").text(msg.noBuildings);
+              $("#history-landArea").text(msg.landArea);
+              $("#history-yearBuilt").text(msg.yearBuilt);
               $("#history-instructions").text(msg.instructions);
               $("#history-template").text(msg.template);
               $("#history-scope").text(msg.scope);
@@ -599,6 +682,13 @@
                         $("#history-createddate").text(projectData['createddate']);
                         $("#history-siteaddress").text(projectData['siteaddress']);
                         $("#history-onsitedate").text(projectData['onsitedate']);
+                        $("#history-propertyType").text(projectData['propertyType']);
+                        $("#history-noOfUnits").text(projectData['noOfUnits']);
+                        $("#history-noOfStories").text(projectData['noOfStories']);
+                        $("#history-sqFootage").text(projectData['sqFootage']);
+                        $("#history-noBuildings").text(projectData['noBuildings']);
+                        $("#history-landArea").text(projectData['landArea']);
+                        $("#history-yearBuilt").text(msg.yearBuilt);
                         $("#history-projectid").text(projectData['projectid']);
                         $("#history-approxbid").text(projectData['approxbid']);
                         var jobReachCount = projectData['jobReachCount'];

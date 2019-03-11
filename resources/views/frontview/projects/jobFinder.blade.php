@@ -99,6 +99,37 @@
                                           <h5><i class="fa fa-calendar" aria-hidden="true"></i>On Site Date</h5>
                                           <strong id="onsitedate">{{$projectdetail['onsitedate']}}</strong>
                                         </div>
+                                        <br><br><br>
+                                                     <div class="report-date" style="float: left;">
+                                                          <h5>Property Type</h5>
+                                                          <strong id="propertyType">{{$projectdetail['propertyType']}}</strong>
+                                                      </div>
+                                        <br><br><br>
+                                                      <div class="report-date" style="float: left;">
+                                                          <h5>No. Units&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h5>  
+                                                          <strong id="noOfUnits">{{$projectdetail['noOfUnits']}}</strong>
+
+                                                      </div>
+                                                      <div class="report-date" style="float: left;">
+                                                          <h5>Sq. Footage&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h5>
+                                                          <strong id="sqFootage">{{$projectdetail['sqFootage']}}</strong>
+                                                      </div>
+                                                      <div class="report-date" style="float: left;">
+                                                          <h5>No. Buildings&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h5>
+                                                          <strong id="noBuildings">{{$projectdetail['noBuildings']}}</strong>
+                                                      </div>
+                                                       <div class="report-date" style="float: left;">
+                                                          <h5>Land Area&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h5>
+                                                          <strong id="landArea">{{$projectdetail['landArea']}}</strong>
+                                                      </div>
+                                                      <div class="report-date" style="float: left;">
+                                                          <h5>No. Stories&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h5>
+                                                          <strong id="noOfStories">{{$projectdetail['noOfStories']}}</strong>
+                                                      </div>
+                                                       <div class="report-date" style="float: left;">
+                                                          <h5>Year Built&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h5>
+                                                          <strong id="yearBuilt">{{$projectdetail['yearBuilt']}}</strong>
+                                                      </div>
                                       </div>
                                     </div>
                                     <!-- ls-project-address -->
@@ -440,6 +471,13 @@
                         $("#createddate").text(projectData['createddate']);
                         $("#siteaddress").text(projectData['siteaddress']);
                         $("#onsitedate").text(projectData['onsitedate']);
+                        $("#propertyType").text(projectData['propertyType)']);
+                        $("#noOfUnits").text(projectData['noOfUnits']);
+                        $("#noOfStories").text(projectData['noOfStories']);
+                        $("#sqFootage").text(projectData['sqFootage']);
+                        $("#noBuildings").text(projectData['noBuildings']);
+                        $("#landArea").text(projectData['landArea']);
+                        $("#yearBuilt").text(projectData['yearBuilt']);
                         $("#projectid").text(projectData['projectid']);
                         $("#approxbid").text(projectData['approxbid']);
                         var jobReachCount = projectData['jobReachCount'];
@@ -488,6 +526,13 @@
               $("#createddate").text(msg.createddate);
               $("#siteaddress").text(msg.siteaddress);
               $("#reportduedate").text(msg.reportduedate);
+              $("#propertyType").text(msg.propertyType);
+              $("#noOfUnits").text(msg.noOfUnits);
+              $("#noOfStories").text(msg.noOfStories);
+              $("#sqFootage").text(msg.sqFootage);
+              $("#noBuildings").text(msg.noBuildings);
+              $("#landArea").text(msg.landArea);
+              $("#yearBuilt").text(msg.yearBuilt);
               $("#instructions").text(msg.instructions);
               $("#template").text(msg.template);
               $("#scope").text(msg.scope);

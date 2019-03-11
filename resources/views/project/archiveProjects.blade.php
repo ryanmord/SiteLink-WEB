@@ -46,9 +46,9 @@
                 <div class="col-md-6">
 
                     <div class="form-group" style="float: right;">
-                        <button class="btn btn-normal" type="button" id="schedule-btn" disabled>
+                        <button class="btn btn-danger" type="button" id="schedule-btn" disabled>
                         <!-- <i class="glyphicon glyphicon-remove-circle"></i> -->
-                        &nbsp;Pre-Scheduled</button>      
+                        &nbsp;Un-Archive</button>      
                         <!-- <button class="btn btn-info" type="button" id="unblock-btn"><i class="glyphicon glyphicon-ok-circle"></i>&nbsp;Unblock</button> -->
                         <input type="hidden" name="projectids" id="projectids">
                         &nbsp     
@@ -119,7 +119,7 @@
                                               <a href="{{url('/allProejcts/projectDetail/'.$project['project_id'])}}">
                                              View</a>
                                             </li>
-                                            <li><a href="{{url('/dashboard/scheduled/'.$project['project_id'])}}">Pre-Scheduled</a>
+                                            <li><a href="{{url('/dashboard/scheduled/'.$project['project_id'])}}">Un-Archive</a>
                                             </li>
                                         </ul>
                                     </div>
@@ -264,16 +264,10 @@ $(function () {
         if(checks == '')
         {
             document.getElementById("schedule-btn").disabled = true;
-            var element = document.getElementById("schedule-btn");
-            element.classList.remove("btn-danger");
-            document.getElementById("schedule-btn").classList.add('btn-normal');
         }
         else
         {
           document.getElementById("schedule-btn").disabled = false;
-          var element = document.getElementById("schedule-btn");
-          element.classList.remove("btn-normal");
-          document.getElementById("schedule-btn").classList.add('btn-danger');
         }
       });
     $('body').on('click','#schedule-btn', function (event) {

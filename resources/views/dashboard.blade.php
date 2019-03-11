@@ -273,8 +273,8 @@
                           </div>
                           <div class="col-md-6">
 
-                              <div class="form-group" style="float: right;">
-                                  <button class="btn btn-normal" type="button" id="archive-btn" disabled>
+                              <div style="float: right;">
+                                  <button class="btn btn-danger" type="button" id="archive-btn" disabled style="margin-top: 15px;">
                                   <!-- <i class="glyphicon glyphicon-remove-circle"></i> -->
                                   &nbsp;Archive</button>      
                                   <!-- <button class="btn btn-info" type="button" id="unblock-btn"><i class="glyphicon glyphicon-ok-circle"></i>&nbsp;Unblock</button> -->
@@ -292,9 +292,8 @@
                                   <th class="table-td-th" width="50">
                                       <!-- <input type="checkbox" id="allChecks"> -->
                                   </th>
-                                    <th class="table-td-th"">Project ID</th>
+                                    <th class="table-td-th">Project ID</th>
                                     <th class="table-td-th">Project Name</th>
-                                   
                                     <th class="table-td-th">Site Address</th>
                                     <th class="table-td-th" width="10%">Budget</th>
                                     <th class="table-td-th">Project Manager</th>
@@ -678,16 +677,10 @@ $(function () {
         if(checks == '')
         {
             document.getElementById("archive-btn").disabled = true;
-            var element = document.getElementById("archive-btn");
-            element.classList.remove("btn-danger");
-            document.getElementById("archive-btn").classList.add('btn-normal');
         }
         else
         {
           document.getElementById("archive-btn").disabled = false;
-          var element = document.getElementById("archive-btn");
-          element.classList.remove("btn-normal");
-          document.getElementById("archive-btn").classList.add('btn-danger');
         }
       });
     $('body').on('click','#archive-btn', function (event) {

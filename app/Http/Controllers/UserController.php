@@ -208,18 +208,19 @@ class UserController extends Controller
     public function dashboard()
     {
         
-        $associate = User::where('user_types_id','=','2')
-                    ->where('users_approval_status','=',1)->count();
-        $schedular = User::where('user_types_id','=','1')->count();
-        $project   = DB::table('projects')
+        $associate    = User::where('user_types_id','=','2')
+                              ->where('users_approval_status','=',1)->count();
+        $schedular    = User::where('user_types_id','=','1')->count();
+        $projectcount = Project::all()->count();
+        $project      = DB::table('projects')
                         ->select('projects.*')
                         ->leftJoin('project_status', 'project_status.project_id', '=', 'projects.project_id')
                         ->orderBy('project_status.created_at','desc')
                         ->get();
-        $associatetype = AssociateType::all();
+        $associatetype   = AssociateType::all();
         $projectbidcount = ProjectBid::where('bid_status','=',1)
                                        ->count();
-        $projectcount = $project->count();
+        //$projectcount = $project->count();
         $users = User::where('users_approval_status','=',2)
                         ->where('user_types_id','=',2)
                         ->orderBy('users_id','desc')->get();
@@ -445,6 +446,7 @@ class UserController extends Controller
                 }                
             }
         }
+        $inProgressCount = $inProgressCount + $overdueprojectcount;
         if($totalproject < 10)
         {
             $totalproject = '0'.(string)$totalproject;
@@ -555,6 +557,7 @@ class UserController extends Controller
         {
             $review = '0.0';
         }
+        $inProgressCount = $inProgressCount + $overdueprojectcount;
         if($inProgressCount < 10)
         {
             $inProgressCount = '0'.(string)$inProgressCount;
