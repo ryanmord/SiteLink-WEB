@@ -317,11 +317,14 @@ class ProjectController extends Controller
         $project->latitude = $request->input('latitude');
         $project->longitude = $request->input('longitude');
         $reportdate = (string)$request->input('reportdate');
-        $reportdate = date("Y-m-d H:i:s", strtotime($reportdate) );
+        $reportdate = new DateTime;
+        $reportdate = $reportdate->format('Y-m-d H:i:s');
         $scope = $request['scopeperformedid'];
         $scope = implode (",",$scope);
         $associatetypeid = $request['associatetypeid'];
         $associatetypeid = implode (",",$associatetypeid);
+        $projectname = $request->input('projectname');
+        $address = $request->input('siteaddress');
         /*return response()->json(['success'=> $associatetypeid]);
         exit;*/
         if($request->input('onsitedate') != null)
@@ -341,10 +344,12 @@ class ProjectController extends Controller
         $budget        = (string)$request->input('budget_txt');
         $budget        = str_replace( ',', '', $budget );
         $project->report_due_date = $reportdate;
+        $latitude    = $request->input('latitude');
+        $longitude   = $request->input('longitude');
         $project->report_template = $request->input('template');
         $project->approx_bid = (double)$projectbid;
         $project->scope_performed_id = $scope;
-        $project->user_id = $request->input('managerid');
+        $project->user_id = (int)$request->input('managerid');
         $project->property_type = $request->input('projectType');
         $project->no_of_units = $request->input('units_txt');
         $project->squareFootage = (double)$footage;
@@ -355,9 +360,11 @@ class ProjectController extends Controller
         $project->budget = (double)$budget;
         $project->employee_type_id = $associatetypeid;
         $project->created_by = 2;
+        $temp = $this->getaddress($latitude,$longitude);
+        $project->city    = $temp['city'];
+        $project->state   = $temp['state'];
+        $project->country = $temp['country'];
         $project->save();
-        $projectname = $request->input('projectname');
-        $address = $request->input('siteaddress');
         $project = Project::where('project_name','=',$projectname)
                             ->where('project_site_address','=',$address)
                             ->get();
@@ -468,6 +475,49 @@ class ProjectController extends Controller
         }
         
         return response()->json(['success'=>'Project created successfully']);
+    }
+    public function getaddress($latitude, $longitude)
+    {
+        $geolocation = $latitude.','.$longitude;
+        $request     = 'https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyCFesVLN0rhPhI0uHrMrQjclKdbyx9X9g0&latlng='.$geolocation.'&sensor=false'; 
+        $file_contents = file_get_contents($request);
+        $json_decode   = json_decode($file_contents);
+        $city = $state = $country = '';
+        if(isset($json_decode->results[0])) {
+            $response = array();
+            foreach($json_decode->results[0]->address_components as $addressComponet) {
+                if(in_array('political', $addressComponet->types)) {
+                        $response[] = $addressComponet->long_name; 
+                }
+            }
+            $results = $json_decode->results[0]->address_components;
+            $flag = 0;
+            foreach ($results as $value) {
+                if(in_array("administrative_area_level_1",$value->types))
+                {
+                    $state = $value->short_name;
+                }
+                if(in_array("locality",$value->types))
+                {
+                    $city = $value->short_name;
+                    $flag = 1;
+                }
+                if($flag == 0)
+                {
+                    if(in_array("administrative_area_level_2",$value->types))
+                    {
+                        $city = $value->short_name;
+                    }
+                }
+                if(in_array("country",$value->types))
+                {
+                    $country = $value->short_name;
+                }
+            }
+            
+        }
+        $temp = array('state' => $state,'city' => $city,'country' => $country);
+        return $temp;
     }
     /**
      * Display the specified resource.
@@ -681,6 +731,10 @@ class ProjectController extends Controller
         {
             $instructions = null;
         }
+        $temp    = $this->getaddress($latitude,$longitude);
+        $city    = $temp['city'];
+        $state   = $temp['state'];
+        $country = $temp['country'];
         $report_template   = $request->input('template');
         $approx_bid        = (string)$request->input('projectbid');
         $approx_bid        = str_replace( ',', '', $approx_bid );
@@ -700,6 +754,9 @@ class ProjectController extends Controller
                             'milesrange'           => $milesrange,
                             'latitude'             => $latitude,
                             'longitude'            => $longitude,
+                            'city'                 => $city,
+                            'country'              => $country,
+                            'state'                => $state,
                             'report_due_date'      => $reportdate,
                             'on_site_date'         => $onsitedate,
                             'report_template'      => $report_template,
@@ -2399,7 +2456,8 @@ class ProjectController extends Controller
         }
         $updateStatus = ProjectStatus::where('project_id','=',$projectid)
                                     ->where('project_status_type_id','=',7)
-                                    ->update(['project_status_type_id' => 1]);
+                                    ->update(['project_status_type_id' => 1,
+                                              'created_at' => date('Y-m-d H:i:s')]);
         return response()->json(array('status' => 1,'message' => 'Project scheduled successfully'));
 
         /*$model = new ProjectStatus;
@@ -2472,7 +2530,7 @@ class ProjectController extends Controller
         $projectstatus = ProjectStatus::where('project_id','=',$projectid)
                                     ->where('project_status_type_id','=',8)
                                     ->update(['project_status_type_id' => 7,
-                                            'created_at' => date('Y-m-d H:i:s')]);
+                                    'created_at' => date('Y-m-d H:i:s')]);
         $message = 'Project Un-Archived successfully!';
         session()->flash('message',$message);
         return redirect()->route('dashboard');

@@ -89,6 +89,8 @@ Route::group(['middleware' => 'disablepreventback'],function()
 	Route::get('/archiveProjects/batchArchive/','ProjectController@batchArchive')->name('batchArchive')->middleware(guest::class);
 	Route::get('/dashboard/scheduled/{id}','ProjectController@scheduled')->name('scheduled')->middleware(guest::class);
 	Route::get('/dashboard/batchScheduled/','ProjectController@batchScheduled')->name('batchScheduled')->middleware(guest::class);
+	Route::get('/report/','ReportController@index')->name('viewReport')->middleware(guest::class);
+	Route::get('/getScheduledProjects/','ReportController@getScheduledProjects')->name('getScheduledProjects')->middleware(guest::class);
 });
 Route::get('/forgotPassword/{userid}','LoginController@forgotpassword')->name('forgotPassword');
 Route::post('/changepassword','LoginController@changepassword');

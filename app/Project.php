@@ -8,7 +8,7 @@ class Project extends Model
 {
    protected $primaryKey = 'project_id';
    protected $fillable   = [
-   		                       'project_name','user_id','project_site_address','report_due_date','instructions','approx_bid','report_template','scope_performed_id','qaqc_date','created_at','updated_at','created_by'
+   		                       'project_name','project_number','user_id','project_site_address','city','state','country','report_due_date','instructions','approx_bid','report_template','scope_performed_id','qaqc_date','created_at','updated_at','created_by'
                             ];
    public function projectstatustype()
     {

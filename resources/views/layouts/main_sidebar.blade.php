@@ -17,6 +17,7 @@
                     </li>
                     <li class="list-group-item"><a href="{{ url('/users')}}"><i class="glyphicon glyphicon-user"></i>Associates & Project Managers </a></li>
                     <!--  <li class="list-group-item"><a href="{{ url('/adminuser')}}"><i class="glyphicon glyphicon-user"></i>Admin Users </a></li> -->
+                     <li class="list-group-item"><a href="{{ route('viewReport') }}"><i class="glyphicon glyphicon-list-alt"></i>Reports</a></li>
                     <li class="list-group-item"><a href="{{ url('/setSettings') }}"><i class="glyphicon glyphicon-cog"></i>Settings</a></li>
                 @else
                     <li class="list-group-item"><a href="{{ url('/managerDashboard')}}"><i class="glyphicon glyphicon-home"></i>Dashboard </a></li>

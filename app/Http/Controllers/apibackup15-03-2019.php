@@ -4176,8 +4176,7 @@ class ApiController extends Controller
         if(!empty($request['email']) && isset($request['email']))
         {
             $managerEmail = $request['email'];
-            $user = User::select('users_id')
-                         ->where('users_email','=',$managerEmail)
+            $user = User::where('users_email','=',$managerEmail)
                          ->first();
             if(isset($user))
             {
@@ -4222,15 +4221,14 @@ class ApiController extends Controller
                         $model->save();
                         /* comment below code as per client's requirement 15/04/2018 */
 
-                       /* $user = User::select('users_id')
-                                      ->where('users_email','=',$managerEmail)->first();*/
+                        $user = User::where('users_email','=',$managerEmail)->first();
                         /*$userid1 = base64_encode($user->users_id);
                         $userid = Crypt::encrypt($user->users_id);
                         $url = url('/emailVerification/'.$userid1);
                         $setPasswordUrl = url('/setNewPassword/'.$userid);
                         $action = 1;
                         Mail::to($managerEmail)->send(new ManagerRegistered($user,$url,$setPasswordUrl,$action));*/
-                        $managerId = $model->users_id;
+                        $managerId = $user->users_id;
                         return json_encode(array('status'   => '1',
                                                 'managerId' => (string)$managerId,
                                                 'message'   => "Project manager registered successfully!!"));
@@ -4326,25 +4324,23 @@ class ApiController extends Controller
         {
             $managerEmail = $request['email'];
             $managerId = $request['managerId'];
-            $user = User::select('users_id')
-                          ->where('users_id','=',$managerId)
+            $user = User::where('users_id','=',$managerId)
                           ->first();
             if(!isset($user) && empty($user))
             {
                 echo json_encode(array('status' => '0', 'message' => "Wrong Scoped Project Manager ID"));
                 exit;
             }
-            $pmUserCount = User::where('users_email','=',$managerEmail)
-                                 ->where('users_id','<>',$managerId)->count();
-            if($pmUserCount != 0)
+            $pmUser = User::where('users_email','=',$managerEmail)
+                            ->where('users_id','<>',$managerId)->first();
+            if(isset($pmUser) && !empty($pmUser))
             {
                 echo json_encode(array('status' => '0', 'message' => "This email already registered with other userid"));
                 exit;
             }
-            $managerUser  = User::select('users_id')
-                                  ->where('users_email','=',$managerEmail)
-                                  ->count();
-            if($managerUser != 0)
+            $managerUser  = User::where('users_email','=',$managerEmail)
+                                  ->first();
+            if(isset($managerUser) && !empty($managerUser))
             {
                 $flag = 1;
             }
@@ -4360,25 +4356,25 @@ class ApiController extends Controller
                 $flag = 2;
             }
             $userid = $managerId;
-            if(!empty($request['firstName']) && isset($request['firstName']))
+            if(!empty($request['firstName']))
             {
                 $name  = $request['firstName'];
                 $model = User::where('users_id', '=',$userid)
                                ->update(['users_name' => $name]);
             }
-            if(!empty($request['lastName']) && isset($request['lastName']))
+            if(!empty($request['lastName']))
             {
                 $lastname  = $request['lastName'];
                 $model = User::where('users_id', '=',$userid)
                                ->update(['last_name' => $lastname]);
             }
-            if(!empty($request['company']) && isset($request['company']))
+            if(!empty($request['company']))
             {
                 $company = $request['company'];
                 $model   = User::where('users_id', '=',$userid)
                                  ->update(['users_company' => $company]);
             }
-            if(!empty($request['phone']) && isset($request['phone']))
+            if(!empty($request['phone']))
             {
                 $phone = (string)$request['phone'];
                 $model = User::where('users_id', '=',$userid)
@@ -4827,13 +4823,6 @@ class ApiController extends Controller
         $temp = array('state' => $state,'city' => $city,'country' => $country);
         return $temp;
     }
-
-    /*name: -getprojectList api
-    date:-14/03/2019
-    it is for 3 party api. it gives inprogress project list based on the given date
-    localhost url:- http://localhost/Scoped/public/index.php/api/getProjectList?apiToken=9jmwRSxE&dateTime=2019-02-07%2016:08:27
-    serverUrl:- http://54.156.147.140/scoped_development/public/index.php/api/getProjectList?apiToken=NxWmVsax&dateTime=2019-02-07%2016:08:40
-     */
     public function getProjectList(Request $request)
     {
         if(isset($request['apiToken']) && !empty($request['apiToken']))
@@ -4846,22 +4835,21 @@ class ApiController extends Controller
             return json_encode(array('status' => '0','message' => "Api token parameter is missing or empty"));
             exit;
         }
-        if(isset($request['dateTime']))
+        if(isset($request['dateTime']) && isset($request['pagenumber']) && isset($request['limit']))
         {
-            if(!empty($request['dateTime']))
+            if(!empty($request['dateTime']) && !empty($request['pagenumber']) && !empty($request['limit']))
             {
                 $date   = $request['dateTime'];
                 $date   = new DateTime($date);
                 $date   = $date->format('Y-m-d H:i:s');
-                /*comment pagination code as per client's requirement*/
-                /*$limit  = $request['limit']; 
+                $limit  = $request['limit']; 
                 $pageno = $request['pagenumber'];   
                 if ($pageno < 1) 
                 {
                     $pageno = 1;
                 }
                 $start = ($pageno + 1);     
-                $items = $limit * ($pageno - 1);*/
+                $items = $limit * ($pageno - 1);
                 $projects = DB::table('project_status')
                                 ->select(DB::raw('SQL_CALC_FOUND_ROWS project_status.project_status_id'),'projects.*')
                                 ->leftJoin('projects', 'projects.project_id', '=', 'project_status.project_id')
@@ -4872,13 +4860,14 @@ class ApiController extends Controller
                                 ->groupBy('projects.project_id')
                                 ->havingRaw('COUNT(project_status.project_status_type_id) = 3')
                                 ->orderBy('project_bids.accepted_rejected_at', 'desc')
-                                /*->limit($limit)
-                                ->offset($items)*/
+                                ->limit($limit)
+                                ->offset($items)
                                 ->get();
-                //$count = DB::select(DB::raw("SELECT FOUND_ROWS() AS Totalcount;"));
-                $count = $projects->count(); 
-                $projectData = '';
-                if($count!=0) 
+                $count = DB::select(DB::raw("SELECT FOUND_ROWS() AS Totalcount;"));
+                $totalRemaingItems = $count[0]->Totalcount - $items;
+                $count = $projects->count();
+                $cntproject = 0;
+                if($count != 0) 
                 {
                     foreach($projects as $value) 
                     {
@@ -5000,15 +4989,24 @@ class ApiController extends Controller
                                           'scopePerformed'    => $scopeperformed,
                                           'associateProfile'  => $associateProfile
                                           ];
-                        
+                        $cntproject += 1;
                     }
-                    $successMsg =  array('status'           => '1', 
-                                         'projectCount'      => (string)$count,
-                                         'projectData'       => $projectData);
+                    $itemsremaining = $totalRemaingItems - $limit;
+                    if($totalRemaingItems > 0) 
+                    {
+                        if($itemsremaining < 0) 
+                        {
+                            $itemsremaining = 0;
+                        }
+                        $successMsg =  array('status'           => '1', 
+                                            'nextPageNumber'    => (string)$start, 
+                                            'projectCount'      => (string)$cntproject,
+                                            'remainingProjects' => (string)$itemsremaining,
+                                            'projectData'       => $projectData);
                             
-                    return json_encode($successMsg);
-                    exit;
-                   
+                        return json_encode($successMsg);
+                        exit;
+                    }
                 }
                 else
                 {
@@ -5029,44 +5027,6 @@ class ApiController extends Controller
             exit;
         }
     }
-     /*Name : Scope performed
-    Url  :http://localhost/Scoped/public/index.php/api/getScopes?apiToken=9jmwRSxE
-    serverUrl:- http://54.156.147.140/scoped_development/public/index.php/api/getScopes?apiToken=NxWmVsax
-    Date : 15/03/2019
-    By   : Suvarna*/
-    
-    public function getScopes(Request $request)
-    {
-        if(isset($request['apiToken']) && !empty($request['apiToken']))
-        {
-            $apiToken = $request['apiToken'];
-            $this->checkapiToken($apiToken);
-        }
-        else
-        {
-            return json_encode(array('status' => '0','message' => "Api token parameter is missing or empty"));
-            exit;
-        }
-        $scope = array();
-        $scopeperformed = ScopePerformed::select('scope_performed_id','scope_performed')->where('scope_status','=','1')->get();
-        foreach ($scopeperformed as  $value) 
-        {
-            $scope[] = ['scope_performed_id' => (string)$value['scope_performed_id'], 'scope_performed' =>  $value['scope_performed']];
-               
-        }
-        if(isset($scopeperformed) && !empty($scopeperformed))
-        {
-            echo json_encode(array('status' => '1','scopeperformed' => $scope));
-            exit;
-        }
-        else
-        {
-            echo json_encode(array('status' => '0','message' => "no values for scope performed"));
-            exit;
-        }
-    }
-
-    /*Common function to check api token in third party api*/
     public function checkapiToken($apiToken)
     {
         $apigeneratedToken = ApiGeneratedToken::where('status','=',1)
@@ -5088,6 +5048,6 @@ class ApiController extends Controller
             exit;
         }
         return 1;
+       
     }
-    
 }
