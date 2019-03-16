@@ -95,25 +95,25 @@
                       <table class="table table-bordered table-hover table-striped">
                           <thead>
                             <tr bgcolor="#EEEEEE">
-                              <th style="text-align: center;vertical-align: middle;" width="50px;">Image</th>
-                              <th style="text-align: center;vertical-align: middle;">Name</th>
-                              <th style="text-align: center;vertical-align: middle;">Company
+                              <th class="table-td-th" width="50px;">Image</th>
+                              <th class="table-td-th">Name</th>
+                              <th class="table-td-th">Company
                               </th>
-                              <th style="text-align: center;vertical-align: middle;">Email</th>
+                              <th class="table-td-th">Email</th>
                             
-                              <th style="text-align: center;vertical-align: middle;">Address
+                              <th class="table-td-th">Address
                               </th>
-                              <th style="text-align: center;vertical-align: middle;">Enrolled </th>
-                              <th style="text-align: center;vertical-align: middle;">Status
+                              <th class="table-td-th">Enrolled </th>
+                              <th class="table-td-th">Status
                               </th>
-                              <th style="text-align: center;vertical-align: middle;">Action
+                              <th class="table-td-th">Action
                               </th>
                             </tr>
                           </thead>
                           <tbody id="user-data">
                             @foreach ($users as $user)
                               <tr class="content">
-                                <td style="text-align: center;vertical-align: middle;">
+                                <td class="table-td-th">
                                   @if(isset($user->users_profile_image))
                                   
                                     <img class="img-rounded" style="max-width:50px;max-height:50px;min-width:50px;min-height:50px;" src= "{{asset('/img/users/'.$user['users_profile_image'])}}" />
@@ -121,8 +121,8 @@
                                     <img class="img-rounded" style="max-width:50px;max-height:50px;min-width:50px;min-height:50px;" src="{{asset('/img/users/default.png')}}"/>
                                   @endif
                                 </td>
-                                <td style="text-align: left;vertical-align: middle;">{{ ucfirst($user->users_name) }}</td>
-                                <td style="text-align: center;vertical-align: middle;">{{ $user->users_company }}</td>
+                                <td class="table-td-th">{{ ucfirst($user->users_name) }}</td>
+                                <td class="table-td-th">{{ $user->users_company }}</td>
                                 <td style="text-align: left;vertical-align: middle;">{{ $user->users_email }}<br>{{ $user->users_phone }}</td>
                     
                                 <td style="text-align: left;vertical-align: middle;">

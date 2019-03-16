@@ -66,7 +66,7 @@
                             <th class="table-td-th" width="50">
                                 <!-- <input type="checkbox" id="allChecks"> -->
                             </th>
-                            <th class="table-td-th"">Project ID</th>
+                            <th class="table-td-th"">Project Identifier</th>
                             <th class="table-td-th">Project Name</th>
                             <th class="table-td-th">Site Address</th>
                             <th class="table-td-th" width="10%">Budget</th>
@@ -81,7 +81,7 @@
                                 <td class="table-td-th">
                                     <input type="checkbox" name="checkProject" id="checkProject" value="{{ $project['project_id'] }}"></td>
                                         <td class="table-td-th">
-                                            {{ $project['project_id'] }}
+                                            {{ $project['identifier'] }}
                                         </td>
                                         <td class="table-td-th" style="text-align: left;">
                                             {{ $project['project_name'] }}

@@ -68,24 +68,24 @@
                                     <table class="table table-bordered table-hover table-striped">
                                         <thead>
                                             <tr bgcolor="#EEEEEE">
-                                                <th style="text-align: center;vertical-align: middle;">Project ID</th>
-                                                <th style="text-align: center;vertical-align: middle;">Project Name</th>
-                                                <th style="text-align: center;vertical-align: middle;">Site Address</th>
-                                                <th  width="10%" style="text-align: center;vertical-align: middle;">Final Bid</th>
+                                                <th class="table-td-th">Project Identifier</th>
+                                                <th class="table-td-th">Project Name</th>
+                                                <th class="table-td-th">Site Address</th>
+                                                <th  width="10%" class="table-td-th">Final Bid</th>
                                                 @if(session('loginusertype') == 'admin')
-                                                 <th style="text-align: center;vertical-align: middle;">Project Manager</th>
+                                                 <th class="table-td-th">Project Manager</th>
                                                 @endif
-                                                <th style="text-align: center;vertical-align: middle;">Assigned To</th>
-                                                <th style="text-align: center;vertical-align: middle;">Created</th>
+                                                <th class="table-td-th">Assigned To</th>
+                                                <th class="table-td-th">Created</th>
                                                
-                                                <th style="text-align: center;vertical-align: middle;">Action</th>
+                                                <th class="table-td-th">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody id="allocated-data">
                                             @foreach ($projects as $project)
                                                 <tr class="content">
-                                                    <td style="vertical-align: middle; text-align: center;">
-                                                        {{ $project['project_id'] }}
+                                                    <td style="vertical-align: left; text-align: center;">
+                                                        {{ $project['identifier'] }}
                                                     </td>
                                                     <td style="text-align: left;vertical-align: middle;">
                                                         {{ $project['project_name'] }}
@@ -167,26 +167,26 @@
                                     <table class="table table-bordered table-hover table-striped">
                                 <thead>
                                     <tr bgcolor="#EEEEEE">
-                                        <th style="text-align: center;vertical-align: middle;">Project ID</th>
-                                        <th style="text-align: center;vertical-align: middle;">Project Name</th>
-                                        <th style="text-align: center;vertical-align: middle;">Site Address</th>
+                                        <th class="table-td-th">Project Identifier</th>
+                                        <th class="table-td-th">Project Name</th>
+                                        <th class="table-td-th">Site Address</th>
             
-                                        <th style="text-align: center;vertical-align: middle;" width="10%">Final Bid</th>
+                                        <th class="table-td-th" width="10%">Final Bid</th>
                                         @if(session('loginusertype') == 'admin')
-                                        <th style="text-align: center;vertical-align: middle;">Project Manager</th>
+                                        <th class="table-td-th">Project Manager</th>
                                         @endif
-                                        <th style="text-align: center;vertical-align: middle;">Assigned To</th>
-                                        <th style="text-align: center;vertical-align: middle;">Created</th>
-                                        <th style="text-align: center;vertical-align: middle;">Completed</th>
+                                        <th class="table-td-th">Assigned To</th>
+                                        <th class="table-td-th">Created</th>
+                                        <th class="table-td-th">Completed</th>
             
-                                        <th style="text-align: center;vertical-align: middle;">Action</th>
+                                        <th class="table-td-th">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody id="complete-data">
                                     @foreach ($completedproject as $project)
                                     <tr class="content">
-                                        <td style="text-align: center;vertical-align: middle;">
-                                            {{ $project['project_id'] }}
+                                        <td style="text-align: left;vertical-align: middle;">
+                                            {{ $project['identifier'] }}
                                         </td>
                                         <td style="text-align: left;vertical-align: middle;">
                                             {{ $project['project_name'] }}
@@ -212,7 +212,7 @@
                                             $date= date($project['created_at']);
                                             $datetime2 = new DateTime($date);
                                             $date= $datetime2->format("m/d/Y");?>
-                                        <td style="text-align: center;vertical-align: middle;">
+                                        <td class="table-td-th">
                                             {{$date}}
                                         </td>
                    
@@ -223,10 +223,10 @@
                                             $date= $datetime2->format("m/d/Y");
                                             $interval = $datetime1->diff($datetime2);
                                             $days = $interval->format(' %a days ago');?>
-                                        <td style="text-align: center;vertical-align: middle;">
+                                        <td class="table-td-th">
                                             {{$date}}
                                         </td>
-                                        <td style="text-align: center;vertical-align: middle;">
+                                        <td class="table-td-th">
                                             <div class="btn-group">
                                                 <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown"><center><span class="glyphicon glyphicon-cog"></span></center></button>
                                                 <ul class="dropdown-menu" role="menu" style="left: 0% !important;
@@ -263,27 +263,27 @@
                                 <table class="table table-bordered table-hover table-striped">
                                     <thead>
                                         <tr bgcolor="#EEEEEE">
-                                            <th style="text-align: center;vertical-align: middle;">Project ID</th>
-                                            <th style="text-align: center;vertical-align: middle;">Project Name</th>
-                                            <th style="text-align: center;vertical-align: middle;">Site Address</th>
+                                            <th sclass="table-td-th">Project Identifier</th>
+                                            <th class="table-td-th">Project Name</th>
+                                            <th class="table-td-th">Site Address</th>
           
-                                            <th style="text-align: center;vertical-align: middle;" width="10%">Final Bid</th>
+                                            <th class="table-td-th"width="10%">Final Bid</th>
                                             @if(session('loginusertype') == 'admin')
-                                            <th style="text-align: center;vertical-align: middle;">Project Manager</th>
+                                            <th class="table-td-th">Project Manager</th>
                                             @endif
-                                            <th style="text-align: center;vertical-align: middle;">Assigned To</th>
+                                            <th class="table-td-th">Assigned To</th>
             
-                                            <th style="text-align: center;vertical-align: middle;">Created</th>
+                                            <th class="table-td-th">Created</th>
             
-                                            <th style="text-align: center;vertical-align: middle;">Cancelled</th>
-                                            <th style="text-align: center;vertical-align: middle;">Action</th>
+                                            <th class="table-td-th">Cancelled</th>
+                                            <th class="table-td-th">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody id="cancel-data">
                                         @foreach ($cancelledproject as $project)
                                         <tr class="content">
-                                            <td style="text-align: center;vertical-align: middle;">
-                                            {{ $project['project_id'] }}
+                                            <td style="text-align: left;vertical-align: middle;">
+                                            {{ $project['identifier'] }}
                                             </td>
                                             <td style="text-align: left;vertical-align: middle;">
                                             {{ $project['project_name'] }}
@@ -308,7 +308,7 @@
                                                 $date= date($project['createddate']);
                                                 $datetime2 = new DateTime($date);
                                                 $date= $datetime2->format("m/d/Y");?>
-                                            <td style="text-align: center;vertical-align: middle;">
+                                            <td class="table-td-th">
                                                 {{$date}}
                                             </td>
                    
@@ -319,10 +319,10 @@
                                                 $date= $datetime2->format("m/d/Y");
                                                 $interval = $datetime1->diff($datetime2);
                                                 $days = $interval->format(' %a days ago');?>
-                                            <td style="text-align: center;vertical-align: middle;">
+                                            <td class="table-td-th">
                                                 {{$date}}
                                             </td>
-                                            <td style="text-align: center;vertical-align: middle;">
+                                            <td class="table-td-th">
                                                 <div class="btn-group">
                                                 <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown"><center><span class="glyphicon glyphicon-cog"></span></center></button>
                                                 <ul class="dropdown-menu" role="menu" style="left: 0% !important;
@@ -359,24 +359,24 @@
                             <table class="table table-bordered table-hover table-striped">
                                 <thead>
                                     <tr bgcolor="#EEEEEE">
-                                        <th style="text-align: center;vertical-align: middle;">Project ID</th>
-                                        <th style="text-align: center;vertical-align: middle;">Project Name</th>
-                                        <th style="text-align: center;vertical-align: middle;">Site Address</th>
-                                        <th style="text-align: center;vertical-align: middle;" width="10%">Final Bid</th>
+                                        <th class="table-td-th">Project Identifier</th>
+                                        <th class="table-td-th">Project Name</th>
+                                        <th class="table-td-th">Site Address</th>
+                                        <th class="table-td-th" width="10%">Final Bid</th>
                                         @if(session('loginusertype') == 'admin')
-                                        <th style="text-align: center;vertical-align: middle;">Project Manager</th>
+                                        <th class="table-td-th">Project Manager</th>
                                         @endif
-                                        <th style="text-align: center;vertical-align: middle;">Assigned To</th>
+                                        <th class="table-td-th">Assigned To</th>
             
-                                        <th style="text-align: center;vertical-align: middle;">Created</th>
-                                        <th style="text-align: center;vertical-align: middle;">Action</th>
+                                        <th class="table-td-th">Created</th>
+                                        <th class="table-td-th">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody id="onhold-data">
                                     @foreach ($onholdprojects as $project)
                                     <tr class="content">
-                                        <td style="text-align: center;vertical-align: middle;">
-                                            {{ $project['project_id'] }}
+                                        <td style="text-align: left;vertical-align: middle;">
+                                            {{ $project['identifier'] }}
                                         </td>
                                         <td style="text-align: left;vertical-align: middle;">
                                             {{ $project['project_name'] }}
@@ -401,10 +401,10 @@
                                             $date= date($project['createddate']);
                                             $datetime2 = new DateTime($date);
                                             $date= $datetime2->format("m/d/Y");?>
-                                        <td style="text-align: center;vertical-align: middle;">
+                                        <td class="table-td-th">
                                             {{$date}}
                                         </td>
-                                        <td style="text-align: center;vertical-align: middle;">
+                                        <td class="table-td-th">
                                             <div class="btn-group">
                                                 <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown"><center><span class="glyphicon glyphicon-cog"></span></center></button>
                                                 <ul class="dropdown-menu" role="menu" style="left: 0% !important;
@@ -447,24 +447,24 @@
                             <table class="table table-bordered table-hover table-striped">
                                 <thead>
                                     <tr bgcolor="#EEEEEE">
-                                    <th style="text-align: center;vertical-align: middle;">Project ID</th>
-                                    <th style="text-align: center;vertical-align: middle;">Project Name</th>
-                                    <th style="text-align: center;vertical-align: middle;">Total Bids</th>
-                                    <th style="text-align: center;vertical-align: middle;">Site Address</th>
-                                    <th style="text-align: center;vertical-align: middle;" width="10%">Suggested Bid</th>
+                                    <th class="table-td-th">Project Identifier</th>
+                                    <th class="table-td-th">Project Name</th>
+                                    <th class="table-td-th">Total Bids</th>
+                                    <th class="table-td-th">Site Address</th>
+                                    <th class="table-td-th" width="10%">Suggested Bid</th>
                                     @if(session('loginusertype') == 'admin')
-                                    <th style="text-align: center;vertical-align: middle;">Project Manager</th>
+                                    <th class="table-td-th">Project Manager</th>
                                     @endif
-                                    <th style="text-align: center;vertical-align: middle;"> Created </th>
-                                    <th style="text-align: center;vertical-align: middle;">Action</th>
+                                    <th class="table-td-th"> Created </th>
+                                    <th class="table-td-th">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody id="open-data">
 
                                 @foreach ($nonallocatedproject as $project)
                                     <tr class="content">
-                                        <td style="text-align: center;vertical-align: middle;">
-                                            {{ $project['project_id'] }}
+                                        <td style="text-align: left;vertical-align: middle;">
+                                            {{ $project['identifier'] }}
                                         </td>
                                         <td style="text-align: left;vertical-align: middle;">
                                             {{ $project['project_name'] }}
@@ -491,11 +491,11 @@
                                             $date= date($project['created_at']);
                                             $datetime2 = new DateTime($date);
                                             $date= $datetime2->format("m/d/Y");?>
-                                        <td style="text-align: center;vertical-align: middle;">
+                                        <td class="table-td-th">
                                             {{$date}}
                                         </td>
                     
-                                        <td style="text-align: center;vertical-align: middle;">
+                                        <td class="table-td-th">
                                             <div class="btn-group">
                                                 <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown"><center><span class="glyphicon glyphicon-cog"></span></center></button>
                                                 <ul class="dropdown-menu" role="menu" style="left: 0% !important;

@@ -91,6 +91,9 @@ Route::group(['middleware' => 'disablepreventback'],function()
 	Route::get('/dashboard/batchScheduled/','ProjectController@batchScheduled')->name('batchScheduled')->middleware(guest::class);
 	Route::get('/report/','ReportController@index')->name('viewReport')->middleware(guest::class);
 	Route::get('/getScheduledProjects/','ReportController@getScheduledProjects')->name('getScheduledProjects')->middleware(guest::class);
+	Route::get('/getRemainingProjects/','ReportController@getRemainingProjects')->name('getRemainingProjects')->middleware(guest::class);
+	Route::get('/exportProjects/','ReportController@exportProjects')->name('exportProjects')->middleware(guest::class);
+	Route::get('/exportremaining/','ReportController@exportremaining')->name('exportremaining')->middleware(guest::class);
 });
 Route::get('/forgotPassword/{userid}','LoginController@forgotpassword')->name('forgotPassword');
 Route::post('/changepassword','LoginController@changepassword');

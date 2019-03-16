@@ -560,9 +560,10 @@ class ProjectController extends Controller
                         //project suggested bid which is given by scheduler
                         $approx_bid = $value->approx_bid;
                     }
-                    $userproject[] = ['project_name'       => $value->project_name, 
+                    $userproject[] = ['project_name'       => $value->project_name,
+                                    'identifier'           => $value->project_number,
                                     'project_id'           => $value->project_id,
-                                    'project_site_address' =>  $value->project_site_address,
+                                    'project_site_address' => $value->project_site_address,
                                     'report_due_date'      => $value->report_due_date,
                                     'report_template'      => $value->report_template,
                                     'scope_performed_id'   => $value->scope_performed_id,
@@ -959,8 +960,9 @@ class ProjectController extends Controller
                 ->first();
                 $associateName = $associatename->users_name.' '.$associatename->last_name;
                 $data[] = ['project_name'          => $project->project_name, 
+                            'identifier'           => $project->project_number,
                             'project_id'           => $project->project_id,
-                            'project_site_address' =>  $project->project_site_address,
+                            'project_site_address' => $project->project_site_address,
                             'instructions'         => $project->instructions,
                             'approx_bid'           => number_format($value->associate_suggested_bid, 2),
                             'associatename'        => $associateName,
@@ -1002,6 +1004,7 @@ class ProjectController extends Controller
                     ->where('project_status_type_id','=',4)->first();
             $statuscount = ProjectProgressStatus::where('project_id','=',$projectid)->count();
             $completedproject[] = ['project_name'          => $value->project_name,
+                                    'identifier'           => $value->project_number,
                                     'project_id'           => $value->project_id,
                                     'project_site_address' =>  $value->project_site_address,
                                     'approx_bid'           => number_format($projectbid->associate_suggested_bid, 2),
@@ -1014,7 +1017,7 @@ class ProjectController extends Controller
         }
         /* Cancelled  projects*/
         $projects = DB::table('projects')
-                    ->select('projects.project_name','projects.project_id','projects.project_site_address','projects.report_due_date','projects.report_template','projects.scope_performed_id','projects.instructions','projects.created_at','projects.user_id')
+                    ->select('projects.project_name','projects.project_number','projects.project_id','projects.project_site_address','projects.report_due_date','projects.report_template','projects.scope_performed_id','projects.instructions','projects.created_at','projects.user_id')
                     ->leftJoin('project_status', 'projects.project_id', '=', 'project_status.project_id')
                     ->where('project_status_type_id','=',5)
                     ->orderBy('project_status.project_status_id','desc')
@@ -1035,8 +1038,9 @@ class ProjectController extends Controller
             
             $statuscount = ProjectProgressStatus::where('project_id','=',$projectid)->count();
             $cancelledproject[] = ['project_name'     => $value->project_name, 
+                                'identifier'          => $value->project_number,
                                 'project_id'          => $value->project_id,
-                                'project_site_address'=>  $value->project_site_address,
+                                'project_site_address'=> $value->project_site_address,
                                 'createddate'         => $value->created_at,
                                 'approx_bid'          => number_format($projectbid->associate_suggested_bid, 2),
                                 'associatename'       => $associateName,
@@ -1067,6 +1071,7 @@ class ProjectController extends Controller
                 $managername = $user->users_name.' '.$user->last_name;
                     //newly created projects
                     $nonallocatedproject[] = ['project_name' => $value->project_name, 
+                            'identifier'           => $value->project_number,
                             'project_id'           => $value->project_id,
                             'project_site_address' =>  $value['project_site_address'],
                             'approx_bid'           => number_format($value->approx_bid, 2),
@@ -1081,7 +1086,7 @@ class ProjectController extends Controller
 
         /* Onhold projects */
         $projects = DB::table('projects')
-         ->select('projects.project_name','projects.project_id','projects.project_site_address','projects.report_due_date','projects.report_template','projects.scope_performed_id','projects.instructions','projects.created_at','projects.user_id')
+         ->select('projects.project_name','projects.project_number','projects.project_id','projects.project_site_address','projects.report_due_date','projects.report_template','projects.scope_performed_id','projects.instructions','projects.created_at','projects.user_id')
         ->leftJoin('project_status', 'projects.project_id', '=', 'project_status.project_id')
         ->where('project_status_type_id','=',6)
         ->orderBy('project_status.project_status_id','desc')
@@ -1105,6 +1110,7 @@ class ProjectController extends Controller
                 $manager = User::where('users_id','=',$value->user_id)->first();
                 $managername = $manager->users_name.' '.$manager->last_name;
                 $onholdprojects[] = ['project_name' => $value->project_name, 
+                            'identifier'            => $value->project_number,
                             'project_id'            => $value->project_id,
                             'project_site_address'  =>  $value->project_site_address,
                             'createddate'           => $value->created_at,
@@ -1491,9 +1497,10 @@ class ProjectController extends Controller
                     ->first();
                     $associateName = $associatename->users_name.' '.$associatename->last_name;
                     $statuscount = ProjectProgressStatus::where('project_id','=',$projectid)->count();
-                    $data[] = ['project_name'        => $value->project_name, 
+                    $data[] = ['project_name'        => $value->project_name,
+                              'identifier'           => $value->project_number, 
                               'project_id'           => $value->project_id,
-                              'project_site_address' =>  $value->project_site_address,
+                              'project_site_address' => $value->project_site_address,
                               'report_due_date'      => $value->report_due_date,
                               'report_template'      => $value->report_template,
                               'scope_performed_id'   => $value->scope_performed_id,
@@ -1510,7 +1517,7 @@ class ProjectController extends Controller
         
         /* Completed projects*/
         $projects = DB::table('projects')
-                        ->select(DB::raw('SQL_CALC_FOUND_ROWS projects.project_id'),'projects.project_id','projects.project_name','projects.user_id','projects.project_site_address','projects.on_site_date','projects.report_due_date','projects.instructions','projects.approx_bid','projects.report_template','projects.scope_performed_id','projects.created_at','projects.updated_at','project_status.project_status_type_id')
+                        ->select(DB::raw('SQL_CALC_FOUND_ROWS projects.project_id'),'projects.project_id','projects.project_name','projects.project_number','projects.user_id','projects.project_site_address','projects.on_site_date','projects.report_due_date','projects.instructions','projects.approx_bid','projects.report_template','projects.scope_performed_id','projects.created_at','projects.updated_at','project_status.project_status_type_id')
                         ->leftJoin('project_status', 'projects.project_id', '=', 'project_status.project_id')
                         ->where('projects.user_id','=',$userid)
                         ->where('project_status.project_status_type_id','=',4)
@@ -1531,6 +1538,7 @@ class ProjectController extends Controller
                     ->where('project_status_type_id','=',4)->first();
                 $statuscount = ProjectProgressStatus::where('project_id','=',$projectid)->count();
                 $completedproject[] = ['project_name' => $value->project_name,
+                                        'identifier'  => $value->project_number,
                                         'project_id' => $value->project_id,
                                         'project_site_address' =>  $value->project_site_address,
                                         'report_due_date' => $value->report_due_date,
@@ -1547,7 +1555,7 @@ class ProjectController extends Controller
         }
              /* Cancelled  projects*/
             $projects = DB::table('projects')
-                        ->select(DB::raw('SQL_CALC_FOUND_ROWS projects.project_id'),'projects.project_id','projects.project_name','projects.user_id','projects.project_site_address','projects.on_site_date','projects.report_due_date','projects.instructions','projects.approx_bid','projects.report_template','projects.scope_performed_id','projects.created_at','projects.updated_at','project_status.project_status_type_id')
+                        ->select(DB::raw('SQL_CALC_FOUND_ROWS projects.project_id'),'projects.project_id','projects.project_name','projects.project_number','projects.user_id','projects.project_site_address','projects.on_site_date','projects.report_due_date','projects.instructions','projects.approx_bid','projects.report_template','projects.scope_performed_id','projects.created_at','projects.updated_at','project_status.project_status_type_id')
                         ->leftJoin('project_status', 'projects.project_id', '=', 'project_status.project_id')
                         ->where('projects.user_id','=',$userid)
                         ->where('project_status.project_status_type_id','=',5)
@@ -1568,6 +1576,7 @@ class ProjectController extends Controller
                     ->where('project_status_type_id','=',5)->first();
                     $statuscount = ProjectProgressStatus::where('project_id','=',$projectid)->count();
                     $cancelledproject[] = ['project_name' => $value->project_name, 
+                                        'identifier'      => $value->project_number,
                                         'project_id'  => $value->project_id,
                                         'project_site_address' =>  $value->project_site_address,
                                         'report_due_date' => $value->report_due_date,
@@ -1607,6 +1616,7 @@ class ProjectController extends Controller
                     $user = User::where('users_id','=',$managerid)->first();
                     $managername = $user->users_name;
                     $nonallocatedproject[] =['project_name' => $value->project_name, 
+                                            'identifier'    => $value->project_number,
                                             'project_id' => $value->project_id,
                                             'project_site_address' =>  $value['project_site_address'],
                                             'report_due_date' => $value->report_due_date,
@@ -1647,6 +1657,7 @@ class ProjectController extends Controller
                     $associateName = $associatename->users_name.' '.$associatename->last_name;
                     $statuscount = ProjectProgressStatus::where('project_id','=',$projectid)->count();
                     $onholdprojects[] = ['project_name' => $value->project_name, 
+                                        'identifier'    => $value->project_number,
                                         'project_id'  => $value->project_id,
                                         'project_site_address' =>  $value->project_site_address,
                                         'report_due_date' => $value->report_due_date,
@@ -2484,6 +2495,7 @@ class ProjectController extends Controller
                 $user = User::where('users_id','=',$managerid)->first();
                 $managername = $user->users_name.' '.$user->last_name;
                 $archiveProject[] = ['project_name'            => $project->project_name, 
+                                        'identifier'           => $project->project_number, 
                                         'project_id'           => $project->project_id,
                                         'project_site_address' => $project->project_site_address,
                                         'budget'               => number_format($project->budget, 2),

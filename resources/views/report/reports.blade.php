@@ -40,18 +40,18 @@
                    <button class="btn btn-info" type="button" id="view-btn" style="margin-top: 15px;float: left;">View</button>
                  </div>
                 <div class="col-sm-6">
-                <button class="btn btn-danger" type="button" id="export-btn" style="margin-top: 15px;float: right;">Export</button>
+                <button class="btn btn-danger" type="button" id="export-btn" style="margin-top: 15px;float: right;" onclick="exportTableToCSV('scheduledProjects.csv')">Export</button>
                   <br>
                 </div>
                </div>
                <div id="div-no-project">
-                    <h6><center>No any scheduled project</center></h6> <br>
+                    <h6><center>No Data Found</center></h6> <br>
                </div>
                 <!--  <input type="date" name="select date" class="form-control"> -->
                 <div class="table-responsive" id="table-div">
                 <input type="hidden" name="projectcount" id="projectcount" value="{{ $scheduledCount }}">
                 @if(isset($scheduledProjects) && !empty($scheduledProjects))
-                  <table class="table table-bordered">
+                  <table class="table table-bordered" id="scheduledProject">
                     <thead>
                       <tr>
                         <th>Date Received</th>
@@ -69,7 +69,7 @@
                     </thead>
                     <tbody id="projectData">
                      @foreach($scheduledProjects as $project)
-                      <tr>
+                      <tr class="content">
                         <td>{{ $project['receivedDate'] }}</td>
                         <td>{{ $project['schedulingDate'] }}</td>
                         <td>{{ $project['onSiteDate'] }}</td>
@@ -104,16 +104,21 @@
               <?php $date = date('Y-m-d'); ?>
                 <div class="row">
                 <div class="col-sm-3">
-                  <input type="date" name="datepicker" id="datepicke2" value="{{ $date }}" class="form-control" style="margin-top: 15px;">
-                  
+                  <input type="date" name="datepicker2" id="datepicker2" value="{{ $date }}" class="form-control" style="margin-top: 15px;">
                 </div>
-                <div class="col-sm-9">
-                <button class="btn btn-danger" type="button" id="export2-btn" style="margin-top: 15px;float: right;">Export</button>
+                <div class="col-sm-3">
+                   <button class="btn btn-info" type="button" id="view-btn2" style="margin-top: 15px;float: left;">View</button>
+                 </div>
+                <div class="col-sm-6">
+                <button class="btn btn-danger" type="button" id="export2-btn" style="margin-top: 15px;float: right;" onclick="exportdataToCSV('remainingProjects.csv')">Export</button>
                   <br>
                 </div>
                </div>
-                <!--  <input type="date" name="select date" class="form-control"> -->
-                <div class="table-responsive">
+               <div id="div-no-remaining">
+                    <h6><center>No Data Found</center></h6> <br>
+               </div>
+                <input type="hidden" name="remainingcount" id="remainingcount" value="{{ $remainingCount }}">
+                <div class="table-responsive" id="table-div2">
                   @if(isset($remainingProjects) && !empty($remainingProjects))
                   <table class="table table-bordered">
                     <thead>
@@ -131,9 +136,9 @@
                         <th>Associate</th>
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="remainingprojectData">
                      @foreach($remainingProjects as $project)
-                      <tr>
+                      <tr class="content">
                         <td>{{ $project['receivedDate'] }}</td>
                         <td>{{ $project['schedulingDate'] }}</td>
                         <td>{{ $project['onSiteDate'] }}</td>
@@ -149,6 +154,16 @@
                      @endforeach
                     </tbody>
                   </table>
+                  <div class="row content-row-pagination">
+                      <br>
+                        <div class="col-md-12">
+                          <ul class="pagination" id="remaining-pagination">
+                           <!--  <li><a href="#">PREV</a></li>
+                            <li class="active"><a href="#">1</a></li>
+                            <li class="disabled"><a href="#">NEXT</a></li> -->
+                          </ul>
+                      </div>
+                    </div>
                   @else
                     <h6><center>No any remaining scheduled project</center></h6>
                   @endif
@@ -166,7 +181,9 @@
  $(document).ready(function () {
     $(".loader").fadeOut("slow");
     $("#div-no-project").hide();
+    $("#div-no-remaining").hide();
     setpagination();
+    remainingProjectPagination();
   });
  /*$('#project-pagination').click(function()
  {
@@ -302,50 +319,229 @@ $(function () {
   });
 }
 </script>
-<!-- <script src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.min.js"></script>
-<script type="text/javascript">
-  document.getElementById('export-btn').addEventListener('click',exportPDF);
+<script type="text/javascript"> 
+function exportTableToCSV(filename) {
+    var csv = [];
+    var  date = new Date($('#datepicker').val());
+    day   = date.getDate();
+    month = date.getMonth() + 1;
+    year  = date.getFullYear();
+    selecteddate = [year, month, day].join('-');
+    $.ajax({
+        type: "GET",
+        url: '<?php echo route('exportProjects'); ?>',
+        data: {selectedDate:selecteddate},
+              dataType: 'json',
+        success: function(response){
+          if(response != '')
+          {
+            var rows = response;
+            for (var i = 0; i < rows.length; i++) {
+              var row = [], cols = rows[i];
+              
+              for (var j = 0; j < cols.length; j++) 
+                  row.push(cols[j]);
+              
+                  csv.push(row.join(","));        
+              }
+                // Download CSV file
+                downloadCSV(csv.join("\n"), filename);
+              }
+          }
+    });
+    //var rows = document.querySelectorAll("#scheduledProject tr");
+    
+    
+}
+function exportdataToCSV(filename) {
+    var csv = [];
+    var  date = new Date($('#datepicker2').val());
+    day   = date.getDate();
+    month = date.getMonth() + 1;
+    year  = date.getFullYear();
+    selecteddate = [year, month, day].join('-');
+    $.ajax({
+        type: "GET",
+        url: '<?php echo route('exportremaining'); ?>',
+        data: {selectedDate:selecteddate},
+              dataType: 'json',
+        success: function(response){
+          if(response != '')
+          {
+            var rows = response;
+            for (var i = 0; i < rows.length; i++) {
+              var row = [], cols = rows[i];
+              
+              for (var j = 0; j < cols.length; j++) 
+                  row.push(cols[j]);
+              
+                  csv.push(row.join(","));        
+              }
+                // Download CSV file
+                downloadCSV(csv.join("\n"), filename);
+              }
+          }
+    });
+    //var rows = document.querySelectorAll("#scheduledProject tr");
+    
+    
+}
+function downloadCSV(csv, filename) {
+    var csvFile;
+    var downloadLink;
 
-var specialElementHandlers = {
-  // element with id of "bypass" - jQuery style selector
-  '.no-export': function(element, renderer) {
-    // true = "handled elsewhere, bypass text extraction"
-    return true;
-  }
-};
+    // CSV file
+    csvFile = new Blob([csv], {type: "text/csv"});
 
-function exportPDF() {
+    // Download link
+    downloadLink = document.createElement("a");
 
-  var doc = new jsPDF('p', 'pt', 'A3');
-  //A4 - 595x842 pts
-  //https://www.gnu.org/software/gv/manual/html_node/Paper-Keywords-and-paper-size-in-points.html
+    // File name
+    downloadLink.download = filename;
 
+    // Create a link to the file
+    downloadLink.href = window.URL.createObjectURL(csvFile);
 
-  //Html source 
-  var source = document.getElementById('content').innerHTML;
+    // Hide download link
+    downloadLink.style.display = "none";
 
-  var margins = {
-    top: 20,
-    bottom: 20,
-    left: 10,
-    right:10,
-    width: 700
-  };
+    // Add the link to DOM
+    document.body.appendChild(downloadLink);
 
-  doc.fromHTML(
-    source, // HTML string or DOM elem ref.
-    margins.left,
-    margins.top, {
-      'width': margins.width,
-      'elementHandlers': specialElementHandlers
-    },
-
-    function(dispose) {
-      // dispose: object with X, Y of the last line add to the PDF 
-      //          this allow the insertion of new lines after html
-      doc.save('ProjectsScheduled.pdf');
-    }, margins);
+    // Click download link
+    downloadLink.click();
 }
 
-</script> -->
+</script>
+<script type="text/javascript">
+  function remainingProjectPagination()
+  {
+        function getPageList(totalPages, page, maxLength) {
+        if (maxLength < 5) throw "maxLength must be at least 5";
+
+        function range(start, end) {
+        return Array.from(Array(end - start + 1), (_, i) => i + start); 
+    }
+
+    var sideWidth = maxLength < 9 ? 1 : 2;
+    var leftWidth = (maxLength - sideWidth*2 - 3) >> 1;
+    var rightWidth = (maxLength - sideWidth*2 - 2) >> 1;
+    if (totalPages <= maxLength) {
+        // no breaks in list
+        return range(1, totalPages);
+    }
+    if (page <= maxLength - sideWidth - 1 - rightWidth) {
+        // no break on left of page
+        return range(1, maxLength-sideWidth-1)
+            .concat([0])
+            .concat(range(totalPages-sideWidth+1, totalPages));
+    }
+    if (page >= totalPages - sideWidth - 1 - rightWidth) {
+        // no break on right of page
+        return range(1, sideWidth)
+            .concat([0])
+            .concat(range(totalPages - sideWidth - 1 - rightWidth - leftWidth, totalPages));
+    }
+    // Breaks on both sides
+    return range(1, sideWidth)
+        .concat([0])
+        .concat(range(page - leftWidth, page + rightWidth)) 
+        .concat([0])
+        .concat(range(totalPages-sideWidth+1, totalPages));
+}
+$(function () {
+    // Number of items and limits the number of items per page
+    var projectcount = document.getElementById('remainingcount').value;
+    var limitPerPage = 6;
+    var totalPages = (Math.ceil(projectcount / limitPerPage));
+    var paginationSize = 7; 
+    var currentPage;
+    function showPage(whichPage) {
+        if (whichPage < 1 || whichPage > totalPages) return false;
+        currentPage = whichPage;
+        $("#remainingprojectData .content").hide()
+            .slice((currentPage-1) * limitPerPage, 
+                    currentPage * limitPerPage).show();
+        // Replace the navigation items (not prev/next):            
+        $("#remaining-pagination li").slice(1, -1).remove();
+        getPageList(totalPages, currentPage, paginationSize).forEach( item => {
+            $("<li>").addClass("page-item")
+                     .addClass(item ? "current-page" : "disabled")
+                     .toggleClass("active", item === currentPage).append(
+                $("<a>").addClass("page-link").attr({
+                    href: "javascript:void(0)"}).text(item || "...")
+            ).insertBefore("#next-page1");
+        });
+        // Disable prev/next when at first/last page:
+        $("#previous-page1").toggleClass("disabled", currentPage === 1);
+        $("#next-page1").toggleClass("disabled", currentPage === totalPages);
+        return true;
+    }
+
+    // Include the prev/next buttons:
+    $("#remaining-pagination").append(
+        $("<li>").addClass("page-item").attr({ id: "previous-page1" }).append(
+            $("<a>").addClass("page-link").attr({
+                href: "javascript:void(0)"}).text("Prev")
+        ),
+        $("<li>").addClass("page-item").attr({ id: "next-page1" }).append(
+            $("<a>").addClass("page-link").attr({
+                href: "javascript:void(0)"}).text("Next")
+        )
+    );
+    // Show the page links
+    $("#remainingprojectData").show();
+    showPage(1);
+
+    // Use event delegation, as these items are recreated later    
+    $(document).on("click", "#remaining-pagination li.current-page:not(.active)", function () {
+        return showPage(+$(this).text());
+    });
+    $("#next-page1").on("click", function () {
+        return showPage(currentPage+1);
+    });
+
+    $("#previous-page1").on("click", function () {
+        return showPage(currentPage-1);
+    });
+  });
+}
+
+$('#view-btn2').click(function(){
+    var  date = new Date($('#datepicker2').val());
+    if(!isNaN(date))
+    {
+      day   = date.getDate();
+      month = date.getMonth() + 1;
+      year  = date.getFullYear();
+      selecteddate = [year, month, day].join('-');
+      $.ajax({
+              type: "GET",
+              url: '<?php echo route('getRemainingProjects'); ?>',
+              data: {selectedDate:selecteddate},
+              dataType: 'json',
+              success: function(response){
+                  if (response.appendtd != '') {
+                      $("#div-no-remaining").hide();
+                      $("#table-div2").show();
+                      $("#remainingprojectData").html("");
+                      $("#remainingprojectData").html(response['appendtd']);
+                      document.getElementById('remainingcount').value = response.projectcount;
+                      remainingProjectPagination();
+                  }
+                  else
+                  {
+                      $("#table-div2").hide();
+                      $("#div-no-remaining").show(); 
+                  }
+              }
+          });
+      }
+      else
+      {
+        alert('Please select date');
+      }
+    });
+</script>
+
 @endsection
