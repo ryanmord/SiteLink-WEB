@@ -72,4 +72,4 @@ Route::any('/getManagerProfile','ApiController@getManagerProfile');
 Route::any('/checkQaqcDate','ApiController@checkQaqcDate');
 Route::any('/getProjectList','ApiController@getProjectList');
 Route::any('/getScopes','ApiController@getScopes');
-//Route::any('/testData','ApiController@testData');
+Route::any('/updateAddress','ApiController@updateAddress');

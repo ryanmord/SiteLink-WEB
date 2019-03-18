@@ -26,13 +26,32 @@ class ReportController extends Controller
     {
         $date = date('Y-m-d');
         $request = new Request;
-        $request['selectedDate'] = '2019-02-07';
+        $request['selectedDate'] = $date;
+        //$request['selectedDate'] = '2019-03-13';
         $request['callFrom'] = 1;
         $scheduledProjects = $this->getScheduledProjects($request);
-        $request['selectedDate'] = '2019-03-13';
+       
+        //$request['selectedDate'] = '2019-03-13';
         $remainingProjects = $this->getRemainingProjects($request);
-        $scheduledCount = count($scheduledProjects);
-        $remainingCount = count($remainingProjects);
+       /* print_r($remainingProjects);
+        exit;*/
+        if(isset($scheduledProjects) && !empty($scheduledProjects))
+        {
+            $scheduledCount = count($scheduledProjects);
+        }
+        else
+        {
+            $scheduledCount = 0;
+        }
+        if(isset($remainingProjects) && !empty($remainingProjects))
+        {
+            $remainingCount = count($remainingProjects);
+        }
+        else
+        {
+            $remainingCount = 0;
+        }
+        
         //echo json_encode($scheduledProjects);
        // exit;
         return view('report.reports',['scheduledProjects' => $scheduledProjects,
@@ -52,20 +71,20 @@ class ReportController extends Controller
         $date2 = new DateTime($date2);
         $date2->modify('+1 day');
         $date2 = $date2->format('Y-m-d H:i:s');
-        $projects = DB::table('project_status')
-                            ->select('projects.*','project_status.project_status_id')
-                            ->leftJoin('projects', 'projects.project_id', '=', 'project_status.project_id')
-                            ->where('project_status.project_status_type_id','=',2)
-                            ->where('project_status.created_at','>=',$date)
-                            ->where('project_status.created_at','<',$date2)
-                            ->orderBy('project_status.created_at', 'desc')
+        $projects = DB::table('project_bids')
+                            ->select('projects.*','project_bids.accepted_rejected_at')
+                            ->leftJoin('projects', 'projects.project_id', '=', 'project_bids.project_id')
+                            ->where('project_bids.project_bid_status','=',1)
+                            ->where('project_bids.accepted_rejected_at','>=',$date)
+                            ->where('project_bids.accepted_rejected_at','<',$date2)
+                            ->orderBy('project_bids.accepted_rejected_at', 'desc')
                             ->get();
         if(isset($projects) && !empty($projects))
         {
             foreach ($projects as $value) {
                 $receivedDate   = new DateTime($value->created_at);
                 $receivedDate   = $receivedDate->format('m/d/Y');
-                $schedulingDate = new DateTime($value->updated_at);
+                $schedulingDate = new DateTime($value->accepted_rejected_at);
                 $schedulingDate = $schedulingDate->format('m/d/Y');
                 if(!is_null($value->on_site_date))
                 {
@@ -140,8 +159,8 @@ class ReportController extends Controller
                     $appendtd .= '<td>'.$value['projectNo'].'</td>';
                     $appendtd .= '<td>'.$value['accountManager'].'</td>';
                     $appendtd .= '<td>'.$value['projectManager'].'</td>';
-                    $appendtd .= '<td>'.$value['city'].'</td>';
                     $appendtd .= '<td>'.$value['state'].'</td>';
+                    $appendtd .= '<td>'.$value['city'].'</td>';
                     $appendtd .= '<td>'.$value['scopeNames'].'</td>';
                     $appendtd .= '<td>'.$value['employeeName'].'</td>';
                     $appendtd .= '<td>'.$value['associateName'].'</td></tr>';
@@ -165,8 +184,8 @@ class ReportController extends Controller
         $projects = DB::table('project_status')
                             ->select('projects.*')
                             ->leftJoin('projects', 'projects.project_id', '=', 'project_status.project_id')
-                            ->where('project_status.created_at','>=',$date)
-                            ->where('project_status.created_at','<',$date2)
+                            ->where('projects.created_at','>=',$date)
+                            ->where('projects.created_at','<',$date2)
                             ->groupBy('project_status.project_id')
                             ->havingRaw('COUNT(project_status.project_status_type_id) = 1')
                             ->orderBy('project_status.created_at', 'desc')
@@ -254,8 +273,8 @@ class ReportController extends Controller
                     $appendtd .= '<td>'.$value['projectNo'].'</td>';
                     $appendtd .= '<td>'.$value['accountManager'].'</td>';
                     $appendtd .= '<td>'.$value['projectManager'].'</td>';
-                    $appendtd .= '<td>'.$value['city'].'</td>';
                     $appendtd .= '<td>'.$value['state'].'</td>';
+                    $appendtd .= '<td>'.$value['city'].'</td>';
                     $appendtd .= '<td>'.$value['scopeNames'].'</td>';
                     $appendtd .= '<td>'.$value['employeeName'].'</td>';
                     $appendtd .= '<td>'.$value['associateName'].'</td></tr>';
@@ -283,13 +302,13 @@ class ReportController extends Controller
         $date2 = new DateTime($date2);
         $date2->modify('+1 day');
         $date2 = $date2->format('Y-m-d H:i:s');
-        $projects = DB::table('project_status')
-                            ->select('projects.*','project_status.project_status_id')
-                            ->leftJoin('projects', 'projects.project_id', '=', 'project_status.project_id')
-                            ->where('project_status.project_status_type_id','=',2)
-                            ->where('project_status.created_at','>=',$date)
-                            ->where('project_status.created_at','<',$date2)
-                            ->orderBy('project_status.created_at', 'desc')
+        $projects = DB::table('project_bids')
+                            ->select('projects.*','project_bids.accepted_rejected_at')
+                            ->leftJoin('projects', 'projects.project_id', '=', 'project_bids.project_id')
+                            ->where('project_bids.project_bid_status','=',1)
+                            ->where('project_bids.accepted_rejected_at','>=',$date)
+                            ->where('project_bids.accepted_rejected_at','<',$date2)
+                            ->orderBy('project_bids.accepted_rejected_at', 'desc')
                             ->get();
         $count = $projects->count();
         if($count != 0)
@@ -361,8 +380,8 @@ class ReportController extends Controller
                            $value->project_number,
                            $accountManager,
                            $managerName,
-                           $value->city,
                            $value->state,
+                           $value->city,
                            $scopeNames,
                            $employeeName,
                            $associateName
@@ -388,8 +407,8 @@ class ReportController extends Controller
         $projects = DB::table('project_status')
                             ->select('projects.*')
                             ->leftJoin('projects', 'projects.project_id', '=', 'project_status.project_id')
-                            ->where('project_status.created_at','>=',$date)
-                            ->where('project_status.created_at','<',$date2)
+                            ->where('projects.created_at','>=',$date)
+                            ->where('projects.created_at','<',$date2)
                             ->groupBy('project_status.project_id')
                             ->havingRaw('COUNT(project_status.project_status_type_id) = 1')
                             ->orderBy('project_status.created_at', 'desc')
@@ -449,8 +468,8 @@ class ReportController extends Controller
                            $value->project_number,
                            $accountManager,
                            $managerName,
-                           $value->city,
                            $value->state,
+                           $value->city,
                            $scopeNames,
                            $employeeName,
                            $associateName

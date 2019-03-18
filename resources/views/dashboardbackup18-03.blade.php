@@ -82,7 +82,8 @@
               <ul id="myTab1" class="nav nav-tabs nav-justified">
                <li class="active"><a href="#schedulingProjects" data-toggle="tab">Pre-Scheduling <span class="badge" style="background-color:#DB5A6B;">{{ $schedulingProjectCount }}</span>
                 </a></li>
-                
+                <li><a href="#projectbids" data-toggle="tab"> Pending Bids <span class="badge" style="background-color:#DB5A6B;">{{ $bidsrequestcount }}</span>
+                </a></li>
                 <li><a href="#home1" data-toggle="tab">
                   Unverified Users <span class="badge" style="background-color:#DB5A6B;" id="user-count">{{ $users->count() }}</span>
                 </a></li>
@@ -185,7 +186,79 @@
                           @endif
                         </div>
                       </div>
+                      <div class="tab-pane fade" id="projectbids">
                       
+                        <div class="table-responsive">
+                        <input type="hidden" name="project-count" id="project-count" value="{{ count($nonallocatedproject) }}">
+                          @if(isset($nonallocatedproject))
+                            <table class="table table-bordered table-hover table-striped" > 
+                              <thead>
+                               <tr bgcolor="#EEEEEE">
+                                    <th style="text-align: center;vertical-align: middle;">Project ID</th>
+                                    <th style="text-align: center;vertical-align: middle;">Project Name</th>
+                                    <th style="text-align: center;vertical-align: middle;">Total Bids</th>
+                                    <th style="text-align: center;vertical-align: middle;">Site Address</th>
+                                    <th style="text-align: center;vertical-align: middle;" width="10%">Suggested Bid</th>
+                                    <th style="text-align: center;vertical-align: middle;">Project Manager</th>
+                                    <th style="text-align: center;vertical-align: middle;">Action</th>
+                                    </tr>
+                  
+                              </thead>
+                              <tbody id="project-data">
+                                 @foreach ($nonallocatedproject as $project)
+                                    <tr class="content">
+                                        <td style="text-align: center;vertical-align: middle;">
+                                            {{ $project['project_id'] }}
+                                        </td>
+                                        <td style="text-align: left;vertical-align: middle;">
+                                            {{ $project['project_name'] }}
+                                        </td>
+                                        <td style="text-align: center;vertical-align: middle;">
+                                            {{ $project['bidcount'] }}
+                                        </td>
+                                        <td style="text-align: left;vertical-align: middle;">
+                                            {{ $project['project_site_address'] }}
+                
+                                        </td>
+                    
+                   
+                                        <td style="text-align: left;vertical-align: middle;">
+                                            <span class="glyphicon glyphicon-usd"></span>
+                                            {{ $project['approx_bid'] }}
+                                        </td>
+                                        @if(session('loginusertype') == 'admin')
+                                        <td style="text-align: left;vertical-align: middle;">
+                                            {{ $project['managername'] }}
+                                        </td>
+                                        @endif
+                                        <td style="text-align: center;vertical-align: middle;">
+                                            <div class="btn-group">
+                                            <a href="{{url('/pendingBids/'.$project['project_id'])}}">
+                                                <button type="button" class="btn btn-success">
+                                                <center>Bids</center></button></a>
+                                               
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                             </tbody>
+                            </table>
+                            <div class="row content-row-pagination">
+                            <br>
+                                <div class="col-md-12">
+                                <ul class="pagination" id="project-pagination">
+                                <!--  <li><a href="#">PREV</a></li>
+                                    <li class="active"><a href="#">1</a></li>
+                                    <li class="disabled"><a href="#">NEXT</a></li> -->
+                                </ul>
+                                </div>
+                            </div>
+                            @else
+                              <h6><center>You do not have any Pending Bids Request</center>
+                              </h6>
+                            @endif
+                          </div>
+                        </div>
                         <div class="tab-pane fade active in" id="schedulingProjects">
                       <div class="row">
                           <div class="col-md-6">
@@ -412,6 +485,98 @@ $(function () {
 }); 
   </script>
   
+    <script type="text/javascript">
+       function getPageList(totalPages, page, maxLength) {
+    if (maxLength < 5) throw "maxLength must be at least 5";
+
+    function range(start, end) {
+        return Array.from(Array(end - start + 1), (_, i) => i + start); 
+    }
+
+    var sideWidth = maxLength < 9 ? 1 : 2;
+    var leftWidth = (maxLength - sideWidth*2 - 3) >> 1;
+    var rightWidth = (maxLength - sideWidth*2 - 2) >> 1;
+    if (totalPages <= maxLength) {
+        // no breaks in list
+        return range(1, totalPages);
+    }
+    if (page <= maxLength - sideWidth - 1 - rightWidth) {
+        // no break on left of page
+        return range(1, maxLength-sideWidth-1)
+            .concat([0])
+            .concat(range(totalPages-sideWidth+1, totalPages));
+    }
+    if (page >= totalPages - sideWidth - 1 - rightWidth) {
+        // no break on right of page
+        return range(1, sideWidth)
+            .concat([0])
+            .concat(range(totalPages - sideWidth - 1 - rightWidth - leftWidth, totalPages));
+    }
+    // Breaks on both sides
+    return range(1, sideWidth)
+        .concat([0])
+        .concat(range(page - leftWidth, page + rightWidth)) 
+        .concat([0])
+        .concat(range(totalPages-sideWidth+1, totalPages));
+}
+
+$(function () {
+    // Number of items and limits the number of items per page
+    var projectcount = document.getElementById("project-count").value;
+    var limitPerPage = 7;
+    var totalPages = (Math.ceil(projectcount / limitPerPage));
+    var paginationSize = 7; 
+    var currentPage;
+    function showPage(whichPage) {
+        if (whichPage < 1 || whichPage > totalPages) return false;
+        currentPage = whichPage;
+        $("#project-data .content").hide()
+            .slice((currentPage-1) * limitPerPage, 
+                    currentPage * limitPerPage).show();
+        // Replace the navigation items (not prev/next):            
+        $("#project-pagination li").slice(1, -1).remove();
+        getPageList(totalPages, currentPage, paginationSize).forEach( item => {
+            $("<li>").addClass("page-item")
+                     .addClass(item ? "current-page" : "disabled")
+                     .toggleClass("active", item === currentPage).append(
+                $("<a>").addClass("page-link").attr({
+                    href: "javascript:void(0)"}).text(item || "...")
+            ).insertBefore("#next-page1");
+        });
+        // Disable prev/next when at first/last page:
+        $("#previous-page1").toggleClass("disabled", currentPage === 1);
+        $("#next-page1").toggleClass("disabled", currentPage === totalPages);
+        return true;
+    }
+
+    // Include the prev/next buttons:
+    $("#project-pagination").append(
+        $("<li>").addClass("page-item").attr({ id: "previous-page1" }).append(
+            $("<a>").addClass("page-link").attr({
+                href: "javascript:void(0)"}).text("Prev")
+        ),
+        $("<li>").addClass("page-item").attr({ id: "next-page1" }).append(
+            $("<a>").addClass("page-link").attr({
+                href: "javascript:void(0)"}).text("Next")
+        )
+    );
+    // Show the page links
+    $("#project-data").show();
+    showPage(1);
+
+    // Use event delegation, as these items are recreated later    
+    $(document).on("click", "#project-pagination li.current-page:not(.active)", function () {
+        return showPage(+$(this).text());
+    });
+    $("#next-page1").on("click", function () {
+        return showPage(currentPage+1);
+    });
+
+    $("#previous-page1").on("click", function () {
+        return showPage(currentPage-1);
+    });
+}); 
+  </script>
  <script type="text/javascript">
        function getPageList(totalPages, page, maxLength) {
     if (maxLength < 5) throw "maxLength must be at least 5";

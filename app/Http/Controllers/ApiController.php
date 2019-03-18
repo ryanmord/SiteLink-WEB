@@ -4599,8 +4599,7 @@ class ApiController extends Controller
             return json_encode(array('status' => '0','message' => "Api token parameter is missing or empty"));
             exit;
         }
-        
-        if(!empty($request['scopedProjectId']))
+        if(!empty($request['scopedProjectId']) && isset($request['scopedProjectId']))
         {
             $projectid = $request['scopedProjectId'];
         }
@@ -4632,7 +4631,7 @@ class ApiController extends Controller
             $model = Project::where('project_id', '=',$projectid)
                                   ->update(['qaqc_date' => null]);
         }
-        if(!empty($request['projectManagerId']))
+        if(!empty($request['projectManagerId']) && isset($request['projectManagerId']))
         {
             $managerId = $request['projectManagerId'];
             $user = User::where('users_id','=',$managerId)
@@ -5051,7 +5050,8 @@ class ApiController extends Controller
         $scopeperformed = ScopePerformed::select('scope_performed_id','scope_performed')->where('scope_status','=','1')->get();
         foreach ($scopeperformed as  $value) 
         {
-            $scope[] = ['scope_performed_id' => (string)$value['scope_performed_id'], 'scope_performed' =>  $value['scope_performed']];
+            $scope[] = ['scope_performed_id' => (string)$value['scope_performed_id'], 
+                        'scope_performed'    =>  $value['scope_performed']];
                
         }
         if(isset($scopeperformed) && !empty($scopeperformed))
@@ -5088,6 +5088,22 @@ class ApiController extends Controller
             exit;
         }
         return 1;
+    }
+    public function updateAddress()
+    {
+        $projects = Project::all();
+        foreach ($projects as $value) {
+            $latitude = $value->latitude;
+            $longitude = $value->longitude;
+            $temp    = $this->getaddress($latitude,$longitude);
+            $city    = $temp['city'];
+            $state   = $temp['state'];
+            $country = $temp['country'];
+            $update  = Project::where('project_id','=',$value->project_id)
+                                ->update(['city'    => $city,
+                                          'state'   => $state,
+                                          'country' => $country]);
+        }
     }
     
 }

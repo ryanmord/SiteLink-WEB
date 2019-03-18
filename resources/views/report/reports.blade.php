@@ -24,9 +24,9 @@
       <div class="content-row">
         <div class="row">
           <ul id="myTab1" class="nav nav-tabs nav-justified">
-            <li class="active"><a href="#home1" data-toggle="tab">Projects Scheduled <span class="badge" style="background-color:#DB5A6B;">{{ $scheduledCount }}</span>
+            <li class="active"><a href="#home1" data-toggle="tab">Projects Scheduled <span class="badge" style="background-color:#DB5A6B;" id="countscheduling">{{ $scheduledCount }}</span>
             </a></li>
-            <li><a href="#remaining" data-toggle="tab">Projects Remaining <span class="badge" style="background-color:#DB5A6B;">{{ count($remainingProjects) }}</span>
+            <li><a href="#remaining" data-toggle="tab">Projects Remaining <span class="badge" style="background-color:#DB5A6B;" id="countremaining">{{ $remainingCount }}</span>
             </a></li>
           </ul>
           <div id="myTabContent" class="tab-content">
@@ -50,8 +50,7 @@
                 <!--  <input type="date" name="select date" class="form-control"> -->
                 <div class="table-responsive" id="table-div">
                 <input type="hidden" name="projectcount" id="projectcount" value="{{ $scheduledCount }}">
-                @if(isset($scheduledProjects) && !empty($scheduledProjects))
-                  <table class="table table-bordered" id="scheduledProject">
+                <table class="table table-bordered" id="scheduledProject">
                     <thead>
                       <tr>
                         <th>Date Received</th>
@@ -68,6 +67,8 @@
                       </tr>
                     </thead>
                     <tbody id="projectData">
+                  @if(isset($scheduledProjects) && !empty($scheduledProjects))
+                  
                      @foreach($scheduledProjects as $project)
                       <tr class="content">
                         <td>{{ $project['receivedDate'] }}</td>
@@ -76,13 +77,14 @@
                         <td>{{ $project['projectNo'] }}</td>
                         <td>{{ $project['accountManager'] }}</td>
                         <td>{{ $project['projectManager'] }}</td>
-                        <td>{{ $project['city'] }}</td>
                         <td>{{ $project['state'] }}</td>
+                        <td>{{ $project['city'] }}</td>
                         <td>{{ $project['scopeNames'] }}</td>
                         <td>{{ $project['employeeName'] }}</td>
                         <td>{{ $project['associateName'] }}</td>
                       </tr>
                      @endforeach
+                     @endif
                     </tbody>
                   </table>
                     <div class="row content-row-pagination">
@@ -95,9 +97,8 @@
                           </ul>
                       </div>
                     </div>
-                  @else
-                    <h6><center>No any scheduled project</center></h6>
-                  @endif
+                  
+                  
                 </div>
               </div>
               <div class="tab-pane fade" id="remaining">
@@ -119,7 +120,6 @@
                </div>
                 <input type="hidden" name="remainingcount" id="remainingcount" value="{{ $remainingCount }}">
                 <div class="table-responsive" id="table-div2">
-                  @if(isset($remainingProjects) && !empty($remainingProjects))
                   <table class="table table-bordered">
                     <thead>
                       <tr>
@@ -137,6 +137,7 @@
                       </tr>
                     </thead>
                     <tbody id="remainingprojectData">
+                    @if(isset($remainingProjects) && !empty($remainingProjects))
                      @foreach($remainingProjects as $project)
                       <tr class="content">
                         <td>{{ $project['receivedDate'] }}</td>
@@ -145,13 +146,14 @@
                         <td>{{ $project['projectNo'] }}</td>
                         <td>{{ $project['accountManager'] }}</td>
                         <td>{{ $project['projectManager'] }}</td>
-                        <td>{{ $project['city'] }}</td>
                         <td>{{ $project['state'] }}</td>
+                        <td>{{ $project['city'] }}</td>
                         <td>{{ $project['scopeNames'] }}</td>
                         <td>{{ $project['employeeName'] }}</td>
                         <td>{{ $project['associateName'] }}</td>
                       </tr>
                      @endforeach
+                     @endif
                     </tbody>
                   </table>
                   <div class="row content-row-pagination">
@@ -164,9 +166,7 @@
                           </ul>
                       </div>
                     </div>
-                  @else
-                    <h6><center>No any remaining scheduled project</center></h6>
-                  @endif
+                 
                 </div>
               </div>
           </div>
@@ -182,6 +182,28 @@
     $(".loader").fadeOut("slow");
     $("#div-no-project").hide();
     $("#div-no-remaining").hide();
+    var remainingCount = document.getElementById('remainingcount').value;
+    if(remainingCount > 0)
+    {
+      document.getElementById('export2-btn').disabled = false;
+    }
+    else
+    {
+      document.getElementById('export2-btn').disabled = true;
+      $("#table-div2").hide();
+      $("#div-no-remaining").show();
+    }
+    var schedulingCount = document.getElementById('projectcount').value;
+    if(schedulingCount > 0)
+    {
+      document.getElementById('export-btn').disabled = false;
+    }
+    else
+    {
+      document.getElementById('export-btn').disabled = true;
+      $("#table-div").hide();
+      $("#div-no-project").show();
+    }
     setpagination();
     remainingProjectPagination();
   });
@@ -210,12 +232,17 @@
                       $("#projectData").html("");
                       $("#projectData").html(response['appendtd']);
                       document.getElementById('projectcount').value = response.projectcount;
+                      $('#countscheduling').text(response.projectcount);
+                      document.getElementById("export-btn").disabled = false;
                       setpagination();
                   }
                   else
                   {
                       $("#table-div").hide();
                       $("#div-no-project").show(); 
+                      $('#countscheduling').text(0);
+                      document.getElementById("export-btn").disabled = true;
+
                   }
               }
           });
@@ -264,7 +291,7 @@
 $(function () {
     // Number of items and limits the number of items per page
     var projectcount = document.getElementById('projectcount').value;
-    var limitPerPage = 6;
+    var limitPerPage = 8;
     var totalPages = (Math.ceil(projectcount / limitPerPage));
     var paginationSize = 7; 
     var currentPage;
@@ -323,67 +350,80 @@ $(function () {
 function exportTableToCSV(filename) {
     var csv = [];
     var  date = new Date($('#datepicker').val());
-    day   = date.getDate();
-    month = date.getMonth() + 1;
-    year  = date.getFullYear();
-    selecteddate = [year, month, day].join('-');
-    $.ajax({
-        type: "GET",
-        url: '<?php echo route('exportProjects'); ?>',
-        data: {selectedDate:selecteddate},
-              dataType: 'json',
-        success: function(response){
-          if(response != '')
-          {
-            var rows = response;
-            for (var i = 0; i < rows.length; i++) {
-              var row = [], cols = rows[i];
-              
-              for (var j = 0; j < cols.length; j++) 
-                  row.push(cols[j]);
-              
-                  csv.push(row.join(","));        
-              }
-                // Download CSV file
-                downloadCSV(csv.join("\n"), filename);
-              }
-          }
-    });
-    //var rows = document.querySelectorAll("#scheduledProject tr");
-    
+    if(!isNaN(date))
+    {
+      day   = date.getDate();
+      month = date.getMonth() + 1;
+      year  = date.getFullYear();
+      selecteddate = [year, month, day].join('-');
+      $.ajax({
+          type: "GET",
+          url: '<?php echo route('exportProjects'); ?>',
+          data: {selectedDate:selecteddate},
+                dataType: 'json',
+          success: function(response){
+            if(response != '')
+            {
+              var rows = response;
+              for (var i = 0; i < rows.length; i++) {
+                var row = [], cols = rows[i];
+                
+                for (var j = 0; j < cols.length; j++) 
+                    row.push(cols[j]);
+                
+                    csv.push(row.join(","));        
+                }
+                  // Download CSV file
+                  downloadCSV(csv.join("\n"), filename);
+                }
+            }
+      });
+      //var rows = document.querySelectorAll("#scheduledProject tr");
+  }
+  else
+  {
+    alert('Please select date');
+  }
     
 }
 function exportdataToCSV(filename) {
     var csv = [];
     var  date = new Date($('#datepicker2').val());
-    day   = date.getDate();
-    month = date.getMonth() + 1;
-    year  = date.getFullYear();
-    selecteddate = [year, month, day].join('-');
-    $.ajax({
-        type: "GET",
-        url: '<?php echo route('exportremaining'); ?>',
-        data: {selectedDate:selecteddate},
-              dataType: 'json',
-        success: function(response){
-          if(response != '')
-          {
-            var rows = response;
-            for (var i = 0; i < rows.length; i++) {
-              var row = [], cols = rows[i];
-              
-              for (var j = 0; j < cols.length; j++) 
-                  row.push(cols[j]);
-              
-                  csv.push(row.join(","));        
-              }
-                // Download CSV file
-                downloadCSV(csv.join("\n"), filename);
-              }
-          }
-    });
+    if(!isNaN(date))
+    {
+      day   = date.getDate();
+      month = date.getMonth() + 1;
+      year  = date.getFullYear();
+      selecteddate = [year, month, day].join('-');
+      $.ajax({
+          type: "GET",
+          url: '<?php echo route('exportremaining'); ?>',
+          data: {selectedDate:selecteddate},
+                dataType: 'json',
+          success: function(response){
+            if(response != '')
+            {
+              var rows = response;
+              for (var i = 0; i < rows.length; i++) {
+                var row = [], cols = rows[i];
+                
+                for (var j = 0; j < cols.length; j++) 
+                    row.push(cols[j]);
+                
+                    csv.push(row.join(","));        
+                }
+                  // Download CSV file
+                  downloadCSV(csv.join("\n"), filename);
+                }
+            }
+
+      });
     //var rows = document.querySelectorAll("#scheduledProject tr");
-    
+  }
+  else
+  {
+    alert('Please select date');
+  }
     
 }
 function downloadCSV(csv, filename) {
@@ -452,7 +492,7 @@ function downloadCSV(csv, filename) {
 $(function () {
     // Number of items and limits the number of items per page
     var projectcount = document.getElementById('remainingcount').value;
-    var limitPerPage = 6;
+    var limitPerPage = 8;
     var totalPages = (Math.ceil(projectcount / limitPerPage));
     var paginationSize = 7; 
     var currentPage;
@@ -527,12 +567,16 @@ $('#view-btn2').click(function(){
                       $("#remainingprojectData").html("");
                       $("#remainingprojectData").html(response['appendtd']);
                       document.getElementById('remainingcount').value = response.projectcount;
+                      $('#countremaining').text(response.projectcount);
+                      document.getElementById("export2-btn").disabled = false;
                       remainingProjectPagination();
                   }
                   else
                   {
                       $("#table-div2").hide();
-                      $("#div-no-remaining").show(); 
+                      $("#div-no-remaining").show();
+                      $('#countremaining').text(0); 
+                      document.getElementById("export2-btn").disabled = true;
                   }
               }
           });

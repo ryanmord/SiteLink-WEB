@@ -226,6 +226,7 @@ class ProjectController extends Controller
                             ->select(DB::raw('SQL_CALC_FOUND_ROWS users_id'), 'users_name', 'users_email','users_address','users_company','users_phone','users_profile_image','last_name')
                             ->where('email_status','=',1)
                             ->where('users_status','=',1)
+                            ->where('user_types_id','=',2)
                             ->where('users_approval_status','=',1)
                             ->whereRaw($where_condition)
                             ->orderBy('users_name','desc')
@@ -239,6 +240,7 @@ class ProjectController extends Controller
                             ->select(DB::raw('SQL_CALC_FOUND_ROWS users_id'), 'users_name', 'users_email','users_address','users_company','users_phone','users_profile_image','last_name')
                             ->where('email_status','=',1)
                             ->where('users_status','=',1)
+                            ->where('user_types_id','=',2)
                             ->where('users_approval_status','=',1)
                             ->orderBy('users_name','desc')
                             ->limit($limit)
@@ -317,8 +319,9 @@ class ProjectController extends Controller
         $project->latitude = $request->input('latitude');
         $project->longitude = $request->input('longitude');
         $reportdate = (string)$request->input('reportdate');
-        $reportdate = new DateTime;
+        $reportdate = new DateTime($reportdate);
         $reportdate = $reportdate->format('Y-m-d H:i:s');
+        $identifier = (string)$request->input('identifier');
         $scope = $request['scopeperformedid'];
         $scope = implode (",",$scope);
         $associatetypeid = $request['associatetypeid'];
@@ -337,6 +340,13 @@ class ProjectController extends Controller
         {
             $project->instructions = $request->input('instruction');
         }
+        if($request->input('qaqcDate') != null)
+        {
+            $qaqcDate = $request->input('qaqcDate');
+            $qaqcDate = new DateTime($qaqcDate);
+            $qaqcDate = $qaqcDate->format('Y-m-d H:i:s');
+            $project->qaqc_date = $qaqcDate;
+        }
         $footage_txt   = (string)$request->input('footage_txt');
         $footage       = str_replace( ',', '', $footage_txt );
         $projectbid    = (string)$request->input('projectbid');
@@ -349,6 +359,7 @@ class ProjectController extends Controller
         $project->report_template = $request->input('template');
         $project->approx_bid = (double)$projectbid;
         $project->scope_performed_id = $scope;
+        $project->project_number = $identifier;
         $project->user_id = (int)$request->input('managerid');
         $project->property_type = $request->input('projectType');
         $project->no_of_units = $request->input('units_txt');
@@ -586,7 +597,7 @@ class ProjectController extends Controller
         {
             //else part execute when user type is associate
             $projects = DB::table('projects')
-                        ->select('projects.project_id','projects.project_name','projects.user_id','projects.project_site_address','projects.report_due_date','projects.instructions','projects.approx_bid','projects.report_template','projects.scope_performed_id','projects.created_at','projects.updated_at','project_bids.associate_suggested_bid')
+                        ->select('projects.project_id','projects.project_name','project_number','projects.user_id','projects.project_site_address','projects.report_due_date','projects.instructions','projects.approx_bid','projects.report_template','projects.scope_performed_id','projects.created_at','projects.updated_at','project_bids.associate_suggested_bid')
                         ->leftJoin('project_bids', 'projects.project_id', '=', 'project_bids.project_id')
                         ->where('project_bids.user_id','=',$id)
                         ->where('project_bids.project_bid_status','=',1)
@@ -604,9 +615,10 @@ class ProjectController extends Controller
                         //get project current status
                         $status1 = $projectstatus->project_status_type_id;
                     }
-                    $userproject[] = ['project_name'       => $value->project_name, 
+                    $userproject[] = ['project_name'       => $value->project_name,
+                                    'identifier'           => $value->project_number, 
                                     'project_id'           => $value->project_id,
-                                    'project_site_address' =>  $value->project_site_address,
+                                    'project_site_address' => $value->project_site_address,
                                     'report_due_date'      => $value->report_due_date,
                                     'report_template'      => $value->report_template,
                                     'scope_performed_id'   => $value->scope_performed_id,
@@ -669,7 +681,7 @@ class ProjectController extends Controller
         $date2      = date($project->report_due_date);
         $datetime2  = new DateTime($date2);
         $reportdate = $datetime2->format("m/d/Y");
-        if(isset($project->on_site_date))
+        if(isset($project->on_site_date) && !empty($project->on_site_date))
         {
             $date2      = date($project->on_site_date);
             $datetime2  = new DateTime($date2);
@@ -677,7 +689,17 @@ class ProjectController extends Controller
         }
         else
         {
-            $onsitedate = '   -';
+            $onsitedate = '';
+        }
+        if(isset($project->qaqc_date) && !empty($project->qaqc_date))
+        {
+            $date2      = date($project->qaqc_date);
+            $datetime2  = new DateTime($date2);
+            $qaqcDate   = $datetime2->format("m/d/Y");    
+        }
+        else
+        {
+            $qaqcDate = '';
         }
         $associatetype = AssociateType::all();
         return view('project.edit',[
@@ -686,6 +708,7 @@ class ProjectController extends Controller
                     'minvalue'      => $minvalue,
                     'maxvalue'      => $maxvalue,
                     'reportdate'    => $reportdate,
+                    'qaqcDate'      => $qaqcDate,
                     'onsitedate'    => $onsitedate,
                     'associatetype' => $associatetype
                 ]);
@@ -707,6 +730,7 @@ class ProjectController extends Controller
         $milesrange = $request->input('milesrange');
         $latitude = $request->input('latitude');
         $longitude = $request->input('longitude');
+        $identifier = $request->input('identifier');
         $reportdate = (string)$request->input('reportdate');
         $reportdate = date("Y-m-d H:i:s", strtotime($reportdate) );
         $scope = $request['scopeperformedid'];
@@ -723,7 +747,6 @@ class ProjectController extends Controller
         {
             $onsitedate = null;
         }
-       
         if($request->input('instruction') != null)
         {
             $instructions = $request->input('instruction');
@@ -731,6 +754,15 @@ class ProjectController extends Controller
         else
         {
             $instructions = null;
+        }
+        if($request->input('qaqcDate') != null)
+        {
+            $qaqcDate = (string)$request->input('qaqcDate');
+            $qaqcDate = date("Y-m-d H:i:s", strtotime($qaqcDate));
+        }
+        else
+        {
+            $qaqcDate = null;
         }
         $temp    = $this->getaddress($latitude,$longitude);
         $city    = $temp['city'];
@@ -751,6 +783,7 @@ class ProjectController extends Controller
         $budget            = str_replace( ',', '', $budget );
         $project = Project::where('project_id', '=', $projectid)
                     ->update(['project_name'       => $project_name,
+                            'project_number'       => $identifier,
                             'project_site_address' => $project_site_address,
                             'milesrange'           => $milesrange,
                             'latitude'             => $latitude,
@@ -772,7 +805,8 @@ class ProjectController extends Controller
                             'land_area'            => $land_area,
                             'no_of_stories'        => $no_of_stories,
                             'year_built'           => $year_built,
-                            'budget'               => (double)$budget
+                            'budget'               => (double)$budget,
+                            'qaqc_date'            => $qaqcDate
                             ]);
         
         if($project != 0)
@@ -1790,7 +1824,6 @@ class ProjectController extends Controller
             $this->sendUserNotification($managerid,$adminid,$projectid,$body,$title,$msg,$notificationid);
             if(isset($rejectuserbid) && !empty($rejectuserbid))
             {
-                $msg = $title;
                 $notificationid = '4';
                 foreach ($rejectuserbid as $value) {
                     $rejectUserid = $value->user_id;
@@ -1803,6 +1836,7 @@ class ProjectController extends Controller
                     {
                         $title = 'Sorry! Your bid was rejected!';
                     }
+                    $msg = $title;
                     $this->sendUserNotification($rejectUserid,$managerid,$projectid,$body,$title,$msg,$notificationid);
                 }
             }
@@ -1828,7 +1862,6 @@ class ProjectController extends Controller
         foreach ($projectStatus as $value) {
             $holdstatus = $value->project_status_type_id ;
         }
-
         $scope = ScopePerformed::all();
         $setting = Setting::where('setting_status','=',1)->first();
         if(isset($setting))
@@ -1886,7 +1919,6 @@ class ProjectController extends Controller
                         );
             $statuscount = ProjectProgressStatus::where('project_id','=',$id)->count();
         }
-        
         else
         {
             $finalbid = 0;

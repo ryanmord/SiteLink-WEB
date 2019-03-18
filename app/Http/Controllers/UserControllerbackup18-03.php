@@ -253,7 +253,7 @@ class UserController extends Controller
                                     ->where('project_bid_status','=',2)
                                     ->where('bid_status','=',1)->count();
 
-            if(empty($projectbid))
+            /*if(empty($projectbid))
             {
                 if($bidcount > 0)
                 {
@@ -271,10 +271,10 @@ class UserController extends Controller
                             'bidcount'             => $bidcount
                             ];
                 }
-            }
+            }*/
            
         }           
-        if(isset($nonallocatedproject))
+        /*if(isset($nonallocatedproject))
         {
             $bidsrequestcount = ProjectBid::where('project_bid_status','=',2)
                                                 ->where('bid_status','=',1)->count();
@@ -283,7 +283,7 @@ class UserController extends Controller
         {
             $bidsrequestcount = 0;
             $nonallocatedproject = null;
-        }
+        }*/
         if(isset($schedulingProject))
         {
             $schedulingProjectCount = count($schedulingProject);
@@ -304,8 +304,8 @@ class UserController extends Controller
                     'project'                => $projectcount,
                     'projectbid'             => $projectbidcount,
                     'users'                  => $users,
-                    'bidsrequestcount'       => $bidsrequestcount,
-                    'nonallocatedproject'    => $nonallocatedproject,
+                    //'bidsrequestcount'       => $bidsrequestcount,
+                    //'nonallocatedproject'    => $nonallocatedproject,
                     'associatetype'          => $associatetype,
                     'schedulingProject'      => $schedulingProject,
                     'schedulingProjectCount' => $schedulingProjectCount

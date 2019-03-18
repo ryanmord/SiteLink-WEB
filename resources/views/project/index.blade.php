@@ -22,7 +22,7 @@
             <table class="table table-bordered table-hover table-striped">
 		        <thead>
                     <tr bgcolor="#EEEEEE">
-                        <th class="table-td-th">Project ID</th>
+                        <th class="table-td-th">Project Identifier</th>
                         <th class="table-td-th">Project Name</th>
                         <th class="table-td-th">Site Address</th>
                         <th class="table-td-th" width="10%">Approx Bid</th>
@@ -35,7 +35,7 @@
                     @foreach ($projects as $project)
                	        <tr class="content">
                             <td class="table-td-th">
-                                {{ $project['project_id'] }}
+                                {{ $project['identifier'] }}
                             </td>
 					       <td style="text-align: left;vertical-align: middle;">
 					           {{ $project['project_name'] }}

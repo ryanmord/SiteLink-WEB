@@ -508,7 +508,7 @@
                                                         @endif
                                                     @endif
                                                     @if($project['bidcount'] != 0)
-                                                    <li><a href="{{url('projectBid/'.$project['project_id'])}}">Bids</a></li>
+                                                    <li><a href="{{url('projectBid/'.$project['project_id'])}}">Show Bids</a></li>
                                                     @endif
                                                 </ul>
                                             </div>

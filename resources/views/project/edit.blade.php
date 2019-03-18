@@ -31,7 +31,14 @@
         });
       });
     </script>
- 
+     <script>
+      $(function() {
+        $( "#qaqcDate" ).datepicker(
+        {
+          minDate: 0 
+        });
+      });
+    </script>
   </head>
 
 <!-- Body -->
@@ -120,6 +127,23 @@
                           <br>
                         </div>
                       </div>
+                      <div class="row">
+                              <div class="form-group col-md-3">
+                                <br>
+                                <label class="required">Project Identifier</label>
+                              </div>
+                              <div class="form-group col-md-4 {{ $errors->has('identifier') ? ' has-error' : '' }}">
+                                <input type="text" name="identifier" id="identifier" value="{{ $project->project_number }}" placeholder="Project Identifier" autocomplete="off">
+                               </div>
+                              <div class="form-group col-md-2">
+                                <br>
+                                <label>QAQC Date</label>
+                              </div>
+                              <div class="form-group col-md-3">
+                                <input type="text" name="qaqcDate" id="qaqcDate" value="{{ $qaqcDate }}" placeholder="QAQC Date" autocomplete="off">
+                                <i class="fa fa-calendar" id="datepickericon"></i>
+                              </div>
+                            </div>
                       <div class="row">
                         <div class="form-group col-md-3">
                           <br>
@@ -409,6 +433,10 @@
             },template:{
                 required: true,
                
+            },
+            identifier:{
+                required: true,
+               
             },selectmanger:{
                 required: true,
                
@@ -460,6 +488,7 @@
               
             },
             template:"Please Enter Template",
+            identifier:"Please Enter Project Identifier",
             projectType:"Please Enter Project Type",
             built_txt:"Please Enter Year Built",
             building_txt:"Please Enter No.of Buildings",
