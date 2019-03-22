@@ -74,21 +74,21 @@
           </div>
         @endif
         <div class="panel-heading">
-          <h3 class="panel-title">Pre-Scheduling, Unverified Users And Pending Bids</h3>
+          <h3 class="panel-title">Pre-Scheduling & Unverified Users</h3>
         </div>
         <div class="content-row">
           <div class="row">
             <div class="panel panel-title">
               <ul id="myTab1" class="nav nav-tabs nav-justified">
-               <li class="active"><a href="#schedulingProjects" data-toggle="tab">Pre-Scheduling <span class="badge" style="background-color:#DB5A6B;">{{ $schedulingProjectCount }}</span>
+               <li class="active"><a href="#schedulingProjects" data-toggle="tab">Pre-Scheduling <span class="badge" style="background-color:#DB5A6B;" id="scheduling-Project-Count">{{ $schedulingProjectCount }}</span>
                 </a></li>
-                
                 <li><a href="#home1" data-toggle="tab">
                   Unverified Users <span class="badge" style="background-color:#DB5A6B;" id="user-count">{{ $users->count() }}</span>
                 </a></li>
               </ul>
               <div id="myTabContent" class="tab-content">
                 <div class="tab-pane fade" id="home1">
+
                   <div class="table-responsive">
                     @if($users->count() > 0)
                       <table class="table table-bordered table-hover table-striped">
@@ -198,6 +198,7 @@
                               <input type="hidden" name="pagenumber" id="pagenumber">
                               <input type="hidden" name="usercount" value="" id="usercount">
                           </div>
+                          @if(isset($schedulingProject) && !empty($schedulingProject))
                           <div class="col-md-6">
 
                               <div style="float: right;">
@@ -209,10 +210,11 @@
                                   &nbsp     
                               </div>
                           </div>
+                          @endif
                       </div>
                         <div class="table-responsive">
                         <input type="hidden" name="project-count" id="scheduling-count" value="{{ count($schedulingProject) }}">
-                          @if(isset($schedulingProject))
+                          @if(isset($schedulingProject) && !empty($schedulingProject))
                             <table class="table table-bordered table-hover table-striped" > 
                               <thead>
                                <tr bgcolor="#EEEEEE">
@@ -223,6 +225,7 @@
                                     <th class="table-td-th">Project Name</th>
                                     <th class="table-td-th">Site Address</th>
                                     <th class="table-td-th" width="10%">Budget</th>
+                                    <th class="table-td-th">Scope</th>
                                     <th class="table-td-th">Project Manager</th>
                                     <th class="table-td-th">Action</th>
                                 </tr>
@@ -247,7 +250,10 @@
                                             <span class="glyphicon glyphicon-usd"></span>
                                             {{ $project['budget'] }}
                                         </td>
-                                        
+                                         <td class="table-td-th" style="text-align: left;">
+                                            
+                                            {{ $project['scopevalue'] }}
+                                        </td>
                                         <td class="table-td-th" style="text-align: left;">
                                             {{ $project['managername'] }}
                                         </td>
@@ -302,7 +308,9 @@
               </div>
             @endif
           </div>
+          @if(isset($users) && !empty($users))
           @include('approveuser')
+          @endif
         @stop
         @section('script') 
         <script type="text/javascript">
@@ -352,8 +360,10 @@
         .concat([0])
         .concat(range(totalPages-sideWidth+1, totalPages));
 }
-
-$(function () {
+var usercount = $('#user-count').text();
+if(usercount > 0)
+{
+  $(function () {
     // Number of items and limits the number of items per page
     var usercount = $('#user-count').text();
     var limitPerPage = 5;
@@ -410,6 +420,8 @@ $(function () {
         return showPage(currentPage-1);
     });
 }); 
+}
+
   </script>
   
  <script type="text/javascript">

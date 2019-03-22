@@ -57,12 +57,7 @@
                     </ul>
                     <div id="myTabContent" class="tab-content">
                         <div class="tab-pane fade" id="allocatedprojects">
-                            <!-- <?php $allocatedpcount = count($projects); ?>
-                            @if($allocatedpcount > 8)
-                            <div class="table-responsive" style="height: 500px;overflow: auto;">
-                            @else
-                            <div class="table-responsive">
-                            @endif -->
+                            
                             <div class="table-responsive">
                                 @if(isset($projects))
                                     <table class="table table-bordered table-hover table-striped">
@@ -72,6 +67,7 @@
                                                 <th class="table-td-th">Project Name</th>
                                                 <th class="table-td-th">Site Address</th>
                                                 <th  width="10%" class="table-td-th">Final Bid</th>
+                                                <th class="table-td-th">Scope</th>
                                                 @if(session('loginusertype') == 'admin')
                                                  <th class="table-td-th">Project Manager</th>
                                                 @endif
@@ -100,6 +96,10 @@
                                                     <td style="text-align: left;vertical-align:middle; ">
                                                         <span class="glyphicon glyphicon-usd"></span>
                                                         {{ $project['approx_bid'] }}
+                                                    </td>
+                                                    <td style="text-align: left;vertical-align:middle; ">
+                                                        
+                                                        {{ $project['scopevalue'] }}
                                                     </td>
                                                      @if(session('loginusertype') == 'admin')
                                                         <td style="text-align: left;vertical-align: middle;">
@@ -172,6 +172,7 @@
                                         <th class="table-td-th">Site Address</th>
             
                                         <th class="table-td-th" width="10%">Final Bid</th>
+                                        <th class="table-td-th">Scope</th>
                                         @if(session('loginusertype') == 'admin')
                                         <th class="table-td-th">Project Manager</th>
                                         @endif
@@ -198,6 +199,10 @@
                                         <td style="text-align: left;vertical-align: middle;">
                                             <span class="glyphicon glyphicon-usd"></span>
                                             {{ $project['approx_bid'] }}
+                                        </td>
+                                        <td style="text-align: left;vertical-align: middle;">
+                                            
+                                            {{ $project['scopevalue'] }}
                                         </td>
                                         @if(session('loginusertype') == 'admin')
                                             <td style="text-align: left;vertical-align: middle;">
@@ -267,7 +272,8 @@
                                             <th class="table-td-th">Project Name</th>
                                             <th class="table-td-th">Site Address</th>
           
-                                            <th class="table-td-th"width="10%">Final Bid</th>
+                                            <th class="table-td-th" width="10%">Final Bid</th>
+                                            <th class="table-td-th">Scope</th>
                                             @if(session('loginusertype') == 'admin')
                                             <th class="table-td-th">Project Manager</th>
                                             @endif
@@ -294,6 +300,10 @@
                                             <td style="text-align: left;vertical-align: middle;">
                                             <span class="glyphicon glyphicon-usd"></span>
                                             {{ $project['approx_bid'] }}
+                                            </td>
+                                            <td style="text-align: left;vertical-align: middle;">
+                                           
+                                            {{ $project['scopevalue'] }}
                                             </td>
                                             @if(session('loginusertype') == 'admin')
                                             <td style="text-align: left;vertical-align: middle;">
@@ -363,6 +373,7 @@
                                         <th class="table-td-th">Project Name</th>
                                         <th class="table-td-th">Site Address</th>
                                         <th class="table-td-th" width="10%">Final Bid</th>
+                                        <th class="table-td-th">Scope</th>
                                         @if(session('loginusertype') == 'admin')
                                         <th class="table-td-th">Project Manager</th>
                                         @endif
@@ -387,6 +398,10 @@
                                         <td style="text-align: left;vertical-align: middle;">
                                             <span class="glyphicon glyphicon-usd"></span>
                                             {{ $project['approx_bid'] }}
+                                        </td>
+                                        <td style="text-align: left;vertical-align: middle;">
+                                            
+                                            {{ $project['scopevalue'] }}
                                         </td>
                                         @if(session('loginusertype') == 'admin')
                                         <td style="text-align: left;vertical-align: middle;">
@@ -452,6 +467,7 @@
                                     <th class="table-td-th">Total Bids</th>
                                     <th class="table-td-th">Site Address</th>
                                     <th class="table-td-th" width="10%">Suggested Bid</th>
+                                    <th class="table-td-th">Scope</th>
                                     @if(session('loginusertype') == 'admin')
                                     <th class="table-td-th">Project Manager</th>
                                     @endif
@@ -481,6 +497,10 @@
                                         <td style="text-align: left;vertical-align: middle;">
                                             <span class="glyphicon glyphicon-usd"></span>
                                             {{ $project['approx_bid'] }}
+                                        </td>
+                                        <td style="text-align: left;vertical-align: middle;">
+                                            
+                                            {{ $project['scopevalue'] }}
                                         </td>
                                         @if(session('loginusertype') == 'admin')
                                         <td style="text-align: left;vertical-align: middle;">

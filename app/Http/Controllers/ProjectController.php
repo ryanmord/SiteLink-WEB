@@ -347,8 +347,32 @@ class ProjectController extends Controller
             $qaqcDate = $qaqcDate->format('Y-m-d H:i:s');
             $project->qaqc_date = $qaqcDate;
         }
-        $footage_txt   = (string)$request->input('footage_txt');
-        $footage       = str_replace( ',', '', $footage_txt );
+        if($request->input('footage_txt') != null)
+        {
+            $footage_txt = $request->input('footage_txt');
+            $footage       = str_replace( ',', '', $footage_txt );
+            $project->squareFootage = (double)$footage;
+        }
+        if($request->input('units_txt') != null)
+        {
+            $project->no_of_units = $request->input('units_txt');
+        }
+        if($request->input('building_txt') != null)
+        {
+            $project->no_of_buildings = $request->input('building_txt');
+        }
+        if($request->input('area_txt') != null)
+        {
+            $project->land_area = $request->input('area_txt');
+        }
+        if($request->input('stories_txt') != null)
+        {
+            $project->no_of_stories = $request->input('stories_txt');
+        }
+        if($request->input('built_txt') != null)
+        {
+            $project->year_built = $request->input('built_txt');
+        }
         $projectbid    = (string)$request->input('projectbid');
         $projectbid    = str_replace( ',', '', $projectbid );
         $budget        = (string)$request->input('budget_txt');
@@ -362,12 +386,6 @@ class ProjectController extends Controller
         $project->project_number = $identifier;
         $project->user_id = (int)$request->input('managerid');
         $project->property_type = $request->input('projectType');
-        $project->no_of_units = $request->input('units_txt');
-        $project->squareFootage = (double)$footage;
-        $project->no_of_buildings = $request->input('building_txt');
-        $project->land_area = $request->input('area_txt');
-        $project->no_of_stories = $request->input('stories_txt');
-        $project->year_built = $request->input('built_txt');
         $project->budget = (double)$budget;
         $project->employee_type_id = $associatetypeid;
         $project->created_by = 2;
@@ -768,17 +786,59 @@ class ProjectController extends Controller
         $city    = $temp['city'];
         $state   = $temp['state'];
         $country = $temp['country'];
+        if($request->input('units_txt') != null)
+        {
+            $no_of_units = $request->input('units_txt');
+        }
+        else
+        {
+            $no_of_units = null;
+        }
+        if($request->input('footage_txt') != null)
+        {
+            $squareFootage = $request->input('footage_txt');
+            $squareFootage = str_replace( ',', '', $squareFootage );
+        }
+        else
+        {
+            $squareFootage = null;
+        }
+        if($request->input('building_txt') != null)
+        {
+            $no_of_buildings = $request->input('building_txt');
+        }
+        else
+        {
+            $no_of_buildings = null;
+        }
+        if($request->input('area_txt') != null)
+        {
+            $land_area = $request->input('area_txt');
+        }
+        else
+        {
+            $land_area = null;
+        }
+        if($request->input('stories_txt') != null)
+        {
+            $no_of_stories = $request->input('stories_txt');
+        }
+        else
+        {
+            $no_of_stories = null;
+        }
+        if($request->input('built_txt') != null)
+        {
+            $year_built = $request->input('built_txt');
+        }
+        else
+        {
+            $year_built = null;
+        }
         $report_template   = $request->input('template');
         $approx_bid        = (string)$request->input('projectbid');
         $approx_bid        = str_replace( ',', '', $approx_bid );
         $property_type     = $request->input('projectType');
-        $no_of_units       = $request->input('units_txt');
-        $squareFootage     = (string)$request->input('footage_txt');
-        $squareFootage     = str_replace( ',', '', $squareFootage );
-        $no_of_buildings   = $request->input('building_txt');
-        $land_area         = $request->input('area_txt');
-        $no_of_stories     = $request->input('stories_txt');
-        $year_built        = $request->input('built_txt');
         $budget            = (string)$request->input('budget_txt');
         $budget            = str_replace( ',', '', $budget );
         $project = Project::where('project_id', '=', $projectid)
@@ -976,36 +1036,57 @@ class ProjectController extends Controller
        {
             foreach ($projects as $value) 
             {
-            $projectid = $value->project_id;
-            $projectstatus = ProjectStatus::where('project_id','=',$projectid)
-                            ->get();
-            foreach ($projectstatus as $status) 
-            {
-                $status1 = $status->project_status_type_id;
+                $projectid = $value->project_id;
+                $projectstatus = ProjectStatus::where('project_id','=',$projectid)
+                                ->get();
+                foreach ($projectstatus as $status) 
+                {
+                    $status1 = $status->project_status_type_id;
+                }
+                if($status1 == 3 or $status1 == 2)
+                {
+                    $project = Project::where('project_id','=',$projectid)
+                                ->first();
+                    $manager = User::where('users_id','=',$project->user_id)->first();
+                    $managername = $manager->users_name.' '.$manager->last_name;
+                    $statuscount = ProjectProgressStatus::where('project_id','=',$projectid)->count();
+                    $associatename = User::where('users_id','=',$value->user_id)
+                    ->first();
+                    $associateName = $associatename->users_name.' '.$associatename->last_name;
+                    $scope       = $project->scope_performed_id;
+                    $temp = explode(",", $scope);
+                    $count = count($temp);
+                    $i = 1;
+                    $scopevalue = '';
+                    foreach($temp as $scopes)
+                    {
+                        $scopePerformed = ScopePerformed::select('scope_performed')
+                                                          ->where('scope_performed_id','=',$scopes)
+                                                          ->first();
+                        if(isset($scopePerformed) && !empty($scopePerformed))
+                        {
+                            $scopevalue .= $scopePerformed->scope_performed;
+                            if($i < $count)
+                            {
+                                $scopevalue .= ', ';
+                            }
+                            $i++;
+                        }
+                    }
+                    $data[] = ['project_name'          => $project->project_name, 
+                                'identifier'           => $project->project_number,
+                                'project_id'           => $project->project_id,
+                                'project_site_address' => $project->project_site_address,
+                                'instructions'         => $project->instructions,
+                                'approx_bid'           => number_format($value->associate_suggested_bid, 2),
+                                'associatename'        => $associateName,
+                                'scopevalue'           => $scopevalue,
+                                'created_at'           => $project->created_at,
+                                'statuscount'          => $statuscount,
+                                'managername'          => $managername
+                    ];
+                }
             }
-            if($status1 == 3 or $status1 == 2)
-            {
-                $project = Project::where('project_id','=',$projectid)
-                ->first();
-                $manager = User::where('users_id','=',$project->user_id)->first();
-                $managername = $manager->users_name.' '.$manager->last_name;
-                $statuscount = ProjectProgressStatus::where('project_id','=',$projectid)->count();
-                $associatename = User::where('users_id','=',$value->user_id)
-                ->first();
-                $associateName = $associatename->users_name.' '.$associatename->last_name;
-                $data[] = ['project_name'          => $project->project_name, 
-                            'identifier'           => $project->project_number,
-                            'project_id'           => $project->project_id,
-                            'project_site_address' => $project->project_site_address,
-                            'instructions'         => $project->instructions,
-                            'approx_bid'           => number_format($value->associate_suggested_bid, 2),
-                            'associatename'        => $associateName,
-                            'created_at'           => $project->created_at,
-                            'statuscount'          => $statuscount,
-                            'managername'          => $managername
-                ];
-            }
-        }
             if(!isset($data))
             {
                 $data = null;
@@ -1037,12 +1118,33 @@ class ProjectController extends Controller
             $status = ProjectStatus::where('project_id','=',$projectid)
                     ->where('project_status_type_id','=',4)->first();
             $statuscount = ProjectProgressStatus::where('project_id','=',$projectid)->count();
+            $scope       = $value->scope_performed_id;
+            $temp = explode(",", $scope);
+            $count = count($temp);
+            $i = 1;
+            $scopevalue = '';
+            foreach($temp as $scopes)
+            {
+                $scopePerformed = ScopePerformed::select('scope_performed')
+                                                          ->where('scope_performed_id','=',$scopes)
+                                                          ->first();
+                if(isset($scopePerformed) && !empty($scopePerformed))
+                {
+                    $scopevalue .= $scopePerformed->scope_performed;
+                    if($i < $count)
+                    {
+                        $scopevalue .= ', ';
+                    }
+                    $i++;
+                }
+            }
             $completedproject[] = ['project_name'          => $value->project_name,
                                     'identifier'           => $value->project_number,
                                     'project_id'           => $value->project_id,
                                     'project_site_address' =>  $value->project_site_address,
                                     'approx_bid'           => number_format($projectbid->associate_suggested_bid, 2),
                                     'associatename'        => $associateName,
+                                    'scopevalue'           => $scopevalue,
                                     'created_at'           => $value->created_at,
                                     'completeddate'        => $status->created_at,
                                     'statuscount'          => $statuscount,
@@ -1071,6 +1173,26 @@ class ProjectController extends Controller
             $managername = $manager->users_name.' '.$manager->last_name;
             
             $statuscount = ProjectProgressStatus::where('project_id','=',$projectid)->count();
+            $scope       = $value->scope_performed_id;
+            $temp = explode(",", $scope);
+            $count = count($temp);
+            $i = 1;
+            $scopevalue = '';
+            foreach($temp as $scopes)
+            {
+                $scopePerformed = ScopePerformed::select('scope_performed')
+                                                          ->where('scope_performed_id','=',$scopes)
+                                                          ->first();
+                if(isset($scopePerformed) && !empty($scopePerformed))
+                {
+                    $scopevalue .= $scopePerformed->scope_performed;
+                    if($i < $count)
+                    {
+                        $scopevalue .= ', ';
+                    }
+                    $i++;
+                }
+            }
             $cancelledproject[] = ['project_name'     => $value->project_name, 
                                 'identifier'          => $value->project_number,
                                 'project_id'          => $value->project_id,
@@ -1078,6 +1200,7 @@ class ProjectController extends Controller
                                 'createddate'         => $value->created_at,
                                 'approx_bid'          => number_format($projectbid->associate_suggested_bid, 2),
                                 'associatename'       => $associateName,
+                                'scopevalue'          => $scopevalue,
                                 'cancelleddate'       => $status->created_at,
                                 'statuscount'         => $statuscount,
                                 'managername'         => $managername
@@ -1103,6 +1226,26 @@ class ProjectController extends Controller
                 $user = User::where('users_id','=',$managerid)->first();
                
                 $managername = $user->users_name.' '.$user->last_name;
+                $scope       = $value->scope_performed_id;
+                $temp = explode(",", $scope);
+                $count = count($temp);
+                $i = 1;
+                $scopevalue = '';
+                foreach($temp as $scopes)
+                {
+                    $scopePerformed = ScopePerformed::select('scope_performed')
+                                                              ->where('scope_performed_id','=',$scopes)
+                                                              ->first();
+                    if(isset($scopePerformed) && !empty($scopePerformed))
+                    {
+                        $scopevalue .= $scopePerformed->scope_performed;
+                        if($i < $count)
+                        {
+                            $scopevalue .= ', ';
+                        }
+                        $i++;
+                    }
+                }    
                     //newly created projects
                     $nonallocatedproject[] = ['project_name' => $value->project_name, 
                             'identifier'           => $value->project_number,
@@ -1110,6 +1253,7 @@ class ProjectController extends Controller
                             'project_site_address' =>  $value['project_site_address'],
                             'approx_bid'           => number_format($value->approx_bid, 2),
                             'managername'          => $managername,
+                            'scopevalue'           => $scopevalue,
                             'created_at'           => $value->created_at,
                             'bidcount'             => $bidcount,
                             'createdBy'            => $createdBy
@@ -1143,6 +1287,26 @@ class ProjectController extends Controller
                 $statuscount = ProjectProgressStatus::where('project_id','=',$projectid)->count();
                 $manager = User::where('users_id','=',$value->user_id)->first();
                 $managername = $manager->users_name.' '.$manager->last_name;
+                $scope       = $value->scope_performed_id;
+                $temp = explode(",", $scope);
+                $count = count($temp);
+                $i = 1;
+                $scopevalue = '';
+                foreach($temp as $scopes)
+                {
+                    $scopePerformed = ScopePerformed::select('scope_performed')
+                                                              ->where('scope_performed_id','=',$scopes)
+                                                              ->first();
+                    if(isset($scopePerformed) && !empty($scopePerformed))
+                    {
+                        $scopevalue .= $scopePerformed->scope_performed;
+                        if($i < $count)
+                        {
+                            $scopevalue .= ', ';
+                        }
+                        $i++;
+                    }
+                }    
                 $onholdprojects[] = ['project_name' => $value->project_name, 
                             'identifier'            => $value->project_number,
                             'project_id'            => $value->project_id,
@@ -1150,6 +1314,7 @@ class ProjectController extends Controller
                             'createddate'           => $value->created_at,
                             'approx_bid'            => number_format($projectbid->associate_suggested_bid, 2),
                             'associatename'         => $associateName,
+                            'scopevalue'            => $scopevalue,
                             'statuscount'           => $statuscount,
                             'managername'           => $managername
                             ];
@@ -1531,6 +1696,26 @@ class ProjectController extends Controller
                     ->first();
                     $associateName = $associatename->users_name.' '.$associatename->last_name;
                     $statuscount = ProjectProgressStatus::where('project_id','=',$projectid)->count();
+                    $scope       = $value->scope_performed_id;
+                    $temp = explode(",", $scope);
+                    $count = count($temp);
+                    $i = 1;
+                    $scopevalue = '';
+                    foreach($temp as $scopes)
+                    {
+                        $scopePerformed = ScopePerformed::select('scope_performed')
+                                                                  ->where('scope_performed_id','=',$scopes)
+                                                                  ->first();
+                        if(isset($scopePerformed) && !empty($scopePerformed))
+                        {
+                            $scopevalue .= $scopePerformed->scope_performed;
+                            if($i < $count)
+                            {
+                                $scopevalue .= ', ';
+                            }
+                            $i++;
+                        }
+                    }
                     $data[] = ['project_name'        => $value->project_name,
                               'identifier'           => $value->project_number, 
                               'project_id'           => $value->project_id,
@@ -1539,6 +1724,7 @@ class ProjectController extends Controller
                               'report_template'      => $value->report_template,
                               'scope_performed_id'   => $value->scope_performed_id,
                               'instructions'         => $value->instructions,
+                              'scopevalue'           => $scopevalue,
                               'created_at'           => $value->created_at,
                               'approx_bid'           => number_format($projectbid->associate_suggested_bid, 2),
                               'associatename'        => $associateName,
@@ -1571,6 +1757,26 @@ class ProjectController extends Controller
                 $status = ProjectStatus::where('project_id','=',$projectid)
                     ->where('project_status_type_id','=',4)->first();
                 $statuscount = ProjectProgressStatus::where('project_id','=',$projectid)->count();
+                $scope       = $value->scope_performed_id;
+                    $temp = explode(",", $scope);
+                    $count = count($temp);
+                    $i = 1;
+                    $scopevalue = '';
+                    foreach($temp as $scopes)
+                    {
+                        $scopePerformed = ScopePerformed::select('scope_performed')
+                                                                  ->where('scope_performed_id','=',$scopes)
+                                                                  ->first();
+                        if(isset($scopePerformed) && !empty($scopePerformed))
+                        {
+                            $scopevalue .= $scopePerformed->scope_performed;
+                            if($i < $count)
+                            {
+                                $scopevalue .= ', ';
+                            }
+                            $i++;
+                        }
+                    }
                 $completedproject[] = ['project_name' => $value->project_name,
                                         'identifier'  => $value->project_number,
                                         'project_id' => $value->project_id,
@@ -1581,6 +1787,7 @@ class ProjectController extends Controller
                                         'instructions' => $value->instructions,
                                         'approx_bid' => number_format($projectbid->associate_suggested_bid, 2),
                                         'associatename' => $associateName,
+                                        'scopevalue'    => $scopevalue,
                                         'created_at' => $value->created_at,
                                         'completeddate' => $status->created_at,
                                         'statuscount'   => $statuscount
@@ -1609,6 +1816,26 @@ class ProjectController extends Controller
                     $status = ProjectStatus::where('project_id','=',$projectid)
                     ->where('project_status_type_id','=',5)->first();
                     $statuscount = ProjectProgressStatus::where('project_id','=',$projectid)->count();
+                    $scope       = $value->scope_performed_id;
+                    $temp = explode(",", $scope);
+                    $count = count($temp);
+                    $i = 1;
+                    $scopevalue = '';
+                    foreach($temp as $scopes)
+                    {
+                        $scopePerformed = ScopePerformed::select('scope_performed')
+                                                                  ->where('scope_performed_id','=',$scopes)
+                                                                  ->first();
+                        if(isset($scopePerformed) && !empty($scopePerformed))
+                        {
+                            $scopevalue .= $scopePerformed->scope_performed;
+                            if($i < $count)
+                            {
+                                $scopevalue .= ', ';
+                            }
+                            $i++;
+                        }
+                    }
                     $cancelledproject[] = ['project_name' => $value->project_name, 
                                         'identifier'      => $value->project_number,
                                         'project_id'  => $value->project_id,
@@ -1618,6 +1845,7 @@ class ProjectController extends Controller
                                         'scope_performed_id' => $value->scope_performed_id,
                                         'instructions' => $value->instructions,
                                         'createddate' => $value->created_at,
+                                        'scopevalue'  => $scopevalue,
                                         'approx_bid' =>  number_format($projectbid->associate_suggested_bid, 2),
 
                                         'associatename' => $associateName,
@@ -1649,6 +1877,26 @@ class ProjectController extends Controller
                     $managerid = $value->user_id;
                     $user = User::where('users_id','=',$managerid)->first();
                     $managername = $user->users_name;
+                    $scope       = $value->scope_performed_id;
+                    $temp = explode(",", $scope);
+                    $count = count($temp);
+                    $i = 1;
+                    $scopevalue = '';
+                    foreach($temp as $scopes)
+                    {
+                        $scopePerformed = ScopePerformed::select('scope_performed')
+                                                                  ->where('scope_performed_id','=',$scopes)
+                                                                  ->first();
+                        if(isset($scopePerformed) && !empty($scopePerformed))
+                        {
+                            $scopevalue .= $scopePerformed->scope_performed;
+                            if($i < $count)
+                            {
+                                $scopevalue .= ', ';
+                            }
+                            $i++;
+                        }
+                    }
                     $nonallocatedproject[] =['project_name' => $value->project_name, 
                                             'identifier'    => $value->project_number,
                                             'project_id' => $value->project_id,
@@ -1659,6 +1907,7 @@ class ProjectController extends Controller
                                             'instructions' => $value->instructions,
                                             'approx_bid' => number_format($value->approx_bid, 2),
                                             'managername' => $managername,
+                                            'scopevalue'  => $scopevalue,
                                             'created_at' => $value->created_at,
                                             'updated_at' => $value->updated_at,
                                             'bidcount'   => $bidcount,
@@ -1690,6 +1939,26 @@ class ProjectController extends Controller
                     ->first();
                     $associateName = $associatename->users_name.' '.$associatename->last_name;
                     $statuscount = ProjectProgressStatus::where('project_id','=',$projectid)->count();
+                    $scope       = $value->scope_performed_id;
+                    $temp = explode(",", $scope);
+                    $count = count($temp);
+                    $i = 1;
+                    $scopevalue = '';
+                    foreach($temp as $scopes)
+                    {
+                        $scopePerformed = ScopePerformed::select('scope_performed')
+                                                                  ->where('scope_performed_id','=',$scopes)
+                                                                  ->first();
+                        if(isset($scopePerformed) && !empty($scopePerformed))
+                        {
+                            $scopevalue .= $scopePerformed->scope_performed;
+                            if($i < $count)
+                            {
+                                $scopevalue .= ', ';
+                            }
+                            $i++;
+                        }
+                    }
                     $onholdprojects[] = ['project_name' => $value->project_name, 
                                         'identifier'    => $value->project_number,
                                         'project_id'  => $value->project_id,
@@ -1698,6 +1967,7 @@ class ProjectController extends Controller
                                         'report_template' => $value->report_template,
                                         'scope_performed_id' => $value->scope_performed_id,
                                         'instructions' => $value->instructions,
+                                        'scopevalue'   => $scopevalue,
                                         'createddate' => $value->created_at,
                                         'approx_bid' => number_format($projectbid->associate_suggested_bid, 2),
                                         'associatename' => $associateName,
@@ -2526,15 +2796,37 @@ class ProjectController extends Controller
                 $managerid  = $project->user_id;
                 $user = User::where('users_id','=',$managerid)->first();
                 $managername = $user->users_name.' '.$user->last_name;
+                $scope       = $project->scope_performed_id;
+                $temp = explode(",", $scope);
+                $count = count($temp);
+                $i = 1;
+                $scopevalue = '';
+                foreach($temp as $scopes)
+                {
+                    $scopePerformed = ScopePerformed::select('scope_performed')
+                                                      ->where('scope_performed_id','=',$scopes)
+                                                      ->first();
+                    if(isset($scopePerformed) && !empty($scopePerformed))
+                    {
+                        $scopevalue .= $scopePerformed->scope_performed;
+                        if($i < $count)
+                        {
+                            $scopevalue .= ', ';
+                        }
+                        $i++;
+                    }
+                }
                 $archiveProject[] = ['project_name'            => $project->project_name, 
                                         'identifier'           => $project->project_number, 
                                         'project_id'           => $project->project_id,
                                         'project_site_address' => $project->project_site_address,
                                         'budget'               => number_format($project->budget, 2),
                                         'managername'          => $managername,
+                                        'scopevalue'           => $scopevalue,
                                         'created_at'           => $created_at,
                                         ];
             }
+           
         }
         return view('project.archiveProjects',['archiveProject' => $archiveProject,
                                                'projectCount'   => $projectCount]); 

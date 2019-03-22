@@ -4453,14 +4453,15 @@ class ApiController extends Controller
             return json_encode(array('status' => '0', 'message' => "Manager parameter are missing"));
             exit;
         }*/
-        if(isset($request['name']) && isset($request['address']) && isset($request['reportDueFromField']) && isset($request['scope']) && isset($request['budget'])&& isset($request['projectManagerId']) && isset($request['identifier']) && !empty($request['name']) && !empty($request['address']) && !empty($request['reportDueFromField']) && !empty($request['scope']) && !empty($request['budget'])&& !empty($request['projectManagerId']) && !empty($request['identifier']))
+        if(isset($request['name']) && isset($request['address']) && isset($request['reportDueFromField']) && isset($request['scope']) && isset($request['budget'])&& isset($request['projectManagerId']) && isset($request['identifier']) && !empty($request['name']) && !empty($request['address']) && !empty($request['reportDueFromField']) && !empty($request['scope']) && !empty($request['budget'])&& !empty($request['projectManagerId']) && !empty($request['identifier']) && !empty($request['reportTemplate']) && isset($request['reportTemplate']) && !empty($request['type']) && isset($request['type']))
         {
             if(!empty($request['projectManagerId']))
             {
                 $managerId = $request['projectManagerId'];
-                $user = User::where('users_id','=',$managerId)
+                $user = User::select('users_email','users_id')
+                              ->where('users_id','=',$managerId)
                               ->first();
-                if(isset($user))
+                if(isset($user) && !empty($user))
                 {
                     $managerEmail = $user->users_email;
 
@@ -4471,7 +4472,20 @@ class ApiController extends Controller
                     exit;
                 }
             }
+
             $model = new Project;
+            $scope = $request['scope'];
+            $scope = explode(",",$scope);
+            foreach ($scope as $value) {
+                $isScope = ScopePerformed::where('scope_performed_id','=',$value)
+                                            ->count();
+                if($isScope == 0)
+                {
+                    return json_encode(array('status' => '0', 'message' => "Given Scope values are not matching with scope(s) value"));
+                    exit;
+                }
+            }
+            $model->scope_performed_id = $request['scope'];
             if(!empty($request['qaqcDate']) && isset($request['qaqcDate']))
             {
                 $qaqcDate   = $request['qaqcDate'];
@@ -4492,7 +4506,12 @@ class ApiController extends Controller
             $model->project_name = $request['name'];
             $model->project_number = $request['identifier'];
             $model->project_site_address = $request['address'];
-            $model->report_due_date = new DateTime($request['reportDueFromField']);
+            $model->report_template = $request['reportTemplate'];
+            $model->budget = (double)$request['budget'];
+            $model->property_type = $request['type'];
+            $reportDate = new DateTime($request['reportDueFromField']);
+            $reportDate = $reportDate->format("Y-m-d H:i:s");
+            $model->report_due_date = $reportDate;
             $model->latitude = $request['latitude'];
             $model->longitude = $request['longitude'];
             $latitude  = $request['latitude'];
@@ -4509,21 +4528,9 @@ class ApiController extends Controller
             {
                 $model->instructions = $request['specialInstructions'];
             }
-            if(!empty($request['reportTemplate']) && isset($request['reportTemplate']))
-            {
-                $model->report_template = $request['reportTemplate'];
-            }
-            if(!empty($request['scope']) && isset($request['scope']))
-            {
-                $model->scope_performed_id = $request['scope'];
-            }
             if(!empty($request['onSiteDate']) && isset($request['onSiteDate']))
             {
                 $model->on_site_date = new DateTime($request['onSiteDate']);
-            }
-            if(!empty($request['type']) && isset($request['type']))
-            {
-                $model->property_type = $request['type'];
             }
             if(!empty($request['squareFootage']) && isset($request['squareFootage']))
             {
@@ -4536,10 +4543,6 @@ class ApiController extends Controller
             if(!empty($request['yearBuilt']) && isset($request['yearBuilt']))
             {
                 $model->year_built = $request['yearBuilt'];
-            }
-            if(!empty($request['budget']) && isset($request['budget']))
-            {
-                $model->budget = (double)$request['budget'];
             }
             if(!empty($request['units']) && isset($request['units']))
             {
@@ -4554,14 +4557,8 @@ class ApiController extends Controller
                 $model->no_of_stories = (double)$request['stories'];
             }
             $model->save();
-            $project = Project::where('user_id','=',$managerId)
-                                ->where('project_name','=',$request['name'])
-                                ->get();
-            foreach($project as $value) 
-            {
-                $projectid   = $value->project_id;
-                $projectName = $value->project_name;
-            }
+            $projectName = $request['name'];
+            $projectid   = $model->project_id;
             $model = new ProjectStatus;
             $model->project_id = $projectid;
             $model->project_status_type_id  = 7;
@@ -4592,7 +4589,6 @@ class ApiController extends Controller
         {
             $apiToken = $request['apiToken'];
             $this->checkapiToken($apiToken);
-            
         }
         else
         {
@@ -4607,6 +4603,22 @@ class ApiController extends Controller
         {
             return json_encode(array('status' => '0', 'message' => "Scoped project id parameter is missing"));
             exit;
+        }
+        if(!empty($request['scope']) && isset($request['scope']))
+        {
+            $scope = $request['scope'];
+            $scope = explode(",",$scope);
+            foreach ($scope as $value) {
+                $isScope = ScopePerformed::where('scope_performed_id','=',$value)
+                                            ->count();
+                if($isScope == 0)
+                {
+                    return json_encode(array('status' => '0', 'message' => "Given Scope values are not matching with scope(s) value"));
+                    exit;
+                }
+            }
+            $model  = Project::where('project_id', '=',$projectid)
+                               ->update(['scope_performed_id' => $request['scope']]);
         }
         if(!empty($request['qaqcDate']) && isset($request['qaqcDate']))
         {
@@ -4648,112 +4660,153 @@ class ApiController extends Controller
                 exit;
             }
         }
-        if(!empty($request['name']))
+        if(!empty($request['name']) && isset($request['name']))
         {
             $projectname = $request['name'];
             $model  = Project::where('project_id', '=',$projectid)
                             ->update(['project_name' => $projectname]);
         }
-        if(!empty($request['address']))
+        if(!empty($request['address']) && isset($request['address']))
         {
             $siteaddress = $request['address'];
             $model  = Project::where('project_id', '=',$projectid)
                             ->update(['project_site_address' => $siteaddress]);
         }
-        if(!empty($request['latitude']) && !empty($request['longitude']))
+        if(!empty($request['latitude']) && !empty($request['longitude']) && isset($request['latitude']) && isset($request['longitude']))
         {
-            $latitude = $request['latitude'];
+            $latitude  = $request['latitude'];
             $longitude = $request['longitude'];
-            $temp    = $this->getaddress($latitude,$longitude);
-            $city    = $temp['city'];
-            $state   = $temp['state'];
-            $country = $temp['country'];
-            $model   = Project::where('project_id', '=',$projectid)
-                           ->update(['latitude'     => $latitude, 
-                                     'longitude'    => $longitude,
-                                     'city'         => $city,
-                                     'state'        => $state,
-                                     'country'      => $country]);
+            $isAddress = Project::where(['latitude' => $latitude,'longitude' => $longitude])
+                                 ->count();
+            if($isAddress > 0)
+            {
+                $temp    = $this->getaddress($latitude,$longitude);
+                $city    = $temp['city'];
+                $state   = $temp['state'];
+                $country = $temp['country'];
+                $model   = Project::where('project_id', '=',$projectid)
+                                   ->update(['latitude' => $latitude, 
+                                         'longitude'    => $longitude,
+                                         'city'         => $city,
+                                         'state'        => $state,
+                                         'country'      => $country]);
+            }
+            
         }
-        if(!empty($request['reportDueFromField']))
+        if(!empty($request['reportDueFromField']) && isset($request['reportDueFromField']))
         {
             $reportduedate = new DateTime($request['reportDueFromField']);
             $model  = Project::where('project_id', '=',$projectid)
                         ->update(['report_due_date' => $reportduedate]);
         }
-        if(!empty($request['onSiteDate']))
+        if(!empty($request['onSiteDate']) && isset($request['onSiteDate']))
         {
             $onsitedate = new DateTime($request['onSiteDate']);
             $model  = Project::where('project_id', '=',$projectid)
                               ->update(['on_site_date' => $onsitedate]);
         }
-        if(!empty($request['reportTemplate']))
+        else
+        {
+            $model  = Project::where('project_id', '=',$projectid)
+                              ->update(['on_site_date' => null]);
+        }
+        if(!empty($request['reportTemplate']) && isset($request['reportTemplate']))
         {
             $template = $request['reportTemplate'];
             $model  = Project::where('project_id', '=',$projectid)
                               ->update(['report_template' => $template]);
         }
-        if(!empty($request['scope']))
-        {
-            $scopeperformed = $request['scope'];
-            $model  = Project::where('project_id', '=',$projectid)
-                               ->update(['scope_performed_id' => $scopeperformed]);
-        }
-        if(!empty($request['specialInstructions']))
+        
+        if(!empty($request['specialInstructions']) && isset($request['specialInstructions']))
         {
             $instructions = $request['specialInstructions'];
             $model  = Project::where('project_id', '=',$projectid)
                             ->update(['instructions' => $instructions]);
         }
-        if(!empty($request['budget']))
+        else
+        {
+            $model  = Project::where('project_id', '=',$projectid)
+                               ->update(['instructions' => null]);
+        }
+        if(!empty($request['budget']) && isset($request['budget']))
         {
             $budget = (double)$request['budget'];
             $model  = Project::where('project_id', '=',$projectid)
                     ->update(['budget' => $budget]);
         }
-        if(!empty($request['scopedManagerId']))
+        if(!empty($request['scopedManagerId']) && isset($request['scopedManagerId']))
         {
             $scopedManagerId = $managerId;
             $model  = Project::where('project_id', '=',$projectid)
                     ->update(['user_id' => $scopedManagerId]);
         }
-        if(!empty($request['units']))
+        if(!empty($request['units']) && isset($request['units']))
         {
             $units = $request['units'];
             $model  = Project::where('project_id', '=',$projectid)
                     ->update(['no_of_units' => $units]);
         }
-        if(!empty($request['buildings']))
+        else
+        {
+            $model  = Project::where('project_id', '=',$projectid)
+                    ->update(['no_of_units' => null]);
+        }
+        if(!empty($request['buildings']) && isset($request['buildings']))
         {
             $buildings = $request['buildings'];
             $model  = Project::where('project_id', '=',$projectid)
                     ->update(['no_of_buildings' => $buildings]);
         }
-        if(!empty($request['stories']))
+        else
+        {
+            $model  = Project::where('project_id', '=',$projectid)
+                    ->update(['no_of_buildings' => null]);
+        }
+        if(!empty($request['stories']) && isset($request['stories']))
         {
             $stories = $request['stories'];
             $model  = Project::where('project_id', '=',$projectid)
                     ->update(['no_of_stories' => $stories]);
         }
-        if(!empty($request['squareFootage']))
+        else
+        {
+            $model  = Project::where('project_id', '=',$projectid)
+                    ->update(['no_of_stories' => null]);
+        }
+        if(!empty($request['squareFootage']) && isset($request['squareFootage']))
         {
             $squareFootage = $request['squareFootage'];
             $model  = Project::where('project_id', '=',$projectid)
                     ->update(['squareFootage' => $squareFootage]);
         }
-        if(!empty($request['area']))
+        else
+        {
+            $model  = Project::where('project_id', '=',$projectid)
+                    ->update(['squareFootage' => null]);
+        }
+        if(!empty($request['area']) && isset($request['area']))
         {
             $area = $request['area'];
             $model  = Project::where('project_id', '=',$projectid)
                     ->update(['land_area' => $area]);
         }
-        if(!empty($request['yearBuilt']))
+        else
+        {
+            $model  = Project::where('project_id', '=',$projectid)
+                    ->update(['land_area' => null]);
+        }
+        if(!empty($request['yearBuilt']) && isset($request['yearBuilt']))
         {
             $yearBuilt = $request['yearBuilt'];
             $model  = Project::where('project_id', '=',$projectid)
                     ->update(['year_built' => $yearBuilt]);
         }
-        if(!empty($request['type']))
+        else
+        {
+            $model  = Project::where('project_id', '=',$projectid)
+                    ->update(['year_built' => null]);
+        }
+        if(!empty($request['type']) && isset($request['type']))
         {
             $type = $request['type'];
             $model = Project::where('project_id','=',$projectid)

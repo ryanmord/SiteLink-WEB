@@ -70,6 +70,7 @@
                             <th class="table-td-th">Project Name</th>
                             <th class="table-td-th">Site Address</th>
                             <th class="table-td-th" width="10%">Budget</th>
+                            <th class="table-td-th">Scope</th>
                             <th class="table-td-th">Project Manager</th>
                             <th class="table-td-th">CreatedOn</th>
                             <th class="table-td-th">Action</th>
@@ -93,6 +94,10 @@
                                         <td class="table-td-th" style="text-align: left;">
                                             <span class="glyphicon glyphicon-usd"></span>
                                             {{ $project['budget'] }}
+                                        </td>
+                                         <td class="table-td-th" style="text-align: left;">
+                                                {{ $project['scopevalue'] }}
+                    
                                         </td>
                                         <td class="table-td-th" style="text-align: left;">
                                             {{ $project['managername'] }}

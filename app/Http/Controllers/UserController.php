@@ -188,7 +188,6 @@ class UserController extends Controller
             $model = User::where('users_id', '=',$userid)
                             ->update(['users_profile_image' => $profileimage]);
         }
-        
         $warning="Profile updated successfully";
         return response()->json(['success' => $warning]);
         exit;
@@ -237,13 +236,34 @@ class UserController extends Controller
                 $user = User::where('users_id','=',$managerid)->first();
                
                 $managername = $user->users_name.' '.$user->last_name;
-                    //newly created projects
-                    $schedulingProject[] = ['project_name' => $value->project_name, 
+                $scope       = $value->scope_performed_id;
+                $temp = explode(",", $scope);
+                $count = count($temp);
+                $i = 1;
+                $scopevalue = '';
+                foreach($temp as $scopes)
+                {
+                    $scopePerformed = ScopePerformed::select('scope_performed')
+                                                      ->where('scope_performed_id','=',$scopes)
+                                                      ->first();
+                    if(isset($scopePerformed) && !empty($scopePerformed))
+                    {
+                        $scopevalue .= $scopePerformed->scope_performed;
+                        if($i < $count)
+                        {
+                            $scopevalue .= ', ';
+                        }
+                        $i++;
+                    }
+                }
+                //newly created projects
+                $schedulingProject[] = ['project_name' => $value->project_name, 
                             'identifier'           => $value->project_number,
                             'project_id'           => $value->project_id,
                             'project_site_address' => $value->project_site_address,
                             'budget'               => number_format($value->budget, 2),
                             'managername'          => $managername,
+                            'scopevalue'           => $scopevalue,
                             'created_at'           => $value->created_at,
                            ];
                 
@@ -259,7 +279,6 @@ class UserController extends Controller
                 {
                     $managerid = $value->user_id;
                     $user = User::where('users_id','=',$managerid)->first();
-               
                     $managername = $user->users_name.' '.$user->last_name;
                     //newly created projects
                     $nonallocatedproject[] = ['project_name' => $value->project_name, 
@@ -273,8 +292,12 @@ class UserController extends Controller
                 }
             }
            
-        }           
-        if(isset($nonallocatedproject))
+        } 
+        if(!isset($users) && empty($users))    
+        {
+            $users = null;
+        }          
+        /*if(isset($nonallocatedproject))
         {
             $bidsrequestcount = ProjectBid::where('project_bid_status','=',2)
                                                 ->where('bid_status','=',1)->count();
@@ -283,8 +306,8 @@ class UserController extends Controller
         {
             $bidsrequestcount = 0;
             $nonallocatedproject = null;
-        }
-        if(isset($schedulingProject))
+        }*/
+        if(isset($schedulingProject) && !empty($schedulingProject))
         {
             $schedulingProjectCount = count($schedulingProject);
         }
@@ -304,8 +327,8 @@ class UserController extends Controller
                     'project'                => $projectcount,
                     'projectbid'             => $projectbidcount,
                     'users'                  => $users,
-                    'bidsrequestcount'       => $bidsrequestcount,
-                    'nonallocatedproject'    => $nonallocatedproject,
+                    //'bidsrequestcount'       => $bidsrequestcount,
+                    //'nonallocatedproject'    => $nonallocatedproject,
                     'associatetype'          => $associatetype,
                     'schedulingProject'      => $schedulingProject,
                     'schedulingProjectCount' => $schedulingProjectCount

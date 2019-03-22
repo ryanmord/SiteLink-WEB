@@ -186,59 +186,59 @@
                           <label class="required">Project Type</label>
                         </div>
                         <div class="form-group col-md-9">
-                          <input type="text" name="projectType" id="projectType" placeholder="Project Type" id="projectType" value="{{ $project->property_type}}">
+                          <input type="text" name="projectType" id="projectType" placeholder="Project Type" id="projectType" value="{{ $project->property_type}}" required="">
                         </div>
                       </div>
                       <div class="row">
                         <div class="form-group col-md-3">
                           <br>
-                          <label class="required">No. Units</label>
+                          <label>No. Units</label>
                         </div>
                         <div class="form-group col-md-3">
-                          <input type="text" name="units_txt" id="units_txt" value="{{ $project->no_of_units }}"  placeholder="  No.of units" required="" style="padding-left: 12px;">
+                          <input type="text" name="units_txt" id="units_txt" value="{{ $project->no_of_units }}"  placeholder="  No.of units" style="padding-left: 12px;">
                         </div>
                         <div class="form-group col-md-3">
                           <br>
-                          <label class="required">Sq. Footage</label>
+                          <label>Sq. Footage</label>
                         </div>
                         <?php 
                           $squareFootage = number_format($project->squareFootage, 2);
                           $squareFootage = str_replace(',', '', $squareFootage);
                         ?>
                         <div class="form-group col-md-3">
-                          <input type="text" name="footage_txt" id="footage_txt" placeholder="  Sq. Footage" value="{{ $squareFootage }}" required="" style="padding-left: 12px;">
+                          <input type="text" name="footage_txt" id="footage_txt" placeholder="  Sq. Footage" value="{{ $squareFootage }}" style="padding-left: 12px;">
                         </div>
                       </div>
                       <div class="row">
                         <div class="form-group col-md-3">
                           <br> 
-                            <label class="required">No. Buildings</label>
+                            <label>No. Buildings</label>
                               </div>
                               <div class="form-group col-md-3">
-                                <input type="text" name="building_txt" id="building_txt"  placeholder="  No.Buildings" required="" value="{{ $project->no_of_buildings }}" style="padding-left: 12px;">
+                                <input type="text" name="building_txt" id="building_txt"  placeholder="  No.Buildings" value="{{ $project->no_of_buildings }}" style="padding-left: 12px;">
                               </div>
                               <div class="form-group col-md-3">
                                 <br>
-                                <label class="required">Land Area</label>
+                                <label>Land Area</label>
                               </div>
                               <div class="form-group col-md-3">
-                                <input type="text" name="area_txt" id="area_txt"placeholder="  Land Area" required="" value="{{ $project->land_area }}" style="padding-left: 12px;">
+                                <input type="text" name="area_txt" id="area_txt"placeholder="  Land Area" value="{{ $project->land_area }}" style="padding-left: 12px;">
                               </div>
                             </div>
                               <div class="row">
                                 <div class="form-group col-md-3">
                                   <br>
-                                  <label class="required">No. Stories</label>
+                                  <label>No. Stories</label>
                                 </div>
                                 <div class="form-group col-md-3">
-                                <input type="text" name="stories_txt" id="stories_txt"  placeholder="  No. Stories" value="{{ $project->no_of_stories }}" required="" style="padding-left: 12px;">
+                                <input type="text" name="stories_txt" id="stories_txt"  placeholder="  No. Stories" value="{{ $project->no_of_stories }}" style="padding-left: 12px;">
                               </div>
                                <div class="form-group col-md-3">
                                 <br>
-                                <label class="required">Year Built</label>
+                                <label>Year Built</label>
                               </div>
                               <div class="form-group col-md-3">
-                                <input type="text" name="built_txt" id="built_txt" placeholder="  Year Built" value="{{ $project->year_built }}" required="" style="padding-left: 12px;" maxlength="4">
+                                <input type="text" name="built_txt" id="built_txt" placeholder="  Year Built" value="{{ $project->year_built }}" style="padding-left: 12px;" maxlength="4">
                               </div>
                             </div> 
                             <div class="row">
@@ -443,31 +443,6 @@
             },projectbid:{
               required: true,
             },
-            building_txt:{
-              required: true,
-              min:1
-            },
-            built_txt:{
-              required: true,
-              min:4
-            },
-            units_txt:{
-              required: true,
-              min:1
-            },
-            stories_txt:{
-              required: true,
-              min:1
-            },
-            area_txt:{
-              required: true,
-              min:1
-            },
-            footage_txt:{
-              required: true,
-              min:1
-            },
-
             'scopeperformedid[]': 
             {
               required: true, 
@@ -490,13 +465,7 @@
             template:"Please Enter Template",
             identifier:"Please Enter Project Identifier",
             projectType:"Please Enter Project Type",
-            built_txt:"Please Enter Year Built",
-            building_txt:"Please Enter No.of Buildings",
-            stories_txt:"Please Enter No. of Stories",
-            footage_txt:"Please Enter No. of Footage",
-            area_txt:"Please Enter Land Area",
             budget_txt:"Please Enter Budget",
-            units_txt:"Please Enter No. of Units",
             selectmanger:"Please Select Manager",
             projectbid:{
               required : "Please Enter Project Bid",

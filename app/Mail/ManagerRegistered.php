@@ -46,7 +46,7 @@ class ManagerRegistered extends Mailable
                 $subject = 'Scoped: Email Verification';
                 $greeting = 'Hello '.$this->user->users_name."!";
                 $actionUrl = $this->url;
-                return $this->subject($subject)->markdown('email.userRegistration',['level'=>'success','greeting'=>$greeting,'introLines'=>$introLines,'outroLines'=>$outroLines, 'actionText' => 'Site Link' , 'actionUrl' => $actionUrl]);
+                return $this->subject($subject)->markdown('email.userRegistration',['level'=>'success','greeting'=>$greeting,'introLines'=>$introLines,'outroLines'=>$outroLines, 'actionText' => 'Verify Email' , 'actionUrl' => $actionUrl]);
                 exit;
             }
             else

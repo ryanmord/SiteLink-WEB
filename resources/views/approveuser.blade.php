@@ -9,7 +9,11 @@
         <br>
       </div>
       <div class="modal-body">
+        @if(isset($user) && !empty($user))
         <form role="form" class="form-horizontal" id="associateapprove" method="Post" action="{{url('dashboard/user/'.$user['users_id'].'/1')}}">
+        @else
+        <form role="form" class="form-horizontal" id="associateapprove" method="Post" action="#">
+        @endif
           {{ csrf_field() }}
           @foreach($associatetype as $associate_type)
             <div class="form-group">

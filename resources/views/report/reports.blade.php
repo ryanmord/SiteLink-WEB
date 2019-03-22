@@ -10,10 +10,10 @@
         z-index: 9999;
         background: url('{{ asset('img/Loader.gif') }}') 50% 50% no-repeat rgb(249,249,249);
         opacity: .8;"></div>
- <center>
+ 
     <div class="panel panel-success" style="text-align: left;">
       <div class="panel-heading">
-        <div class="panel-title"><b>Projects Scheduled & Projects Remaining</b>
+        <div class="panel-title"><b>Scheduled & Remaining Projects</b>
         </div>
         <!-- <div class="panel-options">
           <a class="bg" data-target="#sample-modal-dialog-1" data-toggle="modal" href="#sample-modal"><i class="entypo-cog"></i></a>
@@ -22,34 +22,38 @@
         </div> -->
       </div>
       <div class="content-row">
-        <div class="row">
-          <ul id="myTab1" class="nav nav-tabs nav-justified">
-            <li class="active"><a href="#home1" data-toggle="tab">Projects Scheduled <span class="badge" style="background-color:#DB5A6B;" id="countscheduling">{{ $scheduledCount }}</span>
+        <!-- <div class="row"> -->
+          <!-- <ul id="myTab1" class="nav nav-tabs nav-justified">
+            <li class="active"><a href="#home1" data-toggle="tab">Scheduled <span class="badge" style="background-color:#DB5A6B;" id="countscheduling">{{ $scheduledCount }}</span>
             </a></li>
-            <li><a href="#remaining" data-toggle="tab">Projects Remaining <span class="badge" style="background-color:#DB5A6B;" id="countremaining">{{ $remainingCount }}</span>
+            <li><a href="#remaining" data-toggle="tab">Remaining <span class="badge" style="background-color:#DB5A6B;" id="countremaining">{{ $remainingCount }}</span>
             </a></li>
-          </ul>
-          <div id="myTabContent" class="tab-content">
-            <div class="tab-pane fade active in" id="home1">
+          </ul> -->
+          <!-- <div id="myTabContent" class="tab-content">
+            <div class="tab-pane fade active in" id="home1"> -->
             <?php $date = date('Y-m-d'); ?>
               <div class="row">
+              <form role="form" class="form-horizontal" method="GET" action="{{ route('exportProjects') }}">
                 <div class="col-sm-3">
-                  <input type="date" name="datepicker" id="datepicker" value="{{ $date }}" class="form-control" style="margin-top: 15px;">&nbsp;
+                  <input type="date" name="datepicker" id="datepicker" value="{{ $date }}" class="form-control" style="margin-top: 15px;">
                  </div>
                  <div class="col-sm-3">
                    <button class="btn btn-info" type="button" id="view-btn" style="margin-top: 15px;float: left;">View</button>
                  </div>
                 <div class="col-sm-6">
-                <button class="btn btn-danger" type="button" id="export-btn" style="margin-top: 15px;float: right;" onclick="exportTableToCSV('scheduledProjects.csv')">Export</button>
-                  <br>
+                <button class="btn btn-danger" type="submit" id="export-btn" style="margin-top: 15px;float: right;">Export</button>
                 </div>
+                </form>
+
                </div>
+               <h5> Scheduled <span class="badge" style="background-color:#DB5A6B;" id="countscheduling">{{ $scheduledCount }}</span></h5>
                <div id="div-no-project">
                     <h6><center>No Data Found</center></h6> <br>
                </div>
+                <input type="hidden" name="projectcount" id="projectcount" value="{{ $scheduledCount }}">
                 <!--  <input type="date" name="select date" class="form-control"> -->
                 <div class="table-responsive" id="table-div">
-                <input type="hidden" name="projectcount" id="projectcount" value="{{ $scheduledCount }}">
+               
                 <table class="table table-bordered" id="scheduledProject">
                     <thead>
                       <tr>
@@ -71,17 +75,17 @@
                   
                      @foreach($scheduledProjects as $project)
                       <tr class="content">
-                        <td>{{ $project['receivedDate'] }}</td>
-                        <td>{{ $project['schedulingDate'] }}</td>
-                        <td>{{ $project['onSiteDate'] }}</td>
-                        <td>{{ $project['projectNo'] }}</td>
-                        <td>{{ $project['accountManager'] }}</td>
-                        <td>{{ $project['projectManager'] }}</td>
-                        <td>{{ $project['state'] }}</td>
-                        <td>{{ $project['city'] }}</td>
-                        <td>{{ $project['scopeNames'] }}</td>
-                        <td>{{ $project['employeeName'] }}</td>
-                        <td>{{ $project['associateName'] }}</td>
+                        <td style="text-align: left;">{{ $project['receivedDate'] }}</td>
+                        <td style="text-align: left;">{{ $project['schedulingDate'] }}</td>
+                        <td style="text-align: left;">{{ $project['onSiteDate'] }}</td>
+                        <td style="text-align: left;">{{ $project['projectNo'] }}</td>
+                        <td style="text-align: left;">{{ $project['accountManager'] }}</td>
+                        <td style="text-align: left;">{{ $project['projectManager'] }}</td>
+                        <td style="text-align: left;">{{ $project['state'] }}</td>
+                        <td style="text-align: left;">{{ $project['city'] }}</td>
+                        <td style="text-align: left;">{{ $project['scopeNames'] }}</td>
+                        <td style="text-align: left;">{{ $project['employeeName'] }}</td>
+                        <td style="text-align: left;">{{ $project['associateName'] }}</td>
                       </tr>
                      @endforeach
                      @endif
@@ -97,11 +101,11 @@
                           </ul>
                       </div>
                     </div>
+                  </div>
                   
-                  
-                </div>
-              </div>
-              <div class="tab-pane fade" id="remaining">
+                <!-- </div>
+              </div> -->
+              <!-- <div class="tab-pane fade" id="remaining">
               <?php $date = date('Y-m-d'); ?>
                 <div class="row">
                 <div class="col-sm-3">
@@ -112,13 +116,16 @@
                  </div>
                 <div class="col-sm-6">
                 <button class="btn btn-danger" type="button" id="export2-btn" style="margin-top: 15px;float: right;" onclick="exportdataToCSV('remainingProjects.csv')">Export</button>
-                  <br>
+                 
                 </div>
-               </div>
+               </div> -->
+               
+               <h5>Remaining <span class="badge" style="background-color:#DB5A6B;" id="countremaining">{{ $remainingCount }}</span></h5>
                <div id="div-no-remaining">
                     <h6><center>No Data Found</center></h6> <br>
                </div>
                 <input type="hidden" name="remainingcount" id="remainingcount" value="{{ $remainingCount }}">
+
                 <div class="table-responsive" id="table-div2">
                   <table class="table table-bordered">
                     <thead>
@@ -140,17 +147,17 @@
                     @if(isset($remainingProjects) && !empty($remainingProjects))
                      @foreach($remainingProjects as $project)
                       <tr class="content">
-                        <td>{{ $project['receivedDate'] }}</td>
-                        <td>{{ $project['schedulingDate'] }}</td>
-                        <td>{{ $project['onSiteDate'] }}</td>
-                        <td>{{ $project['projectNo'] }}</td>
-                        <td>{{ $project['accountManager'] }}</td>
-                        <td>{{ $project['projectManager'] }}</td>
-                        <td>{{ $project['state'] }}</td>
-                        <td>{{ $project['city'] }}</td>
-                        <td>{{ $project['scopeNames'] }}</td>
-                        <td>{{ $project['employeeName'] }}</td>
-                        <td>{{ $project['associateName'] }}</td>
+                        <td style="text-align: left;">{{ $project['receivedDate'] }}</td>
+                        <td style="text-align: left;">{{ $project['schedulingDate'] }}</td>
+                        <td style="text-align: left;">{{ $project['onSiteDate'] }}</td>
+                        <td style="text-align: left;">{{ $project['projectNo'] }}</td>
+                        <td style="text-align: left;">{{ $project['accountManager'] }}</td>
+                        <td style="text-align: left;">{{ $project['projectManager'] }}</td>
+                        <td style="text-align: left;">{{ $project['state'] }}</td>
+                        <td style="text-align: left;">{{ $project['city'] }}</td>
+                        <td style="text-align: left;">{{ $project['scopeNames'] }}</td>
+                        <td style="text-align: left;">{{ $project['employeeName'] }}</td>
+                        <td style="text-align: left;">{{ $project['associateName'] }}</td>
                       </tr>
                      @endforeach
                      @endif
@@ -171,41 +178,52 @@
               </div>
           </div>
         </div>
-      </div>
-    </div>
+     
+   <!--  </div>
   </center>
-</div>
+</div> -->
 @stop
 @section('script')
 <script type="text/javascript"> 
  $(document).ready(function () {
     $(".loader").fadeOut("slow");
-    $("#div-no-project").hide();
-    $("#div-no-remaining").hide();
+    /*$("#div-no-project").hide();
+    $("#div-no-remaining").hide();*/
     var remainingCount = document.getElementById('remainingcount').value;
     if(remainingCount > 0)
     {
-      document.getElementById('export2-btn').disabled = false;
+      //document.getElementById('export2-btn').disabled = false;
+      $("#table-div2").show();
+      $("#div-no-remaining").hide();
+      remainingProjectPagination();
     }
     else
     {
-      document.getElementById('export2-btn').disabled = true;
       $("#table-div2").hide();
       $("#div-no-remaining").show();
     }
     var schedulingCount = document.getElementById('projectcount').value;
     if(schedulingCount > 0)
     {
+      $("#table-div").show();
+      $("#div-no-project").hide();
+      setpagination();
+    }
+    else
+    {
+     /* document.getElementById('export-btn').disabled = true;*/
+      $("#table-div").hide();
+      $("#div-no-project").show();
+    }
+    if(schedulingCount > 0 || remainingCount > 0)
+    {
       document.getElementById('export-btn').disabled = false;
     }
     else
     {
       document.getElementById('export-btn').disabled = true;
-      $("#table-div").hide();
-      $("#div-no-project").show();
     }
-    setpagination();
-    remainingProjectPagination();
+    
   });
  /*$('#project-pagination').click(function()
  {
@@ -243,6 +261,30 @@
                       $('#countscheduling').text(0);
                       document.getElementById("export-btn").disabled = true;
 
+                  }
+              }
+          });
+          $.ajax({
+              type: "GET",
+              url: '<?php echo route('getRemainingProjects'); ?>',
+              data: {selectedDate:selecteddate},
+              dataType: 'json',
+              success: function(response){
+                  if (response.appendtd != '') {
+                      $("#div-no-remaining").hide();
+                      $("#table-div2").show();
+                      $("#remainingprojectData").html("");
+                      $("#remainingprojectData").html(response['appendtd']);
+                      document.getElementById('remainingcount').value = response.projectcount;
+                      $('#countremaining').text(response.projectcount);
+                      remainingProjectPagination();
+                  }
+                  else
+                  {
+                      $("#table-div2").hide();
+                      $("#div-no-remaining").show();
+                      $('#countremaining').text(0); 
+                      
                   }
               }
           });
@@ -362,20 +404,9 @@ function exportTableToCSV(filename) {
           data: {selectedDate:selecteddate},
                 dataType: 'json',
           success: function(response){
-            if(response != '')
-            {
-              var rows = response;
-              for (var i = 0; i < rows.length; i++) {
-                var row = [], cols = rows[i];
-                
-                for (var j = 0; j < cols.length; j++) 
-                    row.push(cols[j]);
-                
-                    csv.push(row.join(","));        
-                }
-                  // Download CSV file
-                  downloadCSV(csv.join("\n"), filename);
-                }
+              var filename = 'report';
+              var blobData = new Blob([response.data], {type: "application/xlsx"})
+              saveAs(blobData, filename+'.xlsx')
             }
       });
       //var rows = document.querySelectorAll("#scheduledProject tr");
@@ -386,7 +417,7 @@ function exportTableToCSV(filename) {
   }
     
 }
-function exportdataToCSV(filename) {
+/*function exportdataToCSV(filename) {
     var csv = [];
     var  date = new Date($('#datepicker2').val());
     if(!isNaN(date))
@@ -397,7 +428,7 @@ function exportdataToCSV(filename) {
       selecteddate = [year, month, day].join('-');
       $.ajax({
           type: "GET",
-          url: '<?php echo route('exportremaining'); ?>',
+          url: '<?php //echo route('exportremaining'); ?>',
           data: {selectedDate:selecteddate},
                 dataType: 'json',
           success: function(response){
@@ -450,7 +481,7 @@ function downloadCSV(csv, filename) {
 
     // Click download link
     downloadLink.click();
-}
+}*/
 
 </script>
 <script type="text/javascript">
@@ -547,7 +578,7 @@ $(function () {
   });
 }
 
-$('#view-btn2').click(function(){
+/*$('#view-btn2').click(function(){
     var  date = new Date($('#datepicker2').val());
     if(!isNaN(date))
     {
@@ -557,7 +588,7 @@ $('#view-btn2').click(function(){
       selecteddate = [year, month, day].join('-');
       $.ajax({
               type: "GET",
-              url: '<?php echo route('getRemainingProjects'); ?>',
+              url: '<?php //echo route('getRemainingProjects'); ?>',
               data: {selectedDate:selecteddate},
               dataType: 'json',
               success: function(response){
@@ -585,7 +616,7 @@ $('#view-btn2').click(function(){
       {
         alert('Please select date');
       }
-    });
+    });*/
 </script>
 
 @endsection

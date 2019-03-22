@@ -72,10 +72,10 @@
                               <p style="font-size: 15px;">{{ $project->project_name }}</p>
                             </div>
                             <div class="col-md-3">
-                              <label style="font-size: 15px;">Project No.</label>
+                              <label style="font-size: 15px;">Project Identifier</label>
                             </div>
                             <div class="col-md-2">
-                              <p style="font-size: 15px;">#{{ $project['project_id'] }}</p>
+                              <p style="font-size: 15px;">#{{ $project['project_number'] }}</p>
                             </div>
                           </div>
                           <div class="row">

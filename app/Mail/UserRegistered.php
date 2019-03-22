@@ -45,7 +45,7 @@ class UserRegistered extends Mailable
                 $subject = 'Scoped: Email verification';
                 $greeting = 'Hello '.$this->user->users_name."!";
                 $actionUrl = $this->url;
-                return $this->subject($subject)->markdown('email.userRegistration',['level'=>'success','greeting'=>$greeting,'introLines'=>$introLines,'outroLines'=>$outroLines, 'actionText' => 'Site Link' , 'actionUrl' => $actionUrl]);
+                return $this->subject($subject)->markdown('email.userRegistration',['level'=>'success','greeting'=>$greeting,'introLines'=>$introLines,'outroLines'=>$outroLines, 'actionText' => 'Verification Link' , 'actionUrl' => $actionUrl]);
                 exit;
             }
             else
@@ -56,7 +56,7 @@ class UserRegistered extends Mailable
                 $subject = 'Scoped: Email verification';
                 $greeting = 'Hello '.$this->user->users_name."!";
                 $actionUrl = $this->url;
-                return $this->subject($subject)->markdown('email.managersignup',['level'=>'success','greeting'=>$greeting,'introLines'=>$introLines,'outroLines'=>$outroLines, 'actionText' => 'Site Link' , 'actionUrl' => $actionUrl]);
+                return $this->subject($subject)->markdown('email.managersignup',['level'=>'success','greeting'=>$greeting,'introLines'=>$introLines,'outroLines'=>$outroLines, 'actionText' => 'Verification Link' , 'actionUrl' => $actionUrl]);
                 exit;
             }
             

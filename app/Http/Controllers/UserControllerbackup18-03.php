@@ -284,7 +284,7 @@ class UserController extends Controller
             $bidsrequestcount = 0;
             $nonallocatedproject = null;
         }*/
-        if(isset($schedulingProject))
+        if(isset($schedulingProject) && !empty($schedulingProject))
         {
             $schedulingProjectCount = count($schedulingProject);
         }
@@ -292,7 +292,11 @@ class UserController extends Controller
         {
             $schedulingProject = null;
             $schedulingProjectCount = 0;
-        }     
+        } 
+        if(!isset($users) && empty($users))    
+        {
+            $users = '';
+        }
         
        /* print_r($nonallocatedproject);
         exit;*/
