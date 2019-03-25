@@ -158,17 +158,17 @@ class ReportController extends Controller
             {
                 $projectcount = count($data);
                 foreach ($data as $value) {
-                    $appendtd .= '<tr class = "content"><td>'.$value['receivedDate'].'</td>';
-                    $appendtd .= '<td>'.$value['schedulingDate'].'</td>';
-                    $appendtd .= '<td>'.$value['onSiteDate'].'</td>';
-                    $appendtd .= '<td>'.$value['projectNo'].'</td>';
-                    $appendtd .= '<td>'.$value['accountManager'].'</td>';
-                    $appendtd .= '<td>'.$value['projectManager'].'</td>';
-                    $appendtd .= '<td>'.$value['state'].'</td>';
-                    $appendtd .= '<td>'.$value['city'].'</td>';
-                    $appendtd .= '<td>'.$value['scopeNames'].'</td>';
-                    $appendtd .= '<td>'.$value['employeeName'].'</td>';
-                    $appendtd .= '<td>'.$value['associateName'].'</td></tr>';
+                    $appendtd .= '<tr class = "content"><td style="text-align: left;">'.$value['receivedDate'].'</td>';
+                    $appendtd .= '<td style="text-align: left;">'.$value['schedulingDate'].'</td>';
+                    $appendtd .= '<td style="text-align: left;">'.$value['onSiteDate'].'</td>';
+                    $appendtd .= '<td style="text-align: left;">'.$value['projectNo'].'</td>';
+                    $appendtd .= '<td style="text-align: left;">'.$value['accountManager'].'</td>';
+                    $appendtd .= '<td style="text-align: left;">'.$value['projectManager'].'</td>';
+                    $appendtd .= '<td style="text-align: left;">'.$value['state'].'</td>';
+                    $appendtd .= '<td style="text-align: left;">'.$value['city'].'</td>';
+                    $appendtd .= '<td style="text-align: left;">'.$value['scopeNames'].'</td>';
+                    $appendtd .= '<td style="text-align: left;">'.$value['employeeName'].'</td>';
+                    $appendtd .= '<td style="text-align: left;">'.$value['associateName'].'</td></tr>';
                 }
             }
             return json_encode(array('appendtd' => $appendtd,'projectcount' => $projectcount));
@@ -274,17 +274,17 @@ class ReportController extends Controller
             {
                 $projectcount = count($data);
                 foreach ($data as $value) {
-                    $appendtd .= '<tr class = "content"><td>'.$value['receivedDate'].'</td>';
-                    $appendtd .= '<td>'.$value['schedulingDate'].'</td>';
-                    $appendtd .= '<td>'.$value['onSiteDate'].'</td>';
-                    $appendtd .= '<td>'.$value['projectNo'].'</td>';
-                    $appendtd .= '<td>'.$value['accountManager'].'</td>';
-                    $appendtd .= '<td>'.$value['projectManager'].'</td>';
-                    $appendtd .= '<td>'.$value['state'].'</td>';
-                    $appendtd .= '<td>'.$value['city'].'</td>';
-                    $appendtd .= '<td>'.$value['scopeNames'].'</td>';
-                    $appendtd .= '<td>'.$value['employeeName'].'</td>';
-                    $appendtd .= '<td>'.$value['associateName'].'</td></tr>';
+                    $appendtd .= '<tr class = "content"><td style="text-align: left;">'.$value['receivedDate'].'</td>';
+                    $appendtd .= '<td style="text-align: left;">'.$value['schedulingDate'].'</td>';
+                    $appendtd .= '<td style="text-align: left;">'.$value['onSiteDate'].'</td>';
+                    $appendtd .= '<td style="text-align: left;">'.$value['projectNo'].'</td>';
+                    $appendtd .= '<td style="text-align: left;">'.$value['accountManager'].'</td>';
+                    $appendtd .= '<td style="text-align: left;">'.$value['projectManager'].'</td>';
+                    $appendtd .= '<td style="text-align: left;">'.$value['state'].'</td>';
+                    $appendtd .= '<td style="text-align: left;">'.$value['city'].'</td>';
+                    $appendtd .= '<td style="text-align: left;">'.$value['scopeNames'].'</td>';
+                    $appendtd .= '<td style="text-align: left;">'.$value['employeeName'].'</td>';
+                    $appendtd .= '<td style="text-align: left;">'.$value['associateName'].'</td></tr>';
                 }
             }
             return json_encode(array('appendtd' => $appendtd,'projectcount' => $projectcount));
@@ -409,7 +409,6 @@ class ReportController extends Controller
                            ];
             }
         }
-        
         $rowNumber = 1; //start in row 1
         $newsheet = $objPHPExcel->createSheet();
         $newsheet->setTitle($date.'-SCHEDULED-REPORT');
@@ -417,28 +416,34 @@ class ReportController extends Controller
         $newsheet->setCellValue('A1',$date.'-SCHEDULED-REPORT');
         $newsheet->getStyle('A1:K1')->getFont()->setBold(true);
         $rowNumber = 2; //start in row 1
-        foreach ($data as $row) {
-           // print_r($row);
-            //exit;
-            $col = 'A'; // start at column A
-            if($rowNumber==2){
-                foreach($report_sheet_column_array as $cell) {
-                    /*echo "hello";
-                    print_r($cell);
-
-                    exit;*/
+        if($count > 0)
+        {
+            foreach ($data as $row) {
+                $col = 'A'; // start at column A
+                if($rowNumber==2){
+                    foreach($report_sheet_column_array as $cell) {
+                        $newsheet->setCellValue($col.$rowNumber,$cell);
+                        $newsheet->getStyle($col.$rowNumber)->getFont()->setBold(true);
+                        $col++;
+                    }
+                    $rowNumber++;
+                }
+                $col = 'A'; // start at column A
+                foreach($row as $cell) {
                     $newsheet->setCellValue($col.$rowNumber,$cell);
-                    $newsheet->getStyle($col.$rowNumber)->getFont()->setBold(true);
                     $col++;
                 }
                 $rowNumber++;
             }
-            $col = 'A'; // start at column A
-            foreach($row as $cell) {
+        }
+        else
+        {
+            $col = 'A'; 
+            foreach($report_sheet_column_array as $cell) {
                 $newsheet->setCellValue($col.$rowNumber,$cell);
+                $newsheet->getStyle($col.$rowNumber)->getFont()->setBold(true);
                 $col++;
             }
-            $rowNumber++;
         }
         foreach(range('A',$newsheet->getHighestColumn()) as $column) {
             $newsheet->getColumnDimension($column)->setAutoSize(true);
@@ -454,9 +459,8 @@ class ReportController extends Controller
                             ->orderBy('projects.created_at', 'desc')
                             ->get();
         $remainingcount = $remainingprojects->count();
-        if($remainingcount != 0)
+        if($remainingcount > 0)
         {
-            
             foreach ($remainingprojects as $value) {
                 $receivedDate   = new DateTime($value->created_at);
                 $receivedDate   = $receivedDate->format('m/d/Y');
@@ -487,7 +491,6 @@ class ReportController extends Controller
                                             ->first();
                     $scopeNames .= $scopeperformed->scope_performed.' ';
                 }
-               
                 $remainingData[] = [
                            $receivedDate,
                            $schedulingDate,
@@ -510,42 +513,43 @@ class ReportController extends Controller
         $newsheet->setCellValue('A1',$date.'-REMAINING-REPORT');
         $newsheet->getStyle('A1:K1')->getFont()->setBold(true);
         $rowNumber = 2; //start in row 1
-        foreach ($remainingData as $row) {
-            //print_r($row);
-            //exit;
-            $col = 'A'; // start at column A
-            if($rowNumber==2){
-                foreach($report_sheet_column_array as $cell) {
-                    /*echo "hello";
-                    print_r($cell);
+        if($remainingcount > 0)
+        {
+            foreach ($remainingData as $row) {
+                //print_r($row);
+                //exit;
+                $col = 'A'; // start at column A
+                if($rowNumber==2){
+                    foreach($report_sheet_column_array as $cell) {
+                        $newsheet->setCellValue($col.$rowNumber,$cell);
+                        $newsheet->getStyle($col.$rowNumber)->getFont()->setBold(true);
+                        $col++;
+                    }
+                    $rowNumber++;
+                }
+                $col = 'A'; // start at column A
+                foreach($row as $cell) {
 
-                    exit;*/
+                    
                     $newsheet->setCellValue($col.$rowNumber,$cell);
-                    $newsheet->getStyle($col.$rowNumber)->getFont()->setBold(true);
                     $col++;
                 }
                 $rowNumber++;
             }
+        }
+        else
+        {
             $col = 'A'; // start at column A
-            foreach($row as $cell) {
-
-                
+            foreach($report_sheet_column_array as $cell) {
                 $newsheet->setCellValue($col.$rowNumber,$cell);
-                /*if($cell == '')
-                {
-                    $cell = 'suvarna';
-                    echo $cell;
-                    break;*/
-                    /*print_r($newsheet);
-                    exit;*/
-                //}
+                $newsheet->getStyle($col.$rowNumber)->getFont()->setBold(true);
                 $col++;
             }
-            $rowNumber++;
         }
         foreach(range('A',$newsheet->getHighestColumn()) as $column) {
             $newsheet->getColumnDimension($column)->setAutoSize(true);
         }
+
         //$newsheet->export('xlsx');
         /*$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
         $objWriter->save($current_excel_filepath); */
@@ -561,8 +565,7 @@ class ReportController extends Controller
         header ('Cache-Control: cache, must-revalidate'); // HTTP/1.1
         header ('Pragma: public'); // HTTP/1.0
         $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
-        $objWriter->save($current_excel_filepath);
-
+        //$objWriter->save($current_excel_filepath);
         $objWriter->save("php://output");
         //$objWriter->save($current_excel_filepath); 
 

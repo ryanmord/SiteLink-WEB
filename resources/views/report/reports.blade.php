@@ -44,8 +44,7 @@
                 <button class="btn btn-danger" type="submit" id="export-btn" style="margin-top: 15px;float: right;">Export</button>
                 </div>
                 </form>
-
-               </div>
+                </div>
                <h5> Scheduled <span class="badge" style="background-color:#DB5A6B;" id="countscheduling">{{ $scheduledCount }}</span></h5>
                <div id="div-no-project">
                     <h6><center>No Data Found</center></h6> <br>
@@ -251,16 +250,16 @@
                       $("#projectData").html(response['appendtd']);
                       document.getElementById('projectcount').value = response.projectcount;
                       $('#countscheduling').text(response.projectcount);
-                      document.getElementById("export-btn").disabled = false;
                       setpagination();
+                      setExportButton();
                   }
                   else
                   {
                       $("#table-div").hide();
                       $("#div-no-project").show(); 
                       $('#countscheduling').text(0);
-                      document.getElementById("export-btn").disabled = true;
-
+                      document.getElementById('projectcount').value = 0;
+                      setExportButton();
                   }
               }
           });
@@ -278,22 +277,40 @@
                       document.getElementById('remainingcount').value = response.projectcount;
                       $('#countremaining').text(response.projectcount);
                       remainingProjectPagination();
+                      setExportButton();
                   }
                   else
                   {
+                      
+                      document.getElementById('remainingcount').value = 0;
                       $("#table-div2").hide();
                       $("#div-no-remaining").show();
                       $('#countremaining').text(0); 
+                      setExportButton();
                       
                   }
               }
           });
+          
       }
       else
       {
         alert('Please select date');
       }
     });
+ function setExportButton()
+ {
+    var remainingCount = document.getElementById('remainingcount').value;
+    var schedulingCount = document.getElementById('projectcount').value;
+    if(schedulingCount > 0 || remainingCount > 0)
+    {
+      document.getElementById('export-btn').disabled = false;
+    }
+    else
+    {
+      document.getElementById('export-btn').disabled = true;
+    }
+ }
 
   function setpagination()
   {

@@ -4565,7 +4565,7 @@ class ApiController extends Controller
             $model->created_at = date('Y-m-d H:i:s');
             $model->save();
             $action = 1;
-            Mail::to($managerEmail)->send(new NewProject($user,$action,$projectName));
+            //Mail::to($managerEmail)->send(new NewProject($user,$action,$projectName));
             return json_encode(array('status'        => '1',
                                    'message'         => 'Project created successfully',
                                    'scopedProjectId' => (string)$projectid,
@@ -4827,7 +4827,7 @@ class ApiController extends Controller
         $project = Project::where('project_id','=',$projectid)->first();
         $projectName = $project->project_name;
         $action = 2;
-        Mail::to($managerEmail)->send(new NewProject($user,$action,$projectName));
+        //Mail::to($managerEmail)->send(new NewProject($user,$action,$projectName));
         return json_encode(array('status'        => '1', 
                                'message'         => 'Scoped project updated successfully',
                                'scopedProjectId' => (string)$projectid,
@@ -4874,7 +4874,6 @@ class ApiController extends Controller
                     $country = $value->short_name;
                 }
             }
-            
         }
         $temp = array('state' => $state,'city' => $city,'country' => $country);
         return $temp;
