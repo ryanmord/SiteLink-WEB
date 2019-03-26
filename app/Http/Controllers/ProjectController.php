@@ -221,7 +221,7 @@ class ProjectController extends Controller
         $items = $limit * ($pageno - 1);   
         $where_condition = "1 = 1";
         if($searchKeyword != "") {
-            $where_condition = "  (users_name Like  '%$searchKeyword%')";
+            $where_condition = "  (users_name Like  '%$searchKeyword%' OR last_name Like  '%$searchKeyword%')";
             $userlist = DB::table('users')
                             ->select(DB::raw('SQL_CALC_FOUND_ROWS users_id'), 'users_name', 'users_email','users_address','users_company','users_phone','users_profile_image','last_name')
                             ->where('email_status','=',1)
@@ -229,11 +229,11 @@ class ProjectController extends Controller
                             ->where('user_types_id','=',2)
                             ->where('users_approval_status','=',1)
                             ->whereRaw($where_condition)
-                            ->orderBy('users_name','desc')
+                            ->orderBy('users_name','asc')
+                            ->orderBy('last_name','asc')
                             ->limit($limit)
                             ->offset($items)
                             ->get();
-           
         }
         else{
             $userlist = DB::table('users')
@@ -242,7 +242,8 @@ class ProjectController extends Controller
                             ->where('users_status','=',1)
                             ->where('user_types_id','=',2)
                             ->where('users_approval_status','=',1)
-                            ->orderBy('users_name','desc')
+                            ->orderBy('users_name','asc')
+                            ->orderBy('last_name','asc')
                             ->limit($limit)
                             ->offset($items)
                             ->get();

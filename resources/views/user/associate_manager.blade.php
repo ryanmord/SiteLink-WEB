@@ -37,6 +37,7 @@
                   <table class="table table-bordered table-hover table-striped">
                     <thead>
                       <tr bgcolor="#EEEEEE">
+                        <th width="50px;">ID</th>
                         <th width="50px;">Image</th>
                         <th>User Name</th>
                         @if(!isset($admin))
@@ -59,6 +60,7 @@
                       <tbody id="associate-data">
                         @foreach ($associate as $user)
                           <tr class="content">
+                            <td>{{ $user->users_id }}</td>
                             <td>
                             @if(isset($user->users_profile_image))
                             <?php $user['users_profile_image'] = asset("/img/users/" . $user['users_profile_image']); ?>
@@ -167,6 +169,7 @@
                     <table class="table table-bordered table-hover table-striped">
                       <thead>
                         <tr bgcolor="#EEEEEE">
+                          <th width="50px;">ID</th>
                           <th width="50px;">Image</th>
                           <th>User Name
                           </th>
@@ -180,6 +183,7 @@
                       <tbody id="manager-data">
                       @foreach ($manager as $user)
                         <tr class="content">
+                        <td>{{ $user->users_id }}</td>
                           <td style="text-align: center;vertical-align: middle;">
                             @if(isset($user->users_profile_image))
                             <?php $user['users_profile_image'] = asset("/img/users/" . $user['users_profile_image']); ?>
@@ -300,7 +304,7 @@ $(window).load(function() {
 $(function () {
     // Number of items and limits the number of items per page
     var projectcount = document.getElementById('associate-count').value;
-    var limitPerPage = 5;
+    var limitPerPage = 10;
     var totalPages = (Math.ceil(projectcount / limitPerPage));
     var paginationSize = 7; 
     var currentPage;
@@ -393,7 +397,7 @@ $(function () {
 $(function () {
     // Number of items and limits the number of items per page
     var projectcount = document.getElementById('manager-count').value;
-    var limitPerPage = 7;
+    var limitPerPage = 10;
     var totalPages = (Math.ceil(projectcount / limitPerPage));
     var paginationSize = 7; 
     var currentPage;

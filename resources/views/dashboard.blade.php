@@ -366,7 +366,7 @@ if(usercount > 0)
   $(function () {
     // Number of items and limits the number of items per page
     var usercount = $('#user-count').text();
-    var limitPerPage = 5;
+    var limitPerPage = 15;
     var totalPages = (Math.ceil(usercount / limitPerPage));
     var paginationSize = 7; 
     var currentPage;
@@ -462,7 +462,7 @@ if(usercount > 0)
 $(function () {
     // Number of items and limits the number of items per page
     var projectcount = document.getElementById("scheduling-count").value;
-    var limitPerPage = 6;
+    var limitPerPage = 15;
     var totalPages = (Math.ceil(projectcount / limitPerPage));
     var paginationSize = 7; 
     var currentPage;

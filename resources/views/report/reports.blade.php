@@ -1,6 +1,14 @@
 @extends('layouts.main_layout')
-
+@section('css')
+ <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
+ <style type="text/css">
+   .ui-datepicker-trigger{
+    height: 30px;
+   }
+ </style>
+@stop
 @section('main-content')
+
  <div class="col-xs-12 col-sm-9 content">
  <div class="loader" style="position: fixed;
         left: 0px;
@@ -31,11 +39,24 @@
           </ul> -->
           <!-- <div id="myTabContent" class="tab-content">
             <div class="tab-pane fade active in" id="home1"> -->
-            <?php $date = date('Y-m-d'); ?>
+            <?php $date = date('m/d/Y'); ?>
               <div class="row">
+
               <form role="form" class="form-horizontal" method="GET" action="{{ route('exportProjects') }}">
                 <div class="col-sm-3">
-                  <input type="date" name="datepicker" id="datepicker" value="{{ $date }}" class="form-control" style="margin-top: 15px;">
+                <br>
+                <div class="form-group">
+                    <input type="text" id="datepicker" name="datepicker" value="{{ $date }}" style="margin-left: 30px;height: 30px;width: 200px;">
+                 <!--  <div class='input-group date' id='datepicker'>
+                      <input type='text' class="form-control" />
+                      <span class="input-group-addon">
+                          <span class="glyphicon glyphicon-calendar"></span>
+                      </span>
+                  </div> -->
+                
+              </div>
+               <!--  <i class="fa fa-calendar" id="datepickericon"></i> -->
+                  <!-- <input type="text" name="datepicker" id="datepicker" value="{{ $date }}"  style="margin-top: 15px;"> -->
                  </div>
                  <div class="col-sm-3">
                    <button class="btn btn-info" type="button" id="view-btn" style="margin-top: 15px;float: left;">View</button>
@@ -183,9 +204,12 @@
 </div> -->
 @stop
 @section('script')
+
 <script type="text/javascript"> 
+
  $(document).ready(function () {
     $(".loader").fadeOut("slow");
+     
     /*$("#div-no-project").hide();
     $("#div-no-remaining").hide();*/
     var remainingCount = document.getElementById('remainingcount').value;
@@ -501,6 +525,7 @@ function downloadCSV(csv, filename) {
 }*/
 
 </script>
+
 <script type="text/javascript">
   function remainingProjectPagination()
   {
@@ -635,5 +660,30 @@ $(function () {
       }
     });*/
 </script>
+<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+ <script type="text/javascript">
+  /*  $(function() {
+
+      $( "#datepicker" ).datepicker({
+         maxDate: 0 
+      });
+    
+    });*/
+ </script>
+<script>
+  $( function() {
+   /* var image = "{{ asset('images/calender.gif') }}";
+    alert(image);*/
+    $( "#datepicker" ).datepicker({
+      showOn: "both",
+      buttonImage:"{{ asset('images/calendar.gif') }}",
+      buttonImageOnly: true,
+      buttonText: "Select date",
+      maxDate: 0 
+    });
+  } );
+  </script>
+
 
 @endsection

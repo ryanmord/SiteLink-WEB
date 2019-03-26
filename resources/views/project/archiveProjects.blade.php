@@ -60,7 +60,7 @@
             </div> -->
             <div class="table-responsive" id="table-div">
                 @if(isset($archiveProject) && !empty($archiveProject))
-                <table class="table table-bordered table-hover table-striped">
+                <table class="table table-hover table-striped table-bordered" border="1">
     		        <thead>
                         <tr bgcolor="#EEEEEE">
                             <th class="table-td-th" width="50">
@@ -206,7 +206,7 @@
 $(function () {
     // Number of items and limits the number of items per page
     var usercount = document.getElementById('projectcount').value;
-    var limitPerPage = 10;
+    var limitPerPage = 20;
     var totalPages = (Math.ceil(usercount / limitPerPage));
     var paginationSize = 7; 
     var currentPage;
