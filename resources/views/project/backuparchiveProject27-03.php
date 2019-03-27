@@ -41,7 +41,7 @@
                         <input type="text" class="form-control search-query" placeholder="Search here" id="searchUser"> -->
                     </div>
                     <input type="hidden" name="pagenumber" id="pagenumber">
-                    <input type="hidden" name="projectcount" value="" id="projectcount">
+                    <input type="hidden" name="projectcount" value="{{ $projectCount}}" id="projectcount">
                 </div>
                 <div class="col-md-6">
 
@@ -55,29 +55,82 @@
                     </div>
                 </div>
             </div>
-            <div id="div-no-project">
-                <center><p style="font-size: 20px;">No data found</p></center><br>
-            </div>
+           <!--  <div id="div-no-project">
+                <center><p style="font-size: 20px;">No data found</p></center>
+            </div> -->
             <div class="table-responsive" id="table-div">
-               
-                <table class="table table-hover table-striped table-bordered" border="1" id="archiveTable">
-                    <thead>
+                @if(isset($archiveProject) && !empty($archiveProject))
+                <table class="table table-hover table-striped table-bordered" border="1">
+    		        <thead>
                         <tr bgcolor="#EEEEEE">
                             <th class="table-td-th" width="50">
                                 <!-- <input type="checkbox" id="allChecks"> -->
                             </th>
-                            <th class="table-td-th" data-id="1" id="identifier-th" onclick="sortTable(0,'identifier-th')" style="cursor: pointer;">Project Identifier</th>
-                            <th class="table-td-th" data-id="1" id="name-th" onclick="sortTable(1,'name-th')" style="cursor: pointer;">Project Name</th>
-                            <th class="table-td-th"  data-id="1" id="address-th" onclick="sortTable(2,'address-th')" style="cursor: pointer;">Site Address</th>
-                            <th class="table-td-th" width="10%" data-id="1" id="budget-th" onclick="sortTable(3,'budget-th')" style="cursor: pointer;">Budget</th>
+                            <th class="table-td-th"">Project Identifier</th>
+                            <th class="table-td-th">Project Name</th>
+                            <th class="table-td-th">Site Address</th>
+                            <th class="table-td-th" width="10%">Budget</th>
                             <th class="table-td-th">Scope</th>
-                            <th class="table-td-th" data-id="1" id="manager-th" onclick="sortTable(4,'manager-th')" style="cursor: pointer;">Project Manager</th>
-                            <th class="table-td-th" data-id="1" id="created-th" onclick="sortTable(5,'created-th')" style="cursor: pointer;">CreatedOn</th>
+                            <th class="table-td-th">Project Manager</th>
+                            <th class="table-td-th">CreatedOn</th>
                             <th class="table-td-th">Action</th>
                         </tr>
                     </thead>
-                    <tbody id="projectData">
-                         
+        	        <tbody id="userData">
+                         @foreach ($archiveProject as $project)
+                            <tr class="content">
+                                <td class="table-td-th">
+                                    <input type="checkbox" name="checkProject" id="checkProject" value="{{ $project['project_id'] }}"></td>
+                                        <td class="table-td-th">
+                                            {{ $project['identifier'] }}
+                                        </td>
+                                        <td class="table-td-th" style="text-align: left;">
+                                            {{ $project['project_name'] }}
+                                        </td>
+                                         <td class="table-td-th" style="text-align: left;">
+                                                {{ $project['project_site_address'] }}
+                    
+                                        </td>
+                                        <td class="table-td-th" style="text-align: left;">
+                                            <span class="glyphicon glyphicon-usd"></span>
+                                            {{ $project['budget'] }}
+                                        </td>
+                                         <td class="table-td-th" style="text-align: left;">
+                                                {{ $project['scopevalue'] }}
+                    
+                                        </td>
+                                        <td class="table-td-th" style="text-align: left;">
+                                            {{ $project['managername'] }}
+                                        </td>
+                                        <td class="table-td-th" style="text-align: left;">
+                                            {{ $project['created_at'] }}
+                                        </td>
+                                            <!-- <td class="table-td-th">
+                                              <div class="btn-group">
+                                                <a href="{{url('/schedulingProject/'.$project['project_id'])}}">
+                                                    <button type="button" class="btn btn-success">
+                                                    <center>View</center></button></a>
+                                              </div>
+                                            </td> -->
+
+                                        <td class="table-td-th">
+                                          <div class="btn-group">
+                                          <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown"><center><span class="glyphicon glyphicon-cog"></span></center></button>
+                                          <ul class="dropdown-menu" role="menu" style="left: 0% !important;
+                                            right: 100% !important;text-align: left !important;transform: translate(-75%, 0) !important;">
+                                            <?php $projectid = $project['project_id'] ?>
+
+                                            <li>
+                                              <a href="{{url('/allProejcts/projectDetail/'.$project['project_id'])}}">
+                                             View</a>
+                                            </li>
+                                            <li><a href="{{url('/dashboard/scheduled/'.$project['project_id'])}}">Un-Archive</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
                     </tbody>
                 </table>
                 <div class="row content-row-pagination">
@@ -90,7 +143,10 @@
                         </ul>
                     </div>
                 </div>
-               
+                @else
+                    <h6><center>There are no archive projects available</center>
+                    </h6><br><br>
+                @endif
             </div>
         </div>
 
@@ -103,28 +159,6 @@
     $(document).ready(function () {
         $(".loader").fadeOut("slow");
         document.getElementById('pagenumber').value = 1;
-        $.ajax({
-                  type: 'GET',
-                  url: '<?php echo route('archiveProjectList'); ?>',
-                  data: {order_key:5,sortorder:2},
-                  dataType: 'json',
-              })
-              .done(function(msg) {
-                 if(msg.count > 0)
-                 {
-                    $('#div-no-project').hide();
-                    $('#table-div').show();
-                    $('#projectData').html('');
-                    $('#projectData').html(msg.appendtd);
-                    document.getElementById('projectcount').value = msg.count;
-                    setpagination();
-                 }
-                 else
-                 {
-                    $('#div-no-project').show();
-                    $('#table-div').hide();
-                 }
-           });
         //$("#div-no-project").hide();
       
     });
@@ -171,15 +205,15 @@
 }
 $(function () {
     // Number of items and limits the number of items per page
-    var projectCount = document.getElementById('projectcount').value;
+    var usercount = document.getElementById('projectcount').value;
     var limitPerPage = 20;
-    var totalPages = (Math.ceil(projectCount / limitPerPage));
+    var totalPages = (Math.ceil(usercount / limitPerPage));
     var paginationSize = 7; 
     var currentPage;
     function showPage(whichPage) {
         if (whichPage < 1 || whichPage > totalPages) return false;
         currentPage = whichPage;
-        $("#projectData .content").hide()
+        $("#userData .content").hide()
             .slice((currentPage-1) * limitPerPage, 
                     currentPage * limitPerPage).show();
         // Replace the navigation items (not prev/next):            
@@ -210,7 +244,7 @@ $(function () {
         )
     );
     // Show the page links
-    $("#projectData").show();
+    $("#userData").show();
     showPage(1);
 
     // Use event delegation, as these items are recreated later    
@@ -267,34 +301,5 @@ $(function () {
           });
         }
     });
-  </script>
-  <script type="text/javascript">
-      function sortTable(n,id) {
-
-       var sortorder = $('#'+id).attr("data-id"); 
-        $.ajax({
-                  type: 'GET',
-                  url: '<?php echo route('archiveProjectList'); ?>',
-                  data: {order_key:n,sortorder:sortorder},
-                  dataType: 'json',
-              })
-              .done(function(msg) {
-                 if(msg.appendtd != '')
-                 {
-                    $('#projectData').html('');
-                    $('#projectData').html(msg.appendtd);
-                    document.getElementById('projectcount').value = msg.count;
-                    setpagination();
-                 }
-           });
-        if(sortorder == 1)
-        {
-            $('#'+id).attr('data-id' , '2'); 
-        }
-        else
-        {
-            $('#'+id).attr('data-id' , '1'); 
-        }
-}
   </script>
 @endsection

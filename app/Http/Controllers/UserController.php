@@ -32,25 +32,204 @@ class UserController extends Controller
    
     public function index()
     {
-        $associate = User::Where('users_approval_status','<>','0')
-                    ->where('user_types_id','=','2')
-                    ->orderBy('users_id','desc')
-                    ->get();
-        $manager = User::Where('users_approval_status','<>','0')
-                        ->where('user_types_id','=','1')
-                        ->orderBy('users_id','desc')
-                        ->get();
-        $managercount = $manager->count();
-        $associatecount = $associate->count();
+        
         //$usertype = UserType::all();
-        $scopeperformed= ScopePerformed::all();
-        return view('user.associate_manager',[
-                    'manager'         => $manager, 
-                    'associate'       => $associate,
-                    'scopeperformed'  => $scopeperformed,
-                    'managercount'    => $managercount,
-                    'associatecount'  => $associatecount
-                  ]);
+       
+        return view('user.associate_manager');
+    }
+    public function associateList(Request $request)
+    {
+        $column_key = array("0"=>"users_id","1"=>"users_name","2"=>"users_company","3"=>"users_email","4"=>"users_address","5"=>"created_at","6"=>"users_status");
+      
+        $order_key  = $request['order_key'];
+        $order      = $column_key[$order_key];
+        $sortorder  = $request['sortorder'];
+        if($sortorder == 1)
+        {
+            $sort =  'asc';
+        }
+        else
+        {
+            $sort =  'desc';
+        }
+        /*echo $order;
+        echo $sort;
+        exit;*/
+        $appendtd = '';
+        $users = DB::table('users')
+                            ->select('users.*')
+                            ->where('user_types_id','=','2')
+                            ->where('users_approval_status','<>','0')
+                            ->orderBy($order,$sort)
+                            /*->limit($limit)
+                            ->offset($items)*/
+                            ->get();
+        /*print_r($projects);
+        exit;*/
+        $userCount = $users->count();
+        if(isset($users) && !empty($users))
+        {
+            foreach ($users as  $value) {
+                
+                $createdAt   = $value->created_at;
+                $createdDate = new DateTime($createdAt);
+                $createdDate = $createdDate->format('m/d/Y');
+                $userScope = UserScopePerformed::select('scope_performed_id')
+                             ->where('users_id','=',$value->users_id)->first();
+                $scopevalue = '';
+                if(isset($userScope) && !empty($userScope))
+                {
+                    $scope  = $userScope->scope_performed_id;
+                    $temp   = explode(",", $scope);
+                    $count  = count($temp);
+                    $i = 1;
+                    foreach($temp as $scopes)
+                    {
+                        $scopePerformed = ScopePerformed::select('scope_performed')
+                                                          ->where('scope_performed_id','=',$scopes)
+                                                          ->first();
+                        if(isset($scopePerformed) && !empty($scopePerformed))
+                        {
+                            $scopevalue .= $scopePerformed->scope_performed;
+                            if($i < $count)
+                            {
+                                $scopevalue .= ', ';
+                            }
+                            $i++;
+                        }
+                    }
+                }
+                
+                $profileimage = asset("/img/users/" . $value->users_profile_image);
+                $appendtd .= '<tr class="content">
+                            <td>'.$value->users_id.'</td>';
+                $appendtd .= '<td><img class="img-rounded" style="max-width:50px;max-height:50px;min-width:50px;min-height:50px;" src= "'.$profileimage.'" /></td>';
+                $appendtd .= '<td class="table-td-th">'.$value->users_name.' '.$value->last_name.'</td>';
+                $appendtd .= '<td class="table-td-th">'.$value->users_company.'</td>';
+                $appendtd .= ' <td style="text-align: left;">'.$value->users_email.'<br>
+                            '.$value->users_phone.'
+                          </td>';
+                $appendtd .= '<td class="table-td-th">'.$value->users_address.'</td>';
+                $appendtd .= ' <td class="table-td-th">'.$scopevalue.'</td>';
+                $appendtd .= ' <td class="table-td-th">'.$createdDate.'</td>';
+                if($value->users_status == 1)
+                {
+                    $appendtd .= '<td style="color: #5B8930;">
+                                <span class="glyphicon glyphicon-ok"></span></td>';
+                }
+                else
+                {
+                    $appendtd .= '<<td style="color: #DB5A6B;">
+                                <span class="glyphicon glyphicon-remove"></span></td>';
+                }
+                $appendtd .= ' <td>
+                                <div class="btn-group">
+                                  <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown"><center><span class="glyphicon glyphicon-cog"></span></center></button>
+                                  <ul class="dropdown-menu" role="menu" style="left: 0% !important;
+                                    right: 100% !important;text-align: center !important;transform: translate(-75%, 0) !important;">';
+                                    if($value->users_approval_status == 3)
+                                    {
+                                        $appendtd .= '<li><a href="'.url('users/user/'.$value->users_id.'/1').'" onclick="return confirm("Are you want to sure unblock this user?")">Unblock
+                                      </a>
+                                      </li>';
+                                    }
+                                    else
+                                    {
+                                        $appendtd .= ' <li><a href="'.url('users/user/'.$value->users_id.'/3').'" onclick="return confirm("Are you want to sure block this user?")">Block</a>
+                                      </li>';
+                                    }
+                $appendtd .= '<li><a href="'.url('projects/'.$value->users_id).'">Projects</a></li>
+                                  </ul>
+                                </div>
+                              </td>
+                            </tr>';
+            }
+            
+        }
+        return json_encode(array('count' => $userCount,'appendtd' => $appendtd));
+    }
+    public function managerList(Request $request)
+    {
+        $column_key = array("0"=>"users_id","1"=>"users_name","2"=>"users_company","3"=>"users_email","4"=>"created_at","5"=>"users_status");
+      
+        $order_key  = $request['order_key'];
+        $order      = $column_key[$order_key];
+        $sortorder  = $request['sortorder'];
+        if($sortorder == 1)
+        {
+            $sort =  'asc';
+        }
+        else
+        {
+            $sort =  'desc';
+        }
+        /*echo $order;
+        echo $sort;
+        exit;*/
+        $appendtd = '';
+        $users = DB::table('users')
+                            ->select('users.*')
+                            ->where('user_types_id','=','1')
+                            ->where('users_approval_status','<>','0')
+                            ->orderBy($order,$sort)
+                            /*->limit($limit)
+                            ->offset($items)*/
+                            ->get();
+        /*print_r($projects);
+        exit;*/
+        $userCount = $users->count();
+        if(isset($users) && !empty($users))
+        {
+            foreach ($users as  $value) {
+                
+                $createdAt   = $value->created_at;
+                $createdDate = new DateTime($createdAt);
+                $createdDate = $createdDate->format('m/d/Y');
+                $profileimage = asset("/img/users/" . $value->users_profile_image);
+                $appendtd .= '<tr class="content">
+                            <td>'.$value->users_id.'</td>';
+                $appendtd .= '<td><img class="img-rounded" style="max-width:50px;max-height:50px;min-width:50px;min-height:50px;" src= "'.$profileimage.'" /></td>';
+                $appendtd .= '<td class="table-td-th">'.$value->users_name.' '.$value->last_name.'</td>';
+                $appendtd .= '<td class="table-td-th">'.$value->users_company.'</td>';
+                $appendtd .= ' <td style="text-align: left;">'.$value->users_email.'<br>
+                            '.$value->users_phone.'
+                          </td>';
+                $appendtd .= ' <td class="table-td-th">'.$createdDate.'</td>';
+                if($value->users_status == 1)
+                {
+                    $appendtd .= '<td style="color: #5B8930;">
+                                <span class="glyphicon glyphicon-ok"></span></td>';
+                }
+                else
+                {
+                    $appendtd .= '<<td style="color: #DB5A6B;">
+                                <span class="glyphicon glyphicon-remove"></span></td>';
+                }
+                $appendtd .= ' <td>
+                                <div class="btn-group">
+                                  <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown"><center><span class="glyphicon glyphicon-cog"></span></center></button>
+                                  <ul class="dropdown-menu" role="menu" style="left: 0% !important;
+                                    right: 100% !important;text-align: center !important;transform: translate(-75%, 0) !important;">';
+                                    if($value->users_approval_status == 3)
+                                    {
+                                        $appendtd .= '<li><a href="'.url('users/user/'.$value->users_id.'/1').'" onclick="return confirm("Are you want to sure unblock this user?")">Unblock
+                                      </a>
+                                      </li>';
+                                    }
+                                    else
+                                    {
+                                        $appendtd .= ' <li><a href="'.url('users/user/'.$value->users_id.'/3').'" onclick="return confirm("Are you want to sure block this user?")">Block</a>
+                                      </li>';
+                                    }
+                $appendtd .= '<li><a href="'.url('projects/'.$value->users_id).'">Projects</a></li>
+                                  </ul>
+                                </div>
+                              </td>
+                            </tr>';
+            }
+            
+        }
+        return json_encode(array('count' => $userCount,'appendtd' => $appendtd));
     }
     public function setNewPassword(Request $request)
     {

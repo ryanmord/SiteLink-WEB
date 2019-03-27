@@ -85,6 +85,7 @@ Route::group(['middleware' => 'disablepreventback'],function()
 	Route::get('/changeCheckStatus','ProjectController@changeCheckStatus')->name('changeCheckStatus')->middleware(guest::class);
 	Route::get('/sendProjectNotification','ProjectController@sendProjectNotification')->name('sendProjectNotification')->middleware(guest::class);
 	Route::get('/archiveProjects','ProjectController@archiveProjects')->name('archiveProjects')->middleware(guest::class);
+	Route::get('/archiveProjectList','ProjectController@archiveProjectList')->name('archiveProjectList')->middleware(guest::class);
 	Route::get('/archiveProjects/archive/{id}','ProjectController@archive')->name('archive')->middleware(guest::class);
 	Route::get('/archiveProjects/batchArchive/','ProjectController@batchArchive')->name('batchArchive')->middleware(guest::class);
 	Route::get('/dashboard/scheduled/{id}','ProjectController@scheduled')->name('scheduled')->middleware(guest::class);
@@ -94,6 +95,8 @@ Route::group(['middleware' => 'disablepreventback'],function()
 	Route::get('/getRemainingProjects/','ReportController@getRemainingProjects')->name('getRemainingProjects')->middleware(guest::class);
 	Route::get('/exportProjects/','ReportController@exportProjects')->name('exportProjects')->middleware(guest::class);
 	Route::get('/exportremaining/','ReportController@exportremaining')->name('exportremaining')->middleware(guest::class);
+	Route::get('/associateList/','UserController@associateList')->name('associateList')->middleware(guest::class);
+	Route::get('/managerList/','UserController@managerList')->name('managerList')->middleware(guest::class);
 });
 Route::get('/forgotPassword/{userid}','LoginController@forgotpassword')->name('forgotPassword');
 Route::post('/changepassword','LoginController@changepassword');

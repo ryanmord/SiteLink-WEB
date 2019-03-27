@@ -2783,8 +2783,101 @@ class ProjectController extends Controller
     }
     public function archiveProjects()
     {
-        $projects       = ProjectStatus::where('project_status_type_id','=',8)
-                                        ->orderBy('created_at','desc')->get();
+        return view('project.archiveProjects'); 
+    }
+    public function archiveProjectList(Request $request)
+    {
+        $column_key = array("0"=>"project_number","1"=>"project_name","2"=>"project_site_address","3"=>"budget","4"=>"users_name","5"=>"created_at");
+      
+        $order_key  = $request['order_key'];
+        $order      = $column_key[$order_key];
+        $sortorder  = $request['sortorder'];
+        if($sortorder == 1)
+        {
+            $sort =  'asc';
+        }
+        else
+        {
+            $sort =  'desc';
+        }
+       /* echo $order;
+        echo $sort;
+        exit;*/
+        $appendtd = '';
+        $projects = DB::table('projects')
+                            ->select('projects.*','users_name')
+                            ->leftJoin('project_status','project_status.project_id','=','projects.project_id')
+                            ->leftJoin('users','users.users_id','=','projects.user_id')
+                            ->where('project_status.project_status_type_id','=',8)
+                            ->orderBy($order,$sort)
+                            /*->limit($limit)
+                            ->offset($items)*/
+                            ->get();
+        /*print_r($projects);
+        exit;*/
+        $projectCount = $projects->count();
+        if(isset($projects) && !empty($projects))
+        {
+            foreach ($projects as  $value) {
+                $budget = '$'.number_format($value->budget, 2);
+                $scope  = $value->scope_performed_id;
+                $temp   = explode(",", $scope);
+                $count  = count($temp);
+                $i = 1;
+                $scopevalue = '';
+                foreach($temp as $scopes)
+                {
+                    $scopePerformed = ScopePerformed::select('scope_performed')
+                                                      ->where('scope_performed_id','=',$scopes)
+                                                      ->first();
+                    if(isset($scopePerformed) && !empty($scopePerformed))
+                    {
+                        $scopevalue .= $scopePerformed->scope_performed;
+                        if($i < $count)
+                        {
+                            $scopevalue .= ', ';
+                        }
+                        $i++;
+                    }
+                }
+                $createdAt   = $value->created_at;
+                $createdDate = new DateTime($createdAt);
+                $createdDate = $createdDate->format('m/d/Y');
+                $appendtd .= '<tr class="content"><td class="table-td-th">
+                              <input type="checkbox" name="checkProject" id="checkProject" value="'.$value->project_id.'"></td>';
+                $appendtd .= ' <td class="table-td-th">'.$value->project_number.'</td>';
+                $appendtd .= ' <td class="table-td-th">'.$value->project_name.'</td>';
+                $appendtd .= ' <td class="table-td-th">'.$value->project_site_address.'</td>';
+                $appendtd .= ' <td class="table-td-th">'.$budget.'</td>';
+                $appendtd .= ' <td class="table-td-th">'.$scopevalue.'</td>';
+                $appendtd .= ' <td class="table-td-th">'.$value->users_name.'</td>';
+                $appendtd .= ' <td class="table-td-th">'.$createdDate.'</td>';
+                $appendtd .= ' <td class="table-td-th">
+                                          <div class="btn-group">
+                                          <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown"><center><span class="glyphicon glyphicon-cog"></span></center></button>
+                                          <ul class="dropdown-menu" role="menu" style="left: 0% !important;
+                                            right: 100% !important;text-align: left !important;transform: translate(-75%, 0) !important;">
+                                            <?php $projectid = '.$value->project_id.' ?>
+
+                                            <li>
+                                              <a href="'.url('/allProejcts/projectDetail/'.$value->project_id).'">
+                                             View</a>
+                                            </li>
+                                            <li><a href="'.url('/dashboard/scheduled/'.$value->project_id).'">Un-Archive</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>';
+
+            }
+            
+        }
+        return json_encode(array('count' => $projectCount,'appendtd' => $appendtd));
+
+        /*$projects       = ProjectStatus::where('project_status_type_id','=',8)
+                                        ->orderBy('created_at','desc')
+                                        ->get();
         $projectCount   = $projects->count();
         $archiveProject = '';
         if(isset($projects) && !empty($projects))
@@ -2830,8 +2923,11 @@ class ProjectController extends Controller
            
         }
         return view('project.archiveProjects',['archiveProject' => $archiveProject,
-                                               'projectCount'   => $projectCount]); 
+                                               'projectCount'   => $projectCount]); */
     }
+
+
+
     public function archive($id)
     {
         $projectid = $id;

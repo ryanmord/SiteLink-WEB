@@ -50,7 +50,11 @@
      
     
     label.required:after{content:" *";color:red;}
-  
+    .fa-icon-sort
+    {
+      color: #c5bdbd;
+      font-size: 10px;
+    }
  
   </style>
    
