@@ -9,8 +9,8 @@
         <br>
       </div>
       <div class="modal-body">
-        @if(isset($user) && !empty($user))
-        <form role="form" class="form-horizontal" id="associateapprove" method="Post" action="{{url('dashboard/user/'.$user['users_id'].'/1')}}">
+        @if(isset($users) && !empty($users))
+        <form role="form" class="form-horizontal" id="associateapprove" method="get" action="{{route('authenticateUser')}}">
         @else
         <form role="form" class="form-horizontal" id="associateapprove" method="Post" action="#">
         @endif
@@ -27,6 +27,7 @@
           @endforeach
           <div class="form-group">
           <input type="hidden" name="userid" id="userid">
+          <input type="hidden" name="status" id="status" value="1">
             <div>
               <button class="btn btn-success" style="width: 80px; float: left; 
               margin-right: 10px; margin-left: 10px; margin-bottom: 10px;" type="submit" id="approve">Approve</button>

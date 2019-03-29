@@ -1879,7 +1879,7 @@ class ApiController extends Controller
                     $projectid = $value->project_id;
                     $onholdstatus = ProjectStatus::where('project_id','=',$projectid)
                                 ->where('project_status_type_id','=',6)->first();
-                    if(isset($onholdstatus))
+                    if(isset($onholdstatus) && !empty($onholdstatus))
                     {
                         $flag = '1';
                         $message = 'On Hold';
@@ -1916,18 +1916,18 @@ class ApiController extends Controller
                     $associatebid = number_format($associate->associate_suggested_bid, 2);
                     $approxbid = number_format($project->approx_bid, 2);
                     $progressproject[] = ['projectid' => (string)$projectid, 
-                                'projectname' =>  $inprogressproject->project_name, 
-                                'siteaddress' => $inprogressproject->project_site_address,
-                                'createddate'  => $created_at,
-                                'onsitedate' => $onsitedate,
-                                'reportduedate' => $reportduedate,
-                                'template' => $inprogressproject->report_template,
-                                'instructions' => $inprogressproject->instructions,
-                                'suggestedbid' =>(String)$approxbid,
-                                'associatebid' => (string)$associatebid,
+                                'projectname'    =>  $inprogressproject->project_name, 
+                                'siteaddress'    => $inprogressproject->project_site_address,
+                                'createddate'    => $created_at,
+                                'onsitedate'     => $onsitedate,
+                                'reportduedate'  => $reportduedate,
+                                'template'       => $inprogressproject->report_template,
+                                'instructions'   => $inprogressproject->instructions,
+                                'suggestedbid'   =>(String)$approxbid,
+                                'associatebid'   => (string)$associatebid,
                                 'scopeperformed' => $data,
-                                'onholdflag'  => $flag,
-                                'projectstatus'   => $message
+                                'onholdflag'     => $flag,
+                                'projectstatus'  => $message
                                 ];
                     $cntprojects += 1;
 

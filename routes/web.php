@@ -34,7 +34,7 @@ Route::group(['middleware' => 'disablepreventback'],function()
 	Route::get('/dashboard','UserController@dashboard')->name('dashboard')->middleware(guest::class);
 	Route::get('/users','UserController@index')->middleware(guest::class);
 	Route::get('/adminuser','UserController@adminuser')->middleware(guest::class);
-	Route::any('dashboard/user/{id}/{status}', 'UserController@approveduser')->middleware(guest::class);
+	Route::get('authenticateUser', 'UserController@approveduser')->name('authenticateUser')->middleware(guest::class);
 	Route::any('project/bid/{projectid}/{userid}/{status}', 'ProjectController@bidaccept')->middleware(guest::class);
 	Route::any('user/{status}', 'UserController@search')->middleware(guest::class);
 	Route::get('/projects/{id}','ProjectController@show')->middleware(guest::class);
@@ -55,8 +55,10 @@ Route::group(['middleware' => 'disablepreventback'],function()
 	Route::get('/managerDashboard', 'UserController@managerDashboard')->name('managerDashboard')->middleware(guest::class);
 	Route::get('/allProejcts/projectDetail/{id}', 'ProjectController@projectDetail')->middleware(guest::class);
 	Route::get('/projectStatus/{id}', 'ProjectController@projectstatus')->middleware(guest::class);
-	Route::get('/allProejcts/projectOnHold/{id}', 'ProjectController@projectOnHold')->middleware(guest::class);
-	Route::get('/allProejcts/projectInProgress/{id}', 'ProjectController@projectInProgress')->middleware(guest::class);
+	Route::get('/allProejcts/projectOnHold/', 'ProjectController@projectOnHold')
+			->name('projectOnHold')->middleware(guest::class);
+	Route::get('/allProejcts/projectInProgress/', 'ProjectController@projectInProgress')
+			->name('projectInProgress')->middleware(guest::class);
 	/*Route::get('/allProejcts/projectComplete', 'ProjectController@projectComplete')->
 	name('projectComplete')->middleware(guest::class);*/
 	Route::get('/allProejcts/projectComplete/{id}', 'ProjectController@projectComplete')->middleware(guest::class);
@@ -97,6 +99,13 @@ Route::group(['middleware' => 'disablepreventback'],function()
 	Route::get('/exportremaining/','ReportController@exportremaining')->name('exportremaining')->middleware(guest::class);
 	Route::get('/associateList/','UserController@associateList')->name('associateList')->middleware(guest::class);
 	Route::get('/managerList/','UserController@managerList')->name('managerList')->middleware(guest::class);
+	Route::get('/schedulingProjectList/','ProjectController@schedulingProjectList')->name('schedulingProjectList')->middleware(guest::class);
+	Route::get('/pendingAssociateList/','UserController@pendingAssociateList')->name('pendingAssociateList')->middleware(guest::class);
+	Route::get('/openProjectList/','ProjectController@openProjectList')->name('openProjectList')->middleware(guest::class);
+	Route::get('/completeProjectList/','ProjectController@completeProjectList')->name('completeProjectList')->middleware(guest::class);
+	Route::get('/cancelProjectList/','ProjectController@cancelProjectList')->name('cancelProjectList')->middleware(guest::class);
+	Route::get('/onHoldProjectList/','ProjectController@onHoldProjectList')->name('onHoldProjectList')->middleware(guest::class);
+	Route::get('/inProgressList/','ProjectController@inProgressList')->name('inProgressList')->middleware(guest::class);
 });
 Route::get('/forgotPassword/{userid}','LoginController@forgotpassword')->name('forgotPassword');
 Route::post('/changepassword','LoginController@changepassword');

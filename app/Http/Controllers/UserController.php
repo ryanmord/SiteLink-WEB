@@ -102,16 +102,16 @@ class UserController extends Controller
                 
                 $profileimage = asset("/img/users/" . $value->users_profile_image);
                 $appendtd .= '<tr class="content">
-                            <td>'.$value->users_id.'</td>';
+                            <td class="table-td-data">'.$value->users_id.'</td>';
                 $appendtd .= '<td><img class="img-rounded" style="max-width:50px;max-height:50px;min-width:50px;min-height:50px;" src= "'.$profileimage.'" /></td>';
-                $appendtd .= '<td class="table-td-th">'.$value->users_name.' '.$value->last_name.'</td>';
-                $appendtd .= '<td class="table-td-th">'.$value->users_company.'</td>';
+                $appendtd .= '<td class="table-td-data">'.$value->users_name.' '.$value->last_name.'</td>';
+                $appendtd .= '<td class="table-td-data">'.$value->users_company.'</td>';
                 $appendtd .= ' <td style="text-align: left;">'.$value->users_email.'<br>
                             '.$value->users_phone.'
                           </td>';
-                $appendtd .= '<td class="table-td-th">'.$value->users_address.'</td>';
-                $appendtd .= ' <td class="table-td-th">'.$scopevalue.'</td>';
-                $appendtd .= ' <td class="table-td-th">'.$createdDate.'</td>';
+                $appendtd .= '<td class="table-td-data">'.$value->users_address.'</td>';
+                $appendtd .= ' <td class="table-td-data">'.$scopevalue.'</td>';
+                $appendtd .= ' <td class="table-td-data">'.$createdDate.'</td>';
                 if($value->users_status == 1)
                 {
                     $appendtd .= '<td style="color: #5B8930;">
@@ -129,13 +129,13 @@ class UserController extends Controller
                                     right: 100% !important;text-align: center !important;transform: translate(-75%, 0) !important;">';
                                     if($value->users_approval_status == 3)
                                     {
-                                        $appendtd .= '<li><a href="'.url('users/user/'.$value->users_id.'/1').'" onclick="return confirm("Are you want to sure unblock this user?")">Unblock
+                                        $appendtd .= '<li><a href="'.url('users/user/'.$value->users_id.'/1').'">Unblock
                                       </a>
                                       </li>';
                                     }
                                     else
                                     {
-                                        $appendtd .= ' <li><a href="'.url('users/user/'.$value->users_id.'/3').'" onclick="return confirm("Are you want to sure block this user?")">Block</a>
+                                        $appendtd .= ' <li><a href="'.url('users/user/'.$value->users_id.'/3').'">Block</a>
                                       </li>';
                                     }
                 $appendtd .= '<li><a href="'.url('projects/'.$value->users_id).'">Projects</a></li>
@@ -187,14 +187,14 @@ class UserController extends Controller
                 $createdDate = $createdDate->format('m/d/Y');
                 $profileimage = asset("/img/users/" . $value->users_profile_image);
                 $appendtd .= '<tr class="content">
-                            <td>'.$value->users_id.'</td>';
+                            <td class="table-td-data">'.$value->users_id.'</td>';
                 $appendtd .= '<td><img class="img-rounded" style="max-width:50px;max-height:50px;min-width:50px;min-height:50px;" src= "'.$profileimage.'" /></td>';
-                $appendtd .= '<td class="table-td-th">'.$value->users_name.' '.$value->last_name.'</td>';
-                $appendtd .= '<td class="table-td-th">'.$value->users_company.'</td>';
+                $appendtd .= '<td class="table-td-data">'.$value->users_name.' '.$value->last_name.'</td>';
+                $appendtd .= '<td class="table-td-data">'.$value->users_company.'</td>';
                 $appendtd .= ' <td style="text-align: left;">'.$value->users_email.'<br>
                             '.$value->users_phone.'
                           </td>';
-                $appendtd .= ' <td class="table-td-th">'.$createdDate.'</td>';
+                $appendtd .= ' <td class="table-td-data">'.$createdDate.'</td>';
                 if($value->users_status == 1)
                 {
                     $appendtd .= '<td style="color: #5B8930;">
@@ -402,76 +402,12 @@ class UserController extends Controller
         $users = User::where('users_approval_status','=',2)
                         ->where('user_types_id','=',2)
                         ->orderBy('users_id','desc')->get();
-        foreach ($project as $value) 
-        {
-            $projectid = $value->project_id;
-            $projectbid = ProjectBid::where('project_id','=',$projectid)->
-                        where('project_bid_status','=',1)->first();
-            $projectStatus = ProjectStatus::where('project_status_type_id','=',7)
-                                            ->where('project_id','=',$projectid)->first();
-            if(!isset($projectbid) && isset($projectStatus))
-            {
-                $managerid = $value->user_id;
-                $user = User::where('users_id','=',$managerid)->first();
-               
-                $managername = $user->users_name.' '.$user->last_name;
-                $scope       = $value->scope_performed_id;
-                $temp = explode(",", $scope);
-                $count = count($temp);
-                $i = 1;
-                $scopevalue = '';
-                foreach($temp as $scopes)
-                {
-                    $scopePerformed = ScopePerformed::select('scope_performed')
-                                                      ->where('scope_performed_id','=',$scopes)
-                                                      ->first();
-                    if(isset($scopePerformed) && !empty($scopePerformed))
-                    {
-                        $scopevalue .= $scopePerformed->scope_performed;
-                        if($i < $count)
-                        {
-                            $scopevalue .= ', ';
-                        }
-                        $i++;
-                    }
-                }
-                //newly created projects
-                $schedulingProject[] = ['project_name' => $value->project_name, 
-                            'identifier'           => $value->project_number,
-                            'project_id'           => $value->project_id,
-                            'project_site_address' => $value->project_site_address,
-                            'budget'               => number_format($value->budget, 2),
-                            'managername'          => $managername,
-                            'scopevalue'           => $scopevalue,
-                            'created_at'           => $value->created_at,
-                           ];
-                
-                
-            }
-            $bidcount = ProjectBid::where('project_id','=',$projectid)
-                                    ->where('project_bid_status','=',2)
-                                    ->where('bid_status','=',1)->count();
-
-            if(empty($projectbid))
-            {
-                if($bidcount > 0)
-                {
-                    $managerid = $value->user_id;
-                    $user = User::where('users_id','=',$managerid)->first();
-                    $managername = $user->users_name.' '.$user->last_name;
-                    //newly created projects
-                    $nonallocatedproject[] = ['project_name' => $value->project_name, 
-                            'project_id'           => $value->project_id,
-                            'project_site_address' => $value->project_site_address,
-                            'approx_bid'           => number_format($value->approx_bid, 2),
-                            'managername'          => $managername,
-                            'created_at'           => $value->created_at,
-                            'bidcount'             => $bidcount
-                            ];
-                }
-            }
-           
-        } 
+        $schedulingProjectCount = DB::table('projects')
+                            ->select('projects.*','users_name')
+                            ->leftJoin('project_status','project_status.project_id','=','projects.project_id')
+                            ->leftJoin('users','users.users_id','=','projects.user_id')
+                            ->where('project_status.project_status_type_id','=',7)
+                            ->count();
         if(!isset($users) && empty($users))    
         {
             $users = null;
@@ -486,15 +422,7 @@ class UserController extends Controller
             $bidsrequestcount = 0;
             $nonallocatedproject = null;
         }*/
-        if(isset($schedulingProject) && !empty($schedulingProject))
-        {
-            $schedulingProjectCount = count($schedulingProject);
-        }
-        else
-        {
-            $schedulingProject = null;
-            $schedulingProjectCount = 0;
-        }     
+             
         
        /* print_r($nonallocatedproject);
         exit;*/
@@ -506,24 +434,24 @@ class UserController extends Controller
                     'project'                => $projectcount,
                     'projectbid'             => $projectbidcount,
                     'users'                  => $users,
-                    //'bidsrequestcount'       => $bidsrequestcount,
-                    //'nonallocatedproject'    => $nonallocatedproject,
                     'associatetype'          => $associatetype,
-                    'schedulingProject'      => $schedulingProject,
                     'schedulingProjectCount' => $schedulingProjectCount
                  ]);
         
   
     }
-    public function approveduser($id,$status,Request $request)
+    public function approveduser(Request $request)
     {
         $adminid = session('loginuserid');
         $date    = date("Y-m-d H:i:s");
-        $associatetype =  $request->input('optradio');
         
+        $status = $request['status'];
+        $id = $request['userid'];
        //status 1 for approved user
+
         if($status == 1)
         {
+            $associatetype =  $request->input('optradio');
             $id = $request->input('userid');
             User::where('users_id','=', $id)
             ->update(['users_approval_status' => $status,'users_approved_by' => $adminid,'users_approved_date' => $date,'associate_type_id' => $associatetype]);
@@ -533,26 +461,28 @@ class UserController extends Controller
             $apiobj = new ApiController;
             $apiobj->updateavailableProject($id);
             Mail::to($useremail)->send(new Approveduser($user));
+            session()->flash('message', 'Approval status has been updated successfully');
+            return redirect()->action('UserController@dashboard');
         }
         // else part for reject user
         else
         {
             User::where('users_id','=', $id)
-             ->update(['users_approval_status' => $status,'users_approved_by' => $adminid,'users_approved_date' => $date,'associate_type_id' => $associatetype]);
+                  ->update(['users_approval_status' => $status,'users_approved_by' => $adminid,'users_approved_date' => $date]);
             $user=User::where('users_id','=',$id)->first();
             $useremail = $user->users_email;
-             Mail::to($useremail)->send(new Rejectapproval($user));
-           
+            Mail::to($useremail)->send(new Rejectapproval($user));
+            session()->flash('message', 'Approval status has been updated successfully');
+            return json_encode(array('message' => 'success'));
         }
-        session()->flash('message', 'Approval status has been updated successfully');
-        return redirect()->action('UserController@dashboard');
+       
     }
     public function blockUnblockUser($id,$status)
     {
         $adminid = session('loginuserid');
         $date    = date("Y-m-d H:i:s");
         User::where('users_id','=', $id)
-        ->update(['users_approval_status' => $status,'users_approved_by' => $adminid,'users_approved_date' => $date]);
+               ->update(['users_approval_status' => $status,'users_approved_by' => $adminid,'users_approved_date' => $date]);
        //status 3 for blocked user
         if($status == 3)
         {
@@ -822,5 +752,101 @@ class UserController extends Controller
             exit;
             
         }
+    }
+    public function pendingAssociateList(Request $request)
+    {
+        $column_key = array("0"=>"users_id","1"=>"users_name","2"=>"users_company","3"=>"users_email","4"=>"users_address","5"=>"created_at");
+      
+        $order_key  = $request['order_key'];
+        $order      = $column_key[$order_key];
+        $sortorder  = $request['sortorder'];
+        if($sortorder == 1)
+        {
+            $sort =  'asc';
+        }
+        else
+        {
+            $sort =  'desc';
+        }
+        /*echo $order;
+        echo $sort;
+        exit;*/
+        $appendtd = '';
+        $users = DB::table('users')
+                            ->select('users.*')
+                            ->where('user_types_id','=','2')
+                            ->where('users_approval_status','=','2')
+                            ->orderBy($order,$sort)
+                            /*->limit($limit)
+                            ->offset($items)*/
+                            ->get();
+        /*print_r($projects);
+        exit;*/
+        $userCount = $users->count();
+        if(isset($users) && !empty($users))
+        {
+            foreach ($users as  $value) {
+                
+                $createdAt   = $value->created_at;
+                $createdDate = new DateTime($createdAt);
+                $createdDate = $createdDate->format('m/d/Y');
+                $userScope = UserScopePerformed::select('scope_performed_id')
+                             ->where('users_id','=',$value->users_id)->first();
+                $scopevalue = '';
+                if(isset($userScope) && !empty($userScope))
+                {
+                    $scope  = $userScope->scope_performed_id;
+                    $temp   = explode(",", $scope);
+                    $count  = count($temp);
+                    $i = 1;
+                    foreach($temp as $scopes)
+                    {
+                        $scopePerformed = ScopePerformed::select('scope_performed')
+                                                          ->where('scope_performed_id','=',$scopes)
+                                                          ->first();
+                        if(isset($scopePerformed) && !empty($scopePerformed))
+                        {
+                            $scopevalue .= $scopePerformed->scope_performed;
+                            if($i < $count)
+                            {
+                                $scopevalue .= ', ';
+                            }
+                            $i++;
+                        }
+                    }
+                }
+                $profileimage = asset("/img/users/" . $value->users_profile_image);
+                $appendtd .= '<tr class="content">
+                            <td class="table-td-data">'.$value->users_id.'</td>';
+                $appendtd .= '<td><img class="img-rounded" style="max-width:50px;max-height:50px;min-width:50px;min-height:50px;" src= "'.$profileimage.'" /></td>';
+                $appendtd .= '<td class="table-td-data">'.$value->users_name.' '.$value->last_name.'</td>';
+                $appendtd .= '<td class="table-td-data">'.$value->users_company.'</td>';
+                $appendtd .= ' <td style="text-align: left;">'.$value->users_email.'<br>
+                            '.$value->users_phone.'
+                          </td>';
+                $appendtd .= '<td class="table-td-data">'.$value->users_address.'</td>';
+                $appendtd .= ' <td class="table-td-data">'.$scopevalue.'</td>';
+                $appendtd .= ' <td class="table-td-data">'.$createdDate.'</td>';
+                
+                $appendtd .= '<td style="text-align: center;vertical-align: middle;">
+                                    <div class="btn-group">
+                                      <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown"><center><span class="glyphicon glyphicon-cog"></span></center></button>
+                                      <ul class="dropdown-menu" role="menu" style="left: 0% !important;
+                                        right: 100% !important;text-align: left !important;transform: translate(-75%, 0) !important;">
+                                       <li><a href="#" id="approve" onclick="setuserid('.$value->users_id.')" data-toggle="modal" data-target="#myModal" data-id="'.$value->users_id.'">Approve</a>
+                                        </li>
+
+                                        <li><a href="#" onclick="confirmMsg('.$value->users_id.')">Reject</a>
+                                        </li>
+                   
+                                      </ul>
+                                      
+                                    </div>
+                                  </td>
+                            </tr>';
+            }
+            
+        }
+        return json_encode(array('count' => $userCount,'appendtd' => $appendtd));
     }
 }

@@ -295,6 +295,6 @@ $(function () {
         {
             $('#'+id).attr('data-id' , '1'); 
         }
-}
+    }
   </script>
 @endsection

@@ -1209,60 +1209,40 @@ class ProjectController extends Controller
 
         }
          /* non allocated projects*/
-        $projects = Project::orderBy('project_id','desc')->get();
-        foreach ($projects as $value) 
-        {
-            $projectid = $value->project_id;
-            $projectbid = ProjectBid::where('project_id','=',$projectid)->
-                        where('project_bid_status','=',1)->first();
-            $bidcount = ProjectBid::where('project_id','=',$projectid)
-                                    ->where('project_bid_status','=',2)
-                                    ->where('bid_status','=',1)->count();
-            $createdBy = $value->created_by;
-            $projectStatus = ProjectStatus::where('project_status_type_id','=',1)
-                                            ->where('project_id','=',$projectid)->first();
-            if(!isset($projectbid) && isset($projectStatus))
-            {
-                $managerid = $value->user_id;
-                $user = User::where('users_id','=',$managerid)->first();
-               
-                $managername = $user->users_name.' '.$user->last_name;
-                $scope       = $value->scope_performed_id;
-                $temp = explode(",", $scope);
-                $count = count($temp);
-                $i = 1;
-                $scopevalue = '';
-                foreach($temp as $scopes)
-                {
-                    $scopePerformed = ScopePerformed::select('scope_performed')
-                                                              ->where('scope_performed_id','=',$scopes)
-                                                              ->first();
-                    if(isset($scopePerformed) && !empty($scopePerformed))
-                    {
-                        $scopevalue .= $scopePerformed->scope_performed;
-                        if($i < $count)
-                        {
-                            $scopevalue .= ', ';
-                        }
-                        $i++;
-                    }
-                }    
-                    //newly created projects
-                    $nonallocatedproject[] = ['project_name' => $value->project_name, 
-                            'identifier'           => $value->project_number,
-                            'project_id'           => $value->project_id,
-                            'project_site_address' =>  $value['project_site_address'],
-                            'approx_bid'           => number_format($value->approx_bid, 2),
-                            'managername'          => $managername,
-                            'scopevalue'           => $scopevalue,
-                            'created_at'           => $value->created_at,
-                            'bidcount'             => $bidcount,
-                            'createdBy'            => $createdBy
-                            ];
-            }
-           
-        }
 
+        if(session('loginusertype') != 'admin')
+        {
+            $userid = session('loginuserid');
+            $projects = DB::table('projects')
+                            ->select('project_status_type_id')
+                            ->leftJoin('project_status','project_status.project_id','=','projects.project_id')
+                            ->leftJoin('users','users.users_id','=','projects.user_id')
+                            ->where('projects.user_id','=',$userid)
+                            ->groupBy('project_status.project_id')
+                            ->havingRaw('COUNT(project_status_type_id) = 1')
+                            ->get();
+        }
+        else
+        {
+            $projects = DB::table('projects')
+                            ->select('project_status_type_id')
+                            ->leftJoin('project_status','project_status.project_id','=','projects.project_id')
+                            ->leftJoin('users','users.users_id','=','projects.user_id')
+                            ->groupBy('project_status.project_id')
+                            ->havingRaw('COUNT(project_status_type_id) = 1')
+                            ->get();
+        }
+        $openprojectCount = 0;
+        if(isset($projects) && !empty($projects))
+        {
+            foreach ($projects as  $value) {
+                if($value->project_status_type_id == 1)
+                {
+                    $openprojectCount++;
+                }
+            }
+        }
+        
         /* Onhold projects */
         $projects = DB::table('projects')
          ->select('projects.project_name','projects.project_number','projects.project_id','projects.project_site_address','projects.report_due_date','projects.report_template','projects.scope_performed_id','projects.instructions','projects.created_at','projects.user_id')
@@ -1335,10 +1315,7 @@ class ProjectController extends Controller
         {
             $cancelledproject = null;
         }
-        if(!isset($nonallocatedproject))
-        {
-            $nonallocatedproject = null;
-        }
+        
         if(!isset($onholdprojects))
         {
             $onholdprojects = null;
@@ -1355,7 +1332,7 @@ class ProjectController extends Controller
                     'scopeperformed'     => $scopeperformed,
                     'completedproject'   => $completedproject,
                     'cancelledproject'   => $cancelledproject,
-                    'nonallocatedproject'=> $nonallocatedproject,
+                    'openprojectCount'   => $openprojectCount,
                     'onholdprojects'     => $onholdprojects
                 ]);
 
@@ -2251,96 +2228,107 @@ class ProjectController extends Controller
                     );
         return response()->json($temp);
     }*/
-    public function projectComplete($id)
+    public function projectComplete(Request $request)
     {
-        $projectid = $id;
+        $projectid = $request['projectid'];
         $model = new ProjectStatus;
         $model->project_id = $projectid;
         $model->project_status_type_id  = 4;
         $model->created_at = date('Y-m-d H:i:s');
         $model->save();
-        $associate= ProjectBid::where('project_id','=',$projectid)
-                              ->where('project_bid_status','=',1)->first();
+        $associate= ProjectBid::select('user_id')
+                              ->where('project_id','=',$projectid)
+                              ->where('project_bid_status','=',1)
+                              ->first();
         $userid = session('loginuserid');
         $touserid = $associate->user_id;
-        $project = Project::where('project_id','=',$projectid)->first();
+        $project = Project::select('project_name')
+                           ->where('project_id','=',$projectid)
+                           ->first();
         $body = $project->project_name;
         $msg = 'Project completed by manager!';
         $notificationid = '7';
         $title = $msg;
         $this->sendUserNotification($touserid,$userid,$projectid,$body,$title,$msg,$notificationid);
         session()->flash('message', 'Project Completed Successfully!');
-        return redirect()->route('projectList');
+        return json_encode(array('message' => 'success'));
     }
 
     //project cancel by manager
-    public function projectCancel($id)
+    public function projectCancel(Request $request)
     {
-        $projectid = $id;
+        $projectid = $request['projectid'];
         $model = new ProjectStatus;
         $model->project_id = $projectid;
         $model->project_status_type_id  = 5;
         $model->created_at = date('Y-m-d H:i:s');
         $model->save();
-        $associate= ProjectBid::where('project_id','=',$projectid)
+        $associate= ProjectBid::select('user_id')
+                              ->where('project_id','=',$projectid)
                               ->where('project_bid_status','=',1)->first();
         $userid = session('loginuserid');
         $touserid = $associate->user_id;
-        $project = Project::where('project_id','=',$projectid)->first();
+        $project = Project::select('project_name')
+                           ->where('project_id','=',$projectid)->first();
         $body = $project->project_name;
         $msg = 'Project cancelled by manager!';
         $notificationid = '8';
         $title = $msg;
         $this->sendUserNotification($touserid,$userid,$projectid,$body,$title,$msg,$notificationid);
         session()->flash('message', 'Project Cancelled Successfully!');
-        return redirect()->route('projectList');
+        return json_encode(array('message' => 'success'));
     }
     //project onhold by manager
-    public function projectOnHold($id)
+    public function projectOnHold(Request $request)
     {
-        $projectid = $id;
+        $projectid  = $request['projectid'];
         $projectbid = ProjectStatus::where('project_id','=',$projectid)
                                     ->where('project_status_type_id','=',3)
                                     ->update(['project_status_type_id' => 6]);
         $notificationid = '13';
-        $msg = 'Project is On hold by manager!';
-        $message = "Project On hold successfully!";
-        $associate= ProjectBid::where('project_id','=',$projectid)
+        $msg      = 'Project is On hold by manager!';
+        $message  = "Project is On hold successfully!";
+        $associate= ProjectBid::select('user_id')
+                              ->where('project_id','=',$projectid)
                               ->where('project_bid_status','=',1)->first();
-        $userid = session('loginuserid');
+        $userid   = session('loginuserid');
         $touserid = $associate->user_id;
-        $project = Project::where('project_id','=',$projectid)->first();
-        $body = $project->project_name;
-        $title = $msg;
+        $project  = Project::select('project_name')
+                           ->where('project_id','=',$projectid)->first();
+        $body     = $project->project_name;
+        $title    = $msg;
         $this->sendUserNotification($touserid,$userid,$projectid,$body,$title,$msg,$notificationid);
         session()->flash('message',$message);
-        return redirect()->route('projectList');
+        return json_encode(array('message' => 'success'));
+
     }
     //project in progress by manager
-    public function projectInProgress($id)
+    public function projectInProgress(Request $request)
     {
-        $projectid = $id;
+        $projectid  = $request['projectid'];
         $projectbid = ProjectStatus::where('project_id','=',$projectid)
                                             ->where('project_status_type_id','=',6)
                                             ->update(['project_status_type_id' => 3]);
         $notificationid = '14';
-        $msg = 'Project is In progress by manager!';
-        $message = "Project In progress successfully!";
-        $associate= ProjectBid::where('project_id','=',$projectid)
+        $msg       = 'Project is In progress by manager!';
+        $message   = "Project In progress successfully!";
+        $associate = ProjectBid::select('user_id')
+                              ->where('project_id','=',$projectid)
                               ->where('project_bid_status','=',1)->first();
-        $userid = session('loginuserid');
+        $userid   = session('loginuserid');
         $touserid = $associate->user_id;
-        $project = Project::where('project_id','=',$projectid)->first();
-        $body = $project->project_name;
+        $project  = Project::select('project_name')
+                           ->where('project_id','=',$projectid)->first();
+        $body  = $project->project_name;
         $title = $msg;
         $this->sendUserNotification($touserid,$userid,$projectid,$body,$title,$msg,$notificationid);
         session()->flash('message',$message);
-        return redirect()->route('projectList');
+        return json_encode(array('message' => 'success'));
     }
     public function projectstatus($id)
     {
-        $status = ProjectProgressStatus::where('project_id','=',$id)->get();
-        $project = Project::where('project_id','=',$id)->first();
+        $status      = ProjectProgressStatus::where('project_id','=',$id)->get();
+        $project     = Project::where('project_id','=',$id)->first();
         $projectname = $project->project_name;
         return view('project.status',[
                     'status'      => $status,
@@ -2805,7 +2793,7 @@ class ProjectController extends Controller
         exit;*/
         $appendtd = '';
         $projects = DB::table('projects')
-                            ->select('projects.*','users_name')
+                            ->select('projects.*','users_name','last_name')
                             ->leftJoin('project_status','project_status.project_id','=','projects.project_id')
                             ->leftJoin('users','users.users_id','=','projects.user_id')
                             ->where('project_status.project_status_type_id','=',8)
@@ -2845,13 +2833,13 @@ class ProjectController extends Controller
                 $createdDate = $createdDate->format('m/d/Y');
                 $appendtd .= '<tr class="content"><td class="table-td-th">
                               <input type="checkbox" name="checkProject" id="checkProject" value="'.$value->project_id.'"></td>';
-                $appendtd .= ' <td class="table-td-th">'.$value->project_number.'</td>';
-                $appendtd .= ' <td class="table-td-th">'.$value->project_name.'</td>';
-                $appendtd .= ' <td class="table-td-th">'.$value->project_site_address.'</td>';
-                $appendtd .= ' <td class="table-td-th">'.$budget.'</td>';
-                $appendtd .= ' <td class="table-td-th">'.$scopevalue.'</td>';
-                $appendtd .= ' <td class="table-td-th">'.$value->users_name.'</td>';
-                $appendtd .= ' <td class="table-td-th">'.$createdDate.'</td>';
+                $appendtd .= ' <td class="table-td-data">'.$value->project_number.'</td>';
+                $appendtd .= ' <td class="table-td-data">'.$value->project_name.'</td>';
+                $appendtd .= ' <td class="table-td-data">'.$value->project_site_address.'</td>';
+                $appendtd .= ' <td class="table-td-data">'.$budget.'</td>';
+                $appendtd .= ' <td class="table-td-data">'.$scopevalue.'</td>';
+                $appendtd .= ' <td class="table-td-data">'.$value->users_name.' '.$value->last_name.'</td>';
+                $appendtd .= ' <td class="table-td-data">'.$createdDate.'</td>';
                 $appendtd .= ' <td class="table-td-th">
                                           <div class="btn-group">
                                           <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown"><center><span class="glyphicon glyphicon-cog"></span></center></button>
@@ -2874,60 +2862,7 @@ class ProjectController extends Controller
             
         }
         return json_encode(array('count' => $projectCount,'appendtd' => $appendtd));
-
-        /*$projects       = ProjectStatus::where('project_status_type_id','=',8)
-                                        ->orderBy('created_at','desc')
-                                        ->get();
-        $projectCount   = $projects->count();
-        $archiveProject = '';
-        if(isset($projects) && !empty($projects))
-        {
-            foreach ($projects as $value) {
-                $project    = Project::where('project_id','=',$value->project_id)->first();
-                $created_at = (String)$project->created_at;
-                $datetime2  = new DateTime($created_at);
-                $created_at = $datetime2->format("Y/m/d");
-                $managerid  = $project->user_id;
-                $user = User::where('users_id','=',$managerid)->first();
-                $managername = $user->users_name.' '.$user->last_name;
-                $scope       = $project->scope_performed_id;
-                $temp = explode(",", $scope);
-                $count = count($temp);
-                $i = 1;
-                $scopevalue = '';
-                foreach($temp as $scopes)
-                {
-                    $scopePerformed = ScopePerformed::select('scope_performed')
-                                                      ->where('scope_performed_id','=',$scopes)
-                                                      ->first();
-                    if(isset($scopePerformed) && !empty($scopePerformed))
-                    {
-                        $scopevalue .= $scopePerformed->scope_performed;
-                        if($i < $count)
-                        {
-                            $scopevalue .= ', ';
-                        }
-                        $i++;
-                    }
-                }
-                $archiveProject[] = ['project_name'            => $project->project_name, 
-                                        'identifier'           => $project->project_number, 
-                                        'project_id'           => $project->project_id,
-                                        'project_site_address' => $project->project_site_address,
-                                        'budget'               => number_format($project->budget, 2),
-                                        'managername'          => $managername,
-                                        'scopevalue'           => $scopevalue,
-                                        'created_at'           => $created_at,
-                                        ];
-            }
-           
-        }
-        return view('project.archiveProjects',['archiveProject' => $archiveProject,
-                                               'projectCount'   => $projectCount]); */
     }
-
-
-
     public function archive($id)
     {
         $projectid = $id;
@@ -2985,5 +2920,670 @@ class ProjectController extends Controller
             $temp = array('status' => 1,'message' => 'Project batch Un-Archived successfully!');
             return json_encode($temp);
         }
+    }
+    public function schedulingProjectList(Request $request)
+    {
+        $column_key = array("0"=>"project_number","1"=>"project_name","2"=>"project_site_address","3"=>"budget","4"=>"users_name","5"=>"created_at","6"=>"project_status.created_at");
+        $order_key  = $request['order_key'];
+        $order      = $column_key[$order_key];
+        $sortorder  = $request['sortorder'];
+        if($sortorder == 1)
+        {
+            $sort =  'asc';
+        }
+        else
+        {
+            $sort =  'desc';
+        }
+       /* echo $order;
+        echo $sort;
+        exit;*/
+        $appendtd = '';
+        $projects = DB::table('projects')
+                            ->select('projects.*','users_name','last_name')
+                            ->leftJoin('project_status','project_status.project_id','=','projects.project_id')
+                            ->leftJoin('users','users.users_id','=','projects.user_id')
+                            ->where('project_status.project_status_type_id','=',7)
+                            ->orderBy($order,$sort)
+                            /*->limit($limit)
+                            ->offset($items)*/
+                            ->get();
+        /*print_r($projects);
+        exit;*/
+        $projectCount = $projects->count();
+        if(isset($projects) && !empty($projects))
+        {
+            foreach ($projects as  $value) {
+                $budget = '$'.number_format($value->budget, 2);
+                $scope  = $value->scope_performed_id;
+                $temp   = explode(",", $scope);
+                $count  = count($temp);
+                $i = 1;
+                $scopevalue = '';
+                foreach($temp as $scopes)
+                {
+                    $scopePerformed = ScopePerformed::select('scope_performed')
+                                                      ->where('scope_performed_id','=',$scopes)
+                                                      ->first();
+                    if(isset($scopePerformed) && !empty($scopePerformed))
+                    {
+                        $scopevalue .= $scopePerformed->scope_performed;
+                        if($i < $count)
+                        {
+                            $scopevalue .= ', ';
+                        }
+                        $i++;
+                    }
+                }
+                $createdAt   = $value->created_at;
+                $createdDate = new DateTime($createdAt);
+                $createdDate = $createdDate->format('m/d/Y');
+                $appendtd .= '<tr class="content"><td class="table-td-data">
+                              <input type="checkbox" name="checkProject" id="checkProject" value="'.$value->project_id.'"></td>';
+                $appendtd .= ' <td class="table-td-data">'.$value->project_number.'</td>';
+                $appendtd .= ' <td class="table-td-data">'.$value->project_name.'</td>';
+                $appendtd .= ' <td class="table-td-data">'.$value->project_site_address.'</td>';
+                $appendtd .= ' <td class="table-td-data">'.$budget.'</td>';
+                $appendtd .= ' <td class="table-td-data">'.$scopevalue.'</td>';
+                $appendtd .= ' <td class="table-td-data">'.$value->users_name.' '.$value->last_name.'</td>';
+                $appendtd .= ' <td class="table-td-data">'.$createdDate.'</td>';
+                $appendtd .= '<td class="table-td-th">
+                                      <div class="btn-group">
+                                      <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown"><center><span class="glyphicon glyphicon-cog"></span></center></button>
+                                      <ul class="dropdown-menu" role="menu" style="left: 0% !important;
+                                        right: 100% !important;text-align: left !important;transform: translate(-75%, 0) !important;">
+                                        <li>
+                                          <a href="'.url('/schedulingProject/'.$value->project_id).'">
+                                         View</a>
+                                        </li>
+                                        <li><a href="'.url('/archiveProjects/archive/'.$value->project_id).'">Archive</a>
+                                        </li>
+                                      </ul>
+                                    </div>
+                                  </td>
+                            </tr>';
+
+            }
+            
+        }
+        return json_encode(array('count' => $projectCount,'appendtd' => $appendtd));
+    }
+    public function openProjectList(Request $request)
+    {
+        $column_key = array("0"=>"project_number","1"=>"project_name","2"=>"project_site_address","3"=>"approx_bid","4"=>"users_name","5"=>"created_at","6"=>"project_status.created_at");
+        $order_key  = $request['order_key'];
+        $order      = $column_key[$order_key];
+        $sortorder  = $request['sortorder'];
+        if($sortorder == 1)
+        {
+            $sort =  'asc';
+        }
+        else
+        {
+            $sort =  'desc';
+        }
+        $appendtd = '';
+        if(session('loginusertype') != 'admin')
+        {
+            $userid = session('loginuserid');
+            $projects = DB::table('projects')
+                            ->select('projects.*','users_name','last_name','project_status_type_id')
+                            ->leftJoin('project_status','project_status.project_id','=','projects.project_id')
+                            ->leftJoin('users','users.users_id','=','projects.user_id')
+                            ->where('projects.user_id','=',$userid)
+                            ->groupBy('project_status.project_id')
+                            ->havingRaw('COUNT(project_status_type_id) = 1')
+                            ->orderBy($order,$sort)
+                            /*->limit($limit)
+                            ->offset($items)*/
+                            ->get();
+        }
+        else
+        {
+            $projects = DB::table('projects')
+                            ->select('projects.*','users_name','last_name','project_status_type_id')
+                            ->leftJoin('project_status','project_status.project_id','=','projects.project_id')
+                            ->leftJoin('users','users.users_id','=','projects.user_id')
+                            ->groupBy('project_status.project_id')
+                            ->havingRaw('COUNT(project_status_type_id) = 1')
+                            ->orderBy($order,$sort)
+                            /*->limit($limit)
+                            ->offset($items)*/
+                            ->get();
+        }
+        
+        $projectCount = 0;
+        if(isset($projects) && !empty($projects))
+        {
+            foreach ($projects as  $value) {
+                if($value->project_status_type_id == 1)
+                {
+                        $projectCount++;
+                        $bidCount = ProjectBid::where(['project_id' => $value->project_id,'project_bid_status' => 2,'bid_status'=> 1])->count();
+                        $suggestedbid = '$'.number_format($value->approx_bid, 2);
+                        $scope  = $value->scope_performed_id;
+                        $temp   = explode(",", $scope);
+                        $count  = count($temp);
+                        $i = 1;
+                        $scopevalue = '';
+                        foreach($temp as $scopes)
+                        {
+                            $scopePerformed = ScopePerformed::select('scope_performed')
+                                                              ->where('scope_performed_id','=',$scopes)
+                                                              ->first();
+                            if(isset($scopePerformed) && !empty($scopePerformed))
+                            {
+                                $scopevalue .= $scopePerformed->scope_performed;
+                                if($i < $count)
+                                {
+                                    $scopevalue .= ', ';
+                                }
+                                $i++;
+                            }
+                        }
+                        $createdAt   = $value->created_at;
+                        $createdDate = new DateTime($createdAt);
+                        $createdDate = $createdDate->format('m/d/Y');
+                        $appendtd .= '<tr class="content">';
+                        $appendtd .= '<td class="table-td-data">'.$value->project_number.'</td>';
+                        $appendtd .= '<td class="table-td-data">'.$value->project_name.'</td>';
+                         $appendtd .= '<td class="table-td-data">'.$bidCount.'</td>';
+                        $appendtd .= '<td class="table-td-data">'.$value->project_site_address.'</td>';
+                        $appendtd .= ' <td class="table-td-data">'.$suggestedbid.'</td>';
+                        $appendtd .= ' <td class="table-td-data">'.$scopevalue.'</td>';
+                        if(session('loginusertype') == 'admin')
+                        {
+                            $appendtd .= ' <td class="table-td-data">'.$value->users_name.' '.$value->last_name.'</td>';
+                        }
+                        $appendtd .= ' <td class="table-td-data">'.$createdDate.'</td>';
+                        $appendtd .= '<td class="table-td-th">
+                                            <div class="btn-group">
+                                                <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown"><center><span class="glyphicon glyphicon-cog"></span></center></button>
+                                                <ul class="dropdown-menu" role="menu" style="left: 0% !important;
+                                                right: 100% !important;text-align: center !important;transform: translate(-75%, 0) !important;">
+                    
+                                                    <li><a href="'.url('/allProejcts/projectDetail/'.$value->project_id).'">View</a></li>';
+                        if(session('loginusertype') == 'admin')
+                        {
+                            if($value->created_by == 2)
+                            {
+                                $appendtd .= '<li><a href="'.url('editProject/'.$value->project_id).'">Edit</a></li>';
+                            }
+                        }
+                        if($bidCount > 0)
+                        {
+                            $appendtd .= '<li><a href="'.url('projectBid/'.$value->project_id).'">Show Bids</a></li>';
+                        }                               
+                        $appendtd .= '</ul></div></td></tr>';                           
+                    }
+                }
+        }
+        return json_encode(array('count' => $projectCount,'appendtd' => $appendtd));
+    }
+    public function completeProjectList(Request $request)
+    {
+        $column_key = array("0"=>"project_number","1"=>"project_name","2"=>"project_site_address","3"=>"project_bids.associate_suggested_bid","4"=>"users_name","5"=>"created_at","6" => "project_status.created_at");
+        $order_key  = $request['order_key'];
+        $order      = $column_key[$order_key];
+        $sortorder  = $request['sortorder'];
+        if($sortorder == 1)
+        {
+            $sort =  'asc';
+        }
+        else
+        {
+            $sort =  'desc';
+        }
+       /* echo $order;
+        echo $sort;
+        exit;*/
+        $appendtd = '';
+        if(session('loginusertype') != 'admin')
+        {
+            $userid = session('loginuserid');
+            $projects = DB::table('projects')
+                            ->select('projects.*','users_name','last_name','project_bids.associate_suggested_bid','project_bids.user_id as associateid','project_status.created_at as completeddate')
+                            ->leftJoin('project_status','project_status.project_id','=','projects.project_id')
+                            ->leftJoin('users','users.users_id','=','projects.user_id')
+                            ->leftJoin('project_bids','project_bids.project_id','=','projects.project_id')
+                            ->where('project_bid_status','=',1)
+                            ->where('projects.user_id','=',$userid)
+                            ->where('project_status.project_status_type_id','=',4)
+                            ->orderBy($order,$sort)
+                            /*->limit($limit)
+                            ->offset($items)*/
+                            ->get();
+        }
+        else
+        {
+            $projects = DB::table('projects')
+                            ->select('projects.*','users_name','last_name','project_bids.associate_suggested_bid','project_bids.user_id as associateid','project_status.created_at as completeddate')
+                            ->leftJoin('project_status','project_status.project_id','=','projects.project_id')
+                            ->leftJoin('users','users.users_id','=','projects.user_id')
+                            ->leftJoin('project_bids','project_bids.project_id','=','projects.project_id')
+                            ->where('project_bid_status','=',1)
+                            ->where('project_status.project_status_type_id','=',4)
+                            ->orderBy($order,$sort)
+                            /*->limit($limit)
+                            ->offset($items)*/
+                            ->get();
+        }
+      
+        $projectCount = $projects->count();
+        if(isset($projects) && !empty($projects))
+        {
+            foreach ($projects as  $value) {
+                $budget = '$'.number_format($value->associate_suggested_bid, 2);
+                $associateid = $value->associateid;
+                $associate = User::select('users_name','last_name')
+                                    ->where('users_id','=',$associateid)->first();
+                $associatename = $associate->users_name.' '.$associate->last_name;
+                $scope  = $value->scope_performed_id;
+                $temp   = explode(",", $scope);
+                $count  = count($temp);
+                $i = 1;
+                $scopevalue = '';
+                foreach($temp as $scopes)
+                {
+                    $scopePerformed = ScopePerformed::select('scope_performed')
+                                                      ->where('scope_performed_id','=',$scopes)
+                                                      ->first();
+                    if(isset($scopePerformed) && !empty($scopePerformed))
+                    {
+                        $scopevalue .= $scopePerformed->scope_performed;
+                        if($i < $count)
+                        {
+                            $scopevalue .= ', ';
+                        }
+                        $i++;
+                    }
+                }
+                $createdAt   = $value->created_at;
+                $createdDate = new DateTime($createdAt);
+                $createdDate = $createdDate->format('m/d/Y');
+                $completeddate = $value->completeddate;
+                $completeddate = new DateTime($completeddate);
+                $completeddate = $completeddate->format('m/d/Y');
+                $appendtd .= '<tr class="content">';
+                $appendtd .= ' <td class="table-td-data">'.$value->project_number.'</td>';
+                $appendtd .= ' <td class="table-td-data">'.$value->project_name.'</td>';
+                $appendtd .= ' <td class="table-td-data">'.$value->project_site_address.'</td>';
+                $appendtd .= ' <td class="table-td-data">'.$budget.'</td>';
+                $appendtd .= ' <td class="table-td-data">'.$scopevalue.'</td>';
+                if(session('loginusertype') == 'admin')
+                {
+                    $appendtd .= ' <td class="table-td-data">'.$value->users_name.' '.$value->last_name.'</td>';
+                }
+                $appendtd .= ' <td class="table-td-data">'.$associatename.'</td>';
+                $appendtd .= ' <td class="table-td-data">'.$createdDate.'</td>';
+                $appendtd .= ' <td class="table-td-data">'.$completeddate.'</td>';
+                $appendtd .= ' <td class="table-td-th">
+                                                <div class="btn-group">
+                                                <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown"><center><span class="glyphicon glyphicon-cog"></span></center></button>
+                                                <ul class="dropdown-menu" role="menu" style="left: 0% !important;
+                                                right: 100% !important;text-align: center !important;transform: translate(-75%, 0) !important;">
+                    
+                                                    <li><a href="'.url('/allProejcts/projectDetail/'.$value->project_id).'">View</a></li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>';
+
+            }
+            
+        }
+        return json_encode(array('count' => $projectCount,'appendtd' => $appendtd));
+    }
+    public function cancelProjectList(Request $request)
+    {
+        $column_key = array("0"=>"project_number","1"=>"project_name","2"=>"project_site_address","3"=>"project_bids.associate_suggested_bid","4"=>"users_name","5"=>"created_at","6" => "project_status.created_at");
+        $order_key  = $request['order_key'];
+        $order      = $column_key[$order_key];
+        $sortorder  = $request['sortorder'];
+        if($sortorder == 1)
+        {
+            $sort =  'asc';
+        }
+        else
+        {
+            $sort =  'desc';
+        }
+       /* echo $order;
+        echo $sort;
+        exit;*/
+        $appendtd = '';
+        if(session('loginusertype') != 'admin')
+        {
+            $userid = session('loginuserid');
+            $projects = DB::table('projects')
+                            ->select('projects.*','users_name','last_name','project_bids.associate_suggested_bid','project_bids.user_id as associateid','project_status.created_at as canceldate')
+                            ->leftJoin('project_status','project_status.project_id','=','projects.project_id')
+                            ->leftJoin('users','users.users_id','=','projects.user_id')
+                            ->leftJoin('project_bids','project_bids.project_id','=','projects.project_id')
+                            ->where('project_bid_status','=',1)
+                            ->where('projects.user_id','=',$userid)
+                            ->where('project_status.project_status_type_id','=',5)
+                            ->orderBy($order,$sort)
+                            /*->limit($limit)
+                            ->offset($items)*/
+                            ->get();
+        }
+        else
+        {
+            $projects = DB::table('projects')
+                            ->select('projects.*','users_name','last_name','project_bids.associate_suggested_bid','project_bids.user_id as associateid','project_status.created_at as canceldate')
+                            ->leftJoin('project_status','project_status.project_id','=','projects.project_id')
+                            ->leftJoin('users','users.users_id','=','projects.user_id')
+                            ->leftJoin('project_bids','project_bids.project_id','=','projects.project_id')
+                            ->where('project_bid_status','=',1)
+                            ->where('project_status.project_status_type_id','=',5)
+                            ->orderBy($order,$sort)
+                            /*->limit($limit)
+                            ->offset($items)*/
+                            ->get();
+        }
+        $projectCount = $projects->count();
+        if(isset($projects) && !empty($projects))
+        {
+            foreach ($projects as  $value) {
+                $budget = '$'.number_format($value->associate_suggested_bid, 2);
+                $associateid = $value->associateid;
+                $associate = User::select('users_name','last_name')
+                                    ->where('users_id','=',$associateid)->first();
+                $associatename = $associate->users_name.' '.$associate->last_name;
+                $scope  = $value->scope_performed_id;
+                $temp   = explode(",", $scope);
+                $count  = count($temp);
+                $i = 1;
+                $scopevalue = '';
+                foreach($temp as $scopes)
+                {
+                    $scopePerformed = ScopePerformed::select('scope_performed')
+                                                      ->where('scope_performed_id','=',$scopes)
+                                                      ->first();
+                    if(isset($scopePerformed) && !empty($scopePerformed))
+                    {
+                        $scopevalue .= $scopePerformed->scope_performed;
+                        if($i < $count)
+                        {
+                            $scopevalue .= ', ';
+                        }
+                        $i++;
+                    }
+                }
+                $createdAt   = $value->created_at;
+                $createdDate = new DateTime($createdAt);
+                $createdDate = $createdDate->format('m/d/Y');
+                $canceldate  = $value->canceldate;
+                $canceldate  = new DateTime($canceldate);
+                $canceldate  = $canceldate->format('m/d/Y');
+                $appendtd .= '<tr class="content">';
+                $appendtd .= ' <td class="table-td-data">'.$value->project_number.'</td>';
+                $appendtd .= ' <td class="table-td-data">'.$value->project_name.'</td>';
+                $appendtd .= ' <td class="table-td-data">'.$value->project_site_address.'</td>';
+                $appendtd .= ' <td class="table-td-data">'.$budget.'</td>';
+                $appendtd .= ' <td class="table-td-data">'.$scopevalue.'</td>';
+                if(session('loginusertype') == 'admin')
+                {
+                    $appendtd .= ' <td class="table-td-data">'.$value->users_name.' '.$value->last_name.'</td>';
+                }
+                $appendtd .= ' <td class="table-td-data">'.$associatename.'</td>';
+                $appendtd .= ' <td class="table-td-data">'.$createdDate.'</td>';
+                $appendtd .= ' <td class="table-td-data">'.$canceldate.'</td>';
+                $appendtd .= ' <td class="table-td-th">
+                                                <div class="btn-group">
+                                                <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown"><center><span class="glyphicon glyphicon-cog"></span></center></button>
+                                                <ul class="dropdown-menu" role="menu" style="left: 0% !important;
+                                                right: 100% !important;text-align: center !important;transform: translate(-75%, 0) !important;">
+                    
+                                                    <li><a href="'.url('/allProejcts/projectDetail/'.$value->project_id).'">View</a></li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>';
+
+            }
+            
+        }
+        return json_encode(array('count' => $projectCount,'appendtd' => $appendtd));
+    }
+    public function onHoldProjectList(Request $request)
+    {
+        $column_key = array("0"=>"project_number","1"=>"project_name","2"=>"project_site_address","3"=>"project_bids.associate_suggested_bid","4"=>"users_name","5"=>"created_at","6" => "project_status.created_at");
+        $order_key  = $request['order_key'];
+        $order      = $column_key[$order_key];
+        $sortorder  = $request['sortorder'];
+        if($sortorder == 1)
+        {
+            $sort =  'asc';
+        }
+        else
+        {
+            $sort =  'desc';
+        }
+       /* echo $order;
+        echo $sort;
+        exit;*/
+        $appendtd = '';
+        if(session('loginusertype') != 'admin')
+        {
+            $userid = session('loginuserid');
+            $projects = DB::table('projects')
+                            ->select('projects.*','users_name','last_name','project_bids.associate_suggested_bid','project_bids.user_id as associateid','project_status.created_at as completeddate')
+                            ->leftJoin('project_status','project_status.project_id','=','projects.project_id')
+                            ->leftJoin('users','users.users_id','=','projects.user_id')
+                            ->leftJoin('project_bids','project_bids.project_id','=','projects.project_id')
+                            ->where('project_bid_status','=',1)
+                            ->where('projects.user_id','=',$userid)
+                            ->where('project_status.project_status_type_id','=',6)
+                            ->orderBy($order,$sort)
+                            /*->limit($limit)
+                            ->offset($items)*/
+                            ->get();
+        }
+        else
+        {
+            $projects = DB::table('projects')
+                            ->select('projects.*','users_name','last_name','project_bids.associate_suggested_bid','project_bids.user_id as associateid','project_status.created_at as completeddate')
+                            ->leftJoin('project_status','project_status.project_id','=','projects.project_id')
+                            ->leftJoin('users','users.users_id','=','projects.user_id')
+                            ->leftJoin('project_bids','project_bids.project_id','=','projects.project_id')
+                            ->where('project_bid_status','=',1)
+                            ->where('project_status.project_status_type_id','=',6)
+                            ->orderBy($order,$sort)
+                            /*->limit($limit)
+                            ->offset($items)*/
+                            ->get();
+        }
+        $projectCount = $projects->count();
+        if(isset($projects) && !empty($projects))
+        {
+            foreach ($projects as  $value) {
+                $budget = '$'.number_format($value->associate_suggested_bid, 2);
+                $associateid = $value->associateid;
+                $associate = User::select('users_name','last_name')
+                                    ->where('users_id','=',$associateid)->first();
+                $associatename = $associate->users_name.' '.$associate->last_name;
+                $scope  = $value->scope_performed_id;
+                $temp   = explode(",", $scope);
+                $count  = count($temp);
+                $i = 1;
+                $scopevalue = '';
+                foreach($temp as $scopes)
+                {
+                    $scopePerformed = ScopePerformed::select('scope_performed')
+                                                      ->where('scope_performed_id','=',$scopes)
+                                                      ->first();
+                    if(isset($scopePerformed) && !empty($scopePerformed))
+                    {
+                        $scopevalue .= $scopePerformed->scope_performed;
+                        if($i < $count)
+                        {
+                            $scopevalue .= ', ';
+                        }
+                        $i++;
+                    }
+                }
+                $createdAt   = $value->created_at;
+                $createdDate = new DateTime($createdAt);
+                $createdDate = $createdDate->format('m/d/Y');
+                $appendtd .= '<tr class="content">';
+                $appendtd .= ' <td class="table-td-data">'.$value->project_number.'</td>';
+                $appendtd .= ' <td class="table-td-data">'.$value->project_name.'</td>';
+                $appendtd .= ' <td class="table-td-data">'.$value->project_site_address.'</td>';
+                $appendtd .= ' <td class="table-td-data">'.$budget.'</td>';
+                $appendtd .= ' <td class="table-td-data">'.$scopevalue.'</td>';
+                if(session('loginusertype') == 'admin')
+                {
+                    $appendtd .= ' <td class="table-td-data">'.$value->users_name.' '.$value->last_name.'</td>';
+                }
+                $appendtd .= ' <td class="table-td-data">'.$associatename.'</td>';
+                $appendtd .= ' <td class="table-td-data">'.$createdDate.'</td>';
+                $appendtd .= '  <td class="table-td-th">
+                                            <div class="btn-group">
+                                                <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown"><center><span class="glyphicon glyphicon-cog"></span></center></button>
+                                                <ul class="dropdown-menu" role="menu" style="left: 0% !important;
+                                                    right: 100% !important;text-align: left; !important;transform: translate(-75%, 0) !important;">';
+                    
+                if(session('loginusertype') == 'admin')
+                {
+                    $appendtd .= ' <li><a href="'.url('/allProejcts/projectDetail/'.$value->project_id).'">View</a></li>';
+                }
+                else
+                {
+                    $appendtd .= '<li><a href="'.url('/allProejcts/projectDetail/'.$value->project_id).'">View</a></li>
+                       <li><a href="#" onclick="projectInProgress('.$value->project_id.')">In Progress</a></li>';
+                }
+                $appendtd .= '</ul></div></td></tr>';
+            }
+            
+        }
+        return json_encode(array('count' => $projectCount,'appendtd' => $appendtd));
+    }
+    public function inProgressList(Request $request)
+    {
+        $column_key = array("0"=>"project_number","1"=>"project_name","2"=>"project_site_address","3"=>"project_bids.associate_suggested_bid","4"=>"users_name","5"=>"created_at","6" => "project_status.created_at");
+        $order_key  = $request['order_key'];
+        $order      = $column_key[$order_key];
+        $sortorder  = $request['sortorder'];
+        if($sortorder == 1)
+        {
+            $sort =  'asc';
+        }
+        else
+        {
+            $sort =  'desc';
+        }
+       /* echo $order;
+        echo $sort;
+        exit;*/
+        $appendtd = '';
+        if(session('loginusertype') != 'admin')
+        {
+            $userid = session('loginuserid');
+            $projects = DB::table('projects')
+                            ->select('projects.*','users_name','last_name','project_bids.associate_suggested_bid','project_bids.user_id as associateid','project_status.created_at as completeddate')
+                            ->leftJoin('project_status','project_status.project_id','=','projects.project_id')
+                            ->leftJoin('users','users.users_id','=','projects.user_id')
+                            ->leftJoin('project_bids','project_bids.project_id','=','projects.project_id')
+                            ->where('project_bid_status','=',1)
+                            ->where('projects.user_id','=',$userid)
+                            ->groupBy('projects.project_id')
+                            ->havingRaw('COUNT(project_status_type_id) =3')
+                            ->orderBy($order,$sort)
+                            /*->limit($limit)
+                            ->offset($items)*/
+                            ->get();
+        }
+        else
+        {
+            $projects = DB::table('projects')
+                            ->select('projects.*','users_name','last_name','project_bids.associate_suggested_bid','project_bids.user_id as associateid','project_status.project_status_type_id')
+                            ->leftJoin('project_status','project_status.project_id','=','projects.project_id')
+                            ->leftJoin('users','users.users_id','=','projects.user_id')
+                            ->leftJoin('project_bids','project_bids.project_id','=','projects.project_id')
+                            ->where('project_bid_status','=',1)
+                            ->groupBy('projects.project_id')
+                            ->havingRaw('COUNT(project_status_type_id) =3')
+                            ->orderBy($order,$sort)
+                            /*->limit($limit)
+                            ->offset($items)*/
+                            ->get();
+        }
+        $projectCount = 0;
+        if(isset($projects) && !empty($projects))
+        {
+            foreach ($projects as  $value) {
+                $projectStatus = ProjectStatus::select('project_status_type_id')
+                                                ->where('project_id','=',$value->project_id)
+                                                ->orderBy('project_status_type_id','desc')
+                                                ->first();
+                if($projectStatus->project_status_type_id == 3)
+                {
+                    $projectCount++;
+                    $budget = '$'.number_format($value->associate_suggested_bid, 2);
+                    $associateid = $value->associateid;
+                    $associate = User::select('users_name','last_name')
+                                        ->where('users_id','=',$associateid)->first();
+                    $associatename = $associate->users_name.' '.$associate->last_name;
+                    $scope  = $value->scope_performed_id;
+                    $temp   = explode(",", $scope);
+                    $count  = count($temp);
+                    $i = 1;
+                    $scopevalue = '';
+                    foreach($temp as $scopes)
+                    {
+                        $scopePerformed = ScopePerformed::select('scope_performed')
+                                                          ->where('scope_performed_id','=',$scopes)
+                                                          ->first();
+                        if(isset($scopePerformed) && !empty($scopePerformed))
+                        {
+                            $scopevalue .= $scopePerformed->scope_performed;
+                            if($i < $count)
+                            {
+                                $scopevalue .= ', ';
+                            }
+                            $i++;
+                        }
+                    }
+                    $createdAt   = $value->created_at;
+                    $createdDate = new DateTime($createdAt);
+                    $createdDate = $createdDate->format('m/d/Y');
+                    $appendtd .= '<tr class="content">';
+                    $appendtd .= ' <td class="table-td-data">'.$value->project_number.'</td>';
+                    $appendtd .= ' <td class="table-td-data">'.$value->project_name.'</td>';
+                    $appendtd .= ' <td class="table-td-data">'.$value->project_site_address.'</td>';
+                    $appendtd .= ' <td class="table-td-data">'.$budget.'</td>';
+                    $appendtd .= ' <td class="table-td-data">'.$scopevalue.'</td>';
+                    if(session('loginusertype') == 'admin')
+                    {
+                        $appendtd .= ' <td class="table-td-data">'.$value->users_name.' '.$value->last_name.'</td>';
+                    }
+                    $appendtd .= ' <td class="table-td-data">'.$associatename.'</td>';
+                    $appendtd .= ' <td class="table-td-data">'.$createdDate.'</td>';
+                    $appendtd .= '  <td class="table-td-th">
+                                    <div class="btn-group">
+                                    <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown"><center><span class="glyphicon glyphicon-cog"></span></center></button>
+                                    <ul class="dropdown-menu" role="menu" style="left: 0% !important;
+                                                        right: 100% !important;text-align: left; !important;transform: translate(-75%, 0) !important;">';
+                        
+                    if(session('loginusertype') == 'admin')
+                    {
+                        $appendtd .= ' <li><a href="'.url('/allProejcts/projectDetail/'.$value->project_id).'">View</a></li>';
+                    }
+                    else
+                    {
+                        $appendtd .= '<li><a href="'.url('/allProejcts/projectDetail/'.$value->project_id).'">View</a></li>
+                           <li><a href="#" onclick="projectInProgress('.$value->project_id.')">Onhold</a></li>';
+                        $appendtd .= '<li><a href="#" onclick="projectComplete('.$value->project_id.')">Complete</a></li>';
+                        $appendtd .= '<li><a href="#" onclick="projectCancel('.$value->project_id.')">Cancel</a></li>';
+                    }
+                    $appendtd .= '</ul></div></td></tr>';
+                }
+                
+            }
+            
+        }
+        return json_encode(array('count' => $projectCount,'appendtd' => $appendtd));
     }
 }

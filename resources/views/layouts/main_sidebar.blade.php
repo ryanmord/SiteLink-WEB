@@ -22,7 +22,7 @@
                 @else
                     <li class="list-group-item"><a href="{{ url('/managerDashboard')}}"><i class="glyphicon glyphicon-home"></i>Dashboard </a></li>
                     <li class="list-group-item" >
-                        <a href="{{ url('/projectList') }}"><i class="fa fa-building"></i>Projects</a>
+                        <a href="{{ url('/allProjects') }}"><i class="fa fa-building"></i>Projects</a>
                     </li>
                     <li class="list-group-item" >
                         <a href="{{ url('/editUser') }}"><i class="fa fa-user"></i>My Profile</a>

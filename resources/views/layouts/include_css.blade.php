@@ -52,8 +52,20 @@
     label.required:after{content:" *";color:red;}
     .fa-icon-sort
     {
-      color: #c5bdbd;
+      color: #cbcaca;
       font-size: 10px;
+      float: right;
+    }
+     .table-td-data
+      {
+        text-align: left;
+        vertical-align: middle;
+      }
+    .fa-icon-sort-desc
+    {
+      color: #4e4b4b;
+      font-size: 10px;
+      float: right;
     }
  
   </style>

@@ -68,11 +68,12 @@
     @if(session('loginusertype') == 'admin')
       <div class="panel panel-success">
         @if ($message = session('message'))
-          <div class="alert alert-success alert-block">
+          <div class="alert alert-success alert-block" id="">
             <button type="button" class="close" data-dismiss="alert">×</button> 
             <strong>{{ $message }}</strong>
           </div>
         @endif
+       
         <div class="panel-heading">
           <h3 class="panel-title">Pre-Scheduling & Unverified Users</h3>
         </div>
@@ -83,91 +84,37 @@
                <li class="active"><a href="#schedulingProjects" data-toggle="tab">Pre-Scheduling <span class="badge" style="background-color:#DB5A6B;" id="scheduling-Project-Count">{{ $schedulingProjectCount }}</span>
                 </a></li>
                 <li><a href="#home1" data-toggle="tab">
-                  Unverified Users <span class="badge" style="background-color:#DB5A6B;" id="user-count">{{ $users->count() }}</span>
+                  Unverified Users <span class="badge" style="background-color:#DB5A6B;" id="pending-user-count">{{ $users->count() }}</span>
                 </a></li>
               </ul>
               <div id="myTabContent" class="tab-content">
                 <div class="tab-pane fade" id="home1">
-
-                  <div class="table-responsive">
-                    @if($users->count() > 0)
+                  <div id="div-no-user">
+                    <center><p style="font-size: 20px;">No data found</p></center><br>
+                  </div>
+                  <div class="table-responsive" id="user-div-data">
+                      <input type="hidden" name="user-count" id="user-count" value="">
                       <table class="table table-bordered table-hover table-striped">
                           <thead>
                             <tr bgcolor="#EEEEEE">
+                              <th class="table-td-th" data-id="1" id="userid-th" onclick="usersortTable(0,'userid-th')" style="cursor: pointer;">Id</th>
                               <th class="table-td-th" width="50px;">Image</th>
-                              <th class="table-td-th">Name</th>
-                              <th class="table-td-th">Company
+                              <th class="table-td-th"  data-id="1" id="username-th" onclick="usersortTable(1,'uername-th')" style="cursor: pointer;">Name</th>
+                              <th class="table-td-th"  data-id="1" id="usercompany-th" onclick="usersortTable(2,'usercompany-th')" style="cursor: pointer;">Company
                               </th>
-                              <th class="table-td-th">Email</th>
+                              <th class="table-td-th"  data-id="1" id="useremail-th" onclick="usersortTable(3,'useremail-th')" style="cursor: pointer;">Email</th>
                             
-                              <th class="table-td-th">Address
+                              <th class="table-td-th" data-id="1" id="useraddress-th" onclick="usersortTable(4,'useraddress-th')" style="cursor: pointer;">Address
                               </th>
-                              <th class="table-td-th">Enrolled </th>
-                              <th class="table-td-th">Status
+                               <th class="table-td-th">Scope(s)
                               </th>
+                              <th class="table-td-th" data-id="1" id="enrolled-th" onclick="usersortTable(5,'enrolled-th')" style="cursor: pointer;">Enrolled </th>
                               <th class="table-td-th">Action
                               </th>
                             </tr>
                           </thead>
                           <tbody id="user-data">
-                            @foreach ($users as $user)
-                              <tr class="content">
-                                <td class="table-td-th">
-                                  @if(isset($user->users_profile_image))
-                                  
-                                    <img class="img-rounded" style="max-width:50px;max-height:50px;min-width:50px;min-height:50px;" src= "{{asset('/img/users/'.$user['users_profile_image'])}}" />
-                                  @else
-                                    <img class="img-rounded" style="max-width:50px;max-height:50px;min-width:50px;min-height:50px;" src="{{asset('/img/users/default.png')}}"/>
-                                  @endif
-                                </td>
-                                <td class="table-td-th">{{ ucfirst($user->users_name) }}</td>
-                                <td class="table-td-th">{{ $user->users_company }}</td>
-                                <td style="text-align: left;vertical-align: middle;">{{ $user->users_email }}<br>{{ $user->users_phone }}</td>
-                    
-                                <td style="text-align: left;vertical-align: middle;">
-                                {{ $user->users_address }}              
-                                </td>
-
-                                <?php $date1=date("Y-m-d H:i:s");
-                                $date2= date($user->created_at);
-                                $datetime1 = new DateTime($date1);
-                                $datetime2 = new DateTime($date2);
-                                $date= $datetime2->format("m/d/Y");
-                                $interval = $datetime1->diff($datetime2);
-                                $days = $interval->format(' %a days ago');?>
-                                <td style="text-align: center;vertical-align: middle;">
-                    
-                                  {{$date}}
-                                </td>
-                                @if($user->users_status == 1 )
-                                  <td style="text-align: center;vertical-align: middle;color: #5B8930;">
-                                    <span class="glyphicon glyphicon-ok"></span>
-                                  </td>
-                                @else
-                                  <td style="text-align: center;vertical-align: middle;color: #DB5A6B;">
-                                    <span class="glyphicon glyphicon-remove"></span>
-                                  </td>
-                                @endif
-                                  <td style="text-align: center;vertical-align: middle;">
-                                    <div class="btn-group">
-                                      <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown"><center><span class="glyphicon glyphicon-cog"></span></center></button>
-                                      <ul class="dropdown-menu" role="menu" style="left: 0% !important;
-                                        right: 100% !important;text-align: left !important;transform: translate(-75%, 0) !important;">
-                                        <?php $userid = $user->users_id ?>
-
-                                        <li><a href="#" id="approve" data-toggle="modal" data-target="#myModal" data-id="{{ $user['users_id'] }}" class="modalLink">Approve</a>
-                    
-                                        </li>
-
-                                        <li><a href="{{url('dashboard/user/'.$user['users_id'].'/0')}}" onclick="return confirm('Are you want to sure reject this associate?')">Reject</a>
-                                        </li>
-                   
-                                      </ul>
-                                      
-                                    </div>
-                                  </td>
-                                </tr>
-                              @endforeach
+                            
                             </tbody>
                           </table>
                            <div class="row content-row-pagination">
@@ -180,14 +127,15 @@
                                 </ul>
                                 </div>
                             </div>
-                          @else
-                            <h6><center>You do not have any associate to verify</center></h6>
-                          @endif
+                         
                         </div>
                       </div>
                       
                         <div class="tab-pane fade active in" id="schedulingProjects">
-                      <div class="row">
+                        <div id="div-no-scheduling">
+                          <center><p style="font-size: 20px;">No data found</p></center><br>
+                        </div>
+                        <div class="row" id="div-scheduling-button">
                           <div class="col-md-6">
 
                            <!--  <div class="form-search search-only" style="width: 70%;margin-left: 5px;">
@@ -196,9 +144,9 @@
                                   <input type="text" class="form-control search-query" placeholder="Search here" id="searchUser">
                               </div> -->
                               <input type="hidden" name="pagenumber" id="pagenumber">
-                              <input type="hidden" name="usercount" value="" id="usercount">
+                              
                           </div>
-                          @if(isset($schedulingProject) && !empty($schedulingProject))
+                          
                           <div class="col-md-6">
 
                               <div style="float: right;">
@@ -210,79 +158,29 @@
                                   &nbsp     
                               </div>
                           </div>
-                          @endif
+                          
                       </div>
-                        <div class="table-responsive">
-                        <input type="hidden" name="project-count" id="scheduling-count" value="{{ count($schedulingProject) }}">
-                          @if(isset($schedulingProject) && !empty($schedulingProject))
-                            <table class="table table-bordered table-hover table-striped" > 
+                      
+                        <div class="table-responsive" id="div-scheduling-table">
+                          <input type="hidden" name="scheduling-count" id="scheduling-count" value="">
+                          <table class="table table-bordered table-hover table-striped" > 
                               <thead>
                                <tr bgcolor="#EEEEEE">
                                   <th class="table-td-th" width="50">
                                       <!-- <input type="checkbox" id="allChecks"> -->
                                   </th>
-                                    <th class="table-td-th">Project Identifier</th>
-                                    <th class="table-td-th">Project Name</th>
-                                    <th class="table-td-th">Site Address</th>
-                                    <th class="table-td-th" width="10%">Budget</th>
+                                    <th class="table-td-th" data-id="1" id="identifier-th" onclick="sortTable(0,'identifier-th')" style="cursor: pointer;">Project Identifier</th>
+                                    <th class="table-td-th" data-id="1" id="projectname-th" onclick="sortTable(1,'projectname-th')" style="cursor: pointer;">Project Name</th>
+                                    <th class="table-td-th" data-id="1" id="siteaddress-th" onclick="sortTable(2,'siteaddress-th')" style="cursor: pointer;">Site Address</th>
+                                    <th class="table-td-th" width="10%" data-id="1" id="budget-th" onclick="sortTable(3,'budget-th')" style="cursor: pointer;">Budget</th>
                                     <th class="table-td-th">Scope</th>
-                                    <th class="table-td-th">Project Manager</th>
+                                    <th class="table-td-th" data-id="1" id="manager-th" onclick="sortTable(4,'manager-th')" style="cursor: pointer;">Project Manager</th>
+                                    <th class="table-td-th" data-id="1" id="created-th" onclick="sortTable(5,'created-th')" style="cursor: pointer;">Created</th>
                                     <th class="table-td-th">Action</th>
                                 </tr>
                               </thead>
                               <tbody id="scheduling-data">
-                                 @foreach ($schedulingProject as $project)
-                                    <tr class="content">
-                                       <td class="table-td-th">
-                                          <input type="checkbox" name="checkProject" id="checkProject" value="{{ $project['project_id'] }}"></td>
-                                        <td class="table-td-th" style="text-align: left;">
-                                            {{ $project['identifier'] }}
-                                        </td>
-                                        <td class="table-td-th" style="text-align: left;">
-                                            {{ $project['project_name'] }}
-                                        </td>
-                                        
-                                        <td class="table-td-th" style="text-align: left;">
-                                            {{ $project['project_site_address'] }}
-                
-                                        </td>
-                                        <td class="table-td-th" style="text-align: left;">
-                                            <span class="glyphicon glyphicon-usd"></span>
-                                            {{ $project['budget'] }}
-                                        </td>
-                                         <td class="table-td-th" style="text-align: left;">
-                                            
-                                            {{ $project['scopevalue'] }}
-                                        </td>
-                                        <td class="table-td-th" style="text-align: left;">
-                                            {{ $project['managername'] }}
-                                        </td>
-                                        <!-- <td class="table-td-th">
-                                          <div class="btn-group">
-                                            <a href="{{url('/schedulingProject/'.$project['project_id'])}}">
-                                                <button type="button" class="btn btn-success">
-                                                <center>View</center></button></a>
-                                          </div>
-                                        </td> -->
-
-                                    <td class="table-td-th">
-                                      <div class="btn-group">
-                                      <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown"><center><span class="glyphicon glyphicon-cog"></span></center></button>
-                                      <ul class="dropdown-menu" role="menu" style="left: 0% !important;
-                                        right: 100% !important;text-align: left !important;transform: translate(-75%, 0) !important;">
-                                        <?php $projectid = $project['project_id'] ?>
-
-                                        <li>
-                                          <a href="{{url('/schedulingProject/'.$project['project_id'])}}">
-                                         View</a>
-                                        </li>
-                                        <li><a href="{{url('/archiveProjects/archive/'.$project['project_id'])}}">Archive</a>
-                                        </li>
-                                      </ul>
-                                    </div>
-                                  </td>
-                                </tr>
-                                @endforeach
+                                
                              </tbody>
                             </table>
                             <div class="row content-row-pagination">
@@ -295,10 +193,7 @@
                                 </ul>
                                 </div>
                             </div>
-                            @else
-                              <h6><center>You do not have any Pending Scheduling Request</center>
-                              </h6>
-                            @endif
+                           
                           </div>
                         </div>
                       </div>
@@ -316,17 +211,86 @@
         <script type="text/javascript">
           $(window).load(function() {
           $(".loader").fadeOut("slow");
+          $.ajax({
+                  type: 'GET',
+                  url: '<?php echo route('schedulingProjectList'); ?>',
+                  data: {order_key:6,sortorder:2},
+                  dataType: 'json',
+              })
+              .done(function(msg) {
+                 if(msg.count > 0)
+                 {
+                    $('#div-no-scheduling').hide();
+                    $('#div-scheduling-button').show();
+                    $('#div-scheduling-table').show();
+                    $('#scheduling-data').html('');
+                    $('#scheduling-data').html(msg.appendtd);
+                    document.getElementById('scheduling-count').value = msg.count;
+                    setSchedulingPagination();
+                 }
+                 else
+                 {
+                    $('#div-scheduling-button').hide();
+                    $('#div-scheduling-table').hide();
+                    $('#div-no-scheduling').show();
+                 }
+           });
+            $.ajax({
+                  type: 'GET',
+                  url: '<?php echo route('pendingAssociateList'); ?>',
+                  data: {order_key:0,sortorder:2},
+                  dataType: 'json',
+              })
+              .done(function(msg) {
+                 if(msg.count > 0)
+                 {
+                    $('#div-no-user').hide();
+                    $('#user-div-data').show();
+                    $('#user-data').html('');
+                    $('#user-data').html(msg.appendtd);
+                    document.getElementById('user-count').value = msg.count;
+                    setUserPagination();
+                 }
+                 else
+                 {
+                    $('#user-div-data').hide();
+                    $('#div-no-user').show();
+                 }
+           });
+          
         });
-   
-        $(".modalLink").click(function () {
-          var userid = $(this).attr('data-id');
-          document.getElementById("userid").value = userid;
-          //alert(userid);
+        function confirmMsg(id)
+        {
+          if(confirm('Are you want to sure reject this associate?'))
+          {
+              $(".loader").fadeIn("slow");
+              $.ajax({
+                  type: 'GET',
+                  url: '<?php echo route('authenticateUser'); ?>',
+                  data: {status:0,userid:id},
+                  dataType: 'json',
+              })
+              .done(function(msg) {
+                $(".loader").fadeOut("slow");
+                 location.reload();
+           });
+              $(".loader").fadeOut("slow");
+          }
+          else
+          {
+            return false;
+          }
+        }
+        function setuserid(id) {
+         /* var userid = $(this).attr('data-id');*/
+          document.getElementById("userid").value = id;
+          //alert(id);
          /* $("#completed-project").modal("hide");*/
-        })
+        }
 
         </script>
   <script type="text/javascript">
+  function setUserPagination(){
        function getPageList(totalPages, page, maxLength) {
     if (maxLength < 5) throw "maxLength must be at least 5";
 
@@ -360,12 +324,12 @@
         .concat([0])
         .concat(range(totalPages-sideWidth+1, totalPages));
 }
-var usercount = $('#user-count').text();
+var usercount = document.getElementById('user-count').value;
 if(usercount > 0)
 {
   $(function () {
     // Number of items and limits the number of items per page
-    var usercount = $('#user-count').text();
+    var usercount = document.getElementById('user-count').value;
     var limitPerPage = 15;
     var totalPages = (Math.ceil(usercount / limitPerPage));
     var paginationSize = 7; 
@@ -421,10 +385,11 @@ if(usercount > 0)
     });
 }); 
 }
-
+}
   </script>
   
  <script type="text/javascript">
+    function setSchedulingPagination(){
        function getPageList(totalPages, page, maxLength) {
     if (maxLength < 5) throw "maxLength must be at least 5";
 
@@ -515,6 +480,7 @@ $(function () {
         return showPage(currentPage-1);
     });
 }); 
+}
   </script>
   <script type="text/javascript">
     $('body').on('click','#checkProject', function (event) {
@@ -556,6 +522,62 @@ $(function () {
           });
         }
     });
+  </script>
+   <script type="text/javascript">
+      function sortTable(n,id) {
+
+       var sortorder = $('#'+id).attr("data-id"); 
+        $.ajax({
+                  type: 'GET',
+                  url: '<?php echo route('schedulingProjectList'); ?>',
+                  data: {order_key:n,sortorder:sortorder},
+                  dataType: 'json',
+              })
+              .done(function(msg) {
+                 if(msg.appendtd != '')
+                 {
+                    $('#scheduling-data').html('');
+                    $('#scheduling-data').html(msg.appendtd);
+                    document.getElementById('scheduling-count').value = msg.count;
+                    setSchedulingPagination();
+                 }
+           });
+        if(sortorder == 1)
+        {
+            $('#'+id).attr('data-id' , '2'); 
+        }
+        else
+        {
+            $('#'+id).attr('data-id' , '1'); 
+        }
+    }
+    function usersortTable(n,id)
+    {
+       var sortorder = $('#'+id).attr("data-id"); 
+        $.ajax({
+                  type: 'GET',
+                  url: '<?php echo route('pendingAssociateList'); ?>',
+                  data: {order_key:n,sortorder:sortorder},
+                  dataType: 'json',
+              })
+              .done(function(msg) {
+                 if(msg.appendtd != '')
+                 {
+                    $('#user-data').html('');
+                    $('#user-data').html(msg.appendtd);
+                    document.getElementById('user-count').value = msg.count;
+                    setUserPagination();
+                 }
+           });
+        if(sortorder == 1)
+        {
+            $('#'+id).attr('data-id' , '2'); 
+        }
+        else
+        {
+            $('#'+id).attr('data-id' , '1'); 
+        }
+    }
   </script>
 
   @endsection

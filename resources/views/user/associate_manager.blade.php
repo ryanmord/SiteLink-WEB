@@ -40,15 +40,21 @@
                   <table class="table table-bordered table-hover table-striped" id="associateTable">
                     <thead>
                       <tr bgcolor="#EEEEEE">
-                        <th width="80" data-id="1" id="id-th" onclick="sortTable(0,'id-th')" style="cursor: pointer;">ID <i class='fa fa-arrow-up fa-icon-sort'></i><i class='fa fa-arrow-down fa-icon-sort'></th>
+                        <th width="80" data-id="1" id="id-th" onclick="sortTable(0,'id-th','id-th-asc','id-th-desc')" style="cursor: pointer;">ID <i class='fa fa-arrow-up fa-icon-sort' id="id-th-asc"></i><i class='fa fa-arrow-down fa-icon-sort' id="id-th-desc"></th>
                         <th width="50px;">Image</th>
-                        <th data-id="1" id="name-th" onclick="sortTable(1,'name-th')" style="cursor: pointer;">User Name</th>
-                        <th data-id="1" id="company-th" onclick="sortTable(2,'company-th')" style="cursor: pointer;">Company</th>
-                        <th data-id="1" id="email-th" onclick="sortTable(3,'email-th')" style="cursor: pointer;">Email</th>
-                        <th data-id="1" id="address-th" onclick="sortTable(4,'address-th')" style="cursor: pointer;">Address</th>
+                        <th data-id="1" width="130" id="name-th" onclick="sortTable(1,'name-th','name-th-asc','name-th-desc')" style="cursor: pointer;">User Name <i class='fa fa-arrow-down fa-icon-sort' id="name-th-desc"><i class='fa fa-arrow-up fa-icon-sort' id="name-th-asc">
+                          </i></th>
+                        <th data-id="1" width="150" id="company-th" onclick="sortTable(2,'company-th','company-th-asc','company-th-desc')" style="cursor: pointer;">Company <i class='fa fa-arrow-down fa-icon-sort' id="company-th-desc"><i class='fa fa-arrow-up fa-icon-sort' id="company-th-asc">
+                          </i></th>
+                        <th data-id="1" id="email-th" onclick="sortTable(3,'email-th','email-th-asc','email-th-desc')" style="cursor: pointer;">Email <i class='fa fa-arrow-up fa-icon-sort' id="email-th-asc">
+                          </i><i class='fa fa-arrow-down fa-icon-sort' id="email-th-desc"></th>
+                        <th data-id="1" width="200" id="address-th" onclick="sortTable(4,'address-th','address-th-asc','address-th-desc')" style="cursor: pointer;">Address <i class='fa fa-arrow-up fa-icon-sort' id="address-th-asc">
+                          </i><i class='fa fa-arrow-down fa-icon-sort' id="address-th-desc"></th>
                         <th width="100"> Scope(s) </th>
-                        <th width="10%" data-id="1" id="created-th" onclick="sortTable(5,'created-th')" style="cursor: pointer;">Enrolled </th>
-                        <th data-id="1" id="status-th" onclick="sortTable(6,'status-th')" style="cursor: pointer;">Status</th>
+                        <th width="100" data-id="1" id="created-th" onclick="sortTable(5,'created-th','created-th-asc','created-th-desc')" style="cursor: pointer;">Enrolled <i class='fa fa-arrow-up fa-icon-sort' id="created-th-asc">
+                          </i><i class='fa fa-arrow-down fa-icon-sort' id="created-th-desc"></th>
+                        <th data-id="1" width="100" id="status-th" onclick="sortTable(6,'status-th','status-th-asc','status-th-desc')" style="cursor: pointer;">Status <i class='fa fa-arrow-up fa-icon-sort' id="status-th-asc">
+                          </i><i class='fa fa-arrow-down fa-icon-sort' id="status-th-desc"></th>
                         <th>Action</th>
                       </tr>
                             
@@ -355,7 +361,7 @@ $(function () {
 }
 </script>
 <script type="text/javascript">
-      function sortTable(n,id) {
+      function sortTable(n,id,arrowup,arrowdown) {
 
        var sortorder = $('#'+id).attr("data-id"); 
         $.ajax({
@@ -376,10 +382,24 @@ $(function () {
         if(sortorder == 1)
         {
             $('#'+id).attr('data-id' , '2'); 
+            $('.fa-arrow-down').removeClass('fa-icon-sort-desc');
+            $('.fa-arrow-down').addClass('fa-icon-sort');
+            $('.fa-arrow-up').removeClass('fa-icon-sort-desc');
+            $('.fa-arrow-up').addClass('fa-icon-sort');
+            $('#'+arrowup).removeClass('fa-icon-sort');
+            $('#'+arrowup).addClass('fa-icon-sort-desc');
+            
         }
         else
         {
             $('#'+id).attr('data-id' , '1'); 
+            $('.fa-arrow-up').removeClass('fa-icon-sort-desc');
+            $('.fa-arrow-up').addClass('fa-icon-sort');
+            $('.fa-arrow-down').removeClass('fa-icon-sort-desc');
+            $('.fa-arrow-down').addClass('fa-icon-sort');
+            $('#'+arrowdown).removeClass('fa-icon-sort');
+            $('#'+arrowdown).addClass('fa-icon-sort-desc');
+            
         }
     }
   </script>
