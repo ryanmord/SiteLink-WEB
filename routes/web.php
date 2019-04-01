@@ -45,9 +45,9 @@ Route::group(['middleware' => 'disablepreventback'],function()
 	Route::any('/projectList','ProjectController@managerprojects')->name('projectList')->middleware(guest::class);
 	Route::get('/logout','LoginController@logout');
 	Route::get('/setaddress', 'ProjectController@setaddress')->name('setaddress')->middleware(guest::class);
-	Route::any('users/user/{id}/{status}', 'UserController@blockUnblockUser')->middleware(guest::class);
+	Route::any('users/blockUnblockUser', 'UserController@blockUnblockUser')->name('blockUnblockUser')->middleware(guest::class);
 	Route::get('/allProjects', 'ProjectController@showProjects')->name('allProjects')->middleware(guest::class);
-	Route::get('/allProejcts/bid/{projectid}/{userid}/{status}', 'ProjectController@bidacceptreject')->name('bidAcceptReject')->middleware(guest::class);
+	Route::get('/allProejcts/bid/', 'ProjectController@bidacceptreject')->name('bidAcceptReject')->middleware(guest::class);
 	Route::get('/createProject', 'ProjectController@create')->name('createProject')->middleware(guest::class);
 	Route::get('/editProject/{id}', 'ProjectController@edit')->name('editProject')->middleware(guest::class);
 	Route::put('/updateProject/{id}', 'ProjectController@update')->middleware(guest::class);
@@ -61,8 +61,10 @@ Route::group(['middleware' => 'disablepreventback'],function()
 			->name('projectInProgress')->middleware(guest::class);
 	/*Route::get('/allProejcts/projectComplete', 'ProjectController@projectComplete')->
 	name('projectComplete')->middleware(guest::class);*/
-	Route::get('/allProejcts/projectComplete/{id}', 'ProjectController@projectComplete')->middleware(guest::class);
-	Route::get('/allProejcts/projectCancel/{id}', 'ProjectController@projectCancel')->middleware(guest::class);
+	Route::get('/allProejcts/projectComplete', 'ProjectController@projectComplete')
+			->name('projectComplete')->middleware(guest::class);
+	Route::get('/allProejcts/projectCancel', 'ProjectController@projectCancel')
+			 ->name('projectCancel')->middleware(guest::class);
 	Route::get('/editUser', 'UserController@edituser')->name('editUser')->middleware(guest::class);
 	Route::post('/updateUser', 'UserController@update')->name('updateUser')->middleware(guest::class);
 	Route::post('/userChangePassword', 'UserController@changepassword')->name('userChangePassword')->middleware(guest::class);
@@ -106,6 +108,9 @@ Route::group(['middleware' => 'disablepreventback'],function()
 	Route::get('/cancelProjectList/','ProjectController@cancelProjectList')->name('cancelProjectList')->middleware(guest::class);
 	Route::get('/onHoldProjectList/','ProjectController@onHoldProjectList')->name('onHoldProjectList')->middleware(guest::class);
 	Route::get('/inProgressList/','ProjectController@inProgressList')->name('inProgressList')->middleware(guest::class);
+	Route::get('/employeeRequestList/','ProjectController@employeeRequestList')->name('employeeRequestList')->middleware(guest::class);
+	Route::get('/bidsList/','ProjectController@bidsList')->name('bidsList')->middleware(guest::class);
+	Route::get('/userProjects/','ProjectController@usersProject')->name('usersProject')->middleware(guest::class);
 });
 Route::get('/forgotPassword/{userid}','LoginController@forgotpassword')->name('forgotPassword');
 Route::post('/changepassword','LoginController@changepassword');

@@ -1667,7 +1667,7 @@
         var pagenumber1 = document.getElementById('publish_pagenumber').value;
         var search = document.getElementById('a_generalSearch').value;
       
-        var pagenumber = ++pagenumber1;
+        var pagenumber = pagenumber1 + 1;
         document.getElementById('status_pagenumber').value = '';
         document.getElementById('status_pagenumber').value = pagenumber;
        //var $results = $("#projectlist");

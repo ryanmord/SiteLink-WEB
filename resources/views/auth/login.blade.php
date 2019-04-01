@@ -15,7 +15,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <title>Scoped</title>
-     <link href="https://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&amp;subset=devanagari,latin-ext" rel="stylesheet">
+     <link href="{{asset('/css/frontCss/front_font.css')}}" rel="stylesheet" type="text/css">
     <meta name="csrf-param" content="_csrf-frontend">
     <meta name="csrf-token" content="fkMSpKSo6hiL4aMtehZ6vsKrITZzXRMTNqJcc08Vjbn4x2CqKYTaK9bADjir9ZlwWVCoNVE0zG0Bn_VUB-ywPA==">
     <title></title>
@@ -142,7 +142,7 @@
       @include('frontlayouts.footer')
       @include('frontlayouts.include_js')
 
-    <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js">
+    
     </script>
     <script>
 $(document).ready(function() {
@@ -173,6 +173,12 @@ $(document).ready(function () {
             },
             
             
+        },messages:{
+            admin_users_email: "Please Enter Email Id",
+            admin_users_password: "Please Enter Password",
+            
+        },errorPlacement: function(error, element) {
+            error.insertAfter(element);
         }
        
     });
@@ -223,6 +229,12 @@ $(document).ready(function () {
             }
             
             
+        },messages:{
+            femail: "Please Enter Email Id",
+            
+            
+        },errorPlacement: function(error, element) {
+            error.insertAfter(element);
         }
        
     });

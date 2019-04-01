@@ -97,18 +97,18 @@
                       <table class="table table-bordered table-hover table-striped">
                           <thead>
                             <tr bgcolor="#EEEEEE">
-                              <th class="table-td-th" data-id="1" id="userid-th" onclick="usersortTable(0,'userid-th')" style="cursor: pointer;">Id</th>
-                              <th class="table-td-th" width="50px;">Image</th>
-                              <th class="table-td-th"  data-id="1" id="username-th" onclick="usersortTable(1,'uername-th')" style="cursor: pointer;">Name</th>
-                              <th class="table-td-th"  data-id="1" id="usercompany-th" onclick="usersortTable(2,'usercompany-th')" style="cursor: pointer;">Company
+                              <th class="table-td-th" width="70" data-id="1" id="userid-th" onclick="usersortTable(0,'userid-th','userid-th-asc','userid-th-desc')" style="cursor: pointer;">Id <i class='fa fa-arrow-down fa-icon-sort-desc' id="userid-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="userid-th-asc"></i></th>
+                              <th class="table-td-th" width="50">Image</th>
+                              <th class="table-td-th" width="130" data-id="1" id="username-th" onclick="usersortTable(1,'username-th','username-th-asc','username-th-desc')" style="cursor: pointer;">Name <i class='fa fa-arrow-down fa-icon-sort' id="username-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="username-th-asc"></i></th>
+                              <th class="table-td-th" width="120"  data-id="1" id="usercompany-th" onclick="usersortTable(2,'usercompany-th','usercompany-th-asc','usercompany-th-desc')" style="cursor: pointer;">Company <i class='fa fa-arrow-down fa-icon-sort' id="usercompany-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="usercompany-th-asc"></i>
                               </th>
-                              <th class="table-td-th"  data-id="1" id="useremail-th" onclick="usersortTable(3,'useremail-th')" style="cursor: pointer;">Email</th>
+                              <th class="table-td-th"  data-id="1" id="useremail-th" onclick="usersortTable(3,'useremail-th','useremail-th-asc','useremail-th-desc')" style="cursor: pointer;">Email <i class='fa fa-arrow-down fa-icon-sort' id="useremail-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="useremail-th-asc"></i></th>
                             
-                              <th class="table-td-th" data-id="1" id="useraddress-th" onclick="usersortTable(4,'useraddress-th')" style="cursor: pointer;">Address
+                              <th class="table-td-th" data-id="1" id="useraddress-th" onclick="usersortTable(4,'useraddress-th','useraddress-th-asc','useraddress-th-desc')" style="cursor: pointer;">Address <i class='fa fa-arrow-down fa-icon-sort' id="useraddress-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="useraddress-th-asc"></i>
                               </th>
                                <th class="table-td-th">Scope(s)
                               </th>
-                              <th class="table-td-th" data-id="1" id="enrolled-th" onclick="usersortTable(5,'enrolled-th')" style="cursor: pointer;">Enrolled </th>
+                              <th class="table-td-th" width="100" data-id="1" id="enrolled-th" onclick="usersortTable(5,'enrolled-th','enrolled-th-asc','enrolled-th-desc')" style="cursor: pointer;">Enrolled <i class='fa fa-arrow-down fa-icon-sort' id="enrolled-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="enrolled-th-asc"></i></th>
                               <th class="table-td-th">Action
                               </th>
                             </tr>
@@ -169,13 +169,13 @@
                                   <th class="table-td-th" width="50">
                                       <!-- <input type="checkbox" id="allChecks"> -->
                                   </th>
-                                    <th class="table-td-th" data-id="1" id="identifier-th" onclick="sortTable(0,'identifier-th')" style="cursor: pointer;">Project Identifier</th>
-                                    <th class="table-td-th" data-id="1" id="projectname-th" onclick="sortTable(1,'projectname-th')" style="cursor: pointer;">Project Name</th>
-                                    <th class="table-td-th" data-id="1" id="siteaddress-th" onclick="sortTable(2,'siteaddress-th')" style="cursor: pointer;">Site Address</th>
-                                    <th class="table-td-th" width="10%" data-id="1" id="budget-th" onclick="sortTable(3,'budget-th')" style="cursor: pointer;">Budget</th>
+                                    <th class="table-td-th" width="100" data-id="1" id="identifier-th" onclick="sortTable(0,'identifier-th','identifier-th-asc','identifier-th-desc')" style="cursor: pointer;text-align: left;">Project Identifier <i class='fa fa-arrow-down fa-icon-sort-desc' id="identifier-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="identifier-th-asc"></i></th>
+                                    <th class="table-td-th" width="140" data-id="1" id="projectname-th" onclick="sortTable(1,'projectname-th','projectname-th-asc','projectname-th-desc')" style="cursor: pointer;">Project Name <i class='fa fa-arrow-down fa-icon-sort' id="projectname-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="projectname-th-asc"></i></th>
+                                    <th class="table-td-th" data-id="1" id="siteaddress-th" onclick="sortTable(2,'siteaddress-th','siteaddress-th-asc','siteaddress-th-desc')" style="cursor: pointer;">Site Address <i class='fa fa-arrow-down fa-icon-sort' id="siteaddress-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="siteaddress-th-asc"></i></th>
+                                    <th class="table-td-th" width="110" data-id="1" id="budget-th" onclick="sortTable(3,'budget-th','budget-th-asc','budget-th-desc')" style="cursor: pointer;">Budget <i class='fa fa-arrow-down fa-icon-sort' id="budget-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="budget-th-asc"></i></th>
                                     <th class="table-td-th">Scope</th>
-                                    <th class="table-td-th" data-id="1" id="manager-th" onclick="sortTable(4,'manager-th')" style="cursor: pointer;">Project Manager</th>
-                                    <th class="table-td-th" data-id="1" id="created-th" onclick="sortTable(5,'created-th')" style="cursor: pointer;">Created</th>
+                                    <th class="table-td-th" width="140" data-id="1" id="manager-th" onclick="sortTable(4,'manager-th','manager-th-asc','manager-th-desc')" style="cursor: pointer;">Project Manager <i class='fa fa-arrow-down fa-icon-sort' id="manager-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="manager-th-asc"></i></th>
+                                    <th class="table-td-th" width="100" data-id="1" id="created-th" onclick="sortTable(5,'created-th','created-th-asc','created-th-desc')" style="cursor: pointer;">Created <i class='fa fa-arrow-down fa-icon-sort' id="created-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="created-th-asc"></i></th>
                                     <th class="table-td-th">Action</th>
                                 </tr>
                               </thead>
@@ -210,7 +210,8 @@
         @section('script') 
         <script type="text/javascript">
           $(window).load(function() {
-          $(".loader").fadeOut("slow");
+          
+          $('#div-no-scheduling').hide();
           $.ajax({
                   type: 'GET',
                   url: '<?php echo route('schedulingProjectList'); ?>',
@@ -227,12 +228,14 @@
                     $('#scheduling-data').html(msg.appendtd);
                     document.getElementById('scheduling-count').value = msg.count;
                     setSchedulingPagination();
+                    $(".loader").fadeOut("slow");
                  }
                  else
                  {
                     $('#div-scheduling-button').hide();
                     $('#div-scheduling-table').hide();
                     $('#div-no-scheduling').show();
+                    $(".loader").fadeOut("slow");
                  }
            });
             $.ajax({
@@ -271,10 +274,10 @@
                   dataType: 'json',
               })
               .done(function(msg) {
+                location.reload();
                 $(".loader").fadeOut("slow");
-                 location.reload();
            });
-              $(".loader").fadeOut("slow");
+              
           }
           else
           {
@@ -524,9 +527,10 @@ $(function () {
     });
   </script>
    <script type="text/javascript">
-      function sortTable(n,id) {
+      function sortTable(n,id,arrowup,arrowdown) {
 
        var sortorder = $('#'+id).attr("data-id"); 
+       $(".loader").fadeIn("slow");
         $.ajax({
                   type: 'GET',
                   url: '<?php echo route('schedulingProjectList'); ?>',
@@ -541,19 +545,33 @@ $(function () {
                     document.getElementById('scheduling-count').value = msg.count;
                     setSchedulingPagination();
                  }
+                 $(".loader").fadeOut("slow");
            });
         if(sortorder == 1)
         {
             $('#'+id).attr('data-id' , '2'); 
+            $('.fa-arrow-down').removeClass('fa-icon-sort-desc');
+            $('.fa-arrow-down').addClass('fa-icon-sort');
+            $('.fa-arrow-up').removeClass('fa-icon-sort-desc');
+            $('.fa-arrow-up').addClass('fa-icon-sort');
+            $('#'+arrowup).removeClass('fa-icon-sort');
+            $('#'+arrowup).addClass('fa-icon-sort-desc');
         }
         else
         {
             $('#'+id).attr('data-id' , '1'); 
+            $('.fa-arrow-up').removeClass('fa-icon-sort-desc');
+            $('.fa-arrow-up').addClass('fa-icon-sort');
+            $('.fa-arrow-down').removeClass('fa-icon-sort-desc');
+            $('.fa-arrow-down').addClass('fa-icon-sort');
+            $('#'+arrowdown).removeClass('fa-icon-sort');
+            $('#'+arrowdown).addClass('fa-icon-sort-desc');
         }
     }
-    function usersortTable(n,id)
+    function usersortTable(n,id,arrowup,arrowdown)
     {
-       var sortorder = $('#'+id).attr("data-id"); 
+       var sortorder = $('#'+id).attr("data-id");
+       $(".loader").fadeIn("slow");
         $.ajax({
                   type: 'GET',
                   url: '<?php echo route('pendingAssociateList'); ?>',
@@ -567,15 +585,29 @@ $(function () {
                     $('#user-data').html(msg.appendtd);
                     document.getElementById('user-count').value = msg.count;
                     setUserPagination();
+
                  }
+                 $(".loader").fadeOut("slow");
            });
         if(sortorder == 1)
         {
             $('#'+id).attr('data-id' , '2'); 
+            $('.fa-arrow-down').removeClass('fa-icon-sort-desc');
+            $('.fa-arrow-down').addClass('fa-icon-sort');
+            $('.fa-arrow-up').removeClass('fa-icon-sort-desc');
+            $('.fa-arrow-up').addClass('fa-icon-sort');
+            $('#'+arrowup).removeClass('fa-icon-sort');
+            $('#'+arrowup).addClass('fa-icon-sort-desc');
         }
         else
         {
             $('#'+id).attr('data-id' , '1'); 
+            $('.fa-arrow-up').removeClass('fa-icon-sort-desc');
+            $('.fa-arrow-up').addClass('fa-icon-sort');
+            $('.fa-arrow-down').removeClass('fa-icon-sort-desc');
+            $('.fa-arrow-down').addClass('fa-icon-sort');
+            $('#'+arrowdown).removeClass('fa-icon-sort');
+            $('#'+arrowdown).addClass('fa-icon-sort-desc');
         }
     }
   </script>

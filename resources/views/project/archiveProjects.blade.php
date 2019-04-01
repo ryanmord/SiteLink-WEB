@@ -18,12 +18,7 @@
                     <strong>{{ $message }}</strong>
                 </div>
             @endif
-           <!--  @if($message = session('message'))
-            <div class="alert alert-success alert-block">
-                <button type="button" class="close" data-dismiss="alert">×</button> 
-                <strong>{{ $message }}</strong>
-            </div>
-            @endif -->
+          
 
             <div class="panel-heading">
                 <h3 class="panel-title">
@@ -66,13 +61,13 @@
                             <th class="table-td-th" width="50">
                                 <!-- <input type="checkbox" id="allChecks"> -->
                             </th>
-                            <th class="table-td-th" data-id="1" id="identifier-th" onclick="sortTable(0,'identifier-th')" style="cursor: pointer;">Project Identifier</th>
-                            <th class="table-td-th" data-id="1" id="name-th" onclick="sortTable(1,'name-th')" style="cursor: pointer;">Project Name</th>
-                            <th class="table-td-th"  data-id="1" id="address-th" onclick="sortTable(2,'address-th')" style="cursor: pointer;">Site Address</th>
-                            <th class="table-td-th" width="10%" data-id="1" id="budget-th" onclick="sortTable(3,'budget-th')" style="cursor: pointer;">Budget</th>
+                            <th class="table-td-th" width="100" data-id="1" id="identifier-th" onclick="sortTable(0,'identifier-th','identifier-th-asc','identifier-th-desc')" style="cursor: pointer;text-align: left;">Project Identifier <i class='fa fa-arrow-down fa-icon-sort-desc' id="identifier-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="identifier-th-asc"></i></th>
+                            <th class="table-td-th" width="120" data-id="1" id="name-th" onclick="sortTable(1,'name-th','name-th-asc','name-th-desc')" style="cursor: pointer;">Project Name  <i class='fa fa-arrow-down fa-icon-sort' id="name-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="name-th-asc"></i></th>
+                            <th class="table-td-th"  data-id="1" id="address-th" onclick="sortTable(2,'address-th','address-th-asc','address-th-desc')" style="cursor: pointer;">Site Address  <i class='fa fa-arrow-down fa-icon-sort' id="address-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="address-th-asc"></i></th>
+                            <th class="table-td-th" width="100" data-id="1" id="budget-th" onclick="sortTable(3,'budget-th','budget-th-asc','budget-th-desc')" style="cursor: pointer;">Budget <i class='fa fa-arrow-down fa-icon-sort' id="budget-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="budget-th-asc"></i></th>
                             <th class="table-td-th">Scope</th>
-                            <th class="table-td-th" data-id="1" id="manager-th" onclick="sortTable(4,'manager-th')" style="cursor: pointer;">Project Manager</th>
-                            <th class="table-td-th" data-id="1" id="created-th" onclick="sortTable(5,'created-th')" style="cursor: pointer;">CreatedOn</th>
+                            <th class="table-td-th" width="140" data-id="1" id="manager-th" onclick="sortTable(4,'manager-th','pmname-th-asc','pmname-th-desc')" style="cursor: pointer;">Project Manager <i class='fa fa-arrow-down fa-icon-sort' id="pmname-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="pmname-th-asc"></i></th>
+                            <th class="table-td-th" width="100" data-id="1" id="created-th" onclick="sortTable(5,'created-th','created-th-asc','created-th-desc')" style="cursor: pointer;">Created <i class='fa fa-arrow-down fa-icon-sort' id="created-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="created-th-asc"></i></th>
                             <th class="table-td-th">Action</th>
                         </tr>
                     </thead>
@@ -101,7 +96,8 @@
 <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
-        $(".loader").fadeOut("slow");
+        
+        $('#div-no-project').hide();
         document.getElementById('pagenumber').value = 1;
         $.ajax({
                   type: 'GET',
@@ -118,11 +114,13 @@
                     $('#projectData').html(msg.appendtd);
                     document.getElementById('projectcount').value = msg.count;
                     setpagination();
+                    $(".loader").fadeOut("slow");
                  }
                  else
                  {
                     $('#div-no-project').show();
                     $('#table-div').hide();
+                    $(".loader").fadeOut("slow");
                  }
            });
         //$("#div-no-project").hide();
@@ -269,9 +267,10 @@ $(function () {
     });
   </script>
   <script type="text/javascript">
-      function sortTable(n,id) {
+      function sortTable(n,id,arrowup,arrowdown) {
 
        var sortorder = $('#'+id).attr("data-id"); 
+       $(".loader").fadeIn("slow");
         $.ajax({
                   type: 'GET',
                   url: '<?php echo route('archiveProjectList'); ?>',
@@ -286,14 +285,27 @@ $(function () {
                     document.getElementById('projectcount').value = msg.count;
                     setpagination();
                  }
+                 $(".loader").fadeOut("slow");
            });
         if(sortorder == 1)
         {
             $('#'+id).attr('data-id' , '2'); 
+            $('.fa-arrow-down').removeClass('fa-icon-sort-desc');
+            $('.fa-arrow-down').addClass('fa-icon-sort');
+            $('.fa-arrow-up').removeClass('fa-icon-sort-desc');
+            $('.fa-arrow-up').addClass('fa-icon-sort');
+            $('#'+arrowup).removeClass('fa-icon-sort');
+            $('#'+arrowup).addClass('fa-icon-sort-desc');
         }
         else
         {
             $('#'+id).attr('data-id' , '1'); 
+            $('.fa-arrow-up').removeClass('fa-icon-sort-desc');
+            $('.fa-arrow-up').addClass('fa-icon-sort');
+            $('.fa-arrow-down').removeClass('fa-icon-sort-desc');
+            $('.fa-arrow-down').addClass('fa-icon-sort');
+            $('#'+arrowdown).removeClass('fa-icon-sort');
+            $('#'+arrowdown).addClass('fa-icon-sort-desc');
         }
     }
   </script>

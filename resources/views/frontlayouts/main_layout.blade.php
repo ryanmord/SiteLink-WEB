@@ -15,7 +15,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <title>Scoped</title>
-     <link href="https://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&amp;subset=devanagari,latin-ext" rel="stylesheet">
+       <link href="{{asset('/css/frontCss/front_font.css')}}" rel="stylesheet" type="text/css">
     <meta name="csrf-param" content="_csrf-frontend">
     <meta name="csrf-token" content="fkMSpKSo6hiL4aMtehZ6vsKrITZzXRMTNqJcc08Vjbn4x2CqKYTaK9bADjir9ZlwWVCoNVE0zG0Bn_VUB-ywPA==">
     <title></title>

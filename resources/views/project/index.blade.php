@@ -13,82 +13,35 @@
         <div class="panel-heading">
             <h3 class="panel-title">
 
-            {{ ucfirst($user) }}'s Projects</h3>
+            {{ ucfirst($username) }}'s Projects</h3>
         </div>
         <input type="hidden" name="pagenumber" id="pagenumber">
-        <input type="hidden" name="projectcount" value="{{ $projectCount}}" id="projectcount">
-        <div class="table-responsive">
-            @if(isset($projects))
+        <input type="hidden" name="projectcount" value="" id="projectcount">
+        <input type="hidden" name="userid" id="userid" value="{{ $userid }}">
+        <div id="div-no-project">
+                <center><p style="font-size: 20px;">No data found</p></center><br>
+            </div>
+        <div class="table-responsive" id="table-div">
+           
             <table class="table table-bordered table-hover table-striped">
 		        <thead>
                     <tr bgcolor="#EEEEEE">
-                        <th class="table-td-th">Project Identifier</th>
-                        <th class="table-td-th">Project Name</th>
-                        <th class="table-td-th">Site Address</th>
-                        <th class="table-td-th" width="10%">Approx Bid</th>
+                        <th class="table-td-th" width="100" data-id="1" id="identifier-th" onclick="sortTable(0,'identifier-th','identifier-th-asc','identifier-th-desc')" style="cursor: pointer;text-align: left;">Project Identifier <i class='fa fa-arrow-down fa-icon-sort-desc' id="identifier-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="identifier-th-asc"></i></th>
+
+                        <th class="table-td-th" width="120" data-id="1" id="name-th" onclick="sortTable(1,'name-th','name-th-asc','name-th-desc')" style="cursor: pointer;">Project Name  <i class='fa fa-arrow-down fa-icon-sort' id="name-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="name-th-asc"></i></th>
+
+                        <th class="table-td-th"  data-id="1" id="address-th" onclick="sortTable(2,'address-th','address-th-asc','address-th-desc')" style="cursor: pointer;">Site Address  <i class='fa fa-arrow-down fa-icon-sort' id="address-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="address-th-asc"></i></th>
+
+                        <th class="table-td-th" width="120" data-id="1" id="budget-th" onclick="sortTable(3,'budget-th','budget-th-asc','budget-th-desc')" style="cursor: pointer;">Approx Bid <i class='fa fa-arrow-down fa-icon-sort' id="budget-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="budget-th-asc"></i></th>
+                        
                         <th class="table-td-th">Status</th>
-                        <th class="table-td-th">Created</th>
+
+                        <th class="table-td-th" width="100" data-id="1" id="created-th" onclick="sortTable(4,'created-th','created-th-asc','created-th-desc')" style="cursor: pointer;">Created <i class='fa fa-arrow-down fa-icon-sort' id="created-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="created-th-asc"></i></th>
                         <th class="table-td-th">Action</th>
                     </tr>
     	        </thead>
     	        <tbody id="projectData">
-                    @foreach ($projects as $project)
-               	        <tr class="content">
-                            <td class="table-td-th">
-                                {{ $project['identifier'] }}
-                            </td>
-					       <td style="text-align: left;vertical-align: middle;">
-					           {{ $project['project_name'] }}
-                                <br>
-                                
-					        </td>
-					        <td style="text-align: left;vertical-align: middle;">
-                            {{ $project['project_site_address'] }}
-					       
-					        </td>
-					
-                            
-                            <td style="text-align: left;vertical-align: middle;">
-                                <span class="glyphicon glyphicon-usd"></span>
-                                {{ $project['approx_bid'] }}
-                            </td>
-
-                            <td class="table-td-th">
-                                @if($project['status'] == 5)
-                                    <span class="badge badge-danger">Cancelled</span>
-                                @elseif($project['status'] == 4)
-                                    <span class="badge badge-success">Complete</span>
-                                @elseif($project['status'] == 3)
-                                    <span class="badge badge-warning">In Progress</span>
-                                @elseif($project['status'] == 6)
-                                    <span class="badge badge-primary">Onhold</span>
-                                @else
-                                    <span class="badge badge-info">Open</span>
-                                @endif
-                            </td>
-                            <?php
-                                $date= date($project['created_at']);
-                                $datetime2 = new DateTime($date);
-                                $date= $datetime2->format("m/d/Y");
-                            ?>
-					        <td class="table-td-th">
-                                {{$date}}
-                            </td>
-                            
-                            <td class="table-td-th">
-                                <div class="btn-group">
-                                    <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown"><center><span class="glyphicon glyphicon-cog"></span></center></button>
-                                    <ul class="dropdown-menu" role="menu" style="left: 0% !important;
-                                    right: 100% !important;text-align: center !important;transform: translate(-75%, 0) !important;">
-                   
-                                
-                                        <li><a href="{{url('/allProejcts/projectDetail/'.$project['project_id'])}}">View</a></li>
-                                        
-                                    </ul>
-                                </div>
-                            </td>
-                        </tr>
-				    @endforeach
+                    
                 </tbody>
     		</table>
             <div class="row content-row-pagination">
@@ -101,12 +54,7 @@
                         </ul>
                     </div>
                 </div>
-            @else
-                <br>
-                <h6><center>No Projects created</center></h6>
-                <br>
-
-    		@endif
+           
     	</div>
     </div>
    
@@ -117,12 +65,36 @@
 <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
-        $(".loader").fadeOut("slow");
+       $('#div-no-project').hide();
         document.getElementById('pagenumber').value = 1;
+        userid = document.getElementById('userid').value;
+        $.ajax({
+                  type: 'GET',
+                  url: '<?php echo route('usersProject'); ?>',
+                  data: {order_key:4,sortorder:2,userid:userid},
+                  dataType: 'json',
+              })
+              .done(function(msg) {
+                 if(msg.count > 0)
+                 {
+                    $('#div-no-project').hide();
+                    $('#table-div').show();
+                    $('#projectData').html('');
+                    $('#projectData').html(msg.appendtd);
+                    document.getElementById('projectcount').value = msg.count;
+                    setpagination();
+                    $(".loader").fadeOut("slow");
+                 }
+                 else
+                 {
+                    $('#div-no-project').show();
+                    $('#table-div').hide();
+                    $(".loader").fadeOut("slow");
+                 }
+           });
         //$("#div-no-project").hide();
       
     });
-
  
 
 </script>
@@ -221,4 +193,48 @@ $(function () {
 });
  }
 </script>
+<script type="text/javascript">
+      function sortTable(n,id,arrowup,arrowdown) {
+
+       var sortorder = $('#'+id).attr("data-id"); 
+       userid = document.getElementById('userid').value;
+       $(".loader").fadeIn("slow");
+        $.ajax({
+                  type: 'GET',
+                  url: '<?php echo route('usersProject'); ?>',
+                  data: {order_key:n,sortorder:sortorder,userid:userid},
+                  dataType: 'json',
+              })
+              .done(function(msg) {
+                 if(msg.appendtd != '')
+                 {
+                    $('#projectData').html('');
+                    $('#projectData').html(msg.appendtd);
+                    document.getElementById('projectcount').value = msg.count;
+                    setpagination();
+                 }
+                 $(".loader").fadeOut("slow");
+           });
+        if(sortorder == 1)
+        {
+            $('#'+id).attr('data-id' , '2'); 
+            $('.fa-arrow-down').removeClass('fa-icon-sort-desc');
+            $('.fa-arrow-down').addClass('fa-icon-sort');
+            $('.fa-arrow-up').removeClass('fa-icon-sort-desc');
+            $('.fa-arrow-up').addClass('fa-icon-sort');
+            $('#'+arrowup).removeClass('fa-icon-sort');
+            $('#'+arrowup).addClass('fa-icon-sort-desc');
+        }
+        else
+        {
+            $('#'+id).attr('data-id' , '1'); 
+            $('.fa-arrow-up').removeClass('fa-icon-sort-desc');
+            $('.fa-arrow-up').addClass('fa-icon-sort');
+            $('.fa-arrow-down').removeClass('fa-icon-sort-desc');
+            $('.fa-arrow-down').addClass('fa-icon-sort');
+            $('#'+arrowdown).removeClass('fa-icon-sort');
+            $('#'+arrowdown).addClass('fa-icon-sort-desc');
+        }
+    }
+  </script>
 @endsection

@@ -129,13 +129,13 @@ class UserController extends Controller
                                     right: 100% !important;text-align: center !important;transform: translate(-75%, 0) !important;">';
                                     if($value->users_approval_status == 3)
                                     {
-                                        $appendtd .= '<li><a href="'.url('users/user/'.$value->users_id.'/1').'">Unblock
+                                        $appendtd .= '<li><a href="#" onclick = "userblockunblock('.$value->users_id.',1)">Unblock
                                       </a>
                                       </li>';
                                     }
                                     else
                                     {
-                                        $appendtd .= ' <li><a href="'.url('users/user/'.$value->users_id.'/3').'">Block</a>
+                                         $appendtd .= '<li><a href="#" onclick = "userblockunblock('.$value->users_id.',3)">Block</a>
                                       </li>';
                                     }
                 $appendtd .= '<li><a href="'.url('projects/'.$value->users_id).'">Projects</a></li>
@@ -412,22 +412,7 @@ class UserController extends Controller
         {
             $users = null;
         }          
-        /*if(isset($nonallocatedproject))
-        {
-            $bidsrequestcount = ProjectBid::where('project_bid_status','=',2)
-                                                ->where('bid_status','=',1)->count();
-        }
-        else
-        {
-            $bidsrequestcount = 0;
-            $nonallocatedproject = null;
-        }*/
-             
-        
-       /* print_r($nonallocatedproject);
-        exit;*/
-        /*echo json_encode(array('publishprojects' => $bids));
-            exit;  */
+       
         return view('dashboard',[
                     'associate'              => $associate, 
                     'schedular'              => $schedular,
@@ -477,8 +462,10 @@ class UserController extends Controller
         }
        
     }
-    public function blockUnblockUser($id,$status)
+    public function blockUnblockUser(Request $request)
     {
+        $id = $request['userid'];
+        $status = $request['status'];
         $adminid = session('loginuserid');
         $date    = date("Y-m-d H:i:s");
         User::where('users_id','=', $id)
@@ -491,7 +478,7 @@ class UserController extends Controller
             $useremail = $user->users_email;
             Mail::to($useremail)->send(new BlockUnblockUser($user,$action));
             session()->flash('message', 'user blocked successfully');
-            return redirect()->action('UserController@index');
+            return json_encode(array('message'=>'success'));
         }
         //status 2 for unblock user
         else
@@ -501,7 +488,7 @@ class UserController extends Controller
             $useremail = $user->users_email;
             Mail::to($useremail)->send(new BlockUnblockUser($user,$action));
             session()->flash('message', 'user unblocked successfully');
-            return redirect()->action('UserController@index');
+            return json_encode(array('message'=>'success'));
         }
         
 
