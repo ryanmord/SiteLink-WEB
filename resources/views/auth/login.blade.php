@@ -125,12 +125,13 @@
                     {{ csrf_field() }}
                     <div class='forgotemail' style='display:none;'>
                       <input name='femail' type='email' id='femail' placeholder='Enter Your Email'><br><br>
-                      <label id="pwderror" class="error" style="color: #b70a0a;float: left;">
+                    <label id="pwderror" class="error" style="color: #b70a0a;float: left;">
                         
                       </label>
                       <button type="button" class="btn btn-primary chkforgotpwd" name="login-button" id="forgot">SUBMIT</button>
                     </div>
                   </form>
+                  <a href="#" style="color: black;float: left;" id="resend">Resend</a>
                   <a class="forgot-pass" href="javascript:void(0)">Forgot password?</a>
                 </div>
               </div>
@@ -146,6 +147,7 @@
     </script>
     <script>
 $(document).ready(function() {
+  $('#resend').hide();
       $(window).keydown(function(event){
         if(event.keyCode == 13) {
           event.preventDefault();
@@ -207,8 +209,10 @@ $(document).ready(function () {
           {
             $("#errormsg").html(msg.error).show();
           }
-
-          
+          if(msg.emailStatus == '1')
+          {
+            $('#resend').show();
+          }
         });
 
         
@@ -302,6 +306,55 @@ $(document).ready(function () {
          
       });
   });
+     $('body').on('click','#resend', function (event) {
+            event.preventDefault(); 
+            
+          $('#login-form').validate({
+          // initialize the plugin
+
+          rules: {
+            
+            admin_users_email:
+            {
+              required:true,
+              email:true
+            }
+            
+        }
+       
+    });
+    if($("#login-form").valid()) {
+      $(".loader").fadeIn("slow");
+      login_email = document.getElementById("admin_users_email").value;
+      var url = url = '<?php echo route('resendCode'); ?>';
+      $.ajax({
+            type: 'GET',
+              url: url,
+              data: {login_email:login_email},
+              dataType: 'json',
+          })
+
+          .done(function(msg) {
+          $(".loader").fadeOut("slow");
+          if(msg.success)
+          {
+            alert(msg.success);
+           
+            
+          }
+          if(msg.error)
+          {
+
+            $("#errormsg").html(msg.error).show();
+          }
+
+          
+        });
+
+        
+      }
+
+    });
   </script>
 
    

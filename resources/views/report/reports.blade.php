@@ -95,17 +95,17 @@
                   
                      @foreach($scheduledProjects as $project)
                       <tr class="content">
-                        <td style="text-align: left;">{{ $project['receivedDate'] }}</td>
-                        <td style="text-align: left;">{{ $project['schedulingDate'] }}</td>
-                        <td style="text-align: left;">{{ $project['onSiteDate'] }}</td>
-                        <td style="text-align: left;">{{ $project['projectNo'] }}</td>
-                        <td style="text-align: left;">{{ $project['accountManager'] }}</td>
-                        <td style="text-align: left;">{{ $project['projectManager'] }}</td>
-                        <td style="text-align: left;">{{ $project['state'] }}</td>
-                        <td style="text-align: left;">{{ $project['city'] }}</td>
-                        <td style="text-align: left;">{{ $project['scopeNames'] }}</td>
-                        <td style="text-align: left;">{{ $project['employeeName'] }}</td>
-                        <td style="text-align: left;">{{ $project['associateName'] }}</td>
+                        <td class="table-td-data">{{ $project['receivedDate'] }}</td>
+                        <td class="table-td-data">{{ $project['schedulingDate'] }}</td>
+                        <td class="table-td-data">{{ $project['onSiteDate'] }}</td>
+                        <td class="table-td-data">{{ $project['projectNo'] }}</td>
+                        <td class="table-td-data">{{ $project['accountManager'] }}</td>
+                        <td class="table-td-data">{{ $project['projectManager'] }}</td>
+                        <td class="table-td-data">{{ $project['state'] }}</td>
+                        <td class="table-td-data">{{ $project['city'] }}</td>
+                        <td class="table-td-data">{{ $project['scopeNames'] }}</td>
+                        <td class="table-td-data">{{ $project['employeeName'] }}</td>
+                        <td class="table-td-data">{{ $project['associateName'] }}</td>
                       </tr>
                      @endforeach
                      @endif
@@ -123,22 +123,60 @@
                     </div>
                   </div>
                   
-                <!-- </div>
-              </div> -->
-              <!-- <div class="tab-pane fade" id="remaining">
-              <?php $date = date('Y-m-d'); ?>
-                <div class="row">
-                <div class="col-sm-3">
-                  <input type="date" name="datepicker2" id="datepicker2" value="{{ $date }}" class="form-control" style="margin-top: 15px;">
-                </div>
-                <div class="col-sm-3">
-                   <button class="btn btn-info" type="button" id="view-btn2" style="margin-top: 15px;float: left;">View</button>
+              <h5>Scheduling In Progress <span class="badge" style="background-color:#DB5A6B;" id="countinprogress">{{ $inProgressCount }}</span></h5>
+               <div id="div-no-inprogress">
+                    <h6><center>No Data Found</center></h6> <br>
+               </div>
+                <input type="hidden" name="inprogresscount" id="inprogresscount" value="{{ $inProgressCount }}">
+
+                <div class="table-responsive" id="table-div3">
+                  <table class="table table-bordered">
+                    <thead>
+                      <tr>
+                        <th>Date Received</th>
+                        <th>Date Scheduled</th>
+                        <th>On-site Date</th>
+                        <th>Project Number</th>
+                        <th>Account Manager</th>
+                        <th>Project Manager</th>
+                        <th>State</th>
+                        <th>City</th>
+                        <th>Scope</th>
+                        <th>Employee</th>
+                        <th>Associate</th>
+                      </tr>
+                    </thead>
+                    <tbody id="inprogressprojectData">
+                    @if(isset($inprogressProjects) && !empty($inprogressProjects))
+                     @foreach($inprogressProjects as $project)
+                      <tr class="content">
+                        <td class="table-td-data">{{ $project['receivedDate'] }}</td>
+                        <td class="table-td-data">{{ $project['schedulingDate'] }}</td>
+                        <td class="table-td-data">{{ $project['onSiteDate'] }}</td>
+                        <td class="table-td-data">{{ $project['projectNo'] }}</td>
+                        <td class="table-td-data">{{ $project['accountManager'] }}</td>
+                        <td class="table-td-data">{{ $project['projectManager'] }}</td>
+                        <td class="table-td-data">{{ $project['state'] }}</td>
+                        <td class="table-td-data">{{ $project['city'] }}</td>
+                        <td class="table-td-data">{{ $project['scopeNames'] }}</td>
+                        <td class="table-td-data">{{ $project['employeeName'] }}</td>
+                        <td class="table-td-data">{{ $project['associateName'] }}</td>
+                      </tr>
+                     @endforeach
+                     @endif
+                    </tbody>
+                  </table>
+                  <div class="row content-row-pagination">
+                      <br>
+                        <div class="col-md-12">
+                          <ul class="pagination" id="inprogress-pagination">
+                           <!--  <li><a href="#">PREV</a></li>
+                            <li class="active"><a href="#">1</a></li>
+                            <li class="disabled"><a href="#">NEXT</a></li> -->
+                          </ul>
+                      </div>
+                    </div>
                  </div>
-                <div class="col-sm-6">
-                <button class="btn btn-danger" type="button" id="export2-btn" style="margin-top: 15px;float: right;" onclick="exportdataToCSV('remainingProjects.csv')">Export</button>
-                 
-                </div>
-               </div> -->
                
                <h5>Remaining <span class="badge" style="background-color:#DB5A6B;" id="countremaining">{{ $remainingCount }}</span></h5>
                <div id="div-no-remaining">
@@ -167,17 +205,17 @@
                     @if(isset($remainingProjects) && !empty($remainingProjects))
                      @foreach($remainingProjects as $project)
                       <tr class="content">
-                        <td style="text-align: left;">{{ $project['receivedDate'] }}</td>
-                        <td style="text-align: left;">{{ $project['schedulingDate'] }}</td>
-                        <td style="text-align: left;">{{ $project['onSiteDate'] }}</td>
-                        <td style="text-align: left;">{{ $project['projectNo'] }}</td>
-                        <td style="text-align: left;">{{ $project['accountManager'] }}</td>
-                        <td style="text-align: left;">{{ $project['projectManager'] }}</td>
-                        <td style="text-align: left;">{{ $project['state'] }}</td>
-                        <td style="text-align: left;">{{ $project['city'] }}</td>
-                        <td style="text-align: left;">{{ $project['scopeNames'] }}</td>
-                        <td style="text-align: left;">{{ $project['employeeName'] }}</td>
-                        <td style="text-align: left;">{{ $project['associateName'] }}</td>
+                        <td class="table-td-data">{{ $project['receivedDate'] }}</td>
+                        <td class="table-td-data">{{ $project['schedulingDate'] }}</td>
+                        <td class="table-td-data">{{ $project['onSiteDate'] }}</td>
+                        <td class="table-td-data">{{ $project['projectNo'] }}</td>
+                        <td class="table-td-data">{{ $project['accountManager'] }}</td>
+                        <td class="table-td-data">{{ $project['projectManager'] }}</td>
+                        <td class="table-td-data">{{ $project['state'] }}</td>
+                        <td class="table-td-data">{{ $project['city'] }}</td>
+                        <td class="table-td-data">{{ $project['scopeNames'] }}</td>
+                        <td class="table-td-data">{{ $project['employeeName'] }}</td>
+                        <td class="table-td-data">{{ $project['associateName'] }}</td>
                       </tr>
                      @endforeach
                      @endif
@@ -193,8 +231,8 @@
                           </ul>
                       </div>
                     </div>
-                 
-                </div>
+                 </div>
+
               </div>
           </div>
         </div>
@@ -238,7 +276,20 @@
       $("#table-div").hide();
       $("#div-no-project").show();
     }
-    if(schedulingCount > 0 || remainingCount > 0)
+    var inprogresscount = document.getElementById('inprogresscount').value;
+    if(inprogresscount > 0)
+    {
+      $("#table-div3").show();
+      $("#div-no-inprogress").hide();
+      setinprogresspagination();
+    }
+    else
+    {
+     /* document.getElementById('export-btn').disabled = true;*/
+      $("#table-div3").hide();
+      $("#div-no-inprogress").show();
+    }
+    if(schedulingCount > 0 || remainingCount > 0 || inprogresscount > 0)
     {
       document.getElementById('export-btn').disabled = false;
     }
@@ -289,6 +340,34 @@
           });
           $.ajax({
               type: "GET",
+              url: '<?php echo route('getinprogressProjects'); ?>',
+              data: {selectedDate:selecteddate},
+              dataType: 'json',
+              success: function(response){
+                  if (response.appendtd != '') {
+                      $("#div-no-inprogress").hide();
+                      $("#table-div3").show();
+                      $("#inprogressprojectData").html("");
+                      $("#inprogressprojectData").html(response['appendtd']);
+                      document.getElementById('inprogresscount').value = response.projectcount;
+                      $('#countinprogress').text(response.projectcount);
+                      remainingProjectPagination();
+                      setExportButton();
+                  }
+                  else
+                  {
+                      
+                      document.getElementById('inprogresscount').value = 0;
+                      $("#table-div3").hide();
+                      $("#div-no-inprogress").show();
+                      $('#countinprogress').text(0); 
+                      setExportButton();
+                      
+                  }
+              }
+          });
+          $.ajax({
+              type: "GET",
               url: '<?php echo route('getRemainingProjects'); ?>',
               data: {selectedDate:selecteddate},
               dataType: 'json',
@@ -315,7 +394,6 @@
                   }
               }
           });
-          
       }
       else
       {
@@ -424,6 +502,98 @@ $(function () {
     });
 
     $("#previous-page").on("click", function () {
+        return showPage(currentPage-1);
+    });
+  });
+}
+function setinprogresspagination()
+  {
+        function getPageList(totalPages, page, maxLength) {
+        if (maxLength < 5) throw "maxLength must be at least 5";
+
+        function range(start, end) {
+        return Array.from(Array(end - start + 1), (_, i) => i + start); 
+    }
+
+    var sideWidth = maxLength < 9 ? 1 : 2;
+    var leftWidth = (maxLength - sideWidth*2 - 3) >> 1;
+    var rightWidth = (maxLength - sideWidth*2 - 2) >> 1;
+    if (totalPages <= maxLength) {
+        // no breaks in list
+        return range(1, totalPages);
+    }
+    if (page <= maxLength - sideWidth - 1 - rightWidth) {
+        // no break on left of page
+        return range(1, maxLength-sideWidth-1)
+            .concat([0])
+            .concat(range(totalPages-sideWidth+1, totalPages));
+    }
+    if (page >= totalPages - sideWidth - 1 - rightWidth) {
+        // no break on right of page
+        return range(1, sideWidth)
+            .concat([0])
+            .concat(range(totalPages - sideWidth - 1 - rightWidth - leftWidth, totalPages));
+    }
+    // Breaks on both sides
+    return range(1, sideWidth)
+        .concat([0])
+        .concat(range(page - leftWidth, page + rightWidth)) 
+        .concat([0])
+        .concat(range(totalPages-sideWidth+1, totalPages));
+}
+$(function () {
+    // Number of items and limits the number of items per page
+    var projectcount = document.getElementById('inprogresscount').value;
+    var limitPerPage = 8;
+    var totalPages = (Math.ceil(projectcount / limitPerPage));
+    var paginationSize = 7; 
+    var currentPage;
+    function showPage(whichPage) {
+        if (whichPage < 1 || whichPage > totalPages) return false;
+        currentPage = whichPage;
+        $("#inprogressprojectData .content").hide()
+            .slice((currentPage-1) * limitPerPage, 
+                    currentPage * limitPerPage).show();
+        // Replace the navigation items (not prev/next):            
+        $("#inprogress-pagination li").slice(1, -1).remove();
+        getPageList(totalPages, currentPage, paginationSize).forEach( item => {
+            $("<li>").addClass("page-item")
+                     .addClass(item ? "current-page" : "disabled")
+                     .toggleClass("active", item === currentPage).append(
+                $("<a>").addClass("page-link").attr({
+                    href: "javascript:void(0)"}).text(item || "...")
+            ).insertBefore("#next-page3");
+        });
+        // Disable prev/next when at first/last page:
+        $("#previous-page3").toggleClass("disabled", currentPage === 1);
+        $("#next-page3").toggleClass("disabled", currentPage === totalPages);
+        return true;
+    }
+
+    // Include the prev/next buttons:
+    $("#inprogress-pagination").append(
+        $("<li>").addClass("page-item").attr({ id: "previous-page3" }).append(
+            $("<a>").addClass("page-link").attr({
+                href: "javascript:void(0)"}).text("Prev")
+        ),
+        $("<li>").addClass("page-item").attr({ id: "next-page3" }).append(
+            $("<a>").addClass("page-link").attr({
+                href: "javascript:void(0)"}).text("Next")
+        )
+    );
+    // Show the page links
+    $("#inprogressprojectData").show();
+    showPage(1);
+
+    // Use event delegation, as these items are recreated later    
+    $(document).on("click", "#inprogress-pagination li.current-page:not(.active)", function () {
+        return showPage(+$(this).text());
+    });
+    $("#next-page3").on("click", function () {
+        return showPage(currentPage+1);
+    });
+
+    $("#previous-page3").on("click", function () {
         return showPage(currentPage-1);
     });
   });

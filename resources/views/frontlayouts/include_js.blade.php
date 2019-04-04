@@ -24,12 +24,9 @@
 <script src="{{asset('js/frontJs/bootstrap-select.min.js')}}"></script>	
 <script type="text/javascript" src="{{asset('js/frontJs/bootstrap-multiselect.js')}}"></script>	
 <script src="{{asset('js/frontJs/toggle_min.js')}}"></script>
-	
 </script>
-
-
- <script src="{{asset('/js/ratingsJs/jquery.star-rating-svg.js')}}"></script>
- <script src="{{asset('/js/ratingsJs/jquery.star-rating-svg.min.js')}}"></script>
+<script src="{{asset('/js/ratingsJs/jquery.star-rating-svg.js')}}"></script>
+<script src="{{asset('/js/ratingsJs/jquery.star-rating-svg.min.js')}}"></script>
 <script type="text/javascript">
 
   	

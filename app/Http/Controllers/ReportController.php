@@ -11,7 +11,6 @@ use App\User;
 use DateTime;
 require_once(public_path('/lib/PHPExcel/Classes/PHPExcel.php')) ;
 require_once(public_path('/lib/PHPExcel/Classes/PHPExcel/IOFactory.php'));
-
 use \PHPExcel; 
 use \PHPExcel_IOFactory;
 class ReportController extends Controller
@@ -38,6 +37,7 @@ class ReportController extends Controller
        
         //$request['selectedDate'] = '2019-03-13';
         $remainingProjects = $this->getRemainingProjects($request);
+        $inprogressProjects = $this->getinprogressProjects($request);
        /* print_r($remainingProjects);
         exit;*/
         if(isset($scheduledProjects) && !empty($scheduledProjects))
@@ -56,13 +56,23 @@ class ReportController extends Controller
         {
             $remainingCount = 0;
         }
+        if(isset($inprogressProjects) && !empty($inprogressProjects))
+        {
+            $inProgressCount = count($inprogressProjects);
+        }
+        else
+        {
+            $inProgressCount = 0;
+        }
         
         //echo json_encode($scheduledProjects);
        // exit;
         return view('report.reports',['scheduledProjects' => $scheduledProjects,
                                       'remainingProjects' => $remainingProjects,
+                                      'inprogressProjects'=> $inprogressProjects,
                                       'scheduledCount'    => $scheduledCount,
-                                      'remainingCount'    => $remainingCount,]);
+                                      'remainingCount'    => $remainingCount,
+                                      'inProgressCount'   => $inProgressCount]);
     }
     public function getScheduledProjects(Request $request)
     {
@@ -187,80 +197,84 @@ class ReportController extends Controller
         $date2->modify('+1 day');
         $date2 = $date2->format('Y-m-d H:i:s');
         $projects = DB::table('project_status')
-                            ->select('projects.*')
+                            ->select('projects.*','project_status.project_status_type_id')
                             ->leftJoin('projects', 'projects.project_id', '=', 'project_status.project_id')
-                            ->where('projects.created_at','>=',$date)
-                            ->where('projects.created_at','<',$date2)
+                            ->where('projects.updated_at','>=',$date)
+                            ->where('projects.updated_at','<',$date2)
                             //->whereIn('project_status.project_status_type_id', [7, 8])
                             //->orWhere('project_status.project_status_type_id','=',8)
                             ->groupBy('project_status.project_id')
                             ->havingRaw('COUNT(project_status.project_status_type_id) = 1')
-                            ->orderBy('projects.created_at', 'desc')
+                            ->orderBy('projects.updated_at', 'desc')
                             ->get();
         $count = $projects->count();
         if($count > 0)
         {
             foreach ($projects as $value) {
-                $receivedDate   = new DateTime($value->created_at);
-                $receivedDate   = $receivedDate->format('m/d/Y');
-                /*$schedulingDate = new DateTime($value->updated_at);
-                $schedulingDate = $schedulingDate->format('m/d/Y');*/
-                $schedulingDate = '';
-                if(!is_null($value->on_site_date))
+                if($value->project_status_type_id == 7)
                 {
-                    $onSiteDate = new DateTime($value->on_site_date);
-                    $onSiteDate = $onSiteDate->format('m/d/Y');
-                }
-                else
-                {
-                    $onSiteDate = '';
-                }
-                $projectNo = $managerName = $accountManager = '';
-                $managerid = $value->user_id;
-                $manager   = User::where('users_id','=',$managerid)->first();
-                if(isset($manager) && !empty($manager))
-                {
-                    $managerName = $manager->users_name.' '.$manager->last_name;
-                }
-                $scopeid   =  $value->scope_performed_id;
-                $scope     =  explode(",",$scopeid);
-                $scopeNames = $employeeName = $associateName = '';
-                foreach ($scope as  $scopes) {
-                   $scopeperformed = ScopePerformed::select('scope_performed')
-                                            ->where(['scope_status'       => 1,
-                                                     'scope_performed_id' => $scopes])
-                                            ->first();
-                    $scopeNames .= $scopeperformed->scope_performed.' ';
-                }
-                $projectBid = ProjectBid::where(['project_id'         => $value->project_id,
-                                                 'project_bid_status' => 1,
-                                                 'bid_status'         => 1])->first();
-                if(isset($projectBid) && !empty($projectBid))
-                {
-                    $associateId = $projectBid->user_id;
-                    $associate = User::where('users_id','=',$associateId)->first();
-                    if($associate->associate_type_id == 1)
+                    $receivedDate   = new DateTime($value->updated_at);
+                    $receivedDate   = $receivedDate->format('m/d/Y');
+                    /*$schedulingDate = new DateTime($value->updated_at);
+                    $schedulingDate = $schedulingDate->format('m/d/Y');*/
+                    $schedulingDate = '';
+                    if(!is_null($value->on_site_date))
                     {
-                        $employeeName = $associate->users_name.' '.$associate->last_name;
+                        $onSiteDate = new DateTime($value->on_site_date);
+                        $onSiteDate = $onSiteDate->format('m/d/Y');
                     }
                     else
                     {
-                        $associateName = $associate->users_name.' '.$associate->last_name;
+                        $onSiteDate = '';
                     }
+                    $projectNo = $managerName = $accountManager = '';
+                    $managerid = $value->user_id;
+                    $manager   = User::where('users_id','=',$managerid)->first();
+                    if(isset($manager) && !empty($manager))
+                    {
+                        $managerName = $manager->users_name.' '.$manager->last_name;
+                    }
+                    $scopeid   =  $value->scope_performed_id;
+                    $scope     =  explode(",",$scopeid);
+                    $scopeNames = $employeeName = $associateName = '';
+                    foreach ($scope as  $scopes) {
+                       $scopeperformed = ScopePerformed::select('scope_performed')
+                                                ->where(['scope_status'       => 1,
+                                                         'scope_performed_id' => $scopes])
+                                                ->first();
+                        $scopeNames .= $scopeperformed->scope_performed.' ';
+                    }
+                    $projectBid = ProjectBid::where(['project_id' => $value->project_id,
+                                                     'project_bid_status' => 1,
+                                                     'bid_status'         => 1])->first();
+                    if(isset($projectBid) && !empty($projectBid))
+                    {
+                        $associateId = $projectBid->user_id;
+                        $associate = User::where('users_id','=',$associateId)->first();
+                        if($associate->associate_type_id == 1)
+                        {
+                            $employeeName = $associate->users_name.' '.$associate->last_name;
+                        }
+                        else
+                        {
+                            $associateName = $associate->users_name.' '.$associate->last_name;
+                        }
+                    }
+                    $data[] = ['projectId'      => $value->project_id,
+                               'receivedDate'   => $receivedDate,
+                               'schedulingDate' => $schedulingDate,
+                               'onSiteDate'     => $onSiteDate,
+                               'projectNo'      => $value->project_number,
+                               'accountManager' => $accountManager,
+                               'projectManager' => $managerName,
+                               'city'           => $value->city,
+                               'state'          => $value->state,
+                               'scopeNames'     => $scopeNames,
+                               'employeeName'   => $employeeName,
+                               'associateName'  => $associateName
+                               ];
                 }
-                $data[] = ['projectId'      => $value->project_id,
-                           'receivedDate'   => $receivedDate,
-                           'schedulingDate' => $schedulingDate,
-                           'onSiteDate'     => $onSiteDate,
-                           'projectNo'      => $value->project_number,
-                           'accountManager' => $accountManager,
-                           'projectManager' => $managerName,
-                           'city'           => $value->city,
-                           'state'          => $value->state,
-                           'scopeNames'     => $scopeNames,
-                           'employeeName'   => $employeeName,
-                           'associateName'  => $associateName
-                           ];
+                
             }
             
         }
@@ -290,6 +304,129 @@ class ReportController extends Controller
             return json_encode(array('appendtd' => $appendtd,'projectcount' => $projectcount));
         }
     }
+    public function getinprogressProjects(Request $request)
+    {
+        $date = $request['selectedDate'];
+        $projectcount = 0;
+        $data = '';
+        $appendtd = '';
+        $date = new DateTime($date);
+        $date = $date->format("Y-m-d H:i:s");
+        $date2 = $date;
+        $date2 = new DateTime($date2);
+        $date2->modify('+1 day');
+        $date2 = $date2->format('Y-m-d H:i:s');
+        $projects = DB::table('project_status')
+                            ->select('projects.*','project_status.project_status_type_id')
+                            ->leftJoin('projects', 'projects.project_id', '=', 'project_status.project_id')
+                            ->where('projects.updated_at','>=',$date)
+                            ->where('projects.updated_at','<',$date2)
+                            ->groupBy('project_status.project_id')
+                            ->havingRaw('COUNT(project_status.project_status_type_id) = 1')
+                            ->orderBy('projects.updated_at', 'desc')
+                            ->get();
+        $count = $projects->count();
+        $inprogresscount = 0;
+        if($count > 0)
+        {
+            foreach ($projects as $value) {
+                if($value->project_status_type_id == 1)
+                {
+                    $inprogresscount++;
+                    $receivedDate   = new DateTime($value->updated_at);
+                    $receivedDate   = $receivedDate->format('m/d/Y');
+                    /*$schedulingDate = new DateTime($value->updated_at);
+                    $schedulingDate = $schedulingDate->format('m/d/Y');*/
+                    $schedulingDate = '';
+                    if(!is_null($value->on_site_date))
+                    {
+                        $onSiteDate = new DateTime($value->on_site_date);
+                        $onSiteDate = $onSiteDate->format('m/d/Y');
+                    }
+                    else
+                    {
+                        $onSiteDate = '';
+                    }
+                    $projectNo = $managerName = $accountManager = '';
+                    $managerid = $value->user_id;
+                    $manager   = User::where('users_id','=',$managerid)->first();
+                    if(isset($manager) && !empty($manager))
+                    {
+                        $managerName = $manager->users_name.' '.$manager->last_name;
+                    }
+                    $scopeid   =  $value->scope_performed_id;
+                    $scope     =  explode(",",$scopeid);
+                    $scopeNames = $employeeName = $associateName = '';
+                    foreach ($scope as  $scopes) {
+                       $scopeperformed = ScopePerformed::select('scope_performed')
+                                                ->where(['scope_status'       => 1,
+                                                         'scope_performed_id' => $scopes])
+                                                ->first();
+                        $scopeNames .= $scopeperformed->scope_performed.' ';
+                    }
+                    $projectBid = ProjectBid::where(['project_id'         => $value->project_id,
+                                                     'project_bid_status' => 1,
+                                                     'bid_status'         => 1])->first();
+                    if(isset($projectBid) && !empty($projectBid))
+                    {
+                        $associateId = $projectBid->user_id;
+                        $associate = User::where('users_id','=',$associateId)->first();
+                        if($associate->associate_type_id == 1)
+                        {
+                            $employeeName = $associate->users_name.' '.$associate->last_name;
+                        }
+                        else
+                        {
+                            $associateName = $associate->users_name.' '.$associate->last_name;
+                        }
+                    }
+                    $data[] = ['projectId'      => $value->project_id,
+                               'receivedDate'   => $receivedDate,
+                               'schedulingDate' => $schedulingDate,
+                               'onSiteDate'     => $onSiteDate,
+                               'projectNo'      => $value->project_number,
+                               'accountManager' => $accountManager,
+                               'projectManager' => $managerName,
+                               'city'           => $value->city,
+                               'state'          => $value->state,
+                               'scopeNames'     => $scopeNames,
+                               'employeeName'   => $employeeName,
+                               'associateName'  => $associateName
+                               ];
+                }
+            }
+                
+            
+        }
+        if(isset($request['callFrom']))
+        {
+            return $data; 
+        }
+        else
+        {
+            if(isset($data) && !empty($data))
+            {
+                $projectcount = count($data);
+                foreach ($data as $value) {
+                    $appendtd .= '<tr class = "content"><td style="text-align: left;">'.$value['receivedDate'].'</td>';
+                    $appendtd .= '<td style="text-align: left;">'.$value['schedulingDate'].'</td>';
+                    $appendtd .= '<td style="text-align: left;">'.$value['onSiteDate'].'</td>';
+                    $appendtd .= '<td style="text-align: left;">'.$value['projectNo'].'</td>';
+                    $appendtd .= '<td style="text-align: left;">'.$value['accountManager'].'</td>';
+                    $appendtd .= '<td style="text-align: left;">'.$value['projectManager'].'</td>';
+                    $appendtd .= '<td style="text-align: left;">'.$value['state'].'</td>';
+                    $appendtd .= '<td style="text-align: left;">'.$value['city'].'</td>';
+                    $appendtd .= '<td style="text-align: left;">'.$value['scopeNames'].'</td>';
+                    $appendtd .= '<td style="text-align: left;">'.$value['employeeName'].'</td>';
+                    $appendtd .= '<td style="text-align: left;">'.$value['associateName'].'</td></tr>';
+                }
+            }
+            return json_encode(array('appendtd'    => $appendtd,
+                                    'projectcount' => $inprogresscount));
+        }
+    }
+
+
     public function exportProjects(Request $request)
     {
         //$request['selectedDate'] = '2019-02-07';
@@ -449,20 +586,24 @@ class ReportController extends Controller
             $newsheet->getColumnDimension($column)->setAutoSize(true);
         }
         $remainingprojects = DB::table('project_status')
-                            ->select('projects.*')
+                            ->select('projects.*','project_status.project_status_type_id')
                             ->leftJoin('projects', 'projects.project_id', '=', 'project_status.project_id')
-                            ->where('projects.created_at','>=',$date)
-                            ->where('projects.created_at','<',$date2)
+                            ->where('projects.updated_at','>=',$date)
+                            ->where('projects.updated_at','<',$date2)
                             //->whereIn('project_status.project_status_type_id', [7, 8])
                             ->groupBy('project_status.project_id')
                             ->havingRaw('COUNT(project_status.project_status_type_id) = 1')
-                            ->orderBy('projects.created_at', 'desc')
+                            ->orderBy('projects.updated_at', 'desc')
                             ->get();
-        $remainingcount = $remainingprojects->count();
-        if($remainingcount > 0)
+        /*print_r($remainingprojects);
+        exit;*/
+        $allprojectcount = $remainingprojects->count();
+        $remainingcount  = 0;
+        $inprogresscount = 0;
+        if($allprojectcount > 0)
         {
             foreach ($remainingprojects as $value) {
-                $receivedDate   = new DateTime($value->created_at);
+                $receivedDate   = new DateTime($value->updated_at);
                 $receivedDate   = $receivedDate->format('m/d/Y');
                 $schedulingDate = '';
                 if(!is_null($value->on_site_date))
@@ -491,7 +632,10 @@ class ReportController extends Controller
                                             ->first();
                     $scopeNames .= $scopeperformed->scope_performed.' ';
                 }
-                $remainingData[] = [
+                if($value->project_status_type_id == 1)
+                {
+                    $inprogresscount++;
+                    $inprogressData[] = [
                            $receivedDate,
                            $schedulingDate,
                            $onSiteDate,
@@ -504,8 +648,69 @@ class ReportController extends Controller
                            $employeeName,
                            $associateName
                            ];
+                }
+                if($value->project_status_type_id == 7)
+                {
+                    $remainingcount++;
+                    $remainingData[] = [
+                           $receivedDate,
+                           $schedulingDate,
+                           $onSiteDate,
+                           $value->project_number,
+                           $accountManager,
+                           $managerName,
+                           $value->state,
+                           $value->city,
+                           $scopeNames,
+                           $employeeName,
+                           $associateName
+                           ];
+                }
             }
         }
+        //make new sheet for inprogress project
+        $rowNumber = 1; //start in row 1
+        $newsheet = $objPHPExcel->createSheet();
+        $newsheet->setTitle($date.'-IN-PROGRESS-REPORT');
+        $newsheet->mergeCells('A1:K1');
+        $newsheet->setCellValue('A1',$date.'-SCHEDULING-IN-PROGRESS-REPORT');
+        $newsheet->getStyle('A1:K1')->getFont()->setBold(true);
+        $rowNumber = 2; //start in row 1
+        if($inprogresscount > 0)
+        {
+            foreach ($inprogressData as $row) {
+                //print_r($row);
+                //exit;
+                $col = 'A'; // start at column A
+                if($rowNumber==2){
+                    foreach($report_sheet_column_array as $cell) {
+                        $newsheet->setCellValue($col.$rowNumber,$cell);
+                        $newsheet->getStyle($col.$rowNumber)->getFont()->setBold(true);
+                        $col++;
+                    }
+                    $rowNumber++;
+                }
+                $col = 'A'; // start at column A
+                foreach($row as $cell) {
+                    $newsheet->setCellValue($col.$rowNumber,$cell);
+                    $col++;
+                }
+                $rowNumber++;
+            }
+        }
+        else
+        {
+            $col = 'A'; // start at column A
+            foreach($report_sheet_column_array as $cell) {
+                $newsheet->setCellValue($col.$rowNumber,$cell);
+                $newsheet->getStyle($col.$rowNumber)->getFont()->setBold(true);
+                $col++;
+            }
+        }
+        foreach(range('A',$newsheet->getHighestColumn()) as $column) {
+            $newsheet->getColumnDimension($column)->setAutoSize(true);
+        }
+        //make nwe sheet for remaining projects
         $rowNumber = 1; //start in row 1
         $newsheet = $objPHPExcel->createSheet();
         $newsheet->setTitle($date.'-REMAINING-REPORT');
@@ -549,7 +754,6 @@ class ReportController extends Controller
         foreach(range('A',$newsheet->getHighestColumn()) as $column) {
             $newsheet->getColumnDimension($column)->setAutoSize(true);
         }
-
         //$newsheet->export('xlsx');
         /*$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
         $objWriter->save($current_excel_filepath); */

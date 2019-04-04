@@ -44,6 +44,7 @@
                   <label id="ferrmsg" class="error" style="color: #b70a0a; float: left;"></label><br>
                   <button type="button" class="btn btn-primary chkforgotpwd" name="forgot_password" id="forgot_password">SUBMIT</button>
                 </div>
+                <label id="resend" style="float: left;"><a href="#" style="color: black;">Resend</a></label>
 						    <a class="forgot-pass" href="javascript:void(0)">Forgot password?</a>
               </div>
             </div>
@@ -58,6 +59,7 @@
 		$(document).ready(function() {
       $("#login-menu").removeClass('active');
       $("#userlogin-menu").addClass('active');
+      $('#resend').hide();
 			$(".loader").fadeOut("slow");
 			var refreshId1 = setInterval(function() {
 			 	$(".errormsg").remove();
@@ -131,6 +133,7 @@
           	if(msg.emailstatus == '0')
           	{
                 $("#errmsg").text('Please verify your email for email verification..').show();
+                $('#resend').show();
           		  
           	}
           	if(msg.status == '1')
@@ -173,7 +176,55 @@
             }
         });
     }); 
-     
+     $('body').on('click','#resend', function (event) {
+            event.preventDefault(); 
+            
+          $('#login-form').validate({
+          // initialize the plugin
+
+          rules: {
+            
+            login_email:
+            {
+              required:true,
+              email:true
+            }
+            
+        }
+       
+    });
+    if($("#login-form").valid()) {
+      $(".loader").fadeIn("slow");
+      login_email = document.getElementById("login_email").value;
+      var url = url = '<?php echo route('resendCode'); ?>';
+      $.ajax({
+            type: 'GET',
+              url: url,
+              data: {login_email:login_email},
+              dataType: 'json',
+          })
+
+          .done(function(msg) {
+          $(".loader").fadeOut("slow");
+          if(msg.success)
+          {
+            alert(msg.success);
+           
+            
+          }
+          if(msg.error)
+          {
+
+            $("#errormsg").html(msg.error).show();
+          }
+
+          
+        });
+
+        
+      }
+
+    });
 
 	</script>
    

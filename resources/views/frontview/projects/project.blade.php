@@ -143,13 +143,14 @@
                                                 </div>
 
                                               <div class="rs-project">
-
-                                                      <div class="rs-suggest-bid">
+                                                    @if(session('associateTypeId') != 1)
+                                                      <div class="rs-suggest-bid" style="font-size: 26px;">
                                                           <h4>Suggested Bid</h4>
                                                           <font id="publish-approxbid">{{$publish_projectdetail['approxbid']}}</font>   
                                                       </div>
+                                                      @endif
                                                        <div class="rs-suggest-bid">
-                                                          <h4>Job Reach</h4>
+                                                          <h4>Job Reached</h4>
                                                           <font id="jobReach" style="font-size: 15px;">
                                                           {{$publish_projectdetail['jobReachCount']}}&nbsp People</font>   
                                                       </div>
@@ -322,16 +323,18 @@
                                                       <p id="instructions">{{$progresProjecDetail['instructions']}}</p>  
                                                  </div>   
                                               </div>
-                                              <div class="rs-project">
+                                              <div class="rs-project" style="font-size: 26px;">
+                                              @if(session('associateTypeId') != 1)
                                                 <div class="rs-suggest-bid">
                                                   <h4>Suggested Bid</h4>
                                                     <font id="approxbid">{{$progresProjecDetail['approxbid']}}</font>   
                                                 </div>
                                                 <hr>  
-                                                <div class="rs-make-bid">
+                                                <div class="rs-make-bid" style="font-size: 26px;">
                                                   <h4>Final Bid</h4>
                                                   <font id="mybid"> {{$progresProjecDetail['mybid']}}</font>  
                                                 </div>
+                                                @endif
                                                 <div class="rs-btn-bid"> 
                                                  &nbsp&nbsp &nbsp
                                                         <button type="button" class="btn red-btn" data-toggle="modal" data-target="#project-status" id="addstatus">Add Notes</button>
@@ -491,16 +494,18 @@
                                              </div>
  
                                             <div class="rs-project rs-history">
-                                                <div class="rs-suggest-bid">
+                                              @if(session('associateTypeId') != 1)
+                                                <div class="rs-suggest-bid" style="font-size: 26px;">
                                                         <h4>Suggested Bid</h4>
                                                         <font id="history_approxbid" name="history_approxbid"> {{ $history_projectdetail['approxbid'] }}</font>   
                                                     </div>
                                                       <hr>  
-                                                     <div class="rs-make-bid">
+                                                     <div class="rs-make-bid" style="font-size: 26px;">
                                                         <h4>Final Bid</h4>
                                                         <font id="history_mybid" name="history_mybid">{{ $history_projectdetail['mybid'] }}</font>   
                                                     </div>
                                                       <hr> 
+                                                    @endif
 
                                                     <!--  <div class="rs-rating">
                                                         <h4>Rating Received</h4>
@@ -1667,9 +1672,9 @@
         var pagenumber1 = document.getElementById('publish_pagenumber').value;
         var search = document.getElementById('a_generalSearch').value;
       
-        var pagenumber = pagenumber1 + 1;
-        document.getElementById('status_pagenumber').value = '';
-        document.getElementById('status_pagenumber').value = pagenumber;
+        var pagenumber = ++pagenumber1;
+        document.getElementById('publish_pagenumber').value = '';
+        document.getElementById('publish_pagenumber').value = pagenumber;
        //var $results = $("#projectlist");
         //var pagenumber = 1;
         $.ajax({

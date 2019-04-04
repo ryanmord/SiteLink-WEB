@@ -85,34 +85,34 @@ class SignupController extends Controller
     }
     public function resendcode(Request $request)
     {
-        $email = $request['user_email'];
-            $user = User::where('users_email','=',$email)->first();
-            if(isset($user))
+        if(isset($request['login_email']) && !empty($request['login_email']))
+        {
+            $email = $request['login_email'];
+            $user = User::select('users_name','users_id','users_email','email_status')
+                          ->where('users_email','=',$email)->first();
+            if(isset($user) && !empty($user))
             {
-                
-                $verifycode = str_random(8);
-                $date = date('Y-m-d H:i:s');
-                $model = EmailVerification::where('user_id', '=',$user->users_id)
-                        ->update(['verification_code' => $verifycode,
-                                'status' => 1,
-                                'created_at' => $date]);
-                if(isset($model))
-                {
-                    $action = 1;
-                    Mail::to($email)->send(new UserRegistered($user,$verifycode,$action));
-                    
-                    return response()->json(['success' => 'Email resend successfully. Please check your email inbox']);
-                    exit;
-                    
-               }    
-
+                $action = 1;
+                $userid = base64_encode($user->users_id);
+                $url = url('/emailVerification/'.$userid);
+                Mail::to($email)->send(new UserRegistered($user,$url,$action));
+                $successMsg = array('status' => '1','success' => "Email resend successfully..Please check your inbox..");
+                return json_encode($successMsg);
+                exit;
             }
             else
             {
-                $warning="Your email id is incorrect";
-                return response()->json(['error' => $warning]);
+                $failureMsg = array('error' => '0','errormsg' => "Email Id is incorrect.");
+                return json_encode($failureMsg);
                 exit;
             }
+        }
+        else
+        {
+            $failureMsg = array('error' => '0','errormsg' => "Email Id is Mandatory");
+            return json_encode($failureMsg);
+            exit;
+        }
     }
     public function managerSignUp()
     {

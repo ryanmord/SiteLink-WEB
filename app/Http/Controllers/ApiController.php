@@ -300,7 +300,7 @@ class ApiController extends Controller
             }
             else
             {
-                return json_encode(array('status' => '0','emailstatus' => '1','message' => "Your emailid is incorrect"));
+                return json_encode(array('status' => '0','emailstatus' => '1','message' => "Your email id is incorrect"));
                 exit;
             }
         }
@@ -585,38 +585,33 @@ class ApiController extends Controller
     By   : Suvarna*/
     public function resendemail(Request $request)
     {
-        if(isset($request['email']))
+        if(isset($request['email']) && !empty($request['email']))
         {
             $email = $request['email'];
-            $user = User::where('users_email','=',$email)->first();
-            if(isset($user))
+            $user = User::select('users_name','users_id','users_email','email_status')
+                          ->where('users_email','=',$email)->first();
+            if(isset($user) && !empty($user))
             {
-                
-                $verifycode = str_random(8);
-                $date = date('Y-m-d H:i:s');
-                $model = EmailVerification::where('user_id', '=',$user->users_id)
-                        ->update(['verification_code' => $verifycode,
-                                'status' => 1,
-                                'created_at' => $date]);
-                if(isset($model))
-                {
-                    $action = 1;
-                    Mail::to($email)->send(new UserRegistered($user,$verifycode,$action));
-                    echo json_encode(array('status' => '1','message' => "Email resend successfully"));
-                    exit;
-                }    
-
+                $action = 1;
+                $userid = base64_encode($user->users_id);
+                $url = url('/emailVerification/'.$userid);
+                Mail::to($email)->send(new UserRegistered($user,$url,$action));
+                $successMsg = array('status' => '1','message' => "Email resend successfully..");
+                return json_encode($successMsg);
+                exit;
             }
             else
             {
-                echo json_encode(array('status' => '0','message' => "Email Id is incorrect"));
+                $failureMsg = array('status' => '0','message' => "Email Id is incorrect.");
+                return json_encode($failureMsg);
                 exit;
             }
         }
         else
         {
-            echo json_encode(array('status' => '0','message' => "Email Id is Mandatory"));
-                exit;
+            $failureMsg = array('status' => '0','message' => "Email Id is Mandatory");
+            return json_encode($failureMsg);
+            exit;
         }
     }
     /*Name : Change Password 
@@ -1307,7 +1302,6 @@ class ApiController extends Controller
         {
             $onsitedate = '';
         }
-        
         $reportduedate = (string)$project->report_due_date;
         $datetime2 = new DateTime($reportduedate);
         $reportduedate= $datetime2->format("Y-m-d");
@@ -1607,14 +1601,14 @@ class ApiController extends Controller
                     {
                         $onsitedate = '';
                     }
-                    $createddate = (string)$value->created_at;
-                    $datetime2 = new DateTime($createddate);
-                    $createddate= $datetime2->format("Y-m-d");
+                    $createddate   = (string)$value->created_at;
+                    $datetime2     = new DateTime($createddate);
+                    $createddate   = $datetime2->format("Y-m-d");
                     $reportduedate = (string)$value->report_due_date;
-                    $datetime2 = new DateTime($reportduedate);
-                    $reportduedate= $datetime2->format("Y-m-d");
-                    $approxbid = number_format($value->approx_bid, 2);
-                    $finalbid = number_format($finalbid, 2);
+                    $datetime2     = new DateTime($reportduedate);
+                    $reportduedate = $datetime2->format("Y-m-d");
+                    $approxbid     = number_format($value->approx_bid, 2);
+                    $finalbid      = number_format($finalbid, 2);
                     $projectdetails[] = ['projectid'     => (string)$value->project_id, 
                                         'projectname'    =>  $value->project_name, 
                                         'siteaddress'    => $value->project_site_address,
@@ -1623,7 +1617,7 @@ class ApiController extends Controller
                                         'reportduedate'  => $reportduedate,
                                         'template'       => $value->report_template,
                                         'instructions'   => $value->instructions,
-                                        'suggestedbid'   =>(String)$approxbid,
+                                        'suggestedbid'   => (String)$approxbid,
                                         'finalbid'       => (string)$finalbid,
                                         'scopeperformed' => $data,
                                         'rating'         => $rating,
@@ -1772,8 +1766,10 @@ class ApiController extends Controller
                         $approxbid = number_format($project->approx_bid, 2);
                         $finalbid = number_format($finalbid, 2);
                         $projectdetails[] = ['projectid' => (string)$project->project_id, 
-                                'projectname'    =>  $project->project_name, 
+                                'projectname'    => $project->project_name, 
                                 'siteaddress'    => $project->project_site_address,
+                                'latitude'       => $project->latitude,
+                                'longitude'      => $project->longitude,
                                 'createddate'    => $createddate,
                                 'onsitedate'     => $onsitedate,
                                 'reportduedate'  => $reportduedate,
@@ -2036,6 +2032,8 @@ class ApiController extends Controller
                                     'siteaddress'   => $inprogressproject->project_site_address,
                                     'createddate'   => $created_at,
                                     'onsitedate'    => $onsitedate,
+                                    'latitude'      => $inprogressproject->latitude,
+                                    'longitude'     => $inprogressproject->longitude,
                                     'reportduedate' => $reportduedate,
                                     'template'      => $inprogressproject->report_template,
                                     'instructions'  => $inprogressproject->instructions,
@@ -2708,8 +2706,7 @@ class ApiController extends Controller
                     {
                         $itemsremaining = 0;
                     }
-                  
-                    echo json_encode(array('status' => '1', 'nextpagenumber' => $start, 'bidscount' => (string)$cntbids,'itemsremaining' => $itemsremaining,'projectbids' => $projectbids));
+                   echo json_encode(array('status' => '1', 'nextpagenumber' => $start, 'bidscount' => (string)$cntbids,'itemsremaining' => $itemsremaining,'projectbids' => $projectbids));
                     exit;
                 }
                 else 
@@ -2718,7 +2715,6 @@ class ApiController extends Controller
                     exit;
                 }
             }
-                
         }
         else
         {
@@ -3184,6 +3180,8 @@ class ApiController extends Controller
                 $publishprojects[] = ['projectid' => (string)$publishproject->project_id, 
                                 'projectname'     => $publishproject->project_name, 
                                 'siteaddress'     => $publishproject->project_site_address,
+                                'latitude'        => $publishproject->latitude,
+                                'longitude'       => $publishproject->longitude,
                                 'createddate'     => $created_at,
                                 'onsitedate'      => $onsitedate,
                                 'reportduedate'   => $reportduedate,

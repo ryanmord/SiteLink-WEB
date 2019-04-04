@@ -46,19 +46,18 @@ class LoginController extends Controller
         $request['email']    = $request['login_email'];
         $request['password'] = $request['login_password'];
         $this->validate($request, [
-                        'login_email' => 'required|email',
+                        'login_email'    => 'required|email',
                         'login_password' => 'required',
                     ]);
-        
         $request['callFrom'] = 1;
         $apiobject = new ApiController();
         $login = $apiobject->userlogin($request);
         $login = json_decode($login, true);
         if($login['status'] == '1')
         {
-            session(['associateId'   => $login['userid']]);
-            session(['associateName' => $login['username']]);
-            session(['profileImage'  => $login['profileImage']]);
+            session(['associateId'     => $login['userid']]);
+            session(['associateName'   => $login['username']]);
+            session(['profileImage'    => $login['profileImage']]);
             session(['associateTypeId' => $login['associateTypeId']]);
             return response()->json($login);
             exit;

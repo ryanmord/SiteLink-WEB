@@ -42,9 +42,9 @@
                       <tr bgcolor="#EEEEEE">
                         <th width="90" data-id="1" id="id-th" onclick="sortTable(0,'id-th','id-th-asc','id-th-desc')" style="cursor: pointer;">ID <i class='fa fa-arrow-down fa-icon-sort-desc' id="id-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="id-th-asc"></i></th>
                         <th width="50px;">Image</th>
-                        <th data-id="1" width="130" id="name-th" onclick="sortTable(1,'name-th','name-th-asc','name-th-desc')" style="cursor: pointer;">User Name <i class='fa fa-arrow-down fa-icon-sort' id="name-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="name-th-asc">
+                        <th data-id="1" width="160" id="name-th" onclick="sortTable(1,'name-th','name-th-asc','name-th-desc')" style="cursor: pointer;">User Name <i class='fa fa-arrow-down fa-icon-sort' id="name-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="name-th-asc">
                           </i></th>
-                        <th data-id="1" width="150" id="company-th" onclick="sortTable(2,'company-th','company-th-asc','company-th-desc')" style="cursor: pointer;">Company <i class='fa fa-arrow-down fa-icon-sort' id="company-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="company-th-asc">
+                        <th data-id="1" width="130" id="company-th" onclick="sortTable(2,'company-th','company-th-asc','company-th-desc')" style="cursor: pointer;">Company <i class='fa fa-arrow-down fa-icon-sort' id="company-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="company-th-asc">
                           </i></th>
                         <th data-id="1" id="email-th" onclick="sortTable(3,'email-th','email-th-asc','email-th-desc')" style="cursor: pointer;">Email <i class='fa fa-arrow-down fa-icon-sort' id="email-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="email-th-asc">
                           </i></th>
@@ -60,8 +60,7 @@
                             
                     </thead>
                       <tbody id="associate-data">
-                       
-                        </tbody>
+                      </tbody>
                       </table>
                       <div class="row content-row-pagination">
                         <br>

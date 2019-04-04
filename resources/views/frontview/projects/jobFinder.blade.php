@@ -152,6 +152,7 @@
                                   
                                   <!-- rs-project rs-history -->
                                   <div class="rs-project rs-history">
+                                  @if(session('associateTypeId') != 1)
                                     <div class="rs-suggest-bid">
                                       <h4>Suggest Bid</h4>
                                       <font id="approxbid"> {{$projectdetail['approxbid']}}</font>   
@@ -161,7 +162,8 @@
                                         <font id="jobReach" style="font-size: 15px;">
                                           {{$projectdetail['jobReachCount']}}&nbsp People</font>   
                                        </div>
-                                    <hr>  
+                                    <hr> 
+                                    @endif 
                                      @if($projectdetail['associateTypeId'] == 1)
                                         <div class="rs-btn-bid">
                                           <a href="#" class="btn red-btn" id="acceptProject">Accept</a>
@@ -656,9 +658,9 @@
         var $this = $(this);
         var pagenumber1 = document.getElementById('pagenumber').value;
         var search = document.getElementById('generalSearch').value;
-        
-          var pagenumber = ++pagenumber1;
-        
+        var pagenumber = ++pagenumber1;
+        document.getElementById('pagenumber').value = '';
+        document.getElementById('pagenumber').value = pagenumber;
 
           //var $results = $("#projectlist");
           //var pagenumber = 1;
@@ -682,17 +684,17 @@
             //var $data = $(data);
             //$data.hide();
             results.append(data.appendLi);
-            pagenumber = pagenumber;
+            /*pagenumber = pagenumber;*/
             //$data.fadeIn();
             //$results.removeData("loading");
           }
-          else
+          /*else
           {
             pagenumber = --pagenumber1;;
             
           }
           document.getElementById('pagenumber').value = '';
-          document.getElementById('pagenumber').value = pagenumber;
+          document.getElementById('pagenumber').value = pagenumber;*/
             }
           });
         

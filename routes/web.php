@@ -27,7 +27,7 @@ Route::group(['middleware' => 'disablepreventback'],function()
 	Route::get('/managerSignup','SignupController@managerSignUp')->name('managerSignup');
 	Route::get('/emailVerification/{userid}','SignupController@emailverification')->name('emailVerification');
 	Route::post('/checkVerifyCode','SignupController@checkverifycode')->name('checkVerifyCode');
-	Route::post('/resendCode','SignupController@resendcode')->name('resendCode');
+	Route::get('/resendCode','SignupController@resendcode')->name('resendCode');
 	Route::post('/storeUserDetail','SignupController@storeUserDetail')->name('storeUserDetail');
 	Route::post('/userForgotPassword','SignupController@forgotpassword')->name('userForgotPassword');
 	Route::get('/admin','LoginController@admin')->middleware(guest::class);
@@ -97,6 +97,7 @@ Route::group(['middleware' => 'disablepreventback'],function()
 	Route::get('/report/','ReportController@index')->name('viewReport')->middleware(guest::class);
 	Route::get('/getScheduledProjects/','ReportController@getScheduledProjects')->name('getScheduledProjects')->middleware(guest::class);
 	Route::get('/getRemainingProjects/','ReportController@getRemainingProjects')->name('getRemainingProjects')->middleware(guest::class);
+	Route::get('/getinprogressProjects/','ReportController@getinprogressProjects')->name('getinprogressProjects')->middleware(guest::class);
 	Route::get('/exportProjects/','ReportController@exportProjects')->name('exportProjects')->middleware(guest::class);
 	Route::get('/exportremaining/','ReportController@exportremaining')->name('exportremaining')->middleware(guest::class);
 	Route::get('/associateList/','UserController@associateList')->name('associateList')->middleware(guest::class);

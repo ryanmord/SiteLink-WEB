@@ -67,7 +67,7 @@ class LoginController extends Controller
                 else
                 {
                     $warning="Your password incorrect";
-                    return response()->json(['error' => $warning]);
+                    return response()->json(['error' => $warning,'emailStatus' => 0]);
                     exit;
                 }
                 
@@ -75,7 +75,7 @@ class LoginController extends Controller
             else
             {
                 $warning="Your email incorrect";
-                return response()->json(['error' => $warning]);
+                return response()->json(['error' => $warning,'emailStatus' => 0]);
                 exit;
             }
         }
@@ -105,8 +105,8 @@ class LoginController extends Controller
                         if(Hash::check($password, $user['users_password']))
                         {
                             $auth = $user;
-                            session(['loginuser' => $auth->users_email]);
-                            session(['loginuserid' => $auth->users_id]);
+                            session(['loginuser'     => $auth->users_email]);
+                            session(['loginuserid'   => $auth->users_id]);
                             session(['loginusername' => $auth->users_name]);
                             session(['loginusertype' => 'manager']);
                            
@@ -116,28 +116,28 @@ class LoginController extends Controller
                         else
                         {
                             $warning="Your password is incorrect";
-                            return response()->json(['error' => $warning]);
+                            return response()->json(['error' => $warning,'emailStatus' => 0]);
                             exit;
                         }
                     }
                     else
                     {
                         $warning="Please verify your email address";
-                        return response()->json(['error' => $warning]);
+                        return response()->json(['error' => $warning,'emailStatus' => 1]);
                         exit;
                     }
                 }
                 else
                 {
                     $warning="Sorry you cannot login here";
-                    return response()->json(['error' => $warning]);
+                    return response()->json(['error' => $warning,'emailStatus' => 0]);
                     exit;
                 }
             }
             else
             {
                 $warning="Your email or password incorrect";
-                return response()->json(['error' => $warning]);
+                return response()->json(['error' => $warning,'emailStatus' => 0]);
                 exit;
             }
         }
@@ -147,7 +147,7 @@ class LoginController extends Controller
             if(session('loginusertype') == 'manager')
             {
                 return response()->json(['success' => 'Login successfully',
-                                    'usertype' => 2]);
+                                        'usertype' => 2]);
             }
             //user type 1 for admin
             return response()->json(['success' => 'Login successfully',
