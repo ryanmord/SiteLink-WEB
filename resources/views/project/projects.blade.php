@@ -301,6 +301,29 @@ $(window).load(function() {
                 }
            });
     $.ajax({
+            type: 'GET',
+            url: '<?php echo route('inProgressList'); ?>',
+            data: {order_key:5,sortorder:2},
+            dataType: 'json',
+        })
+        .done(function(msg) {
+            if(msg.count > 0)
+            {
+                $('#div-no-allocated').hide();
+                $('#allocated-div-data').show();
+                $('#allocated-data').html('');
+                $('#allocated-data').html(msg.appendtd);
+                $('#allocated-count').text(msg.count);
+                setallocatedpagination();
+            }
+            else
+            {
+                $('#allocated-count').text(msg.count);
+                $('#allocated-div-data').hide();
+                $('#div-no-allocated').show();
+            }
+        });
+    $.ajax({
                 type: 'GET',
                 url: '<?php echo route('completeProjectList'); ?>',
                 data: {order_key:6,sortorder:2},
@@ -369,30 +392,6 @@ $(window).load(function() {
                 $('#div-no-onhold').show();
             }
         });
-        $.ajax({
-            type: 'GET',
-            url: '<?php echo route('inProgressList'); ?>',
-            data: {order_key:5,sortorder:2},
-            dataType: 'json',
-        })
-        .done(function(msg) {
-            if(msg.count > 0)
-            {
-                $('#div-no-allocated').hide();
-                $('#allocated-div-data').show();
-                $('#allocated-data').html('');
-                $('#allocated-data').html(msg.appendtd);
-                $('#allocated-count').text(msg.count);
-                setallocatedpagination();
-            }
-            else
-            {
-                $('#allocated-count').text(msg.count);
-                $('#allocated-div-data').hide();
-                $('#div-no-allocated').show();
-            }
-        });
-    
 });
 /*$('body').on('click','#complete-menu', function (event) {
     $('#star-rating').starRating('setRating', 0.0);

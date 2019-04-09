@@ -650,7 +650,6 @@ class ProjectController extends Controller
         {
             $onsitedate = (string)$request->input('onsitedate');
             $onsitedate = date("Y-m-d H:i:s", strtotime($onsitedate));
-            
         }
         else
         {
@@ -870,8 +869,7 @@ class ProjectController extends Controller
                             $title = $notificationtext;
                             $this->sendUserNotification($touserid,$fromuserid,$projectid,$body,$title,$notificationtext,$notificationtype);
 
-                            $bidrequeststatus = ProjectBidRequest::where('project_id', '=', $projectid)
-                                ->where('to_user_id','=',$touserid)->update(['bid_request_status'   => 0,
+                            $bidrequeststatus = ProjectBidRequest::where('project_id', '=', $projectid)->where('to_user_id','=',$touserid)->update(['bid_request_status'   => 0,
                                     'request_send_status' => 1]);
 
                         }

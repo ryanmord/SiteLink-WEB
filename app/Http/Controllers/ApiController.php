@@ -42,9 +42,6 @@ require_once(base_path()."/vendor/tinypng/lib/Tinify/Result.php");
 require_once(base_path()."/vendor/tinypng/lib/Tinify/Source.php");
 require_once(base_path()."/vendor/tinypng/lib/Tinify/Client.php");
 require_once(base_path()."/vendor/tinypng/lib/Tinify.php");
-
-
-
 class ApiController extends Controller
 {
     /*Name : User signup 
@@ -3716,10 +3713,6 @@ class ApiController extends Controller
                     ->getFeedback();
                 print_r($feedback);
                 exit;*/
-                  
-        
-        
-
     }
     
     public function webpushnotification()
@@ -3739,9 +3732,6 @@ class ApiController extends Controller
                     ->getFeedback();
                 echo json_encode(array('status' => '0', 'message' => $feedback));
                 exit;  
-        
-        
-
     }
     /*Name : Get Status Type
     Url  :http://103.51.153.235/project_management/public/index.php/api/getStatusType
@@ -4486,19 +4476,20 @@ class ApiController extends Controller
             $model->scope_performed_id = $request['scope'];
             if(!empty($request['qaqcDate']) && isset($request['qaqcDate']))
             {
-                $qaqcDate   = $request['qaqcDate'];
+                /*$qaqcDate = $request['qaqcDate'];
                 $tadayDate  = date('Y-m-d');
                 $qaqcDate   = new DateTime($qaqcDate);
-                $qaqcDate   = $qaqcDate->format("Y-m-d");
-                if($tadayDate > $qaqcDate)
+                $qaqcDate   = $qaqcDate->format("Y-m-d");*/
+                $model->qaqc_date = new DateTime($request['qaqcDate']);
+                /*if($tadayDate > $qaqcDate)
                 {
                     return json_encode(array('status' => '0', 'message' => "QAQC date should be greater than today's date."));
                     exit;
                 }
                 else
                 {
-                    $model->qaqc_date = new DateTime($request['qaqcDate']);
-                }
+                    
+                }*/
             }
             $model->user_id = $managerId;
             $model->project_name = $request['name'];
@@ -4620,21 +4611,21 @@ class ApiController extends Controller
         }
         if(!empty($request['qaqcDate']) && isset($request['qaqcDate']))
         {
-            $qaqcDate   = $request['qaqcDate'];
-            $tadayDate  = date('Y-m-d');
-            $qaqcDate   = new DateTime($qaqcDate);
-            $qaqcDate   = $qaqcDate->format("Y-m-d");
-            if($tadayDate > $qaqcDate)
+            //$qaqcDate   = $request['qaqcDate'];
+            //$tadayDate  = date('Y-m-d');
+            /*$qaqcDate   = new DateTime($qaqcDate);
+            $qaqcDate   = $qaqcDate->format("Y-m-d");*/
+            /*if($tadayDate > $qaqcDate)
             {
                 return json_encode(array('status' => '0', 'message' => "QAQC date should be greater than today's date."));
                 exit;
             }
             else
-            {
-                $date  = new DateTime($request['qaqcDate']);
-                $model = Project::where('project_id', '=',$projectid)
+            {*/
+            $date  = new DateTime($request['qaqcDate']);
+            $model = Project::where('project_id', '=',$projectid)
                                   ->update(['qaqc_date' => $date]);
-            }
+            //}
         }
         else
         {

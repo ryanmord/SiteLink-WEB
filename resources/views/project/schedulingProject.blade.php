@@ -326,11 +326,15 @@
       </div>
     </div>
   </div>
-  <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+
+  <!-- <script src="//code.jquery.com/jquery-1.10.2.js"></script> -->
+   <script src="{{asset('/js/themeJs/jquery-1.10.2.js')}}"></script> 
   <script src="{{asset('js/frontJs/jquery.validate.js')}}"></script>  
-  <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js">
-  </script>
+ <!--  <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script> -->
+  <script src="{{asset('js/themeJs/bootstrap.min.js')}}"></script> 
+
+ <!--  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js">
+  </script> -->
   <script type="text/javascript">
     $(window).load(function() {
       $(".loader").fadeOut("slow");

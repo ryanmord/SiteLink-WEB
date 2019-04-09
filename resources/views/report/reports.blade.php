@@ -1,6 +1,7 @@
 @extends('layouts.main_layout')
 @section('css')
- <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
+<!-- <link href="{{asset('/css/themeCss/jquery-ui.css')}}" rel="stylesheet" type="text/css">
+ --> <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
  <style type="text/css">
    .ui-datepicker-trigger{
     height: 30px;

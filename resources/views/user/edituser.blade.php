@@ -9,44 +9,17 @@
     <meta name="csrf-token" content="fkMSpKSo6hiL4aMtehZ6vsKrITZzXRMTNqJcc08Vjbn4x2CqKYTaK9bADjir9ZlwWVCoNVE0zG0Bn_VUB-ywPA==">
     <link href="{{asset('/css/themeCss/map.css')}}" rel="stylesheet">
     <link rel="shortcut icon" href="{{{ asset('img/brick-wall.png') }}}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css">
+   <!--  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css"> -->
     @include('layouts.include_css')
     <link href="{{asset('/css/frontCss/agency.css')}}" rel="stylesheet">
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
-    <script src="//code.jquery.com/jquery-1.10.2.js"></script>
-    <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js">
-    </script>
-    <style type="text/css">
-    #first_name-error
-    {
-      color: #b70a0a;
-    }
-    #lastname-error
-    {
-      color: #b70a0a;
-    }
-    #customers_company-error
-    {
-      color: #b70a0a;
-    }
-    #customers_phone-error
-    {
-      color: #b70a0a;
-    }
-    #old_password-error
-    {
-      color: #b70a0a;
-    }
-    #new_password-error
-    {
-      color: #b70a0a;
-    }
-    #confirm_password-error
-    {
-      color: #b70a0a;
-    }
-   </style>
+    <!-- <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css"> -->
+    <!-- <script src="//code.jquery.com/jquery-1.10.2.js"></script> -->
+    <script src="{{asset('/js/themeJs/jquery-1.10.2.js')}}"></script>
+   <!--  <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script> -->
+    <script src="{{asset('/js/themeJs/bootstrap.min.js')}}"></script>
+    <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js">
+    </script> -->
+    
  
   </head>
 
@@ -187,12 +160,11 @@
     </div>
   </div>
 
-<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/caret/1.0.0/jquery.caret.min.js">
-</script>
-<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js">
-</script>
+<!-- <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script> -->
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/caret/1.0.0/jquery.caret.min.js">
+</script> -->
+<script src="{{asset('js/frontJs/jquery.validate.js')}}"></script>  
  <script type="text/javascript">
   jQuery(document).ready(function(){
       $('form')
@@ -265,6 +237,26 @@ $(document).ready(function () {
               
             },
             
+        },messages:{
+            first_name: {
+              required:"Please Enter First Name",
+              
+            },
+             lastname: {
+              required:"Please Enter last name",
+              
+            },
+             customers_company: {
+              required:"Please Enter company name",
+             
+            },
+            customers_phone: {
+              required:"Please Enter Phone Number",
+             
+            },
+            
+        },errorPlacement: function(error, element) {
+            error.insertAfter(element);
         }
        
     });
@@ -330,7 +322,24 @@ $(document).ready(function () {
               
             },
             
+        },messages:{
+            old_password: {
+              required:"Please Enter Old Password",
+              minlength:"Password should be minimun 6 characters",
+            },
+             new_password: {
+              required:"Please Enter New Password",
+              minlength:"Password should be minimun 6 characters",
+            },
+             confirm_password: {
+              required:"Please Enter Confirm Password",
+              minlength:"Password should be minimun 6 characters",
+            },
+            
+        },errorPlacement: function(error, element) {
+            error.insertAfter(element);
         }
+       
        
     });
 

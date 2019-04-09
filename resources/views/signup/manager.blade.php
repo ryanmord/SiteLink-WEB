@@ -22,41 +22,7 @@
     <link rel="shortcut icon" href="{{{ asset('img/brick-wall.png') }}}">
 
     @include('frontlayouts.include_css')
-    <style type="text/css">
-    #first_name-error
-    {
-      color: #b70a0a;
-    }
-    #customers_company-error
-    {
-      color: #b70a0a;
-    }
-    #customers_email-error
-    {
-      color: #b70a0a;
-    }
-    #customers_password-error
-    {
-      color: #b70a0a;
-    }
-    #confirm_password-error
-    {
-      color: #b70a0a;
-    }
-    #customers_phone-error
-    {
-      color: #b70a0a;
-    }
-    #legal-error
-    {
-      color: #b70a0a;
-    }
-    #lastname-error
-    {
-      color: #b70a0a;
-    }
-  
-  </style>
+   
 </head>
 <body id="page-top">
 
@@ -181,8 +147,7 @@
      <!-- Footer -->
 @include('frontlayouts.footer')
 @include('frontlayouts.include_js')
-<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js">
-</script>
+<script src="{{asset('js/frontJs/jquery.validate.js')}}"></script>  
 <script>
 
 
@@ -235,7 +200,8 @@ $(document).ready(function () {
             confirm_password: 
             {
               required: true,
-              minlength:6
+              minlength:6,
+              equalTo :"#customers_password",
             },
             customers_phone: 
             {
@@ -248,6 +214,42 @@ $(document).ready(function () {
             	required:true
             	
             }
+        },messages:{
+            first_name: {
+              required:"Please Enter First Name",
+              
+            },
+             lastname: {
+              required:"Please Enter last name",
+              
+            },
+             customers_company: {
+              required:"Please Enter company name",
+             
+            },
+            customers_phone: {
+              required:"Please Enter Phone Number",
+             
+            },
+            customers_email: {
+              required:"Please Enter Eamil Address",
+              email:"Please Enter valid email",
+            },customers_password: {
+              required:"Please Enter Password",
+              minlength:"Password should be minimum 6 characters",
+            },confirm_password: {
+              required:"Please Enter Confirm Password",
+              minlength:"Password should be minimum 6 characters",
+              equalTo :"Please Enter the same password as above"
+              
+            },legal:
+            {
+              required:"Please read terms and conditions"
+              
+            }
+            
+        },errorPlacement: function(error, element) {
+            error.insertAfter(element);
         }
        
     });
