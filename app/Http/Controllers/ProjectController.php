@@ -87,8 +87,6 @@ class ProjectController extends Controller
         $temp = array('appendLi' => $appendLi,
                       'status'   => $status
                     );
-        /*print_r($temp);*/
-
         return response()->json($temp);
     }
     public function progressstatus(Request $request)
@@ -165,7 +163,6 @@ class ProjectController extends Controller
     //create new project
     public function create(Request $request)
     {
-        
         //get miles range values
         $setting = Setting::where('setting_status','=',1)->first();
         if(isset($setting))
@@ -193,16 +190,7 @@ class ProjectController extends Controller
                     'scope'         => $scopeperformed,
                     'associatetype' => $associatetype,
                     'user'          => $user ]);
-       
-       
-
     }
-   /* public function associateUserList()
-    {
-        $associatelist = User::select('users_id','users_name','last_name','users_status','users_email','users_phone','users_profile_image','users_company')->where('user_types_id','=',2)->where('users_status','=',1)->where('email_status','=',1)->where('users_approval_status','=',1)->orderBy('users_name','desc')->paginate(6);
-        return($associatelist);
-        
-    }*/
     public function searchAssociate(Request $request){
         $pageno = $request['pagenumber'];
         $limit = $request['limit'];
@@ -300,10 +288,6 @@ class ProjectController extends Controller
         }
         return response()->json($appendtd);
     }
-
-    
-
-
     /**
      * Store a newly created resource in storage.
      *
@@ -329,8 +313,6 @@ class ProjectController extends Controller
         $associatetypeid = implode (",",$associatetypeid);
         $projectname = $request->input('projectname');
         $address = $request->input('siteaddress');
-        /*return response()->json(['success'=> $associatetypeid]);
-        exit;*/
         if($request->input('onsitedate') != null)
         {
             $onsitedate = (string)$request->input('onsitedate');
@@ -426,9 +408,7 @@ class ProjectController extends Controller
                 AND users_approval_status <> 0
                 AND associate_type_id IN ($associatetypeid)
                 HAVING distance <= $miles"));
-        //print_r($result);
-       /* return response()->json(['success'=> $associatetypeid]);
-        exit;*/
+        
         if(!empty($result) && isset($result))
         {
             $notificationtext = 'New project listed in your area!';
@@ -1026,9 +1006,6 @@ class ProjectController extends Controller
             session()->flash('message', 'Bid accepted successfully!');
             return redirect()->action('UserController@dashboard');
         }
-            
-        
-        
     } 
    public function pushnotification($deviceid,$title,$body,$notificationid,$dataid,$notificationcount,$devicetype)
     {
@@ -1341,31 +1318,6 @@ class ProjectController extends Controller
 
                 ]);
     } 
-    //project complete by manager
-    /*public function projectComplete(Request $request)
-    {
-        $projectid = $request['projectid'];
-        $model = new ProjectStatus;
-        $model->project_id = $projectid;
-        $model->project_status_type_id  = 4;
-        $model->created_at = date('Y-m-d H:i:s');
-        $model->save();
-        $associate= ProjectBid::where('project_id','=',$projectid)
-                              ->where('project_bid_status','=',1)->first();
-        $userid = session('loginuserid');
-        $touserid = $associate->user_id;
-        $project = Project::where('project_id','=',$projectid)->first();
-        $body = $project->project_name;
-        $msg = 'Project completed by manager!';
-        $notificationid = '7';
-        $title = $msg;
-        $this->sendUserNotification($touserid,$userid,$projectid,$body,$title,$msg,$notificationid);
-        session()->flash('message', 'Project Completed Successfully!');
-        $temp = array('status'  => 1,
-                      'message' => 'Review submitted successfully'
-                    );
-        return response()->json($temp);
-    }*/
     public function projectComplete(Request $request)
     {
         $projectid = $request['projectid'];
@@ -1656,8 +1608,6 @@ class ProjectController extends Controller
             {
                 $associateTypeId = $request['associateTypeId'];
             }
-            
-            //$associateTypeId = array(1,2,3);
             $bidRequests = ProjectBidRequest::where('project_id','=',$projectId)
                                             ->where('check_status','=',0)->delete();
             $project = Project::where('project_id','=',$projectId)->first();
@@ -1665,7 +1615,6 @@ class ProjectController extends Controller
             $longitude = $project->longitude;
             $scopeId = $project->scope_performed_id;
             $managerId = $project->user_id;
-            //$associatetypeid = implode (",",$associateTypeId);
             $result =  DB::select(DB::raw("SELECT users_id , ( 3956 *2 * ASIN( SQRT( POWER( SIN( ( $latitude - latitude ) * PI( ) /180 /2 ) , 2 ) + COS( $latitude * PI( ) /180 ) * COS( latitude * PI( ) /180 ) * POWER( SIN( ( $longitude - longitude ) * PI( ) /180 /2 ) , 2 ) ) ) ) AS distance
                 FROM users
                 WHERE  user_types_id <>1
@@ -1674,8 +1623,6 @@ class ProjectController extends Controller
                 HAVING distance <= $miles"));
             $appendtd ='';
             $count = '0';
-            /* print_r($result);
-            exit;*/
             if(isset($result) && !empty($result))
             {
                 
@@ -1750,7 +1697,6 @@ class ProjectController extends Controller
            
                 }
             }
-            
             return response()->json(array('appendtd' => $appendtd,'count' => $count));
         }
         else{
@@ -1760,6 +1706,7 @@ class ProjectController extends Controller
         }
         
     }
+    //reject live user which are displayed when scheduling project
     public function rejectLiveUser(Request $request)
     {
         $userId = $request['userId'];
@@ -1799,6 +1746,7 @@ class ProjectController extends Controller
         }
         return response()->json(array('appendtd' => $appendtd,'count' => $count));
     }
+    //get live user list when project is scheduled it depends on miles,scoped,associate type
     public function getLiveUserList(Request $request)
     {
         $projectid = $request['projectid'];

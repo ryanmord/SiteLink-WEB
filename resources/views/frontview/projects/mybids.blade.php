@@ -688,7 +688,7 @@
                         $("#history-sqFootage").text(projectData['sqFootage']);
                         $("#history-noBuildings").text(projectData['noBuildings']);
                         $("#history-landArea").text(projectData['landArea']);
-                        $("#history-yearBuilt").text(msg.yearBuilt);
+                        $("#history-yearBuilt").text(projectData['yearBuilt']);
                         $("#history-projectid").text(projectData['projectid']);
                         $("#history-approxbid").text(projectData['approxbid']);
                         var jobReachCount = projectData['jobReachCount'];

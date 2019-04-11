@@ -309,6 +309,7 @@
     var  date = new Date($('#datepicker').val());
     if(!isNaN(date))
     {
+      $(".loader").fadeIn("slow");
       day   = date.getDate();
       month = date.getMonth() + 1;
       year  = date.getFullYear();
@@ -382,16 +383,16 @@
                       $('#countremaining').text(response.projectcount);
                       remainingProjectPagination();
                       setExportButton();
+                      $(".loader").fadeOut("slow");
                   }
                   else
                   {
-                      
                       document.getElementById('remainingcount').value = 0;
                       $("#table-div2").hide();
                       $("#div-no-remaining").show();
                       $('#countremaining').text(0); 
                       setExportButton();
-                      
+                      $(".loader").fadeOut("slow");
                   }
               }
           });
@@ -453,7 +454,7 @@
 $(function () {
     // Number of items and limits the number of items per page
     var projectcount = document.getElementById('projectcount').value;
-    var limitPerPage = 8;
+    var limitPerPage = 16;
     var totalPages = (Math.ceil(projectcount / limitPerPage));
     var paginationSize = 7; 
     var currentPage;
@@ -545,7 +546,7 @@ function setinprogresspagination()
 $(function () {
     // Number of items and limits the number of items per page
     var projectcount = document.getElementById('inprogresscount').value;
-    var limitPerPage = 8;
+    var limitPerPage = 16;
     var totalPages = (Math.ceil(projectcount / limitPerPage));
     var paginationSize = 7; 
     var currentPage;
@@ -736,7 +737,7 @@ function downloadCSV(csv, filename) {
 $(function () {
     // Number of items and limits the number of items per page
     var projectcount = document.getElementById('remainingcount').value;
-    var limitPerPage = 8;
+    var limitPerPage = 16;
     var totalPages = (Math.ceil(projectcount / limitPerPage));
     var paginationSize = 7; 
     var currentPage;

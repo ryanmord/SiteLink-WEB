@@ -81,7 +81,6 @@ class LoginController extends Controller
         }
         else
         {
-            
             /*login for project manager user */
             $user = User::where('users_email','=',$email)->first();
             if(isset($user) && !empty($user))
@@ -99,7 +98,7 @@ class LoginController extends Controller
                 if($usertype == 1)
                 {
                     
-                /* emailstatus 1 for verified email 0 for not verified email*/
+                /*emailstatus 1 for verified email 0 for not verified email*/
                     if($emailstatus == 1)
                     {
                         if(Hash::check($password, $user['users_password']))
@@ -153,8 +152,6 @@ class LoginController extends Controller
             return response()->json(['success' => 'Login successfully',
                                     'usertype' => 1]);
             exit;
-            
-  
         }
         else
         { 

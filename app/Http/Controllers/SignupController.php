@@ -167,13 +167,6 @@ class SignupController extends Controller
         $model->users_phone = $phone;
         $model->save();
         $user = User::where('users_email','=',$email)->first();
-       /* $verifycode = str_random(8);
-        $emailverify = new EmailVerification;
-        $emailverify->user_id = $user->users_id;
-        $emailverify->verification_code = $verifycode;
-        $emailverify->status = 1;
-        $emailverify->created_at = date('Y-m-d H:i:s');
-        $emailverify->save();*/
         $userid = base64_encode($user->users_id);
         //$user_id_d = base64_decode($user_id);
         $url = url('/emailVerification/'.$userid);
@@ -213,21 +206,6 @@ class SignupController extends Controller
             return response()->json(['success' => $warning]);
             exit;
         }
-        /*if(isset($adminuser))
-        {
-            $model = new AdminForgetPasswordRequest;
-            $model->users_id = $user->users_id;
-            $model->request_date = date('Y-m-d H:i:s');
-            $model->save();
-            $username = $user->users_name;
-            $useremail = $user->users_email;
-            $userid = base64_encode($user->users_id);
-            $url = url('/forgotPassword/'.$userid);
-            Mail::to($useremail)->send(new ForgotPassword($user,$url));
-            $warning="password reset link send on your email..please check your email";
-            return response()->json(['success' => $warning]);
-            exit;
-        }*/
         else
         {
             $warning="Please check your email address";

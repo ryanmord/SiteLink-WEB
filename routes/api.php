@@ -42,7 +42,6 @@ Route::any('/viewUserReview', 'ApiController@viewUserReview');
 Route::any('/updateProject', 'ApiController@updateProject');
 Route::any('/inprogressStatus', 'ApiController@inprogressStatus');
 Route::any('/storeuserReview', 'ApiController@storeuserReview');
-Route::any('/getMilesValue', 'ApiController@getMilesValue');
 Route::any('/viewBids', 'ApiController@viewBids');
 Route::any('/inProgessProject', 'ApiController@inProgessProject');
 Route::any('/addStatus', 'ApiController@addStatus');

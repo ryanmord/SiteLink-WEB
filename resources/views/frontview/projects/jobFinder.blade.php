@@ -267,7 +267,8 @@
   </div>
 </div>
    @include('frontlayouts.include_js')
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCFesVLN0rhPhI0uHrMrQjclKdbyx9X9g0&libraries=places&callback=initMap" async defer></script>  
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCFesVLN0rhPhI0uHrMrQjclKdbyx9X9g0&libraries=places&callback=initMap" async defer>
+    </script>  
     <!-- <script src="{{asset('/js/frontJs/map.js')}}"></script> -->
 
     <script type="text/javascript">
@@ -554,9 +555,7 @@
 
       function refreshMap(mapAvailableProject,userData) {
 
-        // var userData = $("#div-userData").val();
-        // var mapAvailableProject = $("#div-mapAvailableProject").val();
-
+      
         console.log(mapAvailableProject);
 
         var UserLat  = userData['latitude'];        
@@ -649,11 +648,7 @@
         }
     });
 };*/
-
-
-    
-
-    $("#project-name-list").scroll(function() {
+  $("#project-name-list").scroll(function() {
 
         var $this = $(this);
         var pagenumber1 = document.getElementById('pagenumber').value;

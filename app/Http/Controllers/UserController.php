@@ -44,6 +44,7 @@ class UserController extends Controller
         $order_key  = $request['order_key'];
         $order      = $column_key[$order_key];
         $sortorder  = $request['sortorder'];
+        //1 for ascending and 2 for descending
         if($sortorder == 1)
         {
             $sort =  'asc';
@@ -52,9 +53,6 @@ class UserController extends Controller
         {
             $sort =  'desc';
         }
-        /*echo $order;
-        echo $sort;
-        exit;*/
         $appendtd = '';
         $users = DB::table('users')
                             ->select('users.*')
@@ -64,13 +62,10 @@ class UserController extends Controller
                             /*->limit($limit)
                             ->offset($items)*/
                             ->get();
-        /*print_r($projects);
-        exit;*/
         $userCount = $users->count();
         if(isset($users) && !empty($users))
         {
             foreach ($users as  $value) {
-                
                 $createdAt   = $value->created_at;
                 $createdDate = new DateTime($createdAt);
                 $createdDate = $createdDate->format('m/d/Y');
@@ -212,13 +207,13 @@ class UserController extends Controller
                                     right: 100% !important;text-align: center !important;transform: translate(-75%, 0) !important;">';
                                     if($value->users_approval_status == 3)
                                     {
-                                        $appendtd .= '<li><a href="'.url('users/user/'.$value->users_id.'/1').'" onclick="return confirm("Are you want to sure unblock this user?")">Unblock
+                                        $appendtd .= '<li><a href="#" onclick = "userblockunblock('.$value->users_id.',1)">Unblock
                                       </a>
                                       </li>';
                                     }
                                     else
                                     {
-                                        $appendtd .= ' <li><a href="'.url('users/user/'.$value->users_id.'/3').'" onclick="return confirm("Are you want to sure block this user?")">Block</a>
+                                         $appendtd .= '<li><a href="#" onclick = "userblockunblock('.$value->users_id.',3)">Block</a>
                                       </li>';
                                     }
                 $appendtd .= '<li><a href="'.url('projects/'.$value->users_id).'">Projects</a></li>
