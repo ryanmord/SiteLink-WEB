@@ -406,6 +406,7 @@ class ProjectController extends Controller
                 FROM users
                 WHERE  user_types_id <>1
                 AND users_approval_status <> 0
+                AND users_status = 1
                 AND associate_type_id IN ($associatetypeid)
                 HAVING distance <= $miles"));
         
@@ -759,6 +760,7 @@ class ProjectController extends Controller
                 FROM users
                 WHERE  user_types_id <>1
                 AND users_approval_status <> 0 
+                AND users_status = 1
                 AND associate_type_id IN ($associatetypeid)
                 HAVING distance <= $miles"));
             
@@ -1023,7 +1025,7 @@ class ProjectController extends Controller
                                     'notificationcount'  => $notificationcount
                                             ]
                                 ])
-                    ->setApiKey('AAAANdKrzEQ:APA91bHZB_ZC2PomiZ2zjIfcDRF219E7hT29sMX1X9Bi3kCNDfHEY-PZ0vlih6O4_trRs_iUUwOh-edlDGKAjSQYEM74wLhq88bLPLzra6jiRvHvSd_EWsBNza86YnmLoP1Db-hBCrtN')
+                    ->setApiKey('AAAAl2LQWCg:APA91bFeM0f7RojB3_jzuHfPjR4ZUO3RasGnd2y3v7A4N41p0zb7g06Xo89MG-Kpilxo-vIx3iXtlncOqAmpwTqNOYm7ZpPC9bfFUH0-f6rQn2CIBKJUG6d_bhiimyuRq3XOj-qZns_1')
                     ->setDevicesToken([$deviceid])
                     ->send()
                     ->getFeedback();
@@ -1041,7 +1043,7 @@ class ProjectController extends Controller
                                     'notificationcount' => $notificationcount
                                             ]
                                 ])
-                    ->setApiKey('AAAANdKrzEQ:APA91bHZB_ZC2PomiZ2zjIfcDRF219E7hT29sMX1X9Bi3kCNDfHEY-PZ0vlih6O4_trRs_iUUwOh-edlDGKAjSQYEM74wLhq88bLPLzra6jiRvHvSd_EWsBNza86YnmLoP1Db-hBCrtN')
+                    ->setApiKey('AAAAl2LQWCg:APA91bFeM0f7RojB3_jzuHfPjR4ZUO3RasGnd2y3v7A4N41p0zb7g06Xo89MG-Kpilxo-vIx3iXtlncOqAmpwTqNOYm7ZpPC9bfFUH0-f6rQn2CIBKJUG6d_bhiimyuRq3XOj-qZns_1')
                     ->setDevicesToken([$deviceid])
                     ->send()
                     ->getFeedback();
@@ -1619,6 +1621,7 @@ class ProjectController extends Controller
                 FROM users
                 WHERE  user_types_id <>1
                 AND users_approval_status <> 0
+                AND users_status = 1
                 AND associate_type_id IN ($associateTypeId)
                 HAVING distance <= $miles"));
             $appendtd ='';
@@ -1926,12 +1929,27 @@ class ProjectController extends Controller
                 $appendtd .= ' <td class="table-td-data">'.$scopevalue.'</td>';
                 $appendtd .= ' <td class="table-td-data">'.$value->users_name.' '.$value->last_name.'</td>';
                 $appendtd .= ' <td class="table-td-data">'.$createdDate.'</td>';
+                /*$appendtd .= '<td class="table-td-th">
+                                      <div class="btn-group ">
+
+                                      <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-expanded="true"><center><span class="glyphicon glyphicon-cog"></span></center></button>
+                                      <ul class="dropdown-menu" role="menu" style="left: 0% !important;
+                                        right: 100% !important;text-align: left !important;transform: translate(-75%, 0) !important;">
+                                        <li>
+                                           <a href="'.url('/allProejcts/projectDetail/'.$value->project_id).'">
+                                         View</a>
+                                        </li>
+                                        <li><a href="'.url('/dashboard/scheduled/'.$value->project_id).'">Un-Archive</a>
+                                            </li>
+                                      </ul>
+                                    </div>
+                                  </td>
+                            </tr>';*/
                 $appendtd .= ' <td class="table-td-th">
                                           <div class="btn-group">
                                           <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown"><center><span class="glyphicon glyphicon-cog"></span></center></button>
                                           <ul class="dropdown-menu" role="menu" style="left: 0% !important;
                                             right: 100% !important;text-align: left !important;transform: translate(-75%, 0) !important;">
-                                            <?php $projectid = '.$value->project_id.' ?>
 
                                             <li>
                                               <a href="'.url('/allProejcts/projectDetail/'.$value->project_id).'">

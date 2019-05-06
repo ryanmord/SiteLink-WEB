@@ -1,14 +1,12 @@
 
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-
-    <title> Scoped </title>
-   <link href="{{asset('/css/themeCss/map.css')}}" rel="stylesheet">
-    <link rel="shortcut icon" href="{{{ asset('img/brick-wall.png') }}}">
-    <<!-- link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css"> -->
-    @include('layouts.include_css')
+<head>
+  <meta charset="utf-8">
+  <title> Scoped </title>
+ <!--  <link href="{{asset('/css/themeCss/map.css')}}" rel="stylesheet"> -->
+  <link rel="shortcut icon" href="{{{ asset('img/brick-wall.png') }}}">
+  @include('layouts.include_css')
     <link href="{{asset('/css/frontCss/agency.css')}}" rel="stylesheet">
     <!-- <script src="{{asset('/js/themeJs/notification.js')}}"></script> -->
 
@@ -20,8 +18,11 @@
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/js/bootstrap-select.min.js"></script> -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/css/bootstrap-select.min.css" rel="stylesheet" />
  
+  <!-- <link href="{{asset('/css/jquery.multiselect.css')}}" rel="stylesheet"/> -->
     <script>
+
     $(function() {
+
       $( "#onsitedate" ).datepicker({
          minDate: 0 
       });
@@ -36,111 +37,104 @@
         });
       });
     </script>
-     <script>
+    <script>
       $(function() {
         $( "#qaqcDate" ).datepicker(
         {
-          
+           
         });
       });
     </script>
-  </head>
+ 
+</head>
 
 <!-- Body -->
-  <body>
-    <div class="preloader-it">
-      <div class="la-anim-1"></div>
+<body>
+  <div class="preloader-it">
+    <div class="la-anim-1"></div>
     </div>
     <div class="wrapper theme-6-active pimary-color-pink">
 
-      <!-- Top Menu Items -->
-      @include('layouts.main_topheader')
-      <!-- /Top Menu Items -->
-      <!-- Left Sidebar Menu -->
-      @include('layouts.main_sidebar')
-      <!-- /Left Sidebar Menu -->
-      <!-- Main Content -->
-      <div class="loader" style="position: fixed;
-        left: 0px;
-        top: 0px;
-        width: 100%;
-        height: 100%;
-        z-index: 9999;
-        background: url('{{ asset('img/Loader.gif') }}') 50% 50% no-repeat rgb(249,249,249);
-        opacity: .8;">
-      </div>
-      <div class="page-wrapper">
-        <div class="container-fluid pt-20">
-          <div class="col-xs-12 col-sm-9 content">
-            <div class="panel panel-success" style="text-align: left;">
-              <div class="panel-heading">
-                <div class="panel-title"><b>Update Project</b>
+    <!-- Top Menu Items -->
+    @include('layouts.main_topheader')
+    <!-- /Top Menu Items -->
+    <!-- Left Sidebar Menu -->
+    @include('layouts.main_sidebar')
+    <!-- /Left Sidebar Menu -->
+    <!-- Main Content -->
+    <div class="loader" style="position: fixed;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    background: url('{{ asset('img/Loader.gif') }}') 50% 50% no-repeat rgb(249,249,249);
+    opacity: .8;"></div>
+    <div class="page-wrapper">
+      <div class="container-fluid pt-20">
+      <div class="container">
+        <div class="intro-text">
+        <div class="row">
+            <div class="col-xs-12 col-sm-9 content">
+              <div class="panel panel-success" style="text-align: left;">
+                <div class="panel-heading">
+                  <div class="panel-title">
+                    <b>Update Project</b>
+                  </div>
+                  <div class="panel-options">
+                    <a class="bg" data-target="#sample-modal-dialog-1" data-toggle="modal" href="#sample-modal"><i class="entypo-cog"></i></a>
+                    <a data-rel="collapse" href="#"><i class="entypo-down-open"></i></a>
+                    <a data-rel="close" href="#!/tasks" ui-sref="Tasks"><i class="entypo-cancel"></i></a>
+                  </div>
                 </div>
-                <div class="panel-options">
-                  <a class="bg" data-target="#sample-modal-dialog-1" data-toggle="modal" href="#sample-modal"><i class="entypo-cog"></i></a>
-                  <a data-rel="collapse" href="#"><i class="entypo-down-open"></i></a>
-                  <a data-rel="close" href="#!/tasks" ui-sref="Tasks"><i class="entypo-cancel"></i></a>
-                </div>
-              </div>
-              <div class="panel-body">
-                <header class="masthead dashbord-screen">
-                <div class="create-new-project">  
-                  <div class="row">
-                  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-9">
-                    <form class="new-project" id="editproject" action="{{ url('updateProject/'.$project->project_id) }}">
-                      {{csrf_field()}}
+                <div class="panel-body">
+                  <header class="masthead dashbord-screen">
+                    <div class="create-new-project">  
                       <div class="row">
-                        <div class="form-group col-md-3">
-                          <br>
-                          <label class="required">Project Name</label>
-                        </div>
-                        <div class="form-group col-md-9">
-                          <input type="text" name="projectname" value="{{ $project->project_name }}" placeholder="Project Name" required="">
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="form-group col-md-3">
-                          <br>
-                          <label class="required">Site Address</label>
-                        </div>
-                        <div class="form-group col-md-7 {{ $errors->has('address') ? ' has-error' : '' }}">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                          <div class="row" style="background-color: #E6E9ED;">
+                            PROJECT INFORMATION
+                          </div><br>
+                          <form class="new-project" id="editproject" action="{{ url('updateProject/'.$project->project_id) }}">
+                              {{csrf_field()}}
+                              <div class="row">
+                                <div class="form-group col-md-2">
+                                  <br>
+                                  <label class="required">Project Name</label>
+                                </div>
+                                <div class="form-group col-md-3">
+                                  <input type="text" name="projectname" value="{{ $project->project_name }}" placeholder="Project Name" required="">
+                                 
+                                  </div>
+                                    <div class="form-group col-md-2">
+                                      <br>
+                                      <label class="required">Project Identifier</label>
+                                    </div>
+                                    <div class="form-group col-md-3 {{ $errors->has('identifier') ? ' has-error' : '' }}">
+                                      <input type="text" name="identifier" id="identifier" value="{{ $project->project_number }}" placeholder="Project Identifier" autocomplete="off">
+                                    </div>  
+                                </div>
+                              <div class="row">
+                                 <div class="form-group col-md-2">
                                     
-                          <input type="text" name="siteaddress" readonly="" id="address" value="{{ $project->project_site_address }}" placeholder="site Address" data-toggle="modal" data-target="#myModal" required="">
-                          <input type="hidden" id="latitude" name="latitude" value="{{ $project->latitude }}">
-                          <input type="hidden" id="longitude" name="longitude" value="{{ $project->longitude }}">
-                        </div>
-                        <div class="form-group col-md-2">
-                          <br>
-                          <li style="color: #DA4453" data-toggle="modal" data-target="#myModal"><a href="#">set address</a></li>
-                          @include('project.demomap')
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="form-group col-md-3">
-                          <br><br>
-                          <label class="required">Miles Range</label>
-                        </div>
-                        <div class="form-group col-md-9 {{ $errors->has('miles') ? ' has-error' : '' }}">
-                          <output style="float: left;">Radius&nbsp</output>
-                          <output name="miles" id="miles" style="float: left;">
-                          {{ $project->milesrange }}</output>
-                          <output style="float: left;">&nbspMILES</output>
-                          <input type="range" name="milesrange" id="milesrange" value="{{ $project->milesrange }}" min="{{ $minvalue }}" max="{{ $maxvalue }}" oninput="miles.value = milesrange.value">
-                          <output name="minmiles" id="minmiles" style="float: left;">{{$minvalue }} MILES</output>
-                          <output name="maxmiles" id="maxmiles" style="float: right;">{{$maxvalue }} MILES</output>
-                          <br>
-                          <br>
-                        </div>
-                      </div>
-                      <div class="row">
-                              <div class="form-group col-md-3">
-                                <br>
-                                <label class="required">Project Identifier</label>
+                                    <label class="required">Report Due From Field</label>
+                                  </div>
+                                  <div class="form-group col-md-3 {{ $errors->has('reportdate') ? ' has-error' : '' }}">
+                                    <input type="text" name="reportdate" id="reportdate" value="{{ $reportdate }}" placeholder="Report Due Date" autocomplete="off">
+                                    <i class="fa fa-calendar" aria-hidden="true">
+                                    </i>
+                                  </div>
+                                  <div class="form-group col-md-2">
+                                    <br>
+                                    <label>On Site Date</label>
+                                  </div>
+                                  <div class="form-group col-md-3">
+                                    <input type="text" name="onsitedate" id="onsitedate" value="{{ $onsitedate }}" placeholder="On Site Date" autocomplete="off">
+                                    <i class="fa fa-calendar" id="datepickericon"></i>
+                                  </div>
                               </div>
-                              <div class="form-group col-md-4 {{ $errors->has('identifier') ? ' has-error' : '' }}">
-                                <input type="text" name="identifier" id="identifier" value="{{ $project->project_number }}" placeholder="Project Identifier" autocomplete="off">
-                               </div>
-                              <div class="form-group col-md-2">
+                          <div class="row">
+                            <div class="form-group col-md-2">
                                 <br>
                                 <label>QAQC Date</label>
                               </div>
@@ -148,166 +142,200 @@
                                 <input type="text" name="qaqcDate" id="qaqcDate" value="{{ $qaqcDate }}" placeholder="QAQC Date" autocomplete="off">
                                 <i class="fa fa-calendar" id="datepickericon"></i>
                               </div>
-                            </div>
-                      <div class="row">
-                        <div class="form-group col-md-3">
-                          <br>
-                          <label class="required">Report Due From Field</label>
-                        </div>
-                        <div class="form-group col-md-4 {{ $errors->has('reportdate') ? ' has-error' : '' }}">
-                          <input type="text" name="reportdate" id="reportdate" value="{{ $reportdate }}" placeholder="Report Due Date" autocomplete="off">
-                          <i class="fa fa-calendar" aria-hidden="true"></i>
-                        </div>
-                        <div class="form-group col-md-2">
-                          <br>
-                          <label>On Site Date</label>
-                        </div>
-                        <div class="form-group col-md-3">
-                          <input type="text" name="onsitedate" id="onsitedate" value="{{ $onsitedate }}" placeholder="On Site Date" autocomplete="off">
-                          <i class="fa fa-calendar" id="datepickericon"></i>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="form-group col-md-3">
-                          <br>
-                          <label class="required">Report Template</label>
-                        </div>
-                        <div class="form-group col-md-9">
-                          <input type="text" name="template" value="{{ $project->report_template }}" placeholder="Report template" required="">
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="form-group col-md-3">
-                          <br>
-                          <label>Special Instructions</label>
-                        </div>
-                        <div class="form-group col-md-9">
-                          <input type="text" name="instruction" value="{{ $project->instructions }}" placeholder="Special instruction">
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="form-group col-md-3"  field-customers-first_name>
-                          <br>
-                          <label class="required">Project Type</label>
-                        </div>
-                        <div class="form-group col-md-9">
-                          <input type="text" name="projectType" id="projectType" placeholder="Project Type" id="projectType" value="{{ $project->property_type}}" required="">
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="form-group col-md-3">
-                          <br>
-                          <label>No. Units</label>
-                        </div>
-                        <div class="form-group col-md-3">
-                          <input type="text" name="units_txt" id="units_txt" value="{{ $project->no_of_units }}"  placeholder="  No.of units" style="padding-left: 12px;">
-                        </div>
-                        <div class="form-group col-md-3">
-                          <br>
-                          <label>Sq. Footage</label>
-                        </div>
-                        <?php 
-                          $squareFootage = number_format($project->squareFootage, 2);
-                          $squareFootage = str_replace(',', '', $squareFootage);
-                        ?>
-                        <div class="form-group col-md-3">
-                          <input type="text" name="footage_txt" id="footage_txt" placeholder="  Sq. Footage" value="{{ $squareFootage }}" style="padding-left: 12px;">
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="form-group col-md-3">
-                          <br> 
-                            <label>No. Buildings</label>
+                          </div>
+                          <div class="row">
+                            <div class="form-group col-md-2">
+                                  <br>
+                                  <label class="required">Site Address</label>
+                                </div>
+                                <div class="form-group col-md-6">
+                                  <input type="text" name="siteaddress" readonly="" id="address" value="{{ $project->project_site_address }}" placeholder="site Address" data-toggle="modal" data-target="#myModal" required="">
+                                  <input type="hidden" id="latitude" name="latitude" value="{{ $project->latitude }}">
+                                  <input type="hidden" id="longitude" name="longitude" value="{{ $project->longitude }}">
+                                </div>
+                                <div class="form-group col-md-2">
+                                  <br>
+                                  <li style="color: #DA4453" data-toggle="modal" data-target="#myModal"><a href="#">set address</a></li>
+                                    @include('project.demomap')
+   
+                                </div>
+                          </div>
+                         
+                          <div class="row">
+                            <div class="form-group col-md-2">
+                                <br>
+                                <label class="required">Report Template</label>
+                              </div>
+                              <div class="form-group col-md-8">
+                                <input type="text" name="template" value="{{ $project->report_template }}" placeholder="Report template" required="">
+                              </div>
+                          </div>
+                          <div class="row">
+                             <div class="form-group col-md-2"  field-customers-first_name>
+                                <br>
+                                <label>Special Instructions</label>
+                              </div>
+                              <div class="form-group col-md-8">
+                                <input type="text" name="instruction" id="instruction" value="{{ $project->instructions }}" placeholder="Special instruction">
+                              </div>
+                          </div>
+                          <div class="row" style="background-color: #E6E9ED;">
+                            PROPERTY INFORMATION
+                          </div>
+                          <div class="row">
+                            <br>
+                            <div class="form-group col-md-2"  field-customers-first_name>
+                                <br>
+                                <label class="required">Project Type</label>
+                              </div>
+                              <div class="form-group col-md-8">
+                                <input type="text" name="projectType" id="projectType" placeholder="Project Type" id="projectType" value="{{ $project->property_type}}" required="">
+                              </div>
+                          </div>
+                          <div class="row">
+                          
+                            <div class="form-group col-md-2">
+                              <br>
+                                <label>No. Units</label>
+                              </div>
+                              <div class="form-group col-md-3">
+                                <input type="text" name="units_txt" id="units_txt" value="{{ $project->no_of_units }}"  placeholder="  No.of units" style="padding-left: 12px;">
+                                
+                              </div>
+                               <div class="form-group col-md-2">
+                                <br>
+                                <label>Sq. Footage</label>
+                              </div>
+                                <?php 
+                                $squareFootage = number_format($project->squareFootage, 2);
+                                $squareFootage = str_replace(',', '', $squareFootage);
+                              ?>
+                              <div class="form-group col-md-3">
+                                <input type="text" name="footage_txt" id="footage_txt" placeholder="  Sq. Footage" value="{{ $squareFootage }}" style="padding-left: 12px;">
+                              </div>
+                          </div>
+                          <div class="row">
+                          
+                            <div class="form-group col-md-2">
+                                <br>
+                                <label>No. Buildings</label>
                               </div>
                               <div class="form-group col-md-3">
                                 <input type="text" name="building_txt" id="building_txt"  placeholder="  No.Buildings" value="{{ $project->no_of_buildings }}" style="padding-left: 12px;">
+                                
                               </div>
-                              <div class="form-group col-md-3">
+                               <div class="form-group col-md-2">
                                 <br>
                                 <label>Land Area</label>
                               </div>
                               <div class="form-group col-md-3">
                                 <input type="text" name="area_txt" id="area_txt"placeholder="  Land Area" value="{{ $project->land_area }}" style="padding-left: 12px;">
                               </div>
-                            </div>
-                              <div class="row">
-                                <div class="form-group col-md-3">
-                                  <br>
-                                  <label>No. Stories</label>
-                                </div>
-                                <div class="form-group col-md-3">
+                          </div>
+                          <div class="row">
+                            <div class="form-group col-md-2">
+                                <br>
+                                <label>No. Stories</label>
+                              </div>
+                              <div class="form-group col-md-3">
                                 <input type="text" name="stories_txt" id="stories_txt"  placeholder="  No. Stories" value="{{ $project->no_of_stories }}" style="padding-left: 12px;">
                               </div>
-                               <div class="form-group col-md-3">
+                               <div class="form-group col-md-2">
                                 <br>
                                 <label>Year Built</label>
                               </div>
                               <div class="form-group col-md-3">
                                 <input type="text" name="built_txt" id="built_txt" placeholder="  Year Built" value="{{ $project->year_built }}" style="padding-left: 12px;" maxlength="4">
                               </div>
-                            </div> 
-                            <div class="row">
-                              <div class="form-group col-md-3">
+                          </div>
+                          <div class="row" style="background-color: #E6E9ED;">
+                            BID INFORMATION
+                          </div>
+                          <div class="row">
+                          <br>
+                             <div class="form-group col-md-2">
                                 <br>
                                 <label class="required">Budget</label>
                               </div>
                               <div class="form-group col-md-3">
-                               <?php 
+                                <?php 
                               $budget = number_format($project->budget, 2);
                               ?>
                                 <input type="text" name="budget_txt" id="budget_txt" placeholder="  Budget" value="{{ $budget }}" required="" style="padding-left: 12px;">
                                 <i class="glyphicon glyphicon-usd form-control-feedback" style="left: 0; line-height: 27px;"></i>
                               </div>
-                               <div class="form-group col-md-3">
+                               <div class="form-group col-md-2">
                                 <br>
-                                <label class="required">Suggest A Bid</label>
+                                <label class="required">Suggested Bid</label>
                               </div>
                               <div class="form-group col-md-3">
-                               <?php 
+                                <?php 
                               $approx_bid = number_format($project->approx_bid, 2);
                               ?>
                                 <input type="text" name="projectbid" id="projectbid" placeholder="  Suggest a bid" value="{{ $approx_bid }}" required="" style="padding-left: 12px;">
                                 <i class="glyphicon glyphicon-usd form-control-feedback" style="left: 0; line-height: 27px;"></i>
+                              </div>
                           </div>
-                        </div>
-                    
-                      <?php
-                        $temp = explode(",", $project['scope_performed_id']);
-                      ?>
-                    <div class="row">
-                      <div class="form-group col-md-3">
-                        <br><br><br>
-                        <label class="required">Scope(s)</label>
-                      </div>
-                      <div class="form-group col-md-9">
-                        @foreach($scope as $value)
-                          @if(in_array("$value->scope_performed_id", $temp))
-                            <label class="checkbox" style="color: grey;">
-                              <input type="checkbox" value="{{ $value->scope_performed_id }}" name="scopeperformedid[]" id="scope_performed" checked>
-                              {{ $value->scope_performed }} 
-                            </label>
-                          @else 
-                            <label class="checkbox" style="color: grey;">
-                              <input type="checkbox" value="{{ $value->scope_performed_id }}" name="scopeperformedid[]" id="scope_performed">
-                              {{ $value->scope_performed }} 
-                            </label>
-                          @endif
-                        @endforeach
-                        <label id="scopeperformedid[]-error" class="error" for="scopeperformedid[]" style="color: #b70a0a;"></label>
-                        <!-- <input type="hidden" id="scopeid" name="scopeid" value=""> -->
-                      </div>
-                    </div>
-                    <?php
-                        $temp = explode(",", $project['employee_type_id']);
-                      ?>
-                    <div class="row">
-                      <div class="form-group col-md-3">
-                        <br>
-                          <label class="required">Employee Type</label>
-                            </div>
+                          <div class="row" style="background-color: #E6E9ED;">
+                            NOTIFICATIONS
+                          </div>
+                          <div class="row">
+                          <br>
+                           <div class="form-group col-md-2">
+                                <br><br><br>
+                                <label class="required">Scope(s)</label>
+                              </div>
+                              <?php
+                                $temp = explode(",", $project['scope_performed_id']);
+                              ?>
+                              <div class="form-group col-md-9">
+                               @foreach($scope as $value)
+                                @if(in_array("$value->scope_performed_id", $temp))
+                                  <label class="checkbox" style="color: grey;">
+                                    <input type="checkbox" value="{{ $value->scope_performed_id }}" name="scopeperformedid[]" id="scope_performed" checked>
+                                    {{ $value->scope_performed }} 
+                                  </label>
+                                @else 
+                                  <label class="checkbox" style="color: grey;">
+                                    <input type="checkbox" value="{{ $value->scope_performed_id }}" name="scopeperformedid[]" id="scope_performed">
+                                    {{ $value->scope_performed }} 
+                                  </label>
+                                @endif
+                              @endforeach
+                              <label id="scopeperformedid[]-error" class="error" for="scopeperformedid[]" style="color: #b70a0a;"></label>
+                                <!-- <input type="hidden" id="scopeid" name="scopeid" value=""> -->
+                             
+                              </div>
+                              <!-- <div id="err"></div> -->
+                          </div>
+                          <div class="row">
+                            <div class="form-group col-md-2">
+                                <br><br>
+                                <label class="required">Miles Range</label>
+                              </div>
+                              <div class="form-group col-md-8">
+                                <output style="float: left;">Radius&nbsp</output>
+                                <output name="miles" id="miles" style="float: left;">
+                                {{ $project->milesrange }}</output>
+                                <output style="float: left;">&nbspMILES</output>
+                                <input type="range" name="milesrange" id="milesrange" value="{{ $project->milesrange }}" min="{{ $minvalue }}" max="{{ $maxvalue }}" oninput="miles.value = milesrange.value">
+                                <output name="minmiles" id="minmiles" style="float: left;">{{$minvalue }} MILES</output>
+                                <output name="maxmiles" id="maxmiles" style="float: right;">{{$maxvalue }} MILES</output>
+                                <br>
+                                <br>
+                              </div>
+                          </div>
+                          <div class="row">
+                          <?php
+                            $temp = explode(",", $project['employee_type_id']);
+                          ?>
+                          <div class="form-group col-md-2">
+                                <br>
+                                <label class="required">User Type</label>
+                              </div>
                               <!-- select associate type -->
                               <div class="form-group col-md-9">
-                                @foreach($associatetype as $value)
+                                 @foreach($associatetype as $value)
                                 @if(in_array("$value->associate_type_id", $temp))
                                   <label class="checkbox" style="color: grey;">
                                     <input type="checkbox" value="{{ $value->associate_type_id }}" name="associatetypeid[]" id="associatetypeid[]" checked>
@@ -324,14 +352,15 @@
                              
                               </div>
                               <!-- <div id="err"></div> -->
-                              </div>
-                              <div class="row">
-                              <div class="form-group col-md-3">
+                          </div>
+                          
+                          <div class="row">
+                              <div class="form-group col-md-2">
                                 
                                 <label id="selectIdLabel">Select Individual(s)</label>
                               </div>
                               <!-- select associate type -->
-                              <div class="form-group col-md-9">
+                              <div class="form-group col-md-8">
                                <a href="#associate-list" data-toggle="modal"><u style="color: #fe5f55;" id="add-individuals">+ Add Individual(s)</u>
                                </a>
                               </div>
@@ -339,39 +368,40 @@
                               <!-- <div id="err"></div> -->
                               </div>
                               <div class="row" id="userName-div">
-                                <div class="form-group col-md-3">
+                                <div class="form-group col-md-2">
                                   <!-- <label id="selectIdLabel">Selected Individual(s)</label> -->
                                 </div>
                                 <!-- select associate type -->
-                                <div class="form-group col-md-9">
+                                <div class="form-group col-md-8">
                                 <div class="table-responsive" style="max-height: 100px;overflow: auto;">
                                  <table class="table table-bordered table-hover table-striped">
                                     <tbody id="associateNames">
-                                   
-
-                                    </tbody></table></div>
+                                  </tbody></table></div>
                                 </div>
                               </div>
-                            <div class="row">
-                              <div class="form-group col-md-5">
-                              </div>
-                            <div class="form-group col-md-3">
-                              <button type="submit" class="btn btn-success" id="saveproject"> Update   
+                      
+                        <div class="row">
+                          <div class="form-group col-md-3">
+                            </div>
+                              <div class="form-group col-md-3">
+                                <button type="submit" class="btn btn-success" id="saveproject"> Update   
                             </button>
+                              </div>
+                              
+                        </div>
+                        </form>
                       </div>
+                    </div>
                   </div>
-                </form>
-              </div>
+                </div>
+              </header>
             </div>
           </div>
-        </header>
+        </div>
       </div>
     </div>
   </div>
-</div>
-</div>
-</div>
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCFesVLN0rhPhI0uHrMrQjclKdbyx9X9g0&libraries=places&callback=initMap"
+ <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCFesVLN0rhPhI0uHrMrQjclKdbyx9X9g0&libraries=places&callback=initMap"
         async defer></script>  
   <script src="{{asset('/js/themeJs/map.js')}}"></script>
   <script src="{{asset('/js/themeJs/1_12_1_jquery.js')}}"></script>
@@ -789,6 +819,19 @@ $('#cancel-user').click(function(){
                 }
             });
   </script>
-  </body>
+  <script type="text/javascript">
+          $(document).ready(function () {
+          //called when key is pressed in textbox
+            $("#instruction").focusout(function (e) {
+               function firstToUpperCase( str ) {
+                return str.substr(0, 1).toUpperCase() + str.substr(1);
+              }
+              var str = document.getElementById("instruction").value;
+              var str = firstToUpperCase( str );  
+              document.getElementById("instruction").value = str;
+           });
+          });
+        </script>
+</body>
 </html>
                     
