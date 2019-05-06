@@ -82,7 +82,8 @@ class LoginController extends Controller
         else
         {
             /*login for project manager user */
-            $user = User::where('users_email','=',$email)->first();
+            $user = User::where('users_email','=',$email)
+                          ->where('user_types_id','=',1)->first();
             if(isset($user) && !empty($user))
             {
                 $approvalStatus = $user->users_approval_status;

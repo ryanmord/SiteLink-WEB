@@ -21,6 +21,7 @@
         <div id="div-no-project">
                 <center><p style="font-size: 20px;">No data found</p></center><br>
             </div>
+        <div>
         <div class="table-responsive" id="table-div">
            
             <table class="table table-bordered table-hover table-striped">
@@ -56,6 +57,7 @@
                 </div>
            
     	</div>
+        </div>
     </div>
    
 </div>
