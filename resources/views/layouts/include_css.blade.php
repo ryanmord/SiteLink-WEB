@@ -13,6 +13,8 @@
    <link href="{{asset('/css/themeCss/font.css')}}" rel="stylesheet" type="text/css">
  
   <style type="text/css">
+ 
+ 
    	#maxmiles-error
       {
         color: #b70a0a;
@@ -66,6 +68,9 @@
       font-size: 10px;
       float: right;
     }
- 
+    .qcont:first-letter 
+    {
+       text-transform: uppercase;
+    }
   </style>
    

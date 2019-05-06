@@ -137,7 +137,6 @@ class SignupController extends Controller
             return response()->json(['error' => $warning]);
             exit;
         }
-
         $name = $request['first_name'];
         $lastname = $request['lastname'];
         $company = $request['customers_company'];
@@ -165,32 +164,25 @@ class SignupController extends Controller
         $model->users_company = $company;
         $model->users_password = Hash::make($password);
         $model->users_phone = $phone;
+        $model->email_status = 1;
         $model->save();
         $user = User::where('users_email','=',$email)->first();
         $userid = base64_encode($user->users_id);
         //$user_id_d = base64_decode($user_id);
-        $url = url('/emailVerification/'.$userid);
-        if(isset($request['scope']))
-        {
-                    
-            $userid = $user->users_id;
-            $scopeperformed = new UserScopePerformed;
-            $scopeperformed->users_id = $userid;
-            $scopeperformed->scope_performed_id = $request['scope'];
-            $scopeperformed->last_updated = date('Y-m-d H:i:s');
-            $scopeperformed->save();
-        }
+        /*$url = url('/emailVerification/'.$userid);
+       
         $action = 1;
-        Mail::to($email)->send(new UserRegistered($user,$url,$action));
-        return response()->json(['success' => 'Please check your email for email verification..']);
+        Mail::to($email)->send(new UserRegistered($user,$url,$action));*/
+        return response()->json(['success' => 'User registered successfully..']);
         exit;
             
     }
     public function forgotpassword(Request $request)
     {
         $email = $request['femail'];
-        $user  = User::where('users_email', '=',$email)->first();
-        $adminuser = AdminUser::where('admin_users_email','=',$email)->first();
+        $user  = User::where('users_email', '=',$email)
+                       ->where('user_types_id','=',1)->first();
+        //$adminuser = AdminUser::where('admin_users_email','=',$email)->first();
         if(isset($user))
         {
             $model = new UserForgetPasswordRequest;

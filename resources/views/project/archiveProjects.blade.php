@@ -53,6 +53,7 @@
             <div id="div-no-project">
                 <center><p style="font-size: 20px;">No data found</p></center><br>
             </div>
+            <div>
             <div class="table-responsive" id="table-div">
                
                 <table class="table table-hover table-striped table-bordered" border="1" id="archiveTable">
@@ -87,13 +88,16 @@
                 </div>
                
             </div>
+            </div>
         </div>
 
     </div>
 @stop
 @section('script')
- <script src="{{asset('/js/themeJs/jquery-1.10.2.js')}}"></script>
- <script src="{{asset('/js/themeJs/bootstrap.min.js')}}"></script>
+<!-- <script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+
+ <script src="{{asset('/js/themeJs/jquery-1.10.2.js')}}"></script> -->
+ <!-- <script src="{{asset('/js/themeJs/bootstrap.min.js')}}"></script> -->
 <script type="text/javascript">
     $(document).ready(function () {
         

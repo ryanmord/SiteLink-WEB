@@ -14,9 +14,10 @@
         z-index: 9999;
         background: url('{{ asset('img/Loader.gif') }}') 50% 50% no-repeat rgb(249,249,249);
         opacity: .8;"></div>
+
       <div class="intro-text">
         <div class="row">
-          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-8">
+          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
             <div class="manager-profile">
               <div class="profile-picture">
                 <img src="{{ $profile['profileimage'] }}" style="height: 100%;width: 100%;" />
@@ -24,7 +25,7 @@
               <h4 class="manager-name">{{ $profile['username'] }}</h4>
               <h5 class="manager-name" style="color: #586b6f8a;">{{ $profile['associateType'] }}  </h5> 
               <div class="row">
-                <div class="col-md-3">                            
+                <div class="col-md-4">                            
                   <div class="manager-data">
                     <div class="number-data">
                       {{ $profile['completedprojectcount'] }}
@@ -34,7 +35,7 @@
                     </div> 
                   </div>    
                 </div> 
-                <div class="col-md-3">                            
+                <div class="col-md-4">                            
                   <div class="manager-data">
                     <div class="number-data">
                       {{ $profile['bidmadecount'] }}
@@ -44,7 +45,7 @@
                     </div> 
                   </div>    
                 </div> 
-                <div class="col-md-3">                            
+                <div class="col-md-4">                            
                   <div class="manager-data">
                     <div class="number-data">
                       {{ $profile['overdueprojectcount'] }}
@@ -54,7 +55,7 @@
                     </div> 
                   </div>    
                 </div> 
-                <div class="col-md-3">                            
+               <!--  <div class="col-md-3">                            
                   <div class="manager-data">
                     <div class="number-data">
                       {{ $profile['review'] }}
@@ -63,7 +64,7 @@
                       Average Rating
                     </div> 
                   </div>    
-                </div>    
+                </div>    --> 
               </div>
               <div class="edit-btn">
                 <button type="button" class="btn red-btn" data-toggle="modal" data-target="#editprofile" id="show-edit-madal">
@@ -73,7 +74,7 @@
               </div>
             </div>
           </div>
-          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
+          <!-- <div class="col-xs-12 col-sm-12 col-md-12 col-lg-4">
             <div class="manger-review">
               <div class="notification-list">
               <input type="hidden" name="pagenumber" id="pagenumber">
@@ -97,7 +98,7 @@
                 @endif
               </div>
             </div>
-          </div>    
+          </div>  -->   
         </div>    
       </div>
     </div>
@@ -258,7 +259,7 @@
 $(document).ready(function() {
  $("#login-menu").removeClass('active');
  $("#myProfile-menu").addClass('active');
- document.getElementById('pagenumber').value = 1;
+ //document.getElementById('pagenumber').value = 1;
 $(".loader").fadeOut("slow");
 $('body').on('click','#update-user', function (event) {
     event.preventDefault(); 
@@ -525,52 +526,6 @@ $('#txt_name').keypress(function (e) {
 };
 
 
-   $(".notification-list ul").scroll(function() {
-
-        var $this = $(this);
-        var pagenumber1 = document.getElementById('pagenumber').value;
-        var pagenumber = ++pagenumber1;
-        
-
-        //var $results = $("#projectlist");
-        //var pagenumber = 1;
-        $.ajax({
-          type: 'GET',
-            url: '<?php echo route('userReviewPagination'); ?>',
-            data: {pagenumber:pagenumber},
-            dataType: 'json',
-       
-        beforeSend: function(xhr) {
-         /* $("#projectlist").after($("<li class='loading'>Loading...</li>").fadeIn('slow')).data("loading", true);*/
-        },
-        success: function(data) {
-          //alert(data.status);
-          if(data.status == 1)
-          {
-            var results = $("#userreviewlist");
-            /*$(".loading").fadeOut('fast', function() {
-                $(this).remove();
-
-            });*/
-            //var $data = $(data);
-            //$data.hide();
-            results.append(data.appendLi);
-            pagenumber = pagenumber;
-            //$data.fadeIn();
-            //$results.removeData("loading");
-          }
-          else
-          {
-            pagenumber = --pagenumber1;;
-            
-          }
-          document.getElementById('pagenumber').value = '';
-          document.getElementById('pagenumber').value = pagenumber;
-
-            
-        }
-      });
-    });
 
  /* $('body').on('click','#set-address', function (event) {
     $("#editprofile").modal("hide");

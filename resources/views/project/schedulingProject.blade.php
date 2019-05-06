@@ -46,7 +46,7 @@
               <div class="panel panel-success" style="text-align: left;">
                 <div class="panel-heading">
                   <div class="panel-title">
-                    <b>Project Details</b>
+                    <b>Create New Project</b>
                   </div>
                   <div class="panel-options">
                     <a class="bg" data-target="#sample-modal-dialog-1" data-toggle="modal" href="#sample-modal"><i class="entypo-cog"></i></a>

@@ -63,7 +63,8 @@ class ApiController extends Controller
         $successMsg = array();
         $model = new User;
         $email = $request['email'];
-        $user = User::where('users_email','=',$email)->first();
+        $user = User::where('users_email','=',$email)
+                      ->where('user_types_id','=',2)->first();
         if(isset($user) && !empty($user)) {
             $errorMsg = array('status' => '0','message' => "User already registered");
             return json_encode($errorMsg);
@@ -115,7 +116,8 @@ class ApiController extends Controller
                         $model->longitude = $request['longitude'];
                     }
                     $model->save();
-                    $user = User::where('users_email','=',$email)->first();
+                    $user = User::where('users_email','=',$email)
+                                  ->where('user_types_id','=',2)->first();
                     $userid = base64_encode($user->users_id);
                     $url = url('/emailVerification/'.$userid);
                     if(isset($request['scope']) && !empty($request['scope'])){
@@ -128,6 +130,7 @@ class ApiController extends Controller
                     }
                     $action = 1;
                     Mail::to($email)->send(new UserRegistered($user,$url,$action));
+                    $this->updateavailableProject($user->users_id);
                     $successMsg = array('status' => '1','message' => "Please check your email for email verification..");
                     return json_encode($successMsg);
                     exit;
@@ -158,7 +161,8 @@ class ApiController extends Controller
         $devicetype = $request['devicetype'];
         if(isset($request['email']) && isset($request['password']) && !empty($request['email']) && !empty($request['password']))
         {
-            $user = User::where('users_email','=',$email)->first();
+            $user = User::where('users_email','=',$email)
+                          ->where('user_types_id','=',2)->first();
             if(isset($user) && !empty($user))
             {
            
@@ -423,16 +427,16 @@ class ApiController extends Controller
     {
         $scope = array();
         $scopeperformed = ScopePerformed::select('scope_performed_id','scope_performed')->where('scope_status','=','1')->get();
+        if(isset($scopeperformed) && !empty($scopeperformed))
+        {
         foreach ($scopeperformed as  $value) 
         {
             $scope[] = ['scope_performed_id' => (string)$value['scope_performed_id'], 'scope_performed' =>  $value['scope_performed']];
                
         }
-            
-        if(isset($scopeperformed) && !empty($scopeperformed))
-        {
-            echo json_encode(array('status' => '1','scopeperformed' => $scope));
-            exit;
+                               
+        echo json_encode(array('status' => '1','scopeperformed' => $scope));
+        exit;  
         }
         else
         {
@@ -451,7 +455,8 @@ class ApiController extends Controller
         {
             $email = $request['email'];
             $user = User::select('users_name','users_id','users_email','email_status')
-                          ->where('users_email','=',$email)->first();
+                          ->where('users_email','=',$email)
+                          ->where('user_types_id','=',2)->first();
             if(isset($user) && !empty($user))
             {
                 $action = 1;
@@ -643,8 +648,6 @@ class ApiController extends Controller
             }
             $file = $request->file('image');
             $image_name = time() . "-" . $file->getClientOriginalName();
-            /*$path = $file->move($destinationPath, $image_name);*/
-            //$path = "img/users/" . $image_name;
             $path = $file->move($destinationPath, $image_name);
             $imageName    = trim($request->cropped_category_image);
             $tempfileName = $destinationPath.'/'.$image_name;
@@ -714,7 +717,7 @@ class ApiController extends Controller
         if (isset($request['email'])) 
         {
             $email = $request['email'];
-            $user  = User::where('users_email', '=',$email)->first();
+            $user  = User::where('users_email', '=',$email)->where('user_types_id','=',2)->first();
             if(isset($user))
             {
                 $model = new UserForgetPasswordRequest;
@@ -1170,6 +1173,7 @@ class ApiController extends Controller
         $createddate = (string)$project->created_at;
         $datetime2 = new DateTime($createddate);
         $createddate1 = $datetime2->format("Y-m-d");
+        $projectallocatedFlag = 0;
         if($user->user_types_id != 1)
         {
             $associateTypeId = $user->associate_type_id;
@@ -1238,9 +1242,10 @@ class ApiController extends Controller
                 }
                 $finalbid = ProjectBid::where('project_id','=',$projectid)
                                         ->where('project_bid_status','=',1)->first();
-                if(isset($finalbid))
+                if(isset($finalbid) && !empty($finalbid))
                 {
                     $finalbid1 =(string)$finalbid->associate_suggested_bid;
+                    $projectallocatedFlag = 1;
                     $review = userReview::where('to_user_id','=',$userid)
                                         ->where('project_id','=',$projectid)->first();
                     if(isset($review))
@@ -2654,11 +2659,20 @@ class ApiController extends Controller
             $bidamount = $request['bidvalue'];
             $projectid = $request['projectid'];
             $userid = $request['userid'];
+            /*$projectbidaccept = ProjectBid::where('project_id','=',$projectid)
+                                  ->where('project_bid_status','=',1)->first();
+            if(isset($projectbidaccept) && !empty($projectbidaccept))
+            {
+                $temp = array('status' => '0', 'message' => "Sorry! job is allocated to other associate");
+           
+                return json_encode($temp);
+                exit; 
+            }*/
             $bidUser = ProjectBid::where('project_id','=',$projectid)
                                   ->where('user_id','=',$userid)
                                   ->where('project_bid_status','=',2)
                                   ->where('bid_status','=',1)->first();
-            if(isset($bidUser))
+            if(isset($bidUser) && !empty($bidUser))
             {
                 $projectbid = ProjectBid::where('project_id','=',$projectid)
                                     ->where('user_id','=',$userid)
@@ -3062,6 +3076,7 @@ class ApiController extends Controller
                             $bidrequest->project_id = $projectid;
                             $bidrequest->to_user_id = $userid;
                             $bidrequest->from_user_id = $managerid;
+                            $bidrequest->request_send_status = 1;
                             $bidrequest->created_at = date('Y-m-d H:i:s');
                             $bidrequest->save();
                         }
@@ -3390,7 +3405,7 @@ class ApiController extends Controller
                                             ->where('from_user_id','=',$fromuserid)
                                             ->where('to_user_id','=',$touserid)
                                             ->where('project_notification_type_id','=',$notificationtype)->first();
-        $sentnotificationid = $notification->project_notification_id;
+        $sentnotificationid = $model->project_notification_id;
        
         /* find devices where user is login*/
         $accesskey = UserAccessKey::where('user_id','=',$touserid)
@@ -3436,7 +3451,7 @@ class ApiController extends Controller
                                 'notificationcount'  => $notificationcount
                                             ]
                                 ])
-                    ->setApiKey('AAAANdKrzEQ:APA91bHZB_ZC2PomiZ2zjIfcDRF219E7hT29sMX1X9Bi3kCNDfHEY-PZ0vlih6O4_trRs_iUUwOh-edlDGKAjSQYEM74wLhq88bLPLzra6jiRvHvSd_EWsBNza86YnmLoP1Db-hBCrtN')
+                    ->setApiKey('AAAAl2LQWCg:APA91bFeM0f7RojB3_jzuHfPjR4ZUO3RasGnd2y3v7A4N41p0zb7g06Xo89MG-Kpilxo-vIx3iXtlncOqAmpwTqNOYm7ZpPC9bfFUH0-f6rQn2CIBKJUG6d_bhiimyuRq3XOj-qZns_1')
                     ->setDevicesToken([$deviceid])
                     ->send()
                     ->getFeedback();
@@ -3454,7 +3469,7 @@ class ApiController extends Controller
                                 'notificationcount'  => $notificationcount
                                             ]
                                 ])
-                    ->setApiKey('AAAANdKrzEQ:APA91bHZB_ZC2PomiZ2zjIfcDRF219E7hT29sMX1X9Bi3kCNDfHEY-PZ0vlih6O4_trRs_iUUwOh-edlDGKAjSQYEM74wLhq88bLPLzra6jiRvHvSd_EWsBNza86YnmLoP1Db-hBCrtN')
+                    ->setApiKey('AAAAl2LQWCg:APA91bFeM0f7RojB3_jzuHfPjR4ZUO3RasGnd2y3v7A4N41p0zb7g06Xo89MG-Kpilxo-vIx3iXtlncOqAmpwTqNOYm7ZpPC9bfFUH0-f6rQn2CIBKJUG6d_bhiimyuRq3XOj-qZns_1')
                     ->setDevicesToken([$deviceid])
                     ->send()
                     ->getFeedback();
@@ -3539,6 +3554,15 @@ class ApiController extends Controller
         $projectid = $request['projectid'];
         $employeeType = $user->associate_type_id;
         $userid = $request['userid'];
+        /*$projectbidaccept = ProjectBid::where('project_id','=',$projectid)
+                                  ->where('project_bid_status','=',1)->first();
+        if(isset($projectbidaccept) && !empty($projectbidaccept))
+        {
+            $temp = array('status' => '0', 'message' => "Sorry! job is allocated to other associate");
+           
+            return json_encode($temp);
+            exit; 
+        }*/
         $projectBid = ProjectBid::where(['project_id' => $projectid,
                                         'user_id'     => $userid])->first();
         if($employeeType == 1)
@@ -3889,10 +3913,10 @@ class ApiController extends Controller
             $user = User::select('users_id')
                          ->where('users_email','=',$managerEmail)
                          ->first();
-            if(isset($user))
+            if(isset($user) && !empty($user))
             {
                 $managerId = $user->users_id;
-                return json_encode(array('status' => '0', 'message' => "This Project Manager Already Registered"));
+                return json_encode(array('status' => '0', 'message' => "This Email Id Already Registered"));
                 exit;
             }
             else
@@ -4045,6 +4069,7 @@ class ApiController extends Controller
                 exit;
             }
             $pmUserCount = User::where('users_email','=',$managerEmail)
+                                 ->where('user_types_id','=',1)
                                  ->where('users_id','<>',$managerId)->count();
             if($pmUserCount != 0)
             {
@@ -4053,6 +4078,7 @@ class ApiController extends Controller
             }
             $managerUser  = User::select('users_id')
                                   ->where('users_email','=',$managerEmail)
+                                  ->where('user_types_id','=',1)
                                   ->count();
             if($managerUser != 0)
             {
@@ -4144,7 +4170,7 @@ class ApiController extends Controller
             exit;
         }
         
-        if(isset($request['name']) && isset($request['address']) && isset($request['reportDueFromField']) && isset($request['scope']) && isset($request['budget'])&& isset($request['projectManagerId']) && isset($request['identifier']) && !empty($request['name']) && !empty($request['address']) && !empty($request['reportDueFromField']) && !empty($request['scope']) && !empty($request['budget'])&& !empty($request['projectManagerId']) && !empty($request['identifier']) && !empty($request['reportTemplate']) && isset($request['reportTemplate']) && !empty($request['type']) && isset($request['type']))
+        if(isset($request['name']) && isset($request['address']) && isset($request['latitude']) && isset($request['longitude']) && isset($request['reportDueFromField']) && isset($request['scope']) && isset($request['budget'])&& isset($request['projectManagerId']) && isset($request['identifier']) && !empty($request['name']) && !empty($request['address']) && !empty($request['latitude']) && !empty($request['longitude']) && !empty($request['reportDueFromField']) && !empty($request['scope']) && !empty($request['budget'])&& !empty($request['projectManagerId']) && !empty($request['identifier']) && !empty($request['reportTemplate']) && isset($request['reportTemplate']) && !empty($request['type']) && isset($request['type']))
         {
             if(!empty($request['projectManagerId']))
             {
@@ -4266,7 +4292,7 @@ class ApiController extends Controller
         }
         else
         {
-            return json_encode(array('status' => '0', 'message' => "Mandatory field is required"));
+            return json_encode(array('status' => '0', 'message' => "Mandatory field is missing or empty"));
             exit;
         }
     }
@@ -4808,6 +4834,83 @@ class ApiController extends Controller
             echo json_encode(array('status' => '0','message' => "no values for scope performed"));
             exit;
         }
+    }
+    // Name : checkappVersion(63)
+    // Desc : API to forceful update the version
+    // Date : 25/03/2019
+    // URL  : http://localhost/Scoped/public/index.php/api/checkappVersion?version=1.0.0.1&type=1
+    // ServerURL  : 
+    public function checkappVersion(Request $request) {
+        // $authFlag = $this->checkAuthentication($request['userId'],$request['userPrivateKey']);
+        // if ($authFlag == 1) {
+            if(!empty($_REQUEST['version']) && isset($_REQUEST['type']) && $_REQUEST['type'] != ''){
+                $version = $_REQUEST['version'];
+                $latestVersion = $Appversion = array();
+
+                $Appversion = DB::table('app_versions')
+                            ->where('version',$version)
+                            ->where('type',$_REQUEST['type'])
+                            ->first();
+
+                $latestVersion = DB::table('app_versions')
+                                ->where('type',$_REQUEST['type'])
+                                ->get()
+                                ->last();
+                    
+                if(!empty($Appversion)){
+                    $Appversion  = json_decode(json_encode($Appversion), true);
+                    $currentversionName = $Appversion['version'];
+                    if(!empty($latestVersion)){ 
+                        $latestVersion   = json_decode(json_encode($latestVersion), true);
+                        $latestVersionName = $latestVersion['version'];
+                        if($currentversionName != $latestVersionName){
+                            echo json_encode(array('status' => '1','message' => 'Please update your app version.','version'=>"1"));
+                            exit;
+                        }else{
+                            echo json_encode(array('status' => '0','message' => 'Your App version is up to date.','version'=>"0"));
+                            exit;
+                        }
+                    }else{
+                        echo json_encode(array('status' => '0','message' => 'Oops !! Something went wrong.','errorCode'=>"100"));
+                        exit;
+                    }
+                }else{
+                    if(!empty($latestVersion)) {
+                        $latestVersion   = json_decode(json_encode($latestVersion), true);
+                        $latestVersionName = $latestVersion['version'];
+                        if (( version_compare($version,  $latestVersionName) == 0 )) {
+                            if ($version != $latestVersionName) {
+                                echo json_encode(array('status' => '1','message' => 'Please update your app version.','version'=>"1"));
+                                exit;                               
+                            }
+                            else{
+                                echo json_encode(array('status' => '0','message' => 'Your App version is up to date.','version'=>"0"));
+                                exit;
+                            }                                   
+                        }
+                        elseif (version_compare($version,  $latestVersionName) == 1) {
+                            echo json_encode(array('status' => '0','message' => 'Entered Version not found.','errorCode'=>"100"));
+                            exit;
+                        }
+                        else{
+                            echo json_encode(array('status' => '1','message' => 'Please update your app version.','version'=>"1"));
+                            exit;
+                        }
+                    }
+                    else{
+                        echo json_encode(array('status' => '0','message' => 'Oops !! Something went wrong.','errorCode'=>"100"));
+                        exit;
+                    }
+                }
+            }else{
+                echo json_encode(array('status' => '0','message' => 'Mandatory Parameter Missing.','errorCode'=>"100"));
+                exit;
+            }               
+        // }
+        // else{
+        //  echo json_encode(array('status' => '0','message' => 'userId or privateKey is wrong.','errorCode'=>"99"));
+        //  exit;
+        // }
     }
 
     /*Common function to check api token in third party api*/
