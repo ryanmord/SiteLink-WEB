@@ -2191,7 +2191,9 @@ class ProjectController extends Controller
                         $appendtd .= '<tr class="content">';
                         $appendtd .= '<td class="table-td-data">'.$value->project_number.'</td>';
                         $appendtd .= '<td class="table-td-data">'.$value->project_name.'</td>';
-                         $appendtd .= '<td class="table-td-data">'.$bidCount.'</td>';
+                        /*$appendtd = '<td class="table-td-data"><a href="'.url('projectBid/'.$value->project_id).'">Show Bids</a></li>';*/
+                        /*$appendtd = '<td class="table-td-data"><a href="'.url('projectBid/'.$value->project_id).'">'.$bidCount.'</a></td>';*/
+                        $appendtd .= '<td class="table-td-data"><a href="'.url('projectBid/'.$value->project_id).'">'.$bidCount.'</a></td>';
                         $appendtd .= '<td class="table-td-data">'.$value->project_site_address.'</td>';
                         $appendtd .= ' <td class="table-td-data">'.$suggestedbid.'</td>';
                         $appendtd .= ' <td class="table-td-data">'.$scopevalue.'</td>';
@@ -2907,5 +2909,10 @@ class ProjectController extends Controller
             }
         }
         return json_encode(array('count' => $projectCount,'appendtd' => $appendtd));
+    }
+    public function viewMap($id)
+    {
+        $project = Project::select('project_id','project_name','latitude','longitude','project_site_address')->where('project_id','=',$id)->first();
+        return view('project.viewmap',['project' => $project]);
     }
 }

@@ -3137,8 +3137,6 @@ class ApiController extends Controller
         }
     }
 
-    
-   
     /*Name : Notification list for user
     Url  :http://103.51.153.235/project_management/public/index.php/api/notificationList?userid=12&privatekey=voO2M4DvVNGHh07L
     Date : 24-09-18

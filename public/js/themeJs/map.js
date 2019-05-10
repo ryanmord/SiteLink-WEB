@@ -14,18 +14,28 @@
             var latlng = new google.maps.LatLng(lat, long);
             var map = new google.maps.Map(document.getElementById('map'), {
             center: latlng,
-            zoom: 13,
+            zoom: 16,
 
 
         });
         
         var marker = new google.maps.Marker({position: latlng, map: map});
+        
+        var placeName = document.getElementById('place-name').innerHTML;
+        if(placeName != '')
+        {
+          var infowindow = new google.maps.InfoWindow();
+          var infowindowContent = document.getElementById('infowindow-content');
+          infowindow.setContent(infowindowContent);
+          infowindow.open(map, marker);
         }
+        
+      }
         else
         {
           var map = new google.maps.Map(document.getElementById('map'), {
           center: {lat: -33.8688, lng: 151.2195},
-          zoom: 13
+          zoom: 16
 
 
         });

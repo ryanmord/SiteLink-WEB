@@ -35,14 +35,14 @@ class NewProject extends Mailable
         if($this->action == 1)
         {
             $introLines = array('Congratulations!! New project assigned to you as Project Manager!');
-            $outroLines = array('You can view the '.$this->projectName.' project details into the Scoped app');
-            $subject = 'Scoped: Regarding new project';
+            $outroLines = array('You can view the '.$this->projectName.' project details into the '.config('app.name').' app');
+            $subject = config('app.name').': Regarding new project';
         }
         else
         {
             $introLines = array('The '.$this->projectName.' project updated by scheduler!');
-            $outroLines = array('You can view the '.$this->projectName.' project details into the Scoped app');
-            $subject = 'Scoped: Regarding update project';
+            $outroLines = array('You can view the '.$this->projectName.' project details into the '.config('app.name').' app');
+            $subject = config('app.name').': Regarding update project';
         }
         $greeting = 'Hello '.$this->user->users_name."!";
         $actionUrl = url('/');

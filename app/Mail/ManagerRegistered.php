@@ -40,10 +40,10 @@ class ManagerRegistered extends Mailable
             $usertype = $this->user->user_types_id;
             if($usertype == 2)
             {
-                $introLines = array('Your registration for Scoped app is completed successfully.');
-                $outroLines = array('Now you need to complete your account Verification in Scoped app. Please click on following button.');
+                $introLines = array('Your registration for '.config('app.name').' app is completed successfully.');
+                $outroLines = array('Now you need to complete your account Verification in '.config('app.name').' app. Please click on following button.');
            
-                $subject = 'Scoped: Email Verification';
+                $subject = config('app.name').': Email Verification';
                 $greeting = 'Hello '.$this->user->users_name."!";
                 $actionUrl = $this->url;
                 return $this->subject($subject)->markdown('email.userRegistration',['level'=>'success','greeting'=>$greeting,'introLines'=>$introLines,'outroLines'=>$outroLines, 'actionText' => 'Verify Email' , 'actionUrl' => $actionUrl]);
@@ -51,9 +51,9 @@ class ManagerRegistered extends Mailable
             }
             else
             {
-                $introLines = array('Your Project Manager user registration for Scoped app is completed successfully.Now you need to complete your account Verification in Scoped app. Please click on following button.');
-                $outroLines = array('Below button is to set your password for Scoped App.');
-                $subject     = 'Scoped: Project Manager Registration';
+                $introLines = array('Your Project Manager user registration for'.config('app.name').' app is completed successfully.Now you need to complete your account Verification in '.config('app.name').' app. Please click on following button.');
+                $outroLines = array('Below button is to set your password for '.config('app.name').' App.');
+                $subject     = config('app.name').': Project Manager Registration';
                 $greeting    = 'Hello '.$this->user->users_name."!";
                 $actionUrl   = $this->url;
                 $passwordurl = $this->setpasswordurl;
@@ -63,8 +63,8 @@ class ManagerRegistered extends Mailable
             
         }else {
             $introLines = array('Your password is changed successfully');
-            $outroLines = array('Now you can login into the Scoped app');
-            $subject = 'Scoped: Password changed successfully';
+            $outroLines = array('Now you can login into the '.config('app.name').' app');
+            $subject = config('app.name')': Password changed successfully';
         }
         $greeting = 'Hello '.$this->user->users_name."!";
         $actionUrl = url('/');

@@ -28,10 +28,10 @@ class Rejectapproval extends Mailable
      */
     public function build()
     {
-        $introLines = array('Scoped: Sorry!! your associate approval request is not approved');
+        $introLines = array(config('app.name').': Sorry!! your associate approval request is not approved');
        // $outroLines = array('Now you can login into the Project Bidding app');
       $outroLines = array();
-        $subject = 'Scoped:Reject Asscociate approval Request';
+        $subject = config('app.name').':Reject Asscociate approval Request';
         $greeting = 'Hello '.$this->user->users_name."!";
         return $this->subject($subject)->markdown('email.approveduser',['level'=>'success','greeting'=>$greeting,'introLines'=>$introLines,'outroLines' => $outroLines]);
      

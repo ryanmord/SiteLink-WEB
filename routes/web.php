@@ -112,6 +112,8 @@ Route::group(['middleware' => 'disablepreventback'],function()
 	Route::get('/employeeRequestList/','ProjectController@employeeRequestList')->name('employeeRequestList')->middleware(guest::class);
 	Route::get('/bidsList/','ProjectController@bidsList')->name('bidsList')->middleware(guest::class);
 	Route::get('/userProjects/','ProjectController@usersProject')->name('usersProject')->middleware(guest::class);
+	Route::get('/siteAddress/{id}','ProjectController@viewMap')->name('siteAddress')->middleware(guest::class);
+
 });
 Route::get('/forgotPassword/{userid}','LoginController@forgotpassword')->name('forgotPassword');
 Route::post('/changepassword','LoginController@changepassword');
@@ -167,7 +169,6 @@ Route::get('/home/searchBidHistory','FrontController\MybidController@searchBidHi
 Route::get('/home/searchActiveBids','FrontController\MybidController@searchActiveBids')->name('searchActiveBids')->middleware(IsAssociate::class);
 Route::get('/home/activeBidPagination','FrontController\MybidController@activeBidPagination')->name('activeBidPagination')->middleware(IsAssociate::class);
 Route::get('/home/associateReviewStore','UserReviewController@associateReviewStore')->name('associateReviewStore')->middleware(IsAssociate::class);
-
 });
 
 //Reoptimized class loader: 
