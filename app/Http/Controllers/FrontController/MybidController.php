@@ -181,8 +181,8 @@ class MybidController extends Controller
                 }
             }
         }
-        $temp = array('appendLi'      => $appendLi,
-                      'projectdetail' => $projectdetail,
+        $temp = array('appendLi'             => $appendLi,
+                      'projectdetail'        => $projectdetail,
                      
                     );
 

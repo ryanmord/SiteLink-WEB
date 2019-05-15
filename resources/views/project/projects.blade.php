@@ -18,7 +18,7 @@
         @endif
         <div class="panel-heading" style="height: 50px;">
             <h3 class="panel-title">
-                Scoped Projects 
+                {{config('app.name')}} Projects 
                 @if(session('loginusertype') == 'admin')
                     <a href="{{ url('/createProject') }}"><button type="button" class="btn btn-danger" style="float: right;text-align: center;">Create Project</button></a>
                 @endif
@@ -50,7 +50,7 @@
                                             <tr bgcolor="#EEEEEE">
                                                 <th class="table-td-th" width="100" data-id="1" id="allocated-identifier-th" onclick="sortallocatedTable(0,'allocated-identifier-th','allocated-identifier-th-asc','allocated-identifier-th-desc')" style="cursor: pointer; text-align: left;">Project Identifier <i class='fa fa-arrow-down fa-icon-sort-desc' id="allocated-identifier-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="allocated-identifier-th-asc"></i></th>
 
-                                                <th class="table-td-th" width="120" data-id="1" id="allocated-name-th" onclick="sortallocatedTable(1,'allocated-name-th','allocated-name-th-asc','allocated-name-th-desc')" style="cursor: pointer;">Project Name <i class='fa fa-arrow-down fa-icon-sort' id="allocated-name-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="allocated-name-th-asc"></i></th>
+                                                <th class="table-td-th" width="120" data-id="1" id="allocated-name-th" onclick="sortallocatedTable(1,'allocated-name-th','allocated-name-th-asc','allocated-name-th-desc')" style="cursor: pointer;">Name <i class='fa fa-arrow-down fa-icon-sort' id="allocated-name-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="allocated-name-th-asc"></i></th>
 
                                                 <th class="table-td-th" data-id="1" id="allocated-address-th" onclick="sortallocatedTable(2,'allocated-address-th','allocated-address-th-asc','allocated-address-th-desc')" style="cursor: pointer;">Site Address <i class='fa fa-arrow-down fa-icon-sort' id="allocated-address-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="allocated-address-th-asc"></i></th>
 
@@ -99,7 +99,7 @@
                                     <tr bgcolor="#EEEEEE">
                                         <th class="table-td-th" width="100" data-id="1" id="complete-identifier-th" onclick="completesortTable(0,'complete-identifier-th','complete-identifier-th-asc','complete-identifier-th-desc')" style="cursor: pointer;text-align: left;">Project Identifier <i class='fa fa-arrow-down fa-icon-sort-desc' id="complete-identifier-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="complete-identifier-th-asc"></i></th>
 
-                                        <th class="table-td-th" width="120" data-id="1" id="complete-name-th" onclick="completesortTable(1,'complete-name-th','complete-name-th-asc','complete-name-th-desc')" style="cursor: pointer;">Project Name <i class='fa fa-arrow-down fa-icon-sort' id="complete-name-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="complete-name-th-asc"></i></th>
+                                        <th class="table-td-th" width="120" data-id="1" id="complete-name-th" onclick="completesortTable(1,'complete-name-th','complete-name-th-asc','complete-name-th-desc')" style="cursor: pointer;">Name <i class='fa fa-arrow-down fa-icon-sort' id="complete-name-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="complete-name-th-asc"></i></th>
 
                                         <th class="table-td-th" data-id="1" id="complete-address-th" onclick="completesortTable(2,'complete-address-th','complete-address-th-asc','complete-address-th-desc')" style="cursor: pointer;">Site Address <i class='fa fa-arrow-down fa-icon-sort' id="complete-address-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="complete-address-th-asc"></i></th>
             
@@ -147,7 +147,7 @@
                                     <thead>
                                         <tr bgcolor="#EEEEEE">
                                             <th sclass="table-td-th" width="100" data-id="1" id="cancel-identifier-th" onclick="cancelsortTable(0,'cancel-identifier-th','cancel-identifier-th-asc','cancel-identifier-th-desc')" style="cursor: pointer;text-align: left;">Project Identifier <i class='fa fa-arrow-down fa-icon-sort-desc' id="cancel-identifier-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="cancel-identifier-th-asc"></i></th>
-                                            <th class="table-td-th" width="140" data-id="1" id="cancel-name-th" onclick="cancelsortTable(1,'cancel-name-th','cancel-name-th-asc','cancel-name-th-desc')" style="cursor: pointer;">Project Name <i class='fa fa-arrow-down fa-icon-sort' id="cancel-name-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="cancel-name-th-asc"></i></th>
+                                            <th class="table-td-th" width="140" data-id="1" id="cancel-name-th" onclick="cancelsortTable(1,'cancel-name-th','cancel-name-th-asc','cancel-name-th-desc')" style="cursor: pointer;">Name <i class='fa fa-arrow-down fa-icon-sort' id="cancel-name-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="cancel-name-th-asc"></i></th>
                                             <th class="table-td-th" data-id="1" id="cancel-address-th" onclick="cancelsortTable(2,'cancel-address-th','cancel-address-th-asc','cancel-address-th-desc')" style="cursor: pointer;">Site Address <i class='fa fa-arrow-down fa-icon-sort' id="cancel-address-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="cancel-address-th-asc"></i></th>
           
                                             <th class="table-td-th" width="100" data-id="1" id="cancel-bid-th" onclick="cancelsortTable(3,'cancel-bid-th','cancel-bid-th-asc','cancel-bid-th-desc')" style="cursor: pointer;">Final Bid <i class='fa fa-arrow-down fa-icon-sort' id="cancel-bid-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="cancel-bid-th-asc"></i></th>
@@ -190,7 +190,7 @@
                                     <tr bgcolor="#EEEEEE">
                                         <th class="table-td-th" width="100" data-id="1" id="onhold-identifier-th" onclick="onholdsortTable(0,'onhold-identifier-th','onhold-identifier-th-asc','onhold-identifier-th-desc')" style="cursor: pointer;text-align: left;">Project Identifier <i class='fa fa-arrow-down fa-icon-sort-desc' id="onhold-identifier-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="onhold-identifier-th-asc"></i></th>
 
-                                        <th class="table-td-th" width="140" data-id="1" id="onhold-name-th" onclick="onholdsortTable(1,'onhold-name-th','onhold-name-th-asc','onhold-name-th-desc')" style="cursor: pointer;">Project Name <i class='fa fa-arrow-down fa-icon-sort' id="onhold-name-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="onhold-name-th-asc"></i></th>
+                                        <th class="table-td-th" width="140" data-id="1" id="onhold-name-th" onclick="onholdsortTable(1,'onhold-name-th','onhold-name-th-asc','onhold-name-th-desc')" style="cursor: pointer;">Name <i class='fa fa-arrow-down fa-icon-sort' id="onhold-name-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="onhold-name-th-asc"></i></th>
 
                                         <th class="table-td-th" data-id="1" id="onhold-address-th" onclick="onholdsortTable(2,'onhold-address-th','onhold-address-th-asc','onhold-address-th-desc')" style="cursor: pointer;">Site Address <i class='fa fa-arrow-down fa-icon-sort' id="onhold-address-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="onhold-address-th-asc"></i></th>
 
@@ -233,7 +233,7 @@
                                 <thead>
                                     <tr bgcolor="#EEEEEE">
                                     <th class="table-td-th" width="100" data-id="1" id="open-identifier-th" onclick="opensortTable(0,'open-identifier-th','open-identifier-th-asc','open-identifier-th-desc')" style="cursor: pointer;text-align: left;">Project Identifier <i class='fa fa-arrow-down fa-icon-sort-desc' id="open-identifier-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="open-identifier-th-asc"></i></th>
-                                    <th class="table-td-th" width="140" data-id="1" id="open-name-th" onclick="opensortTable(1,'open-name-th','open-name-th-asc','open-name-th-desc')" style="cursor: pointer;">Project Name  <i class='fa fa-arrow-down fa-icon-sort' id="open-name-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="open-name-th-asc"></i></th>
+                                    <th class="table-td-th" width="140" data-id="1" id="open-name-th" onclick="opensortTable(1,'open-name-th','open-name-th-asc','open-name-th-desc')" style="cursor: pointer;">Name  <i class='fa fa-arrow-down fa-icon-sort' id="open-name-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="open-name-th-asc"></i></th>
                                     <th class="table-td-th">Total Bids</th>
                                     <th class="table-td-th" data-id="1" id="open-address-th" onclick="opensortTable(2,'open-address-th','open-address-th-asc','open-address-th-desc')" style="cursor: pointer;">Site Address <i class='fa fa-arrow-down fa-icon-sort' id="open-address-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="open-address-th-asc"></i></th>
                                     <th class="table-td-th" width="100" id="open-bid-th" onclick="opensortTable(3,'open-bid-th','open-bid-th-asc','open-bid-th-desc')" style="cursor: pointer;">Suggested Bid <i class='fa fa-arrow-down fa-icon-sort' id="open-bid-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="open-bid-th-asc"></i></th>

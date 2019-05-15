@@ -25,7 +25,11 @@ class IsAssociate
        {
          return redirect('/home/login');
        }
+     }
+       /* if (Auth::guard($guard)->check()) {
+            return redirect('/');
+        }
+*/
+        
     }
-      
-}
 

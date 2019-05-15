@@ -75,13 +75,13 @@
         @endif
        
         <div class="panel-heading">
-          <h3 class="panel-title">Pre-Scheduling & Unverified Users</h3>
+          <h3 class="panel-title">Project Queue & Unverified Users</h3>
         </div>
         <div class="content-row">
           <div class="row">
             <div class="panel panel-title">
               <ul id="myTab1" class="nav nav-tabs nav-justified">
-               <li class="active"><a href="#schedulingProjects" data-toggle="tab">Pre-Scheduling <span class="badge" style="background-color:#DB5A6B;" id="scheduling-Project-Count">{{ $schedulingProjectCount }}</span>
+               <li class="active"><a href="#schedulingProjects" data-toggle="tab">Project Queue <span class="badge" style="background-color:#DB5A6B;" id="scheduling-Project-Count">{{ $schedulingProjectCount }}</span>
                 </a></li>
                 <li><a href="#home1" data-toggle="tab">
                   Unverified Users <span class="badge" style="background-color:#DB5A6B;" id="pending-user-count">{{ $users->count() }}</span>
@@ -170,7 +170,7 @@
                                       <!-- <input type="checkbox" id="allChecks"> -->
                                   </th>
                                     <th class="table-td-th" width="100" data-id="1" id="identifier-th" onclick="sortTable(0,'identifier-th','identifier-th-asc','identifier-th-desc')" style="cursor: pointer;text-align: left;">Project Identifier <i class='fa fa-arrow-down fa-icon-sort-desc' id="identifier-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="identifier-th-asc"></i></th>
-                                    <th class="table-td-th" width="140" data-id="1" id="projectname-th" onclick="sortTable(1,'projectname-th','projectname-th-asc','projectname-th-desc')" style="cursor: pointer;">Project Name <i class='fa fa-arrow-down fa-icon-sort' id="projectname-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="projectname-th-asc"></i></th>
+                                    <th class="table-td-th" width="140" data-id="1" id="projectname-th" onclick="sortTable(1,'projectname-th','projectname-th-asc','projectname-th-desc')" style="cursor: pointer;">Name <i class='fa fa-arrow-down fa-icon-sort' id="projectname-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="projectname-th-asc"></i></th>
                                     <th class="table-td-th" data-id="1" id="siteaddress-th" onclick="sortTable(2,'siteaddress-th','siteaddress-th-asc','siteaddress-th-desc')" style="cursor: pointer;">Site Address <i class='fa fa-arrow-down fa-icon-sort' id="siteaddress-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="siteaddress-th-asc"></i></th>
                                     <th class="table-td-th" width="110" data-id="1" id="budget-th" onclick="sortTable(3,'budget-th','budget-th-asc','budget-th-desc')" style="cursor: pointer;">Budget <i class='fa fa-arrow-down fa-icon-sort' id="budget-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="budget-th-asc"></i></th>
                                     <th class="table-td-th">Scope</th>

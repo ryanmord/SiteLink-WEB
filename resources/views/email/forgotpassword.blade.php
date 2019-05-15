@@ -41,7 +41,7 @@
 @if (! empty($salutation))
 {{ $salutation }}
 @else
-Regards,<br>Scoped app team
+Regards,<br>{{config('app.name')}} app team
 @endif
 
 <!-- Subcopy -->

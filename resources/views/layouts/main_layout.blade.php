@@ -6,7 +6,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title> Scoped </title>
+<title> {{config('app.name')}} </title>
 
   <link rel="shortcut icon" href="{{{ asset('img/brick-wall.png') }}}">
     @include('layouts.include_css')

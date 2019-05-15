@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8">
 
-    <title> Scoped </title>
+    <title> {{config('app.name')}} </title>
     <meta name="csrf-param" content="_csrf-frontend">
     <meta name="csrf-token" content="fkMSpKSo6hiL4aMtehZ6vsKrITZzXRMTNqJcc08Vjbn4x2CqKYTaK9bADjir9ZlwWVCoNVE0zG0Bn_VUB-ywPA==">
     <link href="{{asset('/css/themeCss/map.css')}}" rel="stylesheet">

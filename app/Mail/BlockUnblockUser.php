@@ -36,12 +36,12 @@ class BlockUnblockUser extends Mailable
         //User Registration
         if($this->action == 1){
             $introLines = array('Sorry your profile is blocked by scheduler for some time');
-            $outroLines = array('Now you can not login into the Scoped app');
-            $subject = 'Scoped: Blocked your profile for the some time';
+            $outroLines = array('Now you can not login into the'.config('app.name').' app');
+            $subject = config('app.name').': Blocked your profile for the some time';
         }else if($this->action == 2){
             $introLines = array('Your profile is Unblocked by scheduler');
-            $outroLines = array('Now you can login into the Scoped app');
-            $subject = 'Scoped: Unblocked your profile';
+            $outroLines = array('Now you can login into the'.config('app.name').' app');
+            $subject = config('app.name').': Unblocked your profile';
         }
         $greeting = 'Hello '.$this->user->users_name."!";
         $actionUrl = url('/');

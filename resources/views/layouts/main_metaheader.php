@@ -1,6 +1,6 @@
 
 <meta charset="utf-8">
-<title> Scoped </title>
+<title> {{config('app.name')}} </title>
 <link rel="shortcut icon" href="{{{ asset('img/title_icon.png') }}}">
  
    
