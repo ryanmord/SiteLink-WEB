@@ -38,21 +38,21 @@ class updateManager extends Mailable
 
         if($this->action == 1){
             
-            $introLines = array('Your Project Manager profile for Scoped app has been updated successfully.');
-            $outroLines = array('Below button is for to login in Scoped App.');
-            $subject     = 'Scoped: Profile updated!';
+            $introLines = array('Your Project Manager profile for '.config('app.name').' app has been updated successfully.');
+            $outroLines = array('Below button is for to login in '.config('app.name').' App.');
+            $subject     = config('app.name').': Profile updated!';
             $greeting    = 'Hello '.$this->user->users_name."!";
             $loginUrl = $this->loginUrl;
-            return $this->subject($subject)->markdown('email.managersignup',['level'=>'success','greeting'=>$greeting,'introLines'=>$introLines,'outroLines'=>$outroLines,'passwordText' => 'Scoped Login' , 'passwordUrl' => $loginUrl]);
+            return $this->subject($subject)->markdown('email.managersignup',['level'=>'success','greeting'=>$greeting,'introLines'=>$introLines,'outroLines'=>$outroLines,'passwordText' => config('app.name').' Login' , 'passwordUrl' => $loginUrl]);
            exit;
         }else {
-            $introLines = array('Your Project Manager profile for Scoped app has been updated successfully.Now you need to complete your Email Verification for the Scoped app. Please click on following button.');
-            $outroLines = array('Below button is for to login in Scoped App.');
-            $subject     = 'Scoped: Profile updated!';
+            $introLines = array('Your Project Manager profile for '.config('app.name').' app has been updated successfully.Now you need to complete your Email Verification for the '.config('app.name').' app. Please click on following button.');
+            $outroLines = array('Below button is for to login in '.config('app.name').' App.');
+            $subject     = config('app.name').': Profile updated!';
             $greeting    = 'Hello '.$this->user->users_name."!";
             $actionUrl   = $this->url;
             $loginUrl = $this->loginUrl;
-            return $this->subject($subject)->markdown('email.managersignup',['level'=>'success','greeting'=>$greeting,'introLines'=>$introLines,'outroLines'=>$outroLines, 'actionText' => 'Verify Email' , 'actionUrl' => $actionUrl,'passwordText' => 'Scoped Login' , 'passwordUrl' => $loginUrl]);
+            return $this->subject($subject)->markdown('email.managersignup',['level'=>'success','greeting'=>$greeting,'introLines'=>$introLines,'outroLines'=>$outroLines, 'actionText' => 'Verify Email' , 'actionUrl' => $actionUrl,'passwordText' => config('app.name').' Login' , 'passwordUrl' => $loginUrl]);
             exit;
         }
         

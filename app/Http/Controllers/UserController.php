@@ -133,7 +133,7 @@ class UserController extends Controller
                                          $appendtd .= '<li><a href="#" onclick = "userblockunblock('.$value->users_id.',3)">Block</a>
                                       </li>';
                                     }
-                $appendtd .= '<li><a href="'.url('projects/'.$value->users_id).'">Projects</a></li>
+                $appendtd .= '      <li><a href="'.url('projects/'.$value->users_id).'">Projects</a></li>
                                   </ul>
                                 </div>
                               </td>
@@ -216,7 +216,8 @@ class UserController extends Controller
                                          $appendtd .= '<li><a href="#" onclick = "userblockunblock('.$value->users_id.',3)">Block</a>
                                       </li>';
                                     }
-                $appendtd .= '<li><a href="'.url('projects/'.$value->users_id).'">Projects</a></li>
+                $appendtd .= '      <li><a href="'.url('projects/'.$value->users_id).'">Projects</a></li>
+                                    <li><a href="'.url('editProjectManager/'.$value->users_id).'">Edit</a></li>
                                   </ul>
                                 </div>
                               </td>
@@ -263,6 +264,92 @@ class UserController extends Controller
             $warning="Your email address is incorrect";
             return response()->json(['error' => $warning]);
             exit;
+        }
+    }
+    public function editProjectManager($id){
+        $user=User::where('users_id','=',$id)->first();
+        //echo "<pre>";print_r($user);exit;
+        return view('user.editprojectmanager',[
+                    'userDetails'       => $user, 
+                    'userId'      => $id  
+                  ]);
+
+    }
+    public function updateProjectManager(Request $request,$id){
+        $userid = $id;
+        $store_flag = 0;
+        $input_arrays = array();
+        if(isset($request['users_name'])){
+            $name  = $request['users_name'];
+            $input_arrays['users_name'] = $name;
+            $store_flag = 1;
+            
+        }
+        if(isset($request['last_name'])){
+
+            $lastname  = $request['last_name'];
+            $input_arrays['last_name'] = $lastname;
+            $store_flag = 1;
+            
+        }
+        if(isset($request['users_company'])){
+
+            $company = $request['users_company'];
+            $input_arrays['users_company'] = $company;
+            $store_flag = 1;
+
+        }
+        if(isset($request['users_phone'])){
+
+            $phone = $request['users_phone'];
+            $input_arrays['users_phone'] = $phone;
+            $store_flag = 1;
+            
+            
+        }
+        if(isset($request['users_email'])){
+
+            $email = $request['users_email'];
+            $input_arrays['users_email'] = $email;
+            $store_flag = 1;
+            
+        }
+        if($store_flag == 1){
+            $model = User::where('users_id', '=',$userid)
+                            ->update($input_arrays);
+            $warning="Project Manager Profile updated successfully";
+            return response()->json(['success' => $warning]);    
+        }else{
+            if(!empty($input_arrays)){
+                $warning="Problem with Update Project Manager Profile";
+                return response()->json(['error' => $warning]);    
+            }else{
+                $warning="Profile Updated";
+                return response()->json(['success' => $warning]);    
+            }
+            
+        }
+    
+    }
+    public function checkProjectManagerEmail(Request $request,$id){
+        //echo "<pre>";print_r($_POST);
+        if(isset($_POST['users_email']) && trim($_POST['users_email'])!=''){
+           // echo $_POST['users_email'];
+            $user = User::select('users_id')->where('users_email','=',trim($_POST['users_email']))->where('user_types_id','=',1)->first();
+            //print_r($user);
+            if(!empty($user)){
+                $getusers_id = $user->users_id;
+                if($id == $getusers_id){
+                    echo json_encode(array('status'=>'0','message'=>''));exit;
+                }else{
+                    //echo true;exit;
+                    echo json_encode(array('status'=>'1','message'=>'use another email'));exit;
+                }
+            }else{
+                //echo false;exit;
+                echo json_encode(array('status'=>'0','message'=>''));exit;
+            }
+
         }
     }
     /**

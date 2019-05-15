@@ -14,7 +14,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>Scoped</title>
+    <title>{{config('app.name')}}</title>
      <link href="{{asset('/css/frontCss/front_font.css')}}" rel="stylesheet" type="text/css">
     <meta name="csrf-param" content="_csrf-frontend">
     <meta name="csrf-token" content="fkMSpKSo6hiL4aMtehZ6vsKrITZzXRMTNqJcc08Vjbn4x2CqKYTaK9bADjir9ZlwWVCoNVE0zG0Bn_VUB-ywPA==">
@@ -128,7 +128,7 @@
                     <label id="pwderror" class="error" style="color: #b70a0a;float: left;">
                         
                       </label>
-                      <button type="button" class="btn btn-primary chkforgotpwd" name="login-button" id="forgot">SUBMIT</button>
+                      <button type="submit" class="btn btn-primary chkforgotpwd" name="login-button" id="forgot">SUBMIT</button>
                     </div>
                   </form>
                   <a href="#" style="color: black;float: left;" id="resend">Resend</a>
@@ -148,12 +148,7 @@
     <script>
 $(document).ready(function() {
   $('#resend').hide();
-      $(window).keydown(function(event){
-        if(event.keyCode == 13) {
-          event.preventDefault();
-          return false;
-        }
-      });
+      
     });
 $(document).ready(function () {
   $(".loader").fadeOut("slow");
@@ -173,8 +168,6 @@ $(document).ready(function () {
             {
               required: true
             },
-            
-            
         },messages:{
             admin_users_email: "Please Enter Email Id",
             admin_users_password: "Please Enter Password",
@@ -224,23 +217,18 @@ $(document).ready(function () {
             
           $('#forgot_password').validate({
           // initialize the plugin
-
           rules: {
             femail: 
             {
               required: true,
               email:true
             }
-            
-            
         },messages:{
             femail: "Please Enter Email Id",
-            
             
         },errorPlacement: function(error, element) {
             error.insertAfter(element);
         }
-       
     });
     if($("#forgot_password").valid()) {
       $(".loader").fadeIn("slow");

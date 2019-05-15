@@ -3,10 +3,11 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title> Scoped </title>
+  <title> {{config('app.name')}} </title>
  <!--  <link href="{{asset('/css/themeCss/map.css')}}" rel="stylesheet"> -->
   <link rel="shortcut icon" href="{{{ asset('img/brick-wall.png') }}}">
  <!--  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css"> -->
+ 
     @include('layouts.include_css')
 
   <!-- <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css"> -->
@@ -75,7 +76,7 @@
                               <label style="font-size: 15px;">Project Identifier</label>
                             </div>
                             <div class="col-md-2">
-                              <p style="font-size: 15px;">#{{ $project['project_number'] }}</p>
+                              <p style="font-size: 15px;">{{ (!isset($project->project_number) || is_null($project->project_number)) ? '-' : $project->project_number}}</p>
                             </div>
                           </div>
                           <div class="row">
@@ -119,7 +120,16 @@
                               <label style="font-size: 15px;">Project Address</label>
                             </div>
                             <div class="col-md-9">
-                              <p style="font-size: 15px;">{{ $project->project_site_address }}</p>
+                              <p style="font-size: 15px;">
+                              <?php 
+                              //$url = 'https://www.google.com/maps/place/Magneto+IT+Solutions/@18.5911585,73.7513083';
+                              //$url = 'https://www.google.com/maps/place/'.urlencode($project->project_site_address).'/@'.$project->latitude.','.$project->longitude.',11z/data='.$project->latitude.$project->longitude;
+                                //$url = 'https://www.google.com/maps/search/?api=1&address='.urlencode($project->project_site_address).'&key=AIzaSyCFesVLN0rhPhI0uHrMrQjclKdbyx9X9g0&query='.$project->latitude.','.$project->longitude;
+                                //$url = 'https://maps.googleapis.com/maps/api/geocode/json?latlng='.$project->latitude.','.$project->longitude.'&sensor=false&key=AIzaSyCFesVLN0rhPhI0uHrMrQjclKdbyx9X9g0';
+                              ?>
+                              <a href="{{url('siteAddress',$project['project_id'])}}" target="_blank" style="color: #DA4453;"><u>{{ $project->project_site_address }}</u></a></p>
+                              <input type="hidden" id="latitude" name="latitude" value="{{ $project->latitude }}">
+                              <input type="hidden" id="longitude" name="longitude" value="{{ $project->longitude }}">
                             </div>
                           </div>
                           <div class="row">
@@ -135,7 +145,7 @@
                               <label style="font-size: 15px;">Special Instruction</label>
                             </div>
                             <div class="col-md-9">
-                              <p style="font-size: 15px;">{{ $project->instructions }}</p>
+                              <p style="font-size: 15px;">{{ (!isset($project->instructions) || is_null($project->instructions)) ? '-' : $project->instructions}}</p>
                             </div>
                           </div>
                           <div class="row" style="background-color: #E6E9ED;">
@@ -155,13 +165,13 @@
                               <label style="font-size: 15px;">No. Units</label>
                             </div>
                             <div class="col-md-2">
-                              <p style="font-size: 15px;">{{ $project->no_of_units }}</p>
+                              <p style="font-size: 15px;">{{ (!isset($project->no_of_units) || is_null($project->no_of_units)) ? '-' : $project->no_of_units}}</p>
                             </div>
                             <div class="col-md-2">
                               <label style="font-size: 15px;">Sq. Footage</label>
                             </div>
                             <div class="col-md-2">
-                              <p style="font-size: 15px;">{{ $project->squareFootage }}</p>
+                              <p style="font-size: 15px;">{{ (!isset($project->squareFootage) || is_null($project->squareFootage)) ? '-' : $project->squareFootage}}</p>
                             </div>
                           </div>
                           <div class="row">
@@ -169,13 +179,13 @@
                               <label style="font-size: 15px;">No. Buildings</label>
                             </div>
                             <div class="col-md-2">
-                              <p style="font-size: 15px;">{{ $project->no_of_buildings }}</p>
+                              <p style="font-size: 15px;">{{ (!isset($project->no_of_buildings) || is_null($project->no_of_buildings)) ? '-' : $project->no_of_buildings}}</p>
                             </div>
                             <div class="col-md-2">
                               <label style="font-size: 15px;">Land Area</label>
                             </div>
                             <div class="col-md-2">
-                              <p style="font-size: 15px;">{{ $project->land_area }}</p>
+                              <p style="font-size: 15px;">{{ (!isset($project->land_area) || is_null($project->land_area)) ? '-' : $project->land_area}}</p>
                             </div>
                           </div>
                           <div class="row">
@@ -183,13 +193,13 @@
                               <label style="font-size: 15px;">No. Stories</label>
                             </div>
                             <div class="col-md-2">
-                              <p style="font-size: 15px;">{{ $project->no_of_stories }}</p>
+                              <p style="font-size: 15px;">{{ (!isset($project->no_of_stories) || is_null($project->no_of_stories)) ? '-' : $project->no_of_stories}}</p>
                             </div>
                             <div class="col-md-2">
                               <label style="font-size: 15px;">Year Built</label>
                             </div>
                             <div class="col-md-2">
-                              <p style="font-size: 15px;">{{ $project->year_built }}</p>
+                              <p style="font-size: 15px;">{{ (!isset($project->year_built) || is_null($project->year_built)) ? '-' : $project->year_built}}</p>
                             </div>
                           </div>
                           <div class="row" style="background-color: #E6E9ED;">

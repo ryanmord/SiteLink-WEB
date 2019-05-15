@@ -42,7 +42,7 @@
                       <tr bgcolor="#EEEEEE">
                         <th width="90" data-id="1" id="id-th" onclick="sortTable(0,'id-th','id-th-asc','id-th-desc')" style="cursor: pointer;">ID <i class='fa fa-arrow-down fa-icon-sort-desc' id="id-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="id-th-asc"></i></th>
                         <th width="50px;">Image</th>
-                        <th data-id="1" width="160" id="name-th" onclick="sortTable(1,'name-th','name-th-asc','name-th-desc')" style="cursor: pointer;">User Name <i class='fa fa-arrow-down fa-icon-sort' id="name-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="name-th-asc">
+                        <th data-id="1" width="160" id="name-th" onclick="sortTable(1,'name-th','name-th-asc','name-th-desc')" style="cursor: pointer;">Name <i class='fa fa-arrow-down fa-icon-sort' id="name-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="name-th-asc">
                           </i></th>
                         <th data-id="1" width="130" id="company-th" onclick="sortTable(2,'company-th','company-th-asc','company-th-desc')" style="cursor: pointer;">Company <i class='fa fa-arrow-down fa-icon-sort' id="company-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="company-th-asc">
                           </i></th>
@@ -84,7 +84,7 @@
                         <tr bgcolor="#EEEEEE">
                           <th width="80" data-id="1" id="pmid-th" onclick="pmsortTable(0,'pmid-th','pmid-th-asc','pmid-th-desc')" style="cursor: pointer;">ID <i class='fa fa-arrow-down fa-icon-sort-desc' id="pmid-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="pmid-th-asc"></i></th>
                           <th width="50">Image</th>
-                          <th data-id="1" width="150" id="pmname-th" onclick="pmsortTable(1,'pmname-th','pmname-th-asc','pmname-th-desc')" style="cursor: pointer;">User Name <i class='fa fa-arrow-down fa-icon-sort' id="pmname-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="pmname-th-asc"></i>
+                          <th data-id="1" width="150" id="pmname-th" onclick="pmsortTable(1,'pmname-th','pmname-th-asc','pmname-th-desc')" style="cursor: pointer;">Name <i class='fa fa-arrow-down fa-icon-sort' id="pmname-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="pmname-th-asc"></i>
                           </th>
                           <th data-id="1" width="150" id="pmcompany-th" onclick="pmsortTable(2,'pmcompany-th','pmcompany-th-asc','pmcompany-th-desc')" style="cursor: pointer;">Company <i class='fa fa-arrow-down fa-icon-sort' id="pmcompany-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="pmcompany-th-asc"></i></th>
                           <th data-id="1" id="pmemail-th" onclick="pmsortTable(3,'pmemail-th','pmemail-th-asc','pmemail-th-desc')" style="cursor: pointer;">Email <i class='fa fa-arrow-down fa-icon-sort' id="pmemail-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="pmemail-th-asc"></i></th>

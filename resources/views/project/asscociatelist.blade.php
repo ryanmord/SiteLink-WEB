@@ -23,7 +23,7 @@
             <tr bgcolor="#EEEEEE">
               <th></th>
               <th style="color: #111213de;" width="50px;">Image</th>
-              <th style="color: #111213de;">User Name</th>
+              <th style="color: #111213de;">Name</th>
               <th style="color: #111213de;">Company</th>
               <th style="color: #111213de;">Email</th>
             </tr>

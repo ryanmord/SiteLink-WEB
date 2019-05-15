@@ -14,7 +14,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>Scoped</title>
+    <title>{{config('app.name')}}</title>
        <link href="{{asset('/css/frontCss/front_font.css')}}" rel="stylesheet" type="text/css">
     <meta name="csrf-param" content="_csrf-frontend">
     <meta name="csrf-token" content="fkMSpKSo6hiL4aMtehZ6vsKrITZzXRMTNqJcc08Vjbn4x2CqKYTaK9bADjir9ZlwWVCoNVE0zG0Bn_VUB-ywPA==">
