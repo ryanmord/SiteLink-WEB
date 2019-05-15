@@ -113,6 +113,11 @@ Route::group(['middleware' => 'disablepreventback'],function()
 	Route::get('/bidsList/','ProjectController@bidsList')->name('bidsList')->middleware(guest::class);
 	Route::get('/userProjects/','ProjectController@usersProject')->name('usersProject')->middleware(guest::class);
 	Route::get('/siteAddress/{id}','ProjectController@viewMap')->name('siteAddress')->middleware(guest::class);
+	
+	/* =========== PROJECT MANAGER EDIT PAGE ROUTE ================ */
+	Route::get('/editProjectManager/{id}','UserController@editProjectManager')->name('editProjectManager')->middleware(guest::class);
+	Route::post('/updateProjectManager/{id}', 'UserController@updateProjectManager')->name('updateProjectManager')->middleware(guest::class);
+	Route::post('/checkProjectManagerEmail/{id}', 'UserController@checkProjectManagerEmail')->name('checkProjectManagerEmail')->middleware(guest::class);
 
 });
 Route::get('/forgotPassword/{userid}','LoginController@forgotpassword')->name('forgotPassword');
