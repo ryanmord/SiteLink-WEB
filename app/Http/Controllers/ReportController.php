@@ -429,7 +429,10 @@ class ReportController extends Controller
 
     public function exportProjects(Request $request)
     {
-       
+        //$request['selectedDate'] = '2019-02-07';
+        //$request['callFrom'] = 1;
+       /* $scheduledProjects = $this->getexportprojects($request['selectedDate']);
+        return json_encode($scheduledProjects);*/
         $date = $request->input('datepicker');
         $date = new DateTime($date);
         $date = $date->format("Y-m-d");
@@ -439,6 +442,8 @@ class ReportController extends Controller
         $date2 = $date2->format('Y-m-d H:i:s');
         $current_excel_filename = strtolower('report-'.$date.'.xlsx');
         $current_excel_filepath = public_path("/img/reports/".$current_excel_filename);
+       /* echo $current_excel_filepath;
+        exit;*/
         $objPHPExcel = new PHPExcel();
 
         // Set document properties
@@ -769,7 +774,105 @@ class ReportController extends Controller
         //$objWriter->save($current_excel_filepath); 
 
     }
-    
+    public function getexportprojects($date)
+    {
+        $data = '';
+        $appendtd = '';
+        $projectcount = 0;
+        $date = new DateTime($date);
+        $date = $date->format("Y-m-d H:i:s");
+        $date2 = $date;
+        $date2 = new DateTime($date2);
+        $date2->modify('+1 day');
+        $date2 = $date2->format('Y-m-d H:i:s');
+        $projects = DB::table('project_bids')
+                            ->select('projects.*','project_bids.accepted_rejected_at')
+                            ->leftJoin('projects', 'projects.project_id', '=', 'project_bids.project_id')
+                            ->where('project_bids.project_bid_status','=',1)
+                            ->where('project_bids.accepted_rejected_at','>=',$date)
+                            ->where('project_bids.accepted_rejected_at','<',$date2)
+                            ->orderBy('project_bids.accepted_rejected_at', 'desc')
+                            ->get();
+        $count = $projects->count();
+        if($count != 0)
+        {
+            $data[] = ['Date Received',
+                        'Date Scheduled',
+                        'On-site Date',
+                        'Project Number',
+                        'Account Manager',
+                        'Project Manager',
+                        'State',
+                        'City',
+                        'Scope',
+                        'Employee',
+                        'Associate',
+                        
+                        ];
+            foreach ($projects as $value) {
+                $receivedDate   = new DateTime($value->created_at);
+                $receivedDate   = $receivedDate->format('m/d/Y');
+                $schedulingDate = new DateTime($value->updated_at);
+                $schedulingDate = $schedulingDate->format('m/d/Y');
+                if(!is_null($value->on_site_date))
+                {
+                    $onSiteDate = new DateTime($value->on_site_date);
+                    $onSiteDate = $onSiteDate->format('m/d/Y');
+                }
+                else
+                {
+                    $onSiteDate = '';
+                }
+                $projectNo = $managerName = $accountManager = '';
+                $managerid = $value->user_id;
+                $manager   = User::where('users_id','=',$managerid)->first();
+                if(isset($manager) && !empty($manager))
+                {
+                    $managerName = $manager->users_name.' '.$manager->last_name;
+                }
+                $scopeid   =  $value->scope_performed_id;
+                $scope     =  explode(",",$scopeid);
+                $scopeNames = $employeeName = $associateName = '';
+                foreach ($scope as  $scopes) {
+                   $scopeperformed = ScopePerformed::select('scope_performed')
+                                            ->where(['scope_status'       => 1,
+                                                     'scope_performed_id' => $scopes])
+                                            ->first();
+                    $scopeNames .= $scopeperformed->scope_performed.' ';
+                }
+                $projectBid = ProjectBid::where(['project_id'         => $value->project_id,
+                                                 'project_bid_status' => 1,
+                                                 'bid_status'         => 1])->first();
+                if(isset($projectBid) && !empty($projectBid))
+                {
+                    $associateId = $projectBid->user_id;
+                    $associate = User::where('users_id','=',$associateId)->first();
+                    if($associate->associate_type_id == 1)
+                    {
+                        $employeeName = $associate->users_name.' '.$associate->last_name;
+                    }
+                    else
+                    {
+                        $associateName = $associate->users_name.' '.$associate->last_name;
+                    }
+                }
+                $data[] = [
+                           $receivedDate,
+                           $schedulingDate,
+                           $onSiteDate,
+                           $value->project_number,
+                           $accountManager,
+                           $managerName,
+                           $value->state,
+                           $value->city,
+                           $scopeNames,
+                           $employeeName,
+                           $associateName
+                           ];
+            }
+        }
+        return $data;
+    }
     public function exportremaining(Request $request)
     {
         //$request['selectedDate'] = '2019-02-07';

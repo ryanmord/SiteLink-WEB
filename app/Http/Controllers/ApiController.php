@@ -427,16 +427,16 @@ class ApiController extends Controller
     {
         $scope = array();
         $scopeperformed = ScopePerformed::select('scope_performed_id','scope_performed')->where('scope_status','=','1')->get();
-        if(isset($scopeperformed) && !empty($scopeperformed))
-        {
         foreach ($scopeperformed as  $value) 
         {
             $scope[] = ['scope_performed_id' => (string)$value['scope_performed_id'], 'scope_performed' =>  $value['scope_performed']];
                
         }
-                               
-        echo json_encode(array('status' => '1','scopeperformed' => $scope));
-        exit;  
+            
+        if(isset($scopeperformed) && !empty($scopeperformed))
+        {
+            echo json_encode(array('status' => '1','scopeperformed' => $scope));
+            exit;
         }
         else
         {
@@ -3894,7 +3894,7 @@ class ApiController extends Controller
     Date : 11-02-19
     By   : Suvarna*/
     public function createProjectManager(Request $request)
-    {
+    {   
         if(isset($request['apiToken']) && !empty($request['apiToken']))
         {
             $apiToken = $request['apiToken'];
@@ -3910,15 +3910,15 @@ class ApiController extends Controller
             $managerEmail = $request['email'];
             $user = User::select('users_id')
                          ->where('users_email','=',$managerEmail)
+                         ->where('user_types_id','=',1)
                          ->first();
             if(isset($user) && !empty($user))
-            {
-                $managerId = $user->users_id;
+            {   $managerId = $user->users_id;
                 return json_encode(array('status' => '0', 'message' => "This Email Id Already Registered"));
                 exit;
             }
             else
-            {
+            {   
                 if(isset($request['firstName']) && isset($request['lastName']) && isset($request['phone']) && isset($request['company']))
                 {
                     if(!empty($request['firstName']) && !empty($request['lastName']) && !empty($request['phone']) && !empty($request['company']))
