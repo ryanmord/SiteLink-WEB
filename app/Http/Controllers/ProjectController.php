@@ -1012,7 +1012,7 @@ class ProjectController extends Controller
    public function pushnotification($deviceid,$title,$body,$notificationid,$dataid,$notificationcount,$devicetype)
     {
         //device type 2 for android
-
+        
         if($devicetype == 2)
         {
             $feedback = PushNotification::setService('fcm')
@@ -2676,6 +2676,7 @@ class ProjectController extends Controller
                     if(session('loginusertype') == 'admin')
                     {
                         $appendtd .= ' <li><a href="'.url('/allProejcts/projectDetail/'.$value->project_id).'">View</a></li>';
+                        $appendtd .= ' <li id = "reassign"><a href="#associate-list" data-toggle="modal" onclick="associatelist('.$value->project_id.')">Reassign</a></li>';
                     }
                     else
                     {
@@ -2914,5 +2915,28 @@ class ProjectController extends Controller
     {
         $project = Project::select('project_id','project_name','latitude','longitude','project_site_address')->where('project_id','=',$id)->first();
         return view('project.viewmap',['project' => $project]);
+    }
+    public function assignProject(Request $request)
+    {
+        $projectid = $request['project_id'];
+        $associateid = $request['associateid'];
+        $date = date('Y-m-d H:i:s');
+        $projectbid = ProjectBid::select('user_id')
+                                ->where(['project_id'         => $projectid,
+                                         'project_bid_status' => 1,
+                                         'bid_status'         => 1])
+                                ->first();
+        $touserid = $projectbid->user_id;
+        $notification = ProjectNotification::where('project_id','=',$projectid)
+                                             ->where('to_user_id','=',$touserid)
+                                             ->delete();
+        $updateprojectbid = ProjectBid::where(['project_id'   => $projectid,
+                                         'project_bid_status' => 1,
+                                         'bid_status'         => 1])
+                                ->update(['user_id'              => $associateid,
+                                          'accepted_rejected_at' => $date]);
+        $pojectstatus = ProjectStatus::where('project_status_type_id','=',3)
+                                       ->update(['created_at'=> $date]);
+        return json_encode(array('message' => "Project Reassign Successfully"));
     }
 }

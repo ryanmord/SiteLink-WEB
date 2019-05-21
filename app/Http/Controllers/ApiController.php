@@ -321,6 +321,17 @@ class ApiController extends Controller
         {
             $username = $username.' '.$lastname;
         }
+        if(isset($request['deviceid']) && isset($request['fcmtokenid']))
+        {
+            if(!empty($request['deviceid']) && !empty($request['fcmtokenid']))
+            {
+                $deviceid = $request['deviceid'];
+                $tokenid  = $request['fcmtokenid'];
+                $model = UserDevice::where('user_device_id','=',$deviceid)
+                                     ->where('user_id','=',$userid)
+                                     ->update(['user_device_unique_id' => $tokenid]);
+            }
+        }
         $usertype = $user->user_types_id;
         $notificationcount = ProjectNotification::where('to_user_id','=',$userid)
                 ->where('read_flag','=',0)->count();
@@ -1174,6 +1185,17 @@ class ApiController extends Controller
         $datetime2 = new DateTime($createddate);
         $createddate1 = $datetime2->format("Y-m-d");
         $projectallocatedFlag = 0;
+        $onholdstatus = ProjectStatus::where('project_id','=',$projectid)
+                                ->where('project_status_type_id','=',6)->first();
+        if(isset($onholdstatus) && !empty($onholdstatus))
+        {
+            $onholdflag = '1';
+        }
+        else
+        {
+            $onholdflag = '0';
+            
+        }
         if($user->user_types_id != 1)
         {
             $associateTypeId = $user->associate_type_id;
@@ -1253,10 +1275,12 @@ class ApiController extends Controller
                         $rating = $review->user_review_ratings;
                         $comment = $review->user_review_comments;
                         $approxbid = number_format($project->approx_bid, 2);
+                        $identifier = (!isset($project->project_number) || is_null($project->project_number)) ? '-' : $project->project_number;
                         $temp = array(
                                         'status'         => '1',
-                                        'projectid'      => (string)$project->project_id, 
-                                        'projectname'    =>  $project->project_name, 
+                                        'projectid'      => (string)$project->project_id,
+                                        'identifier'     => $identifier, 
+                                        'projectname'    => $project->project_name, 
                                         'siteaddress'    => $project->project_site_address,
                                         'latitude'       => $project->latitude,
                                         'longitude'      => $project->longitude,
@@ -1281,7 +1305,8 @@ class ApiController extends Controller
                                         'jobReachCount'  => (string)$jobReachCount,
                                         'associateTypeId'=> (string)$associateTypeId,
                                         'ratingflag'     => $ratingflag,
-                                        'bidstatusflag'  => $bidstatusflag
+                                        'bidstatusflag'  => $bidstatusflag,
+                                        'onholdflag'     => $onholdflag
                                         );
                        
                         return json_encode($temp);
@@ -1309,10 +1334,11 @@ class ApiController extends Controller
                 $bidstatusflag = '';
             }
             $approxbid = number_format($project->approx_bid, 2);
-            
+            $identifier = (!isset($project->project_number) || is_null($project->project_number)) ? '-' : $project->project_number;
             $temp = array('status'          => '1',
                         'projectid'         => (string)$project->project_id, 
-                        'projectname'       =>  $project->project_name, 
+                        'identifier'        => $identifier,
+                        'projectname'       => $project->project_name, 
                         'siteaddress'       => $project->project_site_address,
                         'latitude'          => $project->latitude,
                         'longitude'         => $project->longitude,
@@ -1339,6 +1365,7 @@ class ApiController extends Controller
                         'jobReachCount'     => (string)$jobReachCount,
                         'associateTypeId'   => (string)$associateTypeId,
                         'ratingflag'        => $ratingflag,
+                        'onholdflag'        => $onholdflag
                     );
             
             return json_encode($temp);
@@ -1350,8 +1377,10 @@ class ApiController extends Controller
                                     ->where('bid_status','=',1)
                                     ->where('project_bid_status','=',2)->count();
             $approxbid = number_format($project->approx_bid, 2);
+            $identifier = (!isset($project->project_number) || is_null($project->project_number)) ? '-' : $project->project_number;
             $temp = array('status'       => '1',
                         'projectid'      => (string)$project->project_id, 
+                        'identifier'     => $identifier,
                         'projectname'    =>  $project->project_name, 
                         'siteaddress'    => $project->project_site_address,
                         'latitude'       => $project->latitude,
@@ -1372,7 +1401,8 @@ class ApiController extends Controller
                         'approxbid'      => (String)$approxbid,
                         'bidcount'       => (string)$bidcount,
                         'scopeperformed' => $data,
-                        'bidstatusflag'  => $bidstatusflag
+                        'bidstatusflag'  => $bidstatusflag,
+                        'onholdflag'     => $onholdflag
                     );
             return json_encode($temp);
             exit;
@@ -1476,7 +1506,9 @@ class ApiController extends Controller
                     $reportduedate = $datetime2->format("Y-m-d");
                     $approxbid     = number_format($value->approx_bid, 2);
                     $finalbid      = number_format($finalbid, 2);
-                    $projectdetails[] = ['projectid'     => (string)$value->project_id, 
+                    $identifier = (!isset($value->project_number) || is_null($value->project_number)) ? '-' : $value->project_number;
+                    $projectdetails[] = ['projectid'     => (string)$value->project_id,
+                                        'identifier'     => $identifier,
                                         'projectname'    =>  $value->project_name, 
                                         'siteaddress'    => $value->project_site_address,
                                         'createddate'    => $createddate,
@@ -1632,7 +1664,9 @@ class ApiController extends Controller
                         $reportduedate= $datetime2->format("Y-m-d");
                         $approxbid = number_format($project->approx_bid, 2);
                         $finalbid = number_format($finalbid, 2);
-                        $projectdetails[] = ['projectid' => (string)$project->project_id, 
+                        $identifier = (!isset($project->project_number) || is_null($project->project_number)) ? '-' : $project->project_number;
+                        $projectdetails[] = ['projectid' => (string)$project->project_id,
+                                'identifier'     => $identifier, 
                                 'projectname'    => $project->project_name, 
                                 'siteaddress'    => $project->project_site_address,
                                 'latitude'       => $project->latitude,
@@ -1778,8 +1812,10 @@ class ApiController extends Controller
 
                     $associatebid = number_format($associate->associate_suggested_bid, 2);
                     $approxbid = number_format($project->approx_bid, 2);
+                    $identifier = (!isset($inprogressproject->project_number) || is_null($inprogressproject->project_number)) ? '-' : $inprogressproject->project_number;
                     $progressproject[] = ['projectid' => (string)$projectid, 
-                                'projectname'    =>  $inprogressproject->project_name, 
+                                'identifier'     => $identifier,
+                                'projectname'    => $inprogressproject->project_name, 
                                 'siteaddress'    => $inprogressproject->project_site_address,
                                 'createddate'    => $created_at,
                                 'onsitedate'     => $onsitedate,
@@ -1894,8 +1930,10 @@ class ApiController extends Controller
                                      ->where('project_bid_status','=',1)->first();
                     $associatebid = number_format($associate->associate_suggested_bid, 2);
                     $approxbid = number_format($inprogressproject->approx_bid, 2);
+                    $identifier = (!isset($inprogressproject->project_number) || is_null($inprogressproject->project_number)) ? '-' : $inprogressproject->project_number;
                     $progressproject[] = ['projectid' => (string)$projectid, 
-                                    'projectname'   =>  $inprogressproject->project_name, 
+                                    'identifier'    => $identifier,
+                                    'projectname'   => $inprogressproject->project_name, 
                                     'siteaddress'   => $inprogressproject->project_site_address,
                                     'createddate'   => $created_at,
                                     'onsitedate'    => $onsitedate,
@@ -2959,7 +2997,9 @@ class ApiController extends Controller
                 $manager = User::where('users_id','=',$publishproject->user_id)->first();
                 $profileimage = asset("/img/users/" . $manager->users_profile_image);
                 $approxbid = number_format($publishproject->approx_bid, 2);
+                $identifier = (!isset($publishproject->project_number) || is_null($publishproject->project_number)) ? '-' : $publishproject->project_number;
                 $publishprojects[] = ['projectid' => (string)$publishproject->project_id, 
+                                'identifier'      => $identifier,
                                 'projectname'     => $publishproject->project_name, 
                                 'siteaddress'     => $publishproject->project_site_address,
                                 'latitude'        => $publishproject->latitude,
