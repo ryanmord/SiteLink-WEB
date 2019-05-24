@@ -134,6 +134,7 @@ class UserController extends Controller
                                       </li>';
                                     }
                 $appendtd .= '      <li><a href="'.url('projects/'.$value->users_id).'">Projects</a></li>
+                                <li><a href="'.url('editAssesor/'.$value->users_id).'">Edit</a></li>
                                   </ul>
                                 </div>
                               </td>
@@ -350,6 +351,118 @@ class UserController extends Controller
                 echo json_encode(array('status'=>'0','message'=>''));exit;
             }
 
+        }
+    }
+    public function editAssesor($id){
+        $user        = User::where('users_id','=',$id)->first();
+        $userScope   = UserScopePerformed::where('users_id','=',$id)->first();
+        $userScopeid = $userScope->scope_performed_id;
+        $scope       = ScopePerformed::all();
+        //echo "<pre>";print_r($user);exit;
+        return view('user.editassessor',[
+                    'userDetails' => $user,
+                    'userScopeid' => $userScopeid,
+                    'scope'       => $scope
+                  ]);
+    }
+    public function updateAssesors(Request $request){
+        $userid = $request['assesor_id'];
+        $email  = $request['users_email'];
+        if(isset($email) && trim($email)!=''){
+           
+            $user = User::select('users_id')
+                          ->where('users_email','=',trim($email))
+                          ->where('users_id','<>',$userid)
+                          ->where('user_types_id','=',2)
+                          ->first();
+           
+            if(!empty($user)){
+                return response()->json(array('status'=>'0','message'=>'This email ID already exists for another assesor'));
+                exit;
+            }
+        }
+        $store_flag = 0;
+        $input_arrays = array();
+        if(isset($request['users_name'])){
+            $name  = $request['users_name'];
+            $input_arrays['users_name'] = $name;
+            $store_flag = 1;
+        }
+        if(isset($request['last_name'])){
+
+            $lastname  = $request['last_name'];
+            $input_arrays['last_name'] = $lastname;
+            $store_flag = 1;
+        }
+        if(isset($request['users_company'])){
+
+            $company = $request['users_company'];
+            $input_arrays['users_company'] = $company;
+            $store_flag = 1;
+
+        }
+        if(isset($request['users_phone'])){
+
+            $phone = $request['users_phone'];
+            $input_arrays['users_phone'] = $phone;
+            $store_flag = 1;
+            
+            
+        }
+        if(isset($request['users_email'])){
+
+            $email = $request['users_email'];
+            $input_arrays['users_email'] = $email;
+            $store_flag = 1;
+            
+        }
+        if(isset($request['address'])){
+
+            $address = $request['address'];
+            $input_arrays['users_address'] = $address;
+            $store_flag = 1;
+            
+        }
+        if(isset($request['latitude'])){
+
+            $latitude = $request['latitude'];
+            $input_arrays['latitude'] = $latitude;
+            $store_flag = 1;
+        }
+        if(isset($request['longitude'])){
+
+            $longitude = $request['longitude'];
+            $input_arrays['longitude'] = $longitude;
+            $store_flag = 1;
+        }
+        if(isset($request['address'])){
+
+            $address = $request['address'];
+            $input_arrays['users_address'] = $address;
+            $store_flag = 1;
+        }
+        if(isset($request['scopeperformedid']))
+        {
+            $scope = $request['scopeperformedid'];
+            $scope = implode (",",$scope);
+            $updateScope = UserScopePerformed::where('users_id','=',$userid)
+                                              ->update(['scope_performed_id' => $scope]);
+        }
+        if($store_flag == 1){
+            $model = User::where('users_id', '=',$userid)
+                            ->update($input_arrays);
+            return response()->json(array('status'=>'1','message'=>'Profile updated successfully'));
+            exit;
+             
+        }else{
+            if(!empty($input_arrays)){
+                return response()->json(array('status'=>'0','message'=>'Problem with Update Profile'));
+                exit;
+                  
+            }else{
+                return response()->json(array('status'=>'1','message'=>'Profile updated successfully'));
+                exit;   
+            }
         }
     }
     /**

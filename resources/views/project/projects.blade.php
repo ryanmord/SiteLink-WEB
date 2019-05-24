@@ -1371,7 +1371,6 @@ $(function () {
 });
 
 $('#assign-user').click(function(){
-  
     var idvalue = document.getElementById("associate-ids").value;
     var checks = $('input[name="associateid[]"]:checked').map(function(){
               return $(this).val();
@@ -1386,6 +1385,7 @@ $('#assign-user').click(function(){
         alert('Please select one assessor');
         return false;
     }
+    $(".loader").fadeIn("slow");
     var checks    = document.getElementById("associate-ids").value;
     var projectid = document.getElementById("assign_project_id").value;
     $.ajax({
