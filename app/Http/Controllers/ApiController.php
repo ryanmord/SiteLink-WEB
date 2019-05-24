@@ -3349,7 +3349,7 @@ class ApiController extends Controller
                 $tadayDate  = date('Y-m-d');
                 $qaqcDate   = new DateTime($qaqcDate);
                 $qaqcDate   = $qaqcDate->format("Y-m-d");
-                if($tadayDate == $qaqcDate)
+                if($tadayDate >= $qaqcDate)
                 {
                     $projectid = $value->project_id;
                     $model = new ProjectStatus;
@@ -4380,21 +4380,43 @@ class ApiController extends Controller
         }
         if(!empty($request['qaqcDate']) && isset($request['qaqcDate']))
         {
-            //$qaqcDate   = $request['qaqcDate'];
-            //$tadayDate  = date('Y-m-d');
-            /*$qaqcDate   = new DateTime($qaqcDate);
-            $qaqcDate   = $qaqcDate->format("Y-m-d");*/
-            /*if($tadayDate > $qaqcDate)
+            $qaqcDate   = $request['qaqcDate'];
+            $tadayDate  = date('Y-m-d');
+            $qaqcDate   = new DateTime($qaqcDate);
+            $qaqcDate   = $qaqcDate->format("Y-m-d");
+            if($tadayDate >= $qaqcDate)
             {
-                return json_encode(array('status' => '0', 'message' => "QAQC date should be greater than today's date."));
-                exit;
+
+                $inprogresstatus = DB::table('project_status')
+                        ->select('project_status_id','project_id')
+                        ->where('project_id','=',$projectid)
+                        ->groupBy('project_id')
+                        ->havingRaw('COUNT(project_status_type_id) = 3')
+                        ->orderBy('project_status_id', 'desc')
+                        ->first();
+                if(isset($inprogresstatus) && !empty($inprogresstatus))
+                {
+                    $model = new ProjectStatus;
+                    $model->project_id = $projectid;
+                    $model->project_status_type_id  = 4;
+                    $model->created_at = date('Y-m-d H:i:s');
+                    $model->save();
+                    $associate = ProjectBid::where('project_id','=',$projectid)
+                                              ->where('project_bid_status','=',1)->first();
+                    $touserid = $associate->user_id;
+                    $project  = Project::where('project_id','=',$projectid)->first();
+                    $body     = $project->project_name;
+                    $userid   = $project->user_id;
+                    $msg = 'Project completed by manager!';
+                    $notificationid = '7';
+                    $title = $msg;
+                    $this->sendUserNotification($touserid,$userid,$projectid,$body,$title,$msg,$notificationid);
+                }
             }
-            else
-            {*/
             $date  = new DateTime($request['qaqcDate']);
             $model = Project::where('project_id', '=',$projectid)
                                   ->update(['qaqc_date' => $date]);
-            //}
+           
         }
         else
         {

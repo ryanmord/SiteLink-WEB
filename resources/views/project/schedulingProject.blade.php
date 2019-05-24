@@ -512,6 +512,7 @@
     });
     function getNotifyUser()
     {
+      $(".loader").fadeIn("slow");
       document.getElementById("associate-type-ids").value = '';
       var checks = $('input[name="associatetypeid[]"]:checked').map(function(){
               return $(this).val();
@@ -534,7 +535,7 @@
           $('#cntlabel').text(response.count);
           if(response.appendtd === '')
           {
-             
+            $('#live-user-data').html('');
           }
           else
           {
@@ -543,6 +544,7 @@
           }
         }
       });
+      $(".loader").fadeOut("slow");
     }
    
     $(document).on('change', '.usercheck', function() {

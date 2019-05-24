@@ -1048,12 +1048,9 @@ class ProjectController extends Controller
                     ->send()
                     ->getFeedback();
         }
-        
-
     }
     public function setaddress(Request $request)
     {
-
         return view('project.map');
     }
     public function sendUserNotification($touserid,$fromuserid,$projectid,$body,$title,$notificationtext,$notificationtype)
@@ -2933,10 +2930,19 @@ class ProjectController extends Controller
         $updateprojectbid = ProjectBid::where(['project_id'   => $projectid,
                                          'project_bid_status' => 1,
                                          'bid_status'         => 1])
-                                ->update(['user_id'              => $associateid,
+                                ->update(['user_id'           => $associateid,
                                           'accepted_rejected_at' => $date]);
         $pojectstatus = ProjectStatus::where('project_status_type_id','=',3)
                                        ->update(['created_at'=> $date]);
+        $userid   = session('loginuserid');
+        $touserid = $associateid;
+        $project  = Project::select('project_name')
+                           ->where('project_id','=',$projectid)->first();
+        $body = $project->project_name;
+        $msg  = 'You have been assigned a project!';
+        $notificationid = '3';
+        $title = $msg;
+        $this->sendUserNotification($touserid,$userid,$projectid,$body,$title,$msg,$notificationid);
         return json_encode(array('message' => "Project Reassign Successfully"));
     }
 }

@@ -19,8 +19,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/css/bootstrap-select.min.css" rel="stylesheet" />
  
   <!-- <link href="{{asset('/css/jquery.multiselect.css')}}" rel="stylesheet"/> -->
- 
-</head>
+ </head>
 
 <!-- Body -->
 <body>
@@ -53,7 +52,7 @@
               <div class="panel panel-success" style="text-align: left;">
                 <div class="panel-heading">
                   <div class="panel-title">
-                    <b>Update Project Manager</b>
+                    <b>Update Assessors & Employees</b>
                   </div>
                   <div class="panel-options">
                     <a class="bg" data-target="#sample-modal-dialog-1" data-toggle="modal" href="#sample-modal"><i class="entypo-cog"></i></a>
@@ -66,9 +65,10 @@
                     <div class="create-new-project">  
                       <div class="row">
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                          <form class="new-project" id="editprojectmanager" action="{{ url('updateProjectManager/'.$userId) }}">
+                          <form class="new-project" id="editassessordetail" action="{{ route('updateAssesors') }}" method="PUT">
                               {{csrf_field()}}
                               <div class="row">
+                                <input type="hidden" name="assesor_id" id="assesor_id" value="{{$userDetails->users_id}}">
                                 <div class="form-group col-md-2"><br><label class="required">First Name</label></div>
                                    
                                 <div class="form-group col-md-3 {{ $errors->has('users_name') ? ' has-error' : '' }}">
@@ -88,7 +88,6 @@
                                    
                                 <div class="form-group col-md-3 {{ $errors->has('users_company') ? ' has-error' : '' }}">
                                   <input type="text" name="users_company" value="{{ $userDetails->users_company }}" placeholder="Company Name" required="">
-                                 
                                 </div>
                                 <div class="form-group col-md-2">
                                   <br>
@@ -96,22 +95,73 @@
                                 </div>
                                 <div class="form-group col-md-5 {{ $errors->has('users_email') ? ' has-error' : '' }}">
                                   <input type="text" name="users_email" id="users_email" value="{{ $userDetails->users_email }}" placeholder="Email" autocomplete="off">
+                                  <label id="users_email-error" class="error" for="users_email"></label>
                                 </div>  
                               </div>
                               <div class="row">
                                 <div class="form-group col-md-2"><br><label class="required">Phone Number</label></div>
                                    
-                                <div class="form-group col-md-3 {{ $errors->has('users_phone') ? ' has-error' : '' }}">
-                                  <input type="text" name="users_phone" id="users_phone" value="{{ $userDetails->users_phone }}" placeholder="Phone Number" required="">
-                                  
-                                </div>
+                                  <div class="form-group col-md-3 {{ $errors->has('users_phone') ? ' has-error' : '' }}">
+                                    <input type="text" name="users_phone" id="users_phone" value="{{ $userDetails->users_phone }}" placeholder="Phone Number" required="">
+                                    
+                                  </div>
                               </div>
+                              <div class="row">
+                              <div class="form-group col-md-2">
+                                  <br>
+                                  <label class="required">Address</label>
+                                </div>
+                                <div class="form-group col-md-8">
+                                  <input type="text" name="address" id="address" value="{{ $userDetails->users_address }}" placeholder="site Address" required="" autocomplete="off">
+                                  <input type="hidden" id="latitude" name="latitude" value="{{ $userDetails->latitude }}">
+                                  <input type="hidden" id="longitude" name="longitude" value="{{ $userDetails->longitude }}">
+                                </div>
+                                <div class="form-group col-md-2">
+                                  <br>
+                                  <li style="color: #DA4453;" data-toggle="modal" data-target="#myModal"><a href="#">set address</a></li>
+                                    @include('user.useraddressmap')
+   
+                                </div>
+                          </div>
                           <div class="row">
-                          <div class="form-group col-md-3">
+                          <br>
+                           <div class="form-group col-md-2">
+                                <br><br><br>
+                                <label class="required">Scope(s)</label>
+                              </div>
+                              <?php
+                                $temp = explode(",", $userScopeid);
+                              ?>
+                              <div class="form-group col-md-9">
+                               @foreach($scope as $value)
+                                @if(in_array("$value->scope_performed_id", $temp))
+                                  <label class="checkbox" style="color: grey;">
+                                    <input type="checkbox" value="{{ $value->scope_performed_id }}" name="scopeperformedid[]" id="scope_performed" checked>
+                                    {{ $value->scope_performed }} 
+                                  </label>
+                                @else 
+                                  <label class="checkbox" style="color: grey;">
+                                    <input type="checkbox" value="{{ $value->scope_performed_id }}" name="scopeperformedid[]" id="scope_performed">
+                                    {{ $value->scope_performed }} 
+                                  </label>
+                                @endif
+                              @endforeach
+                              <label id="scopeperformedid[]-error" class="error" for="scopeperformedid[]" style="color: #b70a0a;"></label>
+                                <!-- <input type="hidden" id="scopeid" name="scopeid" value=""> -->
+                             
+                              </div>
+                              <!-- <div id="err"></div> -->
+                          </div>
+                        <div class="row">
+                          <div class="form-group col-md-4">
                             </div>
-                              <div class="form-group col-md-3">
-                                <button type="submit" class="btn btn-success" id="saveprojectmanager"> Update   
-                            </button>
+                              <div class="form-group col-md-2">
+                                <button type="submit" class="btn btn-success" id="updateassessor"> Update   
+                                </button>
+                                </div>
+                                <div class="form-group col-md-3">
+                                <button type="button" class="btn btn-danger" id="cancel-update"> Cancel   
+                                </button>
                               </div>
                               
                         </div>
@@ -127,7 +177,8 @@
       </div>
     </div>
   </div>
- 
+ <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCFesVLN0rhPhI0uHrMrQjclKdbyx9X9g0&libraries=places&callback=initMap"
+        async defer></script>  
   <script src="{{asset('/js/themeJs/map.js')}}"></script>
   <script src="{{asset('/js/themeJs/1_12_1_jquery.js')}}"></script>
   <script src="{{asset('js/frontJs/jquery.validate.js')}}"></script>  
@@ -153,7 +204,7 @@
   </script>
  
   <script>
-    document.getElementById("editprojectmanager").onkeypress = function(e) {
+    document.getElementById("editassessordetail").onkeypress = function(e) {
       var key = e.charCode || e.keyCode || 0;     
       if (key == 13) {
         e.preventDefault();
@@ -164,45 +215,12 @@
 
     $(document).ready(function () {
 
-      $('body').on('click','#saveprojectmanager', function (event) {
+      $('body').on('click','#updateassessor', function (event) {
       event.preventDefault(); 
     /*var date = new Date();
     var todaydate= (date.getMonth() + 1) + '/' + date.getDate() + '/' +  date.getFullYear();
   */
-  $.validator.addMethod("validateUserEmail", function(value, element)
-  {
-     
-      $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')} });
-      $.ajax(
-      {
-          type: "POST",
-          url: '{{url("/checkProjectManagerEmail/$userId")}}',
-          dataType: "html",
-          async:false,
-          data: {users_email:$('#users_email').val()},
-          success: function(data)
-          {
-              console.log(data)
-              //alert(data);return false;
-              if ($.trim(data) == 'NOT_FOUND')
-              {
-                console.log("in not found");
-                return true;
-              }else if ($.trim(data) == 'FOUND')
-              {console.log("in found");
-                return false;
-              }
-          },
-          error: function(xhr, textStatus, errorThrown)
-          {
-              return false;
-          }
-      });
-
-  }, 'This email address is already registered.');
-    $("#editprojectmanager").validate({
-          onkeyup: false,
-          onfocusout: false,
+    $("#editassessordetail").validate({
           rules: {
             users_name: {
                 required: true,
@@ -212,42 +230,32 @@
               required: true,
             },users_email: { 
                 required: true,
-                email:true, 
-                remote: {
-                  url: '{{url("/checkProjectManagerEmail/$userId")}}',
-                  async:false,
-                  dataType:"json",
-                  type: "post",
-                  dataFilter: function(response) {
-                    response = $.parseJSON(response);
-
-                    if (response.status === '0') return true;
-                    else {
-                        message = response.message;
-                        return false;
-                    }
-                }
-                }
-            },users_phone:{
+                email:true,
+                
+            },address:{
                 required: true,
                
-            }
+            },
+            "scopeperformedid[]": "required"
         },messages:{
             users_name: "Please Enter First Name",
             last_name: "Please Enter Last Name",
             users_company: "Please Enter Company Name",
-            users_phone:"Please Enter Phone",
+            users_phone:{
+              required : "Please Enter Phone Number",
+            },
             users_email:{
-              required : "Please Enter Email",
-              email :"Please enter valid email",
-              remote: jQuery.validator.format("{0} is already in use")
-            }
+              required : "Please Enter Email Address",
+              email : "Please Enter Valid Email Address",
+            },
+            address:"Please Enter Address",
+            "scopeperformedid[]": "Please select scope(s)"
         },errorPlacement: function(error, element) {
             error.insertAfter(element);
         }
 
   });
-    if($("#editprojectmanager").valid()) {
+    if($("#editassessordetail").valid()) {
    
         
        /* checks = $('input[type="checkbox"]:checked').map(function(){
@@ -261,23 +269,29 @@
                   }
         });
         $.ajax({
-            type: 'POST',
-              url: $("#editprojectmanager").attr("action"),
-              data: $('form#editprojectmanager').serialize(),
+            type: 'put',
+              url: $("#editassessordetail").attr("action"),
+              data: $('form#editassessordetail').serialize(),
               dataType: 'json',
           })
 
           .done(function(msg) {
           $(".loader").fadeOut("slow");
-          alert("Project Manager Profile Updated Successfully");
-          url = '<?php echo url('/users'); ?>';
-          window.location.replace(url);
-          
+          if(msg.status == '1')
+          {
+            alert("Profile Updated Successfully");
+            url = '<?php echo url('/users'); ?>';
+            window.location.replace(url);
+          }
+          else
+          {
+            $("#users_email-error").text(msg.message).show().fadeIn("slow");
+          }
         });
       }
 
     });
-  });
+  })
 </script>
 <script type="text/javascript">
   jQuery(document).ready(function(){

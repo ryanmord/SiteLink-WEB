@@ -67,11 +67,11 @@
                 </div>
                 </form>
                 </div>
-               <h5> Scheduled <span class="badge" style="background-color:#DB5A6B;" id="countscheduling">{{ $scheduledCount }}</span></h5>
+               <h5> Scheduled <span class="badge" style="background-color:#DB5A6B;" id="countscheduling"></span></h5>
                <div id="div-no-project">
                     <h6><center>No Data Found</center></h6> <br>
                </div>
-                <input type="hidden" name="projectcount" id="projectcount" value="{{ $scheduledCount }}">
+                <input type="hidden" name="projectcount" id="projectcount" value="">
                 <!--  <input type="date" name="select date" class="form-control"> -->
                 <div class="table-responsive" id="table-div">
                
@@ -92,24 +92,7 @@
                       </tr>
                     </thead>
                     <tbody id="projectData">
-                  @if(isset($scheduledProjects) && !empty($scheduledProjects))
                   
-                     @foreach($scheduledProjects as $project)
-                      <tr class="content">
-                        <td class="table-td-data">{{ $project['receivedDate'] }}</td>
-                        <td class="table-td-data">{{ $project['schedulingDate'] }}</td>
-                        <td class="table-td-data">{{ $project['onSiteDate'] }}</td>
-                        <td class="table-td-data">{{ $project['projectNo'] }}</td>
-                        <td class="table-td-data">{{ $project['accountManager'] }}</td>
-                        <td class="table-td-data">{{ $project['projectManager'] }}</td>
-                        <td class="table-td-data">{{ $project['state'] }}</td>
-                        <td class="table-td-data">{{ $project['city'] }}</td>
-                        <td class="table-td-data">{{ $project['scopeNames'] }}</td>
-                        <td class="table-td-data">{{ $project['employeeName'] }}</td>
-                        <td class="table-td-data">{{ $project['associateName'] }}</td>
-                      </tr>
-                     @endforeach
-                     @endif
                     </tbody>
                   </table>
                     <div class="row content-row-pagination">
@@ -124,12 +107,12 @@
                     </div>
                   </div>
                   
-              <h5>Scheduling In Progress <span class="badge" style="background-color:#DB5A6B;" id="countinprogress">{{ $inProgressCount }}</span></h5>
+              <h5>Scheduling In Progress <span class="badge" style="background-color:#DB5A6B;" id="countinprogress"></span></h5>
                <div id="div-no-inprogress">
                     <h6><center>No Data Found</center></h6> <br>
                </div>
-                <input type="hidden" name="inprogresscount" id="inprogresscount" value="{{ $inProgressCount }}">
-
+                
+               <input type="hidden" name="inprogresscount" id="inprogresscount" value="">
                 <div class="table-responsive" id="table-div3">
                   <table class="table table-bordered">
                     <thead>
@@ -148,23 +131,7 @@
                       </tr>
                     </thead>
                     <tbody id="inprogressprojectData">
-                    @if(isset($inprogressProjects) && !empty($inprogressProjects))
-                     @foreach($inprogressProjects as $project)
-                      <tr class="content">
-                        <td class="table-td-data">{{ $project['receivedDate'] }}</td>
-                        <td class="table-td-data">{{ $project['schedulingDate'] }}</td>
-                        <td class="table-td-data">{{ $project['onSiteDate'] }}</td>
-                        <td class="table-td-data">{{ $project['projectNo'] }}</td>
-                        <td class="table-td-data">{{ $project['accountManager'] }}</td>
-                        <td class="table-td-data">{{ $project['projectManager'] }}</td>
-                        <td class="table-td-data">{{ $project['state'] }}</td>
-                        <td class="table-td-data">{{ $project['city'] }}</td>
-                        <td class="table-td-data">{{ $project['scopeNames'] }}</td>
-                        <td class="table-td-data">{{ $project['employeeName'] }}</td>
-                        <td class="table-td-data">{{ $project['associateName'] }}</td>
-                      </tr>
-                     @endforeach
-                     @endif
+                   
                     </tbody>
                   </table>
                   <div class="row content-row-pagination">
@@ -179,11 +146,11 @@
                     </div>
                  </div>
                
-               <h5>Remaining <span class="badge" style="background-color:#DB5A6B;" id="countremaining">{{ $remainingCount }}</span></h5>
+               <h5>Remaining <span class="badge" style="background-color:#DB5A6B;" id="countremaining"></span></h5>
                <div id="div-no-remaining">
                     <h6><center>No Data Found</center></h6> <br>
                </div>
-                <input type="hidden" name="remainingcount" id="remainingcount" value="{{ $remainingCount }}">
+                <input type="hidden" name="remainingcount" id="remainingcount" value="">
 
                 <div class="table-responsive" id="table-div2">
                   <table class="table table-bordered">
@@ -203,23 +170,7 @@
                       </tr>
                     </thead>
                     <tbody id="remainingprojectData">
-                    @if(isset($remainingProjects) && !empty($remainingProjects))
-                     @foreach($remainingProjects as $project)
-                      <tr class="content">
-                        <td class="table-td-data">{{ $project['receivedDate'] }}</td>
-                        <td class="table-td-data">{{ $project['schedulingDate'] }}</td>
-                        <td class="table-td-data">{{ $project['onSiteDate'] }}</td>
-                        <td class="table-td-data">{{ $project['projectNo'] }}</td>
-                        <td class="table-td-data">{{ $project['accountManager'] }}</td>
-                        <td class="table-td-data">{{ $project['projectManager'] }}</td>
-                        <td class="table-td-data">{{ $project['state'] }}</td>
-                        <td class="table-td-data">{{ $project['city'] }}</td>
-                        <td class="table-td-data">{{ $project['scopeNames'] }}</td>
-                        <td class="table-td-data">{{ $project['employeeName'] }}</td>
-                        <td class="table-td-data">{{ $project['associateName'] }}</td>
-                      </tr>
-                     @endforeach
-                     @endif
+                    
                     </tbody>
                   </table>
                   <div class="row content-row-pagination">
@@ -247,57 +198,98 @@
 <script type="text/javascript"> 
 
  $(document).ready(function () {
-    $(".loader").fadeOut("slow");
-     
-    /*$("#div-no-project").hide();
-    $("#div-no-remaining").hide();*/
-    var remainingCount = document.getElementById('remainingcount').value;
-    if(remainingCount > 0)
+  var  date = new Date($('#datepicker').val());
+    if(!isNaN(date))
     {
-      //document.getElementById('export2-btn').disabled = false;
-      $("#table-div2").show();
-      $("#div-no-remaining").hide();
-      remainingProjectPagination();
+      $(".loader").fadeIn("slow");
+      day   = date.getDate();
+      month = date.getMonth() + 1;
+      year  = date.getFullYear();
+      selecteddate = [year, month, day].join('-');
     }
-    else
-    {
-      $("#table-div2").hide();
-      $("#div-no-remaining").show();
-    }
-    var schedulingCount = document.getElementById('projectcount').value;
-    if(schedulingCount > 0)
-    {
-      $("#table-div").show();
-      $("#div-no-project").hide();
-      setpagination();
-    }
-    else
-    {
-     /* document.getElementById('export-btn').disabled = true;*/
-      $("#table-div").hide();
-      $("#div-no-project").show();
-    }
-    var inprogresscount = document.getElementById('inprogresscount').value;
-    if(inprogresscount > 0)
-    {
-      $("#table-div3").show();
-      $("#div-no-inprogress").hide();
-      setinprogresspagination();
-    }
-    else
-    {
-     /* document.getElementById('export-btn').disabled = true;*/
-      $("#table-div3").hide();
-      $("#div-no-inprogress").show();
-    }
-    if(schedulingCount > 0 || remainingCount > 0 || inprogresscount > 0)
-    {
-      document.getElementById('export-btn').disabled = false;
-    }
-    else
-    {
-      document.getElementById('export-btn').disabled = true;
-    }
+    $.ajax({
+              type: "GET",
+              url: '<?php echo route('getScheduledProjects'); ?>',
+              data: {selectedDate:selecteddate},
+              dataType: 'json',
+              success: function(response){
+                  if (response.appendtd != '') {
+                      $("#div-no-project").hide();
+                      $("#table-div").show();
+                      $("#projectData").html("");
+                      $("#projectData").html(response['appendtd']);
+                      document.getElementById('projectcount').value = response.projectcount;
+                      $('#countscheduling').text(response.projectcount);
+                      setpagination();
+                      setExportButton();
+                  }
+                  else
+                  {
+                      $("#table-div").hide();
+                      $("#div-no-project").show(); 
+                      $('#countscheduling').text(0);
+                      document.getElementById('projectcount').value = 0;
+                      setExportButton();
+                  }
+              }
+          });
+          $.ajax({
+              type: "GET",
+              url: '<?php echo route('getinprogressProjects'); ?>',
+              data: {selectedDate:selecteddate},
+              dataType: 'json',
+              success: function(response){
+                  if (response.appendtd != '') {
+                      $("#div-no-inprogress").hide();
+                      $("#table-div3").show();
+                      $("#inprogressprojectData").html("");
+                      $("#inprogressprojectData").html(response['appendtd']);
+                      document.getElementById('inprogresscount').value = response.projectcount;
+                      $('#countinprogress').text(response.projectcount);
+                      remainingProjectPagination();
+                      setExportButton();
+                  }
+                  else
+                  {
+                      
+                      document.getElementById('inprogresscount').value = 0;
+                      $("#table-div3").hide();
+                      $("#div-no-inprogress").show();
+                      $('#countinprogress').text(0); 
+                      setExportButton();
+                      
+                  }
+              }
+          });
+          $.ajax({
+              type: "GET",
+              url: '<?php echo route('getRemainingProjects'); ?>',
+              data: {selectedDate:selecteddate},
+              dataType: 'json',
+              success: function(response){
+                  if (response.appendtd != '') {
+                      $("#div-no-remaining").hide();
+                      $("#table-div2").show();
+                      $("#remainingprojectData").html("");
+                      $("#remainingprojectData").html(response['appendtd']);
+                      document.getElementById('remainingcount').value = response.projectcount;
+                      $('#countremaining').text(response.projectcount);
+                      remainingProjectPagination();
+                      setExportButton();
+                      $(".loader").fadeOut("slow");
+                  }
+                  else
+                  {
+                      document.getElementById('remainingcount').value = 0;
+                      $("#table-div2").hide();
+                      $("#div-no-remaining").show();
+                      $('#countremaining').text(0); 
+                      setExportButton();
+                      $(".loader").fadeOut("slow");
+                  }
+                  $(".loader").fadeOut("slow");
+              }
+          });
     
   });
  /*$('#project-pagination').click(function()
