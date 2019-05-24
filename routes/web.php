@@ -120,6 +120,9 @@ Route::group(['middleware' => 'disablepreventback'],function()
 	Route::post('/updateProjectManager/{id}', 'UserController@updateProjectManager')->name('updateProjectManager')->middleware(guest::class);
 	Route::post('/checkProjectManagerEmail/{id}', 'UserController@checkProjectManagerEmail')->name('checkProjectManagerEmail')->middleware(guest::class);
 
+	/* ===========ASSESSORS AND EMPLOYEE EDIT PAGE ROUTE ================ */
+	Route::get('/editAssesor/{id}','UserController@editAssesor')->name('editAssesor')->middleware(guest::class);
+	Route::put('/updateAssesors', 'UserController@updateAssesors')->name('updateAssesors')->middleware(guest::class);
 });
 Route::get('/forgotPassword/{userid}','LoginController@forgotpassword')->name('forgotPassword');
 Route::post('/changepassword','LoginController@changepassword');
