@@ -398,7 +398,8 @@
  {
     var remainingCount = document.getElementById('remainingcount').value;
     var schedulingCount = document.getElementById('projectcount').value;
-    if(schedulingCount > 0 || remainingCount > 0)
+    var inprogresscount = document.getElementById('inprogresscount').value;
+    if(schedulingCount > 0 || remainingCount > 0 || inprogresscount > 0)
     {
       document.getElementById('export-btn').disabled = false;
     }
