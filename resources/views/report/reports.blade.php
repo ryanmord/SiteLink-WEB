@@ -32,12 +32,7 @@
       </div>
       <div class="content-row">
         <!-- <div class="row"> -->
-          <!-- <ul id="myTab1" class="nav nav-tabs nav-justified">
-            <li class="active"><a href="#home1" data-toggle="tab">Scheduled <span class="badge" style="background-color:#DB5A6B;" id="countscheduling">{{ $scheduledCount }}</span>
-            </a></li>
-            <li><a href="#remaining" data-toggle="tab">Remaining <span class="badge" style="background-color:#DB5A6B;" id="countremaining">{{ $remainingCount }}</span>
-            </a></li>
-          </ul> -->
+          
           <!-- <div id="myTabContent" class="tab-content">
             <div class="tab-pane fade active in" id="home1"> -->
             <?php $date = date('m/d/Y'); ?>

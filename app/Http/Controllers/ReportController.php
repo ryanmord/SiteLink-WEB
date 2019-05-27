@@ -28,11 +28,11 @@ class ReportController extends Controller
      */
     public function index()
     {
-        $date = date('Y-m-d');
+        /*$date = date('Y-m-d');
         $request = new Request;
         $request['selectedDate'] = $date;
         //$request['selectedDate'] = '2019-03-13';
-        $request['callFrom'] = 1;
+        /*$request['callFrom'] = 1;
         $scheduledProjects = $this->getScheduledProjects($request);
        
         //$request['selectedDate'] = '2019-03-13';
@@ -40,7 +40,7 @@ class ReportController extends Controller
         $inprogressProjects = $this->getinprogressProjects($request);
        /* print_r($remainingProjects);
         exit;*/
-        if(isset($scheduledProjects) && !empty($scheduledProjects))
+        /*if(isset($scheduledProjects) && !empty($scheduledProjects))
         {
             $scheduledCount = count($scheduledProjects);
         }
@@ -63,16 +63,11 @@ class ReportController extends Controller
         else
         {
             $inProgressCount = 0;
-        }
+        }*/
         
         //echo json_encode($scheduledProjects);
        // exit;
-        return view('report.reports',['scheduledProjects' => $scheduledProjects,
-                                      'remainingProjects' => $remainingProjects,
-                                      'inprogressProjects'=> $inprogressProjects,
-                                      'scheduledCount'    => $scheduledCount,
-                                      'remainingCount'    => $remainingCount,
-                                      'inProgressCount'   => $inProgressCount]);
+        return view('report.reports');
     }
     public function getScheduledProjects(Request $request)
     {
