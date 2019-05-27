@@ -94,6 +94,7 @@ class ReportController extends Controller
                             ->where('project_bids.accepted_rejected_at','<',$date2)
                             ->orderBy('project_bids.accepted_rejected_at', 'desc')
                             ->get();
+        $projectcount = 0;
         if(isset($projects) && !empty($projects))
         {
             foreach ($projects as $value) {
@@ -143,46 +144,22 @@ class ReportController extends Controller
                         $associateName = $associate->users_name.' '.$associate->last_name;
                     }
                 }
-                $data[] = ['projectId'      => $value->project_id,
-                           'receivedDate'   => $receivedDate,
-                           'schedulingDate' => $schedulingDate,
-                           'onSiteDate'     => $onSiteDate,
-                           'projectNo'      => $value->project_number,
-                           'accountManager' => $accountManager,
-                           'projectManager' => $managerName,
-                           'city'           => $value->city,
-                           'state'          => $value->state,
-                           'scopeNames'     => $scopeNames,
-                           'employeeName'   => $employeeName,
-                           'associateName'  => $associateName
-                           ];
+                $appendtd .= '<tr class = "content"><td style="text-align: left;">'.$receivedDate.'</td>';
+                $appendtd .= '<td style="text-align: left;">'.$schedulingDate.'</td>';
+                $appendtd .= '<td style="text-align: left;">'.$onSiteDate.'</td>';
+                $appendtd .= '<td style="text-align: left;">'.$value->project_number.'</td>';
+                $appendtd .= '<td style="text-align: left;">'.$accountManager.'</td>';
+                $appendtd .= '<td style="text-align: left;">'.$managerName.'</td>';
+                $appendtd .= '<td style="text-align: left;">'.$value->state.'</td>';
+                $appendtd .= '<td style="text-align: left;">'.$value->city.'</td>';
+                $appendtd .= '<td style="text-align: left;">'.$scopeNames.'</td>';
+                $appendtd .= '<td style="text-align: left;">'.$employeeName.'</td>';
+                $appendtd .= '<td style="text-align: left;">'.$associateName.'</td></tr>';
+                $projectcount++;
             }
         }
-        if(isset($request['callFrom']))
-        {
-            return $data; 
-        }
-        else
-        {
-            if(isset($data) && !empty($data))
-            {
-                $projectcount = count($data);
-                foreach ($data as $value) {
-                    $appendtd .= '<tr class = "content"><td style="text-align: left;">'.$value['receivedDate'].'</td>';
-                    $appendtd .= '<td style="text-align: left;">'.$value['schedulingDate'].'</td>';
-                    $appendtd .= '<td style="text-align: left;">'.$value['onSiteDate'].'</td>';
-                    $appendtd .= '<td style="text-align: left;">'.$value['projectNo'].'</td>';
-                    $appendtd .= '<td style="text-align: left;">'.$value['accountManager'].'</td>';
-                    $appendtd .= '<td style="text-align: left;">'.$value['projectManager'].'</td>';
-                    $appendtd .= '<td style="text-align: left;">'.$value['state'].'</td>';
-                    $appendtd .= '<td style="text-align: left;">'.$value['city'].'</td>';
-                    $appendtd .= '<td style="text-align: left;">'.$value['scopeNames'].'</td>';
-                    $appendtd .= '<td style="text-align: left;">'.$value['employeeName'].'</td>';
-                    $appendtd .= '<td style="text-align: left;">'.$value['associateName'].'</td></tr>';
-                }
-            }
-            return json_encode(array('appendtd' => $appendtd,'projectcount' => $projectcount));
-        }
+        return json_encode(array('appendtd' => $appendtd,'projectcount' => $projectcount));
+        exit;
     }
     public function getRemainingProjects(Request $request)
     {
@@ -208,6 +185,7 @@ class ReportController extends Controller
                             ->orderBy('projects.updated_at', 'desc')
                             ->get();
         $count = $projects->count();
+        $projectcount = 0;
         if($count > 0)
         {
             foreach ($projects as $value) {
@@ -260,49 +238,25 @@ class ReportController extends Controller
                             $associateName = $associate->users_name.' '.$associate->last_name;
                         }
                     }
-                    $data[] = ['projectId'      => $value->project_id,
-                               'receivedDate'   => $receivedDate,
-                               'schedulingDate' => $schedulingDate,
-                               'onSiteDate'     => $onSiteDate,
-                               'projectNo'      => $value->project_number,
-                               'accountManager' => $accountManager,
-                               'projectManager' => $managerName,
-                               'city'           => $value->city,
-                               'state'          => $value->state,
-                               'scopeNames'     => $scopeNames,
-                               'employeeName'   => $employeeName,
-                               'associateName'  => $associateName
-                               ];
+                    $appendtd .= '<tr class = "content"><td style="text-align: left;">'.$receivedDate.'</td>';
+                    $appendtd .= '<td style="text-align: left;">'.$schedulingDate.'</td>';
+                    $appendtd .= '<td style="text-align: left;">'.$onSiteDate.'</td>';
+                    $appendtd .= '<td style="text-align: left;">'.$value->project_number.'</td>';
+                    $appendtd .= '<td style="text-align: left;">'.$accountManager.'</td>';
+                    $appendtd .= '<td style="text-align: left;">'.$managerName.'</td>';
+                    $appendtd .= '<td style="text-align: left;">'.$value->state.'</td>';
+                    $appendtd .= '<td style="text-align: left;">'.$value->city.'</td>';
+                    $appendtd .= '<td style="text-align: left;">'.$scopeNames.'</td>';
+                    $appendtd .= '<td style="text-align: left;">'.$employeeName.'</td>';
+                    $appendtd .= '<td style="text-align: left;">'.$associateName.'</td></tr>';
+                    $projectcount++;
                 }
                 
             }
             
         }
-        if(isset($request['callFrom']))
-        {
-            return $data; 
-        }
-        else
-        {
-            if(isset($data) && !empty($data))
-            {
-                $projectcount = count($data);
-                foreach ($data as $value) {
-                    $appendtd .= '<tr class = "content"><td style="text-align: left;">'.$value['receivedDate'].'</td>';
-                    $appendtd .= '<td style="text-align: left;">'.$value['schedulingDate'].'</td>';
-                    $appendtd .= '<td style="text-align: left;">'.$value['onSiteDate'].'</td>';
-                    $appendtd .= '<td style="text-align: left;">'.$value['projectNo'].'</td>';
-                    $appendtd .= '<td style="text-align: left;">'.$value['accountManager'].'</td>';
-                    $appendtd .= '<td style="text-align: left;">'.$value['projectManager'].'</td>';
-                    $appendtd .= '<td style="text-align: left;">'.$value['state'].'</td>';
-                    $appendtd .= '<td style="text-align: left;">'.$value['city'].'</td>';
-                    $appendtd .= '<td style="text-align: left;">'.$value['scopeNames'].'</td>';
-                    $appendtd .= '<td style="text-align: left;">'.$value['employeeName'].'</td>';
-                    $appendtd .= '<td style="text-align: left;">'.$value['associateName'].'</td></tr>';
-                }
-            }
-            return json_encode(array('appendtd' => $appendtd,'projectcount' => $projectcount));
-        }
+        return json_encode(array('appendtd' => $appendtd,'projectcount' => $projectcount));
+        exit;
     }
     public function getinprogressProjects(Request $request)
     {
@@ -327,6 +281,7 @@ class ReportController extends Controller
                             ->get();
         $count = $projects->count();
         $inprogresscount = 0;
+        $$projectcount = 0;
         if($count > 0)
         {
             foreach ($projects as $value) {
@@ -380,50 +335,27 @@ class ReportController extends Controller
                             $associateName = $associate->users_name.' '.$associate->last_name;
                         }
                     }
-                    $data[] = ['projectId'      => $value->project_id,
-                               'receivedDate'   => $receivedDate,
-                               'schedulingDate' => $schedulingDate,
-                               'onSiteDate'     => $onSiteDate,
-                               'projectNo'      => $value->project_number,
-                               'accountManager' => $accountManager,
-                               'projectManager' => $managerName,
-                               'city'           => $value->city,
-                               'state'          => $value->state,
-                               'scopeNames'     => $scopeNames,
-                               'employeeName'   => $employeeName,
-                               'associateName'  => $associateName
-                               ];
+                    
+                    $appendtd .= '<tr class = "content"><td style="text-align: left;">'.$receivedDate.'</td>';
+                    $appendtd .= '<td style="text-align: left;">'.$schedulingDate.'</td>';
+                    $appendtd .= '<td style="text-align: left;">'.$onSiteDate.'</td>';
+                    $appendtd .= '<td style="text-align: left;">'.$value->project_number.'</td>';
+                    $appendtd .= '<td style="text-align: left;">'.$accountManager.'</td>';
+                    $appendtd .= '<td style="text-align: left;">'.$managerName.'</td>';
+                    $appendtd .= '<td style="text-align: left;">'.$value->state.'</td>';
+                    $appendtd .= '<td style="text-align: left;">'.$value->city.'</td>';
+                    $appendtd .= '<td style="text-align: left;">'.$scopeNames.'</td>';
+                    $appendtd .= '<td style="text-align: left;">'.$employeeName.'</td>';
+                    $appendtd .= '<td style="text-align: left;">'.$associateName.'</td></tr>';
+                    $projectcount++;
                 }
             }
                 
             
         }
-        if(isset($request['callFrom']))
-        {
-            return $data; 
-        }
-        else
-        {
-            if(isset($data) && !empty($data))
-            {
-                $projectcount = count($data);
-                foreach ($data as $value) {
-                    $appendtd .= '<tr class = "content"><td style="text-align: left;">'.$value['receivedDate'].'</td>';
-                    $appendtd .= '<td style="text-align: left;">'.$value['schedulingDate'].'</td>';
-                    $appendtd .= '<td style="text-align: left;">'.$value['onSiteDate'].'</td>';
-                    $appendtd .= '<td style="text-align: left;">'.$value['projectNo'].'</td>';
-                    $appendtd .= '<td style="text-align: left;">'.$value['accountManager'].'</td>';
-                    $appendtd .= '<td style="text-align: left;">'.$value['projectManager'].'</td>';
-                    $appendtd .= '<td style="text-align: left;">'.$value['state'].'</td>';
-                    $appendtd .= '<td style="text-align: left;">'.$value['city'].'</td>';
-                    $appendtd .= '<td style="text-align: left;">'.$value['scopeNames'].'</td>';
-                    $appendtd .= '<td style="text-align: left;">'.$value['employeeName'].'</td>';
-                    $appendtd .= '<td style="text-align: left;">'.$value['associateName'].'</td></tr>';
-                }
-            }
-            return json_encode(array('appendtd'    => $appendtd,
-                                    'projectcount' => $inprogresscount));
-        }
+        return json_encode(array('appendtd'    => $appendtd,
+                                'projectcount' => $inprogresscount));
+        exit;
     }
 
 
