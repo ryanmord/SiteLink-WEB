@@ -7,16 +7,16 @@
     <title> {{config('app.name')}} </title>
     <meta name="csrf-param" content="_csrf-frontend">
     <meta name="csrf-token" content="fkMSpKSo6hiL4aMtehZ6vsKrITZzXRMTNqJcc08Vjbn4x2CqKYTaK9bADjir9ZlwWVCoNVE0zG0Bn_VUB-ywPA==">
-    <link href="{{asset('/css/themeCss/map.css')}}" rel="stylesheet">
-    <link rel="shortcut icon" href="{{{ asset('img/brick-wall.png') }}}">
+    <link href="{{secure_asset('/css/themeCss/map.css')}}" rel="stylesheet">
+    <link rel="shortcut icon" href="{{{ secure_asset('img/brick-wall.png') }}}">
    <!--  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css"> -->
     @include('layouts.include_css')
-    <link href="{{asset('/css/frontCss/agency.css')}}" rel="stylesheet">
+    <link href="{{secure_asset('/css/frontCss/agency.css')}}" rel="stylesheet">
     <!-- <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css"> -->
     <!-- <script src="//code.jquery.com/jquery-1.10.2.js"></script> -->
-    <script src="{{asset('/js/themeJs/jquery-1.10.2.js')}}"></script>
+    <script src="{{secure_asset('/js/themeJs/jquery-1.10.2.js')}}"></script>
    <!--  <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script> -->
-    <script src="{{asset('/js/themeJs/bootstrap.min.js')}}"></script>
+    <script src="{{secure_asset('/js/themeJs/bootstrap.min.js')}}"></script>
     <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js">
     </script> -->
     
@@ -46,7 +46,7 @@
         width: 100%;
         height: 100%;
         z-index: 9999;
-        background: url('{{ asset('img/Loader.gif') }}') 50% 50% no-repeat rgb(249,249,249);
+        background: url('{{ secure_asset('img/Loader.gif') }}') 50% 50% no-repeat rgb(249,249,249);
         opacity: .8;"></div>
         <div class="container">
             <div class="intro-text">
@@ -59,7 +59,7 @@
               <div class="col-xs-12 col-sm-12 col-md-12 col-lg-9">
               <div class="manager-profile">
                 <div class="profile-picture">
-                  <img src="{{asset('img/users/'.$profileimage)}}" style="height: 100%;width: 100%;" />
+                  <img src="{{secure_asset('img/users/'.$profileimage)}}" style="height: 100%;width: 100%;" />
                 </div> 
               <center>
                 <h4 class="manager-name">{{$username}}</h4> 
@@ -138,7 +138,7 @@
                       <ul>
                         @foreach($userreview as $rating)
                           <li>
-                            <img src="{{asset('img/users/'.$rating['profileimage'])}}"  />  
+                            <img src="{{secure_asset('img/users/'.$rating['profileimage'])}}"  />  
                             <div class="name-rating">
                               <h5>{{ $rating['username'] }}</h5>  
                               <span><i class="fa fa-star"></i> {{ $rating['rating'] }}</span>
@@ -164,7 +164,7 @@
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script> -->
 <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/caret/1.0.0/jquery.caret.min.js">
 </script> -->
-<script src="{{asset('js/frontJs/jquery.validate.js')}}"></script>  
+<script src="{{secure_asset('js/frontJs/jquery.validate.js')}}"></script>  
  <script type="text/javascript">
   jQuery(document).ready(function(){
       $('form')

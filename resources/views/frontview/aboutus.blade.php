@@ -16,7 +16,7 @@
 
                         <div class="about-us">  
                             <div class="about-icon">
-                                <img src="{{asset('/img/brick-wall.png')}}" />
+                                <img src="{{secure_asset('/img/brick-wall.png')}}" />
                             </div>
                             <div class="about-content">
                                 <h2>SCOPED</h2>

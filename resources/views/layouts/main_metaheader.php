@@ -1,7 +1,7 @@
 
 <meta charset="utf-8">
 <title> {{config('app.name')}} </title>
-<link rel="shortcut icon" href="{{{ asset('img/title_icon.png') }}}">
+<link rel="shortcut icon" href="{{{ secure_asset('img/title_icon.png') }}}">
  
    
     

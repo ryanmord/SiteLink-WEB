@@ -1,5 +1,5 @@
 @include('frontlayouts.main_layout')
- <link href="{{asset('/css/frontCss/map.css')}}" rel="stylesheet">
+ <link href="{{secure_asset('/css/frontCss/map.css')}}" rel="stylesheet">
 <body id="page-top">
   <!-- Navigation -->
     @include('frontlayouts.login_topheader')
@@ -12,7 +12,7 @@
         width: 100%;
         height: 100%;
         z-index: 9999;
-        background: url('{{ asset('img/Loader.gif') }}') 50% 50% no-repeat rgb(249,249,249);
+        background: url('{{ secure_asset('img/Loader.gif') }}') 50% 50% no-repeat rgb(249,249,249);
         opacity: .8;"></div>
 
       <div class="intro-text">
@@ -252,7 +252,7 @@
     </div>
   </div>
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCFesVLN0rhPhI0uHrMrQjclKdbyx9X9g0&libraries=places&callback=initMap" async defer></script>  
-<script src="{{asset('/js/frontJs/map.js')}}"></script>
+<script src="{{secure_asset('/js/frontJs/map.js')}}"></script>
   @include('frontlayouts.include_js')
   <script type="text/javascript">
   

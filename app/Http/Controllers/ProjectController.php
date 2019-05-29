@@ -276,7 +276,7 @@ class ProjectController extends Controller
                                     <td>';
                     }
                 }
-                $imagepath = asset("/img/users/" . $value->users_profile_image); 
+                $imagepath = secure_asset("/img/users/" . $value->users_profile_image); 
                 $appendtd .= '<img class="img-rounded" style="max-width:50px;max-height:50px;min-width:50px;min-height:50px;" src= "'.$imagepath.'" /></td>
                     <td style="text-align: left;color: #11121380;font-size: 15px;">
                     '.ucfirst($value->users_name).'&nbsp'.ucfirst($value->last_name).'</td>
@@ -1447,7 +1447,7 @@ class ProjectController extends Controller
         $company =$associate->users_company;
         $phone = $associate->users_phone;
         $email = $associate->users_email;
-        $profileimage = asset("/img/users/" . $associate['users_profile_image']);
+        $profileimage = secure_asset("/img/users/" . $associate['users_profile_image']);
         $temp =  array('status'           => 1, 
                        'associatename'    => $username,
                        'associateemail'   => $email,
@@ -1523,7 +1523,7 @@ class ProjectController extends Controller
                 $associateType = AssociateType::where('associate_type_id','=',$associateTypeId)->first();
                 $associate_type = $associateType->associate_type;
                 $profile = $user->users_profile_image;
-                $profileimage = asset("/img/users/" . $profile);
+                $profileimage = secure_asset("/img/users/" . $profile);
                 $appendtd .= '<tr><td width="50" class="live-user-td"><img class="img-rounded live-user-image" src="'.$profileimage.'"/></td>
                     <td width="250" class="live-user-td">'.$associatename.'</td>
                     <td width="220" class="live-user-td">'.$associate_type.'</td>
@@ -1688,7 +1688,7 @@ class ProjectController extends Controller
                     $associateType = AssociateType::where('associate_type_id','=',$associateTypeId)->first();
                     $associate_type = $associateType->associate_type;
                     $profile = $user->users_profile_image;
-                    $profileimage = asset("/img/users/" . $profile);
+                    $profileimage = secure_asset("/img/users/" . $profile);
                     $appendtd .= '<tr><td width="50" class="live-user-td"><img class="img-rounded   live-user-image" src="'.$profileimage.'"/></td>
                     <td width="250" class="live-user-td">'.$associatename.'</td>
                     <td width="220" class="live-user-td">'.$associate_type.'</td>
@@ -1735,7 +1735,7 @@ class ProjectController extends Controller
                 $associateType = AssociateType::where('associate_type_id','=',$associateTypeId)->first();
                 $associate_type = $associateType->associate_type;
                 $profile = $user->users_profile_image;
-                $profileimage = asset("/img/users/" . $profile);
+                $profileimage = secure_asset("/img/users/" . $profile);
                 $appendtd .= '<tr><td width="50" class="live-user-td"><img class="img-rounded   live-user-image" src="'.$profileimage.'"/></td>
                 <td width="250" class="live-user-td">'.$associatename.'</td>
                 <td width="220" class="live-user-td">'.$associate_type.'</td>
@@ -1768,7 +1768,7 @@ class ProjectController extends Controller
                 $associateType = AssociateType::where('associate_type_id','=',$associateTypeId)->first();
                 $associate_type = $associateType->associate_type;
                 $profile = $user->users_profile_image;
-                $profileimage = asset("/img/users/" . $profile);
+                $profileimage = secure_asset("/img/users/" . $profile);
                 $appendtd .= '<tr><td width="50" class="live-user-td"><img class="img-rounded   live-user-image" src="'.$profileimage.'"/></td>
                     <td width="250" class="live-user-td">'.$associatename.'</td>
                     <td width="220" class="live-user-td">'.$associate_type.'</td>

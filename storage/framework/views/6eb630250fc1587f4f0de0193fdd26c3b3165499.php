@@ -5,7 +5,7 @@
     width: 100%;
     height: 100%;
     z-index: 9999;
-    background: url('<?php echo e(asset('img/Loader.gif')); ?>') 50% 50% no-repeat rgb(249,249,249);
+    background: url('<?php echo e(secure_asset('img/Loader.gif')); ?>') 50% 50% no-repeat rgb(249,249,249);
     opacity: .8;"></div>
 <div class="col-xs-12 col-sm-9 content">
     <div class="panel panel-success">
@@ -72,6 +72,7 @@
                                            
                                         </tbody>
                                     </table>
+                                    <?php echo $__env->make('project.assessorslist', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
                                     <div class="row content-row-pagination">
                                     <br>
                                     <div class="col-md-12">
@@ -1263,7 +1264,141 @@ $(function () {
             return false;
         }
     }
-        
+
+    function associatelist(id){
+    document.getElementById('pagenumber').value = 1;
+    document.getElementById('assign_project_id').value = id;
+    var checks = '';
+    document.getElementById("associate-ids").value = checks;
+    var checks = document.getElementById("associate-ids").value;
+    $.ajax({
+            type: 'GET',
+            url: '<?php echo route('searchAssociate'); ?>',
+            data: {selectedAssociate:checks,pagenumber:1,limit:6},
+            dataType: 'json',
+          })
+
+          .done(function(response) {
+            if(response != '')
+            {
+              $('#usertable').html('');
+              $('#no_any_user').hide();
+              $('#div-button').show();
+              $('#associatetable').show();
+              $('#usertable').append(response);
+            }
+            else
+            {
+              $('#associatetable').hide();
+              $('#div-button').hide();
+              $('#no_any_user').show();
+            }
+        });
+    }
+    $("#associatetable").scroll(function() {
+
+        var value = $('#search-user').val();
+        var pagenumber1 = document.getElementById('pagenumber').value;
+        var idvalue = document.getElementById("associate-ids").value;
+        var pagenumber = ++pagenumber1;
+        document.getElementById('pagenumber').value = pagenumber;
+        $.ajax({
+              type: 'GET',
+              url: '<?php echo route('searchAssociate'); ?>',
+              data: {search_user:value,selectedAssociate:idvalue,pagenumber:pagenumber,limit:6},
+              dataType: 'json',
+          success: function(response) {
+          if(response === '')
+          {
+            //$pagenumber = --pagenumber1;
+          }
+          else
+          {
+            $('#usertable').append(response);
+            pagenumber = pagenumber;
+           
+            
+          }
+           
+        }
+      });
+    });
+    $("#search-user").keyup(function () {
+    var idvalue = document.getElementById("associate-ids").value;
+
+    var checks = $('input[name="associateid[]"]:checked').map(function(){
+              return $(this).val();
+                }).get();
+    
+    if(idvalue === "")
+    {
+      document.getElementById("associate-ids").value = checks;
+    }
+    else
+    {
+      document.getElementById("associate-ids").value = idvalue + ',' + checks;
+    }
+      value = $(this).val();
+      document.getElementById('pagenumber').value = 1;
+      var idvalue = document.getElementById("associate-ids").value;
+      $.ajax({
+            type: 'GET',
+              url: '<?php echo route('searchAssociate'); ?>',
+              data: {search_user:value,selectedAssociate:idvalue,pagenumber:1,limit:6},
+              dataType: 'json',
+          })
+        .done(function(response) {
+            if(response != '')
+            {
+              $('#no_any_user').hide();
+
+              $('#associatetable').show();
+              $('#div-button').show();
+              $('#usertable').html('');
+              $('#usertable').append(response);
+            }
+            else
+            {
+               $('#associatetable').hide();
+               $('#div-button').hide();
+               $('#no_any_user').show();
+            }
+        });
+    }); 
+    $(document).on('click', 'input[type="checkbox"]', function() {    
+    $('input[type="checkbox"]').not(this).prop('checked', false);      
+});
+
+$('#assign-user').click(function(){
+    var idvalue = document.getElementById("associate-ids").value;
+    var checks = $('input[name="associateid[]"]:checked').map(function(){
+              return $(this).val();
+                }).get();
+    
+    if(checks != "")
+    {
+      document.getElementById("associate-ids").value = checks;
+    }
+    else
+    {
+        alert('Please select one assessor');
+        return false;
+    }
+    $(".loader").fadeIn("slow");
+    var checks    = document.getElementById("associate-ids").value;
+    var projectid = document.getElementById("assign_project_id").value;
+    $.ajax({
+            type: 'GET',
+            url: '<?php echo route('assignProject'); ?>',
+            data: {associateid:checks,project_id:projectid},
+            dataType: 'json',
+          })
+
+          .done(function(response) {
+            alert(response.message);
+            location.reload();
+          });
+ }); 
 </script>
 
 <?php $__env->stopSection(); ?>

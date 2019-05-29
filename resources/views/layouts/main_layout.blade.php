@@ -8,7 +8,7 @@
 <meta charset="utf-8">
 <title> {{config('app.name')}} </title>
 
-  <link rel="shortcut icon" href="{{{ asset('img/brick-wall.png') }}}">
+  <link rel="shortcut icon" href="{{{ secure_asset('img/brick-wall.png') }}}">
     @include('layouts.include_css')
     @yield('css')
    

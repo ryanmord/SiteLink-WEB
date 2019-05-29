@@ -95,7 +95,7 @@ class UserController extends Controller
                     }
                 }
                 
-                $profileimage = asset("/img/users/" . $value->users_profile_image);
+                $profileimage = secure_asset("/img/users/" . $value->users_profile_image);
                 $appendtd .= '<tr class="content">
                             <td class="table-td-data">'.$value->users_id.'</td>';
                 $appendtd .= '<td><img class="img-rounded" style="max-width:50px;max-height:50px;min-width:50px;min-height:50px;" src= "'.$profileimage.'" /></td>';
@@ -181,7 +181,7 @@ class UserController extends Controller
                 $createdAt   = $value->created_at;
                 $createdDate = new DateTime($createdAt);
                 $createdDate = $createdDate->format('m/d/Y');
-                $profileimage = asset("/img/users/" . $value->users_profile_image);
+                $profileimage = secure_asset("/img/users/" . $value->users_profile_image);
                 $appendtd .= '<tr class="content">
                             <td class="table-td-data">'.$value->users_id.'</td>';
                 $appendtd .= '<td><img class="img-rounded" style="max-width:50px;max-height:50px;min-width:50px;min-height:50px;" src= "'.$profileimage.'" /></td>';
@@ -997,7 +997,7 @@ class UserController extends Controller
                         }
                     }
                 }
-                $profileimage = asset("/img/users/" . $value->users_profile_image);
+                $profileimage = secure_asset("/img/users/" . $value->users_profile_image);
                 $appendtd .= '<tr class="content">
                             <td class="table-td-data">'.$value->users_id.'</td>';
                 $appendtd .= '<td><img class="img-rounded" style="max-width:50px;max-height:50px;min-width:50px;min-height:50px;" src= "'.$profileimage.'" /></td>';

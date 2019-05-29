@@ -104,7 +104,7 @@
       'sqlite' => 
       array (
         'driver' => 'sqlite',
-        'database' => 'project_managment',
+        'database' => 'sitelink',
         'prefix' => '',
       ),
       'mysql' => 
@@ -112,7 +112,7 @@
         'driver' => 'mysql',
         'host' => 'localhost',
         'port' => '3306',
-        'database' => 'project_managment',
+        'database' => 'sitelink',
         'username' => 'root',
         'password' => 'root',
         'unix_socket' => '',
@@ -127,7 +127,7 @@
         'driver' => 'pgsql',
         'host' => 'localhost',
         'port' => '3306',
-        'database' => 'project_managment',
+        'database' => 'sitelink',
         'username' => 'root',
         'password' => 'root',
         'charset' => 'utf8',
@@ -140,7 +140,7 @@
         'driver' => 'sqlsrv',
         'host' => 'localhost',
         'port' => '3306',
-        'database' => 'project_managment',
+        'database' => 'sitelink',
         'username' => 'root',
         'password' => 'root',
         'charset' => 'utf8',
@@ -226,7 +226,7 @@
     'env' => 'local',
     'debug' => true,
     'url' => 'http://103.51.153.235/project_management/public/',
-    'timezone' => 'Asia/Kolkata',
+    'timezone' => 'UTC',
     'locale' => 'en',
     'fallback_locale' => 'en',
     'key' => 'base64:SZA6ppTVLhk9H4Y4H92MT62wrHgDpYvC3871mdbpUHg=',
@@ -303,6 +303,7 @@
       'PushNotification' => 'Edujugon\\PushNotification\\Facades\\PushNotification',
     ),
     'TINYPNG_KEY' => '83q9lPQrJvuExef8Z37lSIP2dWfZEV5M',
+    'fcm_server_key' => 'AAAAl2LQWCg:APA91bFeM0f7RojB3_jzuHfPjR4ZUO3RasGnd2y3v7A4N41p0zb7g06Xo89MG-Kpilxo-vIx3iXtlncOqAmpwTqNOYm7ZpPC9bfFUH0-f6rQn2CIBKJUG6d_bhiimyuRq3XOj-qZns_1',
   ),
   'auth' => 
   array (

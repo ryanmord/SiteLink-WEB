@@ -1,11 +1,12 @@
 <?php $__env->startSection('main-content'); ?>
+
 <div class="loader" style="position: fixed;
     left: 0px;
     top: 0px;
     width: 100%;
     height: 100%;
     z-index: 9999;
-    background: url('<?php echo e(asset('img/Loader.gif')); ?>') 50% 50% no-repeat rgb(249,249,249);
+    background: url('<?php echo e(secure_asset('img/Loader.gif')); ?>') 50% 50% no-repeat rgb(249,249,249);
     opacity: .8;"></div>
   <div class="col-xs-12 col-sm-9 content">
     <div class="content-row">
@@ -148,7 +149,8 @@
                           <div class="col-md-6">
 
                               <div style="float: right;">
-                                  <button class="btn btn-danger" type="button" id="archive-btn" disabled style="margin-top: 15px;">
+                                  <button class="btn btn-danger" type="button" id="archive-btn" disabled style="margin-top: 15px;" data-toggle="modal" data-target="#confirmBox">
+                                  
                                   <!-- <i class="glyphicon glyphicon-remove-circle"></i> -->
                                   &nbsp;Archive</button>      
                                   <!-- <button class="btn btn-info" type="button" id="unblock-btn"><i class="glyphicon glyphicon-ok-circle"></i>&nbsp;Unblock</button> -->
@@ -156,16 +158,16 @@
                                   &nbsp     
                               </div>
                           </div>
-                          
-                      </div>
+                        </div>
                       
                         <div class="table-responsive" id="div-scheduling-table">
                           <input type="hidden" name="scheduling-count" id="scheduling-count" value="">
+                          <input type="hidden" name="scheduling-pagenumber" id="scheduling-pagenumber" value="1">
                           <table class="table table-bordered table-hover table-striped" > 
                               <thead>
                                <tr bgcolor="#EEEEEE">
-                                  <th class="table-td-th" width="50">
-                                      <!-- <input type="checkbox" id="allChecks"> -->
+                                  <th class="table-td-data" width="50">
+                                      <input type="checkbox" id="allChecks" name="allChecks">
                                   </th>
                                     <th class="table-td-th" width="100" data-id="1" id="identifier-th" onclick="sortTable(0,'identifier-th','identifier-th-asc','identifier-th-desc')" style="cursor: pointer;text-align: left;">Project Identifier <i class='fa fa-arrow-down fa-icon-sort-desc' id="identifier-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="identifier-th-asc"></i></th>
                                     <th class="table-td-th" width="140" data-id="1" id="projectname-th" onclick="sortTable(1,'projectname-th','projectname-th-asc','projectname-th-desc')" style="cursor: pointer;">Name <i class='fa fa-arrow-down fa-icon-sort' id="projectname-th-desc"></i><i class='fa fa-arrow-up fa-icon-sort' id="projectname-th-asc"></i></th>
@@ -201,6 +203,7 @@
               </div>
             <?php endif; ?>
           </div>
+          <?php echo $__env->make('project.confirmbox', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
           <?php if(isset($users) && !empty($users)): ?>
           <?php echo $__env->make('approveuser', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
           <?php endif; ?>
@@ -208,7 +211,7 @@
         <?php $__env->startSection('script'); ?> 
         <script type="text/javascript">
           $(window).load(function() {
-          
+          $('#confirmmsg').text('Are you sure you would like to archive these projects?');
           $('#div-no-scheduling').hide();
           $.ajax({
                   type: 'GET',
@@ -491,13 +494,21 @@ $(function () {
         if(checks == '')
         {
             document.getElementById("archive-btn").disabled = true;
+            $('input[name="allChecks"]').prop('checked', false);
         }
         else
         {
           document.getElementById("archive-btn").disabled = false;
+          $('input[name="allChecks"]').prop('checked', false);
         }
       });
-    $('body').on('click','#archive-btn', function (event) {
+    $('body').on('click','#no-btn', function (event) {
+      $('input[name="checkProject"]').prop('checked', false);
+        $('input[name="allChecks"]').prop('checked', false);
+        document.getElementById("archive-btn").disabled = true;
+    });
+    $('body').on('click','#confirm-btn', function (event) {
+      
        var checks = $('input[name="checkProject"]:checked').map(function(){
             return $(this).val();
         }).get();
@@ -526,9 +537,8 @@ $(function () {
   </script>
    <script type="text/javascript">
       function sortTable(n,id,arrowup,arrowdown) {
-
-       var sortorder = $('#'+id).attr("data-id"); 
-       $(".loader").fadeIn("slow");
+        var sortorder = $('#'+id).attr("data-id"); 
+        $(".loader").fadeIn("slow");
         $.ajax({
                   type: 'GET',
                   url: '<?php echo route('schedulingProjectList'); ?>',
@@ -608,6 +618,46 @@ $(function () {
             $('#'+arrowdown).addClass('fa-icon-sort-desc');
         }
     }
+    $('#scheduling-pagination').on('click','li', function(){
+      var pagenumber = $(this).text();
+      document.getElementById('scheduling-pagenumber').value = pagenumber;
+      $('input[name="allChecks"]').prop('checked', false);
+      $('input[name="checkProject"]').prop('checked', false);
+      document.getElementById("archive-btn").disabled = true;
+    });
+
+    $('#allChecks').on('click', function(){
+      
+      var pagenumber = document.getElementById('scheduling-pagenumber').value;
+
+      var count = document.getElementById('scheduling-count').value;
+      var checkbox = $('input[name="checkProject"]');
+      length = checkbox.length;
+      limit = 15;    
+      items = 15 * (pagenumber - 1);
+      limit = items + 15;
+      if($(this).prop("checked") == true){
+        for (var i = items; i < limit; i++) {
+          if(i < count)
+          {
+            checkbox[i].checked = true;
+          }
+        }
+        document.getElementById("archive-btn").disabled = false;
+      }
+      else
+      {
+        $('input[name="checkProject"]').prop('checked', false);
+        document.getElementById("archive-btn").disabled = true;
+      }
+      
+      /*alert(length);
+      $('input[name="checkProject[2]"]').prop('checked', true);*/
+      /*for(var i=0; i < count; i++) {
+        $('input[name="checkProject[i]"]').prop('checked', false);
+      }*/
+    });
+   
   </script>
 
   <?php $__env->stopSection(); ?>

@@ -4,13 +4,13 @@
 ?>
 <!--begin::Base Styles -->
 	
-  <link href="{{asset('/css/themeCss/site.min.css')}}" rel="stylesheet" type="text/css">
-  <link href="{{asset('/css/themeCss/table.css')}}" rel="stylesheet" type="text/css">
-  <link href="{{asset('/css/themeCss/rating.css')}}" rel="stylesheet" type="text/css">
-  <link href="{{asset('/css/themeCss/datepicker.css')}}" rel="stylesheet" type="text/css">
-  <link rel="stylesheet" type="text/css" href="{{asset('/css/ratings/star-rating-svg.css')}}">
-  <link rel="stylesheet" type="text/css" href="{{asset('/css/ratings/demo.css')}}">
-   <link href="{{asset('/css/themeCss/font.css')}}" rel="stylesheet" type="text/css">
+  <link href="{{secure_asset('/css/themeCss/site.min.css')}}" rel="stylesheet" type="text/css">
+  <link href="{{secure_asset('/css/themeCss/table.css')}}" rel="stylesheet" type="text/css">
+  <link href="{{secure_asset('/css/themeCss/rating.css')}}" rel="stylesheet" type="text/css">
+  <link href="{{secure_asset('/css/themeCss/datepicker.css')}}" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" type="text/css" href="{{secure_asset('/css/ratings/star-rating-svg.css')}}">
+  <link rel="stylesheet" type="text/css" href="{{secure_asset('/css/ratings/demo.css')}}">
+   <link href="{{secure_asset('/css/themeCss/font.css')}}" rel="stylesheet" type="text/css">
  
   <style type="text/css">
  

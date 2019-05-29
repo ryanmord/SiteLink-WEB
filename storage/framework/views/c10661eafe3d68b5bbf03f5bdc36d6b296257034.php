@@ -9,9 +9,9 @@
               <span class="icon-bar"></span>
             </button>
             <?php if(session('loginusertype') == 'admin'): ?>
-              <a href="<?php echo e(url('/dashboard')); ?>" class="navbar-brand"><img src="<?php echo e(asset('img/front/logo.png')); ?>"></a><br><br><br><br>
+              <a href="<?php echo e(url('/dashboard')); ?>" class="navbar-brand"><img src="<?php echo e(secure_asset('img/front/logo.png')); ?>"></a><br><br><br><br>
             <?php else: ?>
-              <a href="<?php echo e(url('/managerDashboard')); ?>" class="navbar-brand"><img src="<?php echo e(asset('img/front/logo.png')); ?>"></a><br><br><br><br>
+              <a href="<?php echo e(url('/managerDashboard')); ?>" class="navbar-brand"><img src="<?php echo e(secure_asset('img/front/logo.png')); ?>"></a><br><br><br><br>
             <?php endif; ?>
           </div>
 

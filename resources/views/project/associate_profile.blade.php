@@ -14,7 +14,7 @@
       <!-- Modal body -->  
       <div class="modal-body">
         <div class="manager-picture">
-        <img src="{{asset('img/users/'.$user['users_profile_image'])}}" alt="" title="" id="managerimage" style="height: 100%;width: 100%;">
+        <img src="{{secure_asset('img/users/'.$user['users_profile_image'])}}" alt="" title="" id="managerimage" style="height: 100%;width: 100%;">
         </div>
         <center>
         <h4 id="managername">{{ $user['users_name'] }}&nbsp{{ $user['last_name'] }}</h4>

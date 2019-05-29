@@ -2,8 +2,8 @@
 <head>
   <meta charset="utf-8">
   <title> {{config('app.name')}} </title>
-  <link rel="shortcut icon" href="{{{ asset('img/brick-wall.png') }}}">
- <link href="{{asset('/css/themeCss/viewmap.css')}}" rel="stylesheet">
+  <link rel="shortcut icon" href="{{{ secure_asset('img/brick-wall.png') }}}">
+ <link href="{{secure_asset('/css/themeCss/viewmap.css')}}" rel="stylesheet">
 </head>
 
 <!-- Body -->
@@ -37,5 +37,5 @@
 </body>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCFesVLN0rhPhI0uHrMrQjclKdbyx9X9g0&libraries=places&callback=initMap"
         async defer></script>  
-<script src="{{asset('/js/themeJs/map.js')}}"></script>
+<script src="{{secure_asset('/js/themeJs/map.js')}}"></script>
 </html>

@@ -9,9 +9,9 @@
               <span class="icon-bar"></span>
             </button>
             @if(session('loginusertype') == 'admin')
-              <a href="{{ url('/dashboard')}}" class="navbar-brand"><img src="{{asset('img/front/logo.png')}}"></a><br><br><br><br>
+              <a href="{{ url('/dashboard')}}" class="navbar-brand"><img src="{{secure_asset('img/front/logo.png')}}"></a><br><br><br><br>
             @else
-              <a href="{{ url('/managerDashboard')}}" class="navbar-brand"><img src="{{asset('img/front/logo.png')}}"></a><br><br><br><br>
+              <a href="{{ url('/managerDashboard')}}" class="navbar-brand"><img src="{{secure_asset('img/front/logo.png')}}"></a><br><br><br><br>
             @endif
           </div>
 

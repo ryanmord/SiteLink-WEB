@@ -2,31 +2,31 @@
     $currentroutename = Route::currentRouteName();
     $action = Route::currentRouteAction();
 ?>
-<script src="{{asset('front/assets/bf068f04/jquery.js')}}"></script>
-<script src="{{asset('front/assets/364402bf/yii.js')}}"></script>
-<script src="{{asset('front/vendor/jquery/jquery.min.js')}}"></script>
-<script src="{{asset('front/vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+<script src="{{secure_asset('front/assets/bf068f04/jquery.js')}}"></script>
+<script src="{{secure_asset('front/assets/364402bf/yii.js')}}"></script>
+<script src="{{secure_asset('front/vendor/jquery/jquery.min.js')}}"></script>
+<script src="{{secure_asset('front/vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
 
     <!-- Custom scripts for this template -->
-<script src="{{asset('js/frontJs/agency.min.js')}}"></script>
-<script src="{{asset('js/frontJs/owl.carousel.min.js')}}"></script>
-<script src="{{asset('front/vendor/jquery-easing\jquery.easing.min.js')}}"></script>
+<script src="{{secure_asset('js/frontJs/agency.min.js')}}"></script>
+<script src="{{secure_asset('js/frontJs/owl.carousel.min.js')}}"></script>
+<script src="{{secure_asset('front/vendor/jquery-easing\jquery.easing.min.js')}}"></script>
     <!-- Contact form JavaScript -->
-<script src="{{asset('js/frontJs/jqBootstrapValidation.js')}}"></script>
-<script src="{{asset('js/frontJs/contact_me.js')}}"></script>
+<script src="{{secure_asset('js/frontJs/jqBootstrapValidation.js')}}"></script>
+<script src="{{secure_asset('js/frontJs/contact_me.js')}}"></script>
 
     <!-- Custom scripts for this template -->
-<script src="{{asset('js/frontJs/jquery.dataTables.min.js')}}"></script>
-<link rel="stylesheet" src="{{asset('js/frontCss/bootstrap-datepicker.css')}}">
-<link rel="stylesheet" src="{{asset('js/frontCss/bootstrap-select.min.css')}}">
-<script src="{{asset('js/frontJs/bootstrap-datepicker.js')}}"></script>	
-<script src="{{asset('js/frontJs/jquery.validate.js')}}"></script>		
-<script src="{{asset('js/frontJs/bootstrap-select.min.js')}}"></script>	
-<script type="text/javascript" src="{{asset('js/frontJs/bootstrap-multiselect.js')}}"></script>	
-<script src="{{asset('js/frontJs/toggle_min.js')}}"></script>
+<script src="{{secure_asset('js/frontJs/jquery.dataTables.min.js')}}"></script>
+<link rel="stylesheet" src="{{secure_asset('js/frontCss/bootstrap-datepicker.css')}}">
+<link rel="stylesheet" src="{{secure_asset('js/frontCss/bootstrap-select.min.css')}}">
+<script src="{{secure_asset('js/frontJs/bootstrap-datepicker.js')}}"></script>	
+<script src="{{secure_asset('js/frontJs/jquery.validate.js')}}"></script>		
+<script src="{{secure_asset('js/frontJs/bootstrap-select.min.js')}}"></script>	
+<script type="text/javascript" src="{{secure_asset('js/frontJs/bootstrap-multiselect.js')}}"></script>	
+<script src="{{secure_asset('js/frontJs/toggle_min.js')}}"></script>
 
-<script src="{{asset('/js/ratingsJs/jquery.star-rating-svg.js')}}"></script>
-<script src="{{asset('/js/ratingsJs/jquery.star-rating-svg.min.js')}}"></script>
+<script src="{{secure_asset('/js/ratingsJs/jquery.star-rating-svg.js')}}"></script>
+<script src="{{secure_asset('/js/ratingsJs/jquery.star-rating-svg.min.js')}}"></script>
 <script type="text/javascript">
 
   	

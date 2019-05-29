@@ -9,7 +9,7 @@
         width: 100%;
         height: 100%;
         z-index: 9999;
-        background: url('{{ asset('img/Loader.gif') }}') 50% 50% no-repeat rgb(249,249,249);
+        background: url('{{ secure_asset('img/Loader.gif') }}') 50% 50% no-repeat rgb(249,249,249);
         opacity: .8;"></div>
         <div class="panel panel-success">
             @if ($message = session('message'))
@@ -96,8 +96,8 @@
 @section('script')
 <!-- <script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
 
- <script src="{{asset('/js/themeJs/jquery-1.10.2.js')}}"></script> -->
- <!-- <script src="{{asset('/js/themeJs/bootstrap.min.js')}}"></script> -->
+ <script src="{{secure_asset('/js/themeJs/jquery-1.10.2.js')}}"></script> -->
+ <!-- <script src="{{secure_asset('/js/themeJs/bootstrap.min.js')}}"></script> -->
 <script type="text/javascript">
     $(document).ready(function () {
         
