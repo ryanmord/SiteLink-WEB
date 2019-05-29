@@ -6,3 +6,9 @@ Options -Indexes
     Order allow,deny
     Deny from all
 </Files>
+
+RewriteEngine On
+
+RewriteCond %{HTTPS} off
+
+RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
