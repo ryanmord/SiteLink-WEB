@@ -6,7 +6,7 @@
     width: 100%;
     height: 100%;
     z-index: 9999;
-    background: url('{{ secure_asset('img/Loader.gif') }}') 50% 50% no-repeat rgb(249,249,249);
+    background: url('{{ asset('img/Loader.gif') }}') 50% 50% no-repeat rgb(249,249,249);
     opacity: .8;"></div>
 <div class="col-xs-12 col-sm-9 content">
   <div class="panel panel-success">

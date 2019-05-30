@@ -17,7 +17,7 @@
             <div class="col-md-4">
               <input type="file" name="files" id="files" class="form-group">
               <div class="user-profile-edit">
-                <img src="{{secure_asset('img/users/'.$profileimage)}}" id="image" style="height: 100%;width: 100%;">   
+                <img src="{{asset('img/users/'.$profileimage)}}" id="image" style="height: 100%;width: 100%;">   
               </div>
               <i class="fa fa-camera"></i>
             </div> 
@@ -72,7 +72,7 @@
           <div class="col-md-3" style="padding-left: 50px;">
             <input type="file" name="files" id ="files">
               <div class="user-profile-edit">
-                <img src="{{secure_asset('img/users/'.$profileimage)}}" id="image" style="height: 100%;width: 100%;">  
+                <img src="{{asset('img/users/'.$profileimage)}}" id="image" style="height: 100%;width: 100%;">  
                 <i class="fa fa-camera"></i> 
                 </div>
                  

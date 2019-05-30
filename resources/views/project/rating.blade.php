@@ -16,7 +16,7 @@
         <input type="hidden" id="review-project-id">
         <div class="associate-manager-profile">
           <div class="manager-profile">
-            <img src="{{secure_asset('img/front/manager.jpg')}}" alt="" title="" id="associate-profile" style="height: 100%;width: 100%;">
+            <img src="{{asset('img/front/manager.jpg')}}" alt="" title="" id="associate-profile" style="height: 100%;width: 100%;">
           </div> 
 
             <div class="manager-data row">

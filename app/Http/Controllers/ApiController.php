@@ -335,7 +335,7 @@ class ApiController extends Controller
         $usertype = $user->user_types_id;
         $notificationcount = ProjectNotification::where('to_user_id','=',$userid)
                 ->where('read_flag','=',0)->count();
-        $profileimage = secure_asset("/img/users/" . $user['users_profile_image']);
+        $profileimage = asset("/img/users/" . $user['users_profile_image']);
         $associateTypeId = $user->associate_type_id;
         $associateType = AssociateType::where('associate_type_id','=',$associateTypeId)->first();
         $projectcount = ProjectBid::where('user_id','=',$userid)
@@ -535,7 +535,7 @@ class ApiController extends Controller
     {
         $user = $this->checkuserprivatekey($request['userid'],$request['privatekey']);
         $userid = $request['userid'];
-        $profileimage = secure_asset("/img/users/" . $user['users_profile_image']);
+        $profileimage = asset("/img/users/" . $user['users_profile_image']);
         $name    = $user->users_name;
         $lastname = $user->last_name;
         if($lastname == null)
@@ -779,7 +779,7 @@ class ApiController extends Controller
         }
         
         $usertype = $user->user_types_id;
-        $profileimage = secure_asset("/img/users/" . $user->users_profile_image);
+        $profileimage = asset("/img/users/" . $user->users_profile_image);
         if($usertype == 1)
         {
             $bidmade = ProjectBid::where('project_bid_status','<>',0)
@@ -972,7 +972,7 @@ class ApiController extends Controller
                 $model = User::where('users_id','=',$byuserid)->first();
                 $lastname = $model->last_name;
                 $username = $model->users_name.' '.$lastname;
-                $profileimage = secure_asset("/img/users/" . $model['users_profile_image']);
+                $profileimage = asset("/img/users/" . $model['users_profile_image']);
                 $commentdate = $value->created_at;
                 $commentdate = new DateTime($commentdate);
                 $commentdate = $commentdate->format("jS F Y h:i:s");
@@ -2027,7 +2027,7 @@ class ApiController extends Controller
             $company =$associate->users_company;
             $phone = $associate->users_phone;
             $email = $associate->users_email;
-            $profileimage = secure_asset("/img/users/" . $associate['users_profile_image']);
+            $profileimage = asset("/img/users/" . $associate['users_profile_image']);
             $projectcount = ProjectBid::where('user_id','=',$associateid)
                                         ->where('project_bid_status','=',1)->count();
             $bidmadecount = ProjectBid::where('project_bid_status','<>',0)
@@ -2140,7 +2140,7 @@ class ApiController extends Controller
             $company = $scheduler->users_company;
             $phone = $scheduler->users_phone;
             $email = $scheduler->users_email;
-            $profileimage = secure_asset("/img/users/" . $scheduler['users_profile_image']);
+            $profileimage = asset("/img/users/" . $scheduler['users_profile_image']);
             $bidmadecount = DB::table('projects')
                                 ->leftJoin('project_bids', 'projects.project_id', '=', 'project_bids.project_id')
                                 ->where('projects.user_id','=',$schedulerid)
@@ -2277,7 +2277,7 @@ class ApiController extends Controller
                     $model = User::where('users_id','=',$byuserid)->first();
                     $lastname = $model->last_name;
                     $username = $model->users_name.' '.$lastname;
-                    $profileimage = secure_asset("/img/users/" . $model['users_profile_image']);
+                    $profileimage = asset("/img/users/" . $model['users_profile_image']);
                     $commentdate = $value->created_at;
                     $commentdate = new DateTime($commentdate);
                     $commentdate = $commentdate->format("jS F Y h:i s");
@@ -2809,7 +2809,7 @@ class ApiController extends Controller
         $company =$associate->users_company;
         $phone = $associate->users_phone;
         $email = $associate->users_email;
-        $profileimage = secure_asset("/img/users/" . $associate['users_profile_image']);
+        $profileimage = asset("/img/users/" . $associate['users_profile_image']);
         $projectcount = ProjectBid::where('user_id','=',$associateid)
                     ->where('project_bid_status','=',1)->count();
                     
@@ -2995,7 +2995,7 @@ class ApiController extends Controller
                 $datetime2 = new DateTime($created_at);
                 $created_at= $datetime2->format("Y-m-d");
                 $manager = User::where('users_id','=',$publishproject->user_id)->first();
-                $profileimage = secure_asset("/img/users/" . $manager->users_profile_image);
+                $profileimage = asset("/img/users/" . $manager->users_profile_image);
                 $approxbid = number_format($publishproject->approx_bid, 2);
                 $identifier = (!isset($publishproject->project_number) || is_null($publishproject->project_number)) ? '-' : $publishproject->project_number;
                 $publishprojects[] = ['projectid' => (string)$publishproject->project_id, 
@@ -3151,7 +3151,7 @@ class ApiController extends Controller
                 $projectid = $value->project_id;
                 $publishproject = Project::where('project_id','=',$projectid)->first();
                 $manager = User::where('users_id','=',$publishproject->user_id)->first();
-                $profileimage = secure_asset("/img/users/" . $manager->users_profile_image);
+                $profileimage = asset("/img/users/" . $manager->users_profile_image);
                 $approxbid = number_format($publishproject->approx_bid, 2);
                 $publishprojects[] = ['projectid' => (string)$publishproject->project_id, 
                                 'projectname'     => $publishproject->project_name, 
@@ -3548,7 +3548,7 @@ class ApiController extends Controller
                                 'notification' => [
                                 'title'              => "This is Title",
                                 'body'               => "This is Message",
-                                'icon'               => secure_asset("/images/logo-icon.jpg")
+                                'icon'               => asset("/images/logo-icon.jpg")
                                     ]
                                 ])
                     ->setApiKey('AAAA1XC4TOY:APA91bFz5hGNBaAmj9kFuaWP5LDA7CP5k4wqwka2WxSXYl1gBMF2U8DXEXdnZvie_JQ5kRU8HZE7k3d5VtbZxFgPP-yKcPp_kaYJTEwV-WwzMz7ak3pbo-aQsTabMLFUi5WGuMCq9U16')
@@ -4794,7 +4794,7 @@ class ApiController extends Controller
                             {
                                 $associateType = 'Associate';
                             }
-                            $profileImage = secure_asset("/img/users/" . $associate->users_profile_image);
+                            $profileImage = asset("/img/users/" . $associate->users_profile_image);
                             $associateProfile[] = ['associateId'   => (string)$associateId,
                                                    'associateName' => $associate->users_name.' '.$associate->last_name,
                                                    'profileImage'  => $profileImage,

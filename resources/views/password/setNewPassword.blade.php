@@ -9,7 +9,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <link rel="icon" href="{{secure_asset('img/front/fav-logo.png')}}" type="image/png" sizes="16x16">
+    <link rel="icon" href="{{asset('img/front/fav-logo.png')}}" type="image/png" sizes="16x16">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
@@ -19,7 +19,7 @@
     <meta name="csrf-param" content="_csrf-frontend">
     <meta name="csrf-token" content="fkMSpKSo6hiL4aMtehZ6vsKrITZzXRMTNqJcc08Vjbn4x2CqKYTaK9bADjir9ZlwWVCoNVE0zG0Bn_VUB-ywPA==">
     <title></title>
- <link rel="shortcut icon" href="{{{ secure_asset('img/brick-wall.png') }}}">
+ <link rel="shortcut icon" href="{{{ asset('img/brick-wall.png') }}}">
 
     @include('frontlayouts.include_css')
    <style type="text/css">
@@ -46,7 +46,7 @@
   <nav class="navbar navbar-expand-lg navbar-dark fixed-top " id="mainNav">
         <div class="container">
             <!-- #page-top -->
-            <a class="navbar-brand js-scroll-trigger" href="#"><img src="{{secure_asset('img/front/logo.png')}}"></a>
+            <a class="navbar-brand js-scroll-trigger" href="#"><img src="{{asset('img/front/logo.png')}}"></a>
            
 
             <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,7 +65,7 @@
         width: 100%;
         height: 100%;
         z-index: 9999;
-        background: url('{{ secure_asset('img/Loader.gif') }}') 50% 50% no-repeat rgb(249,249,249);
+        background: url('{{ asset('img/Loader.gif') }}') 50% 50% no-repeat rgb(249,249,249);
         opacity: .8;"></div>
             <div class="intro-text">
                 <div class="pdding-left">

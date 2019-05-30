@@ -20,7 +20,7 @@
 				<div class="works-part">
 				
 				<br><br>
-					<img src="{{secure_asset('img/front/Associate.png')}}">
+					<img src="{{asset('img/front/Associate.png')}}">
 					<h3>Associates</h3>
 					<center>
 					<ul>

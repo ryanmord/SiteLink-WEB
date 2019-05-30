@@ -1,6 +1,6 @@
 @extends('layouts.main_layout')
 @section('css')
-<!-- <link href="{{secure_asset('/css/themeCss/jquery-ui.css')}}" rel="stylesheet" type="text/css">
+<!-- <link href="{{asset('/css/themeCss/jquery-ui.css')}}" rel="stylesheet" type="text/css">
  --> <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
  <style type="text/css">
    .ui-datepicker-trigger{
@@ -17,7 +17,7 @@
         width: 100%;
         height: 100%;
         z-index: 9999;
-        background: url('{{ secure_asset('img/Loader.gif') }}') 50% 50% no-repeat rgb(249,249,249);
+        background: url('{{ asset('img/Loader.gif') }}') 50% 50% no-repeat rgb(249,249,249);
         opacity: .8;"></div>
  
     <div class="panel panel-success" style="text-align: left;">
@@ -833,11 +833,11 @@ $(function () {
  </script>
 <script>
   $( function() {
-   /* var image = "{{ secure_asset('images/calender.gif') }}";
+   /* var image = "{{ asset('images/calender.gif') }}";
     alert(image);*/
     $( "#datepicker" ).datepicker({
       showOn: "both",
-      buttonImage:"{{ secure_asset('images/calendar.gif') }}",
+      buttonImage:"{{ asset('images/calendar.gif') }}",
       buttonImageOnly: true,
       buttonText: "Select date",
       maxDate: 0 

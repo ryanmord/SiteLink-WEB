@@ -15,12 +15,12 @@
                 <ul class="horizontal-tabs nav col-md-10" id="leftTabs">
                   <li id="active-bids" style="margin-left: 180px;">
                     <a href="#active_tab" class="active" data-toggle="tab"> 
-                      <img src={{secure_asset('img/front/icon1.png')}} alt="" />Active Bids
+                      <img src={{asset('img/front/icon1.png')}} alt="" />Active Bids
                     </a>     
                   </li>
                   <li id="history-bids">
                     <a href="#history_tab" data-toggle="tab">
-                      <img src={{secure_asset('img/front/icon3.png')}} alt="" />Bid History
+                      <img src={{asset('img/front/icon3.png')}} alt="" />Bid History
                     </a>
                   </li>
                 </ul>
@@ -395,7 +395,7 @@
       <!-- Modal body -->  
       <div class="modal-body">
         <div class="manager-picture">
-          <img src={{secure_asset('img/front/manager.jpg')}} alt="" title="" id="managerimage" style="height: 100%;width: 100%;">
+          <img src={{asset('img/front/manager.jpg')}} alt="" title="" id="managerimage" style="height: 100%;width: 100%;">
         </div>
         <h4 id="managername">George Sabastian</h4>
         <div class="manager-contact">

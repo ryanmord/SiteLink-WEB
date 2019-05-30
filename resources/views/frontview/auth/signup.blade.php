@@ -1,5 +1,5 @@
 @include('frontlayouts.main')
-    <link href="{{secure_asset('/css/frontCss/map.css')}}" rel="stylesheet">
+    <link href="{{asset('/css/frontCss/map.css')}}" rel="stylesheet">
 
 <!-- Header -->
 <header class="masthead login sign-up">
@@ -11,7 +11,7 @@
         width: 100%;
         height: 100%;
         z-index: 9999;
-        background: url('{{ secure_asset('img/Loader.gif') }}') 50% 50% no-repeat rgb(249,249,249);
+        background: url('{{ asset('img/Loader.gif') }}') 50% 50% no-repeat rgb(249,249,249);
         opacity: .8;"></div>
 		<div class="pdding-left">
 			<div class="col-md-7 login-left">
@@ -29,7 +29,7 @@
 		                  	<div class="col-md-12 login-right">  
 		                  		
 		                  		<div class="profile-picture">
-		                    		<img src="{{secure_asset('img/users/default.png')}}" id="imageShow" style="height: 100%;width: 100%;">
+		                    		<img src="{{asset('img/users/default.png')}}" id="imageShow" style="height: 100%;width: 100%;">
 								          </div>
 		                  		<div class="form-group">
 									<div class="form-group field-customers-first_name">
@@ -119,7 +119,7 @@
      <!-- Footer -->
 @include('frontlayouts.footer')
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCFesVLN0rhPhI0uHrMrQjclKdbyx9X9g0&libraries=places&callback=initMap" async defer></script>  
-<script src="{{secure_asset('/js/frontJs/map.js')}}"></script>
+<script src="{{asset('/js/frontJs/map.js')}}"></script>
 @include('frontlayouts.include_js')
 
 

@@ -14,17 +14,17 @@
                             <ul class="horizontal-tabs nav col-md-12" id="leftTabs">
                               <li id="job_finder">
                                 <a href="#a_tab" class="active" data-toggle="tab">
-                                  <img src={{secure_asset('img/front/icon1.png')}} alt="" /> Job Finder
+                                  <img src={{asset('img/front/icon1.png')}} alt="" /> Job Finder
                                 </a>     
                               </li>
                               <li id="my-jobs">
                                 <a href="#b_tab" data-toggle="tab">
-                                   <img src={{secure_asset('img/front/icon2.png')}} alt="" />  My Jobs
+                                   <img src={{asset('img/front/icon2.png')}} alt="" />  My Jobs
                                 </a>
                               </li>
                               <li id="project-History">
                                 <a href="#c_tab" data-toggle="tab">
-                                  <img src={{secure_asset('img/front/icon3.png')}} alt="" />  Job History
+                                  <img src={{asset('img/front/icon3.png')}} alt="" />  Job History
                                 </a>
                               </li>
                             </ul>
@@ -579,7 +579,7 @@
       <!-- Modal body -->  
       <div class="modal-body">
         <div class="manager-picture">
-        <img src={{secure_asset('img/front/manager.jpg')}} alt="" title="" id="managerimage" style="height: 100%;width: 100%;">
+        <img src={{asset('img/front/manager.jpg')}} alt="" title="" id="managerimage" style="height: 100%;width: 100%;">
         </div>
         <h4 id="managername">George Sabastian</h4>
         <div class="manager-contact">

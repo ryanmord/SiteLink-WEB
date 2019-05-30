@@ -1,5 +1,5 @@
 @include('frontlayouts.main_layout')
-<link href="{{secure_asset('/css/frontCss/webmap.css')}}" rel="stylesheet">
+<link href="{{asset('/css/frontCss/webmap.css')}}" rel="stylesheet">
 
 <body id="page-top">
   <!-- Navigation -->
@@ -268,7 +268,7 @@
 </div>
    @include('frontlayouts.include_js')
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCFesVLN0rhPhI0uHrMrQjclKdbyx9X9g0&libraries=places&callback=initMap" async defer></script>  
-    <!-- <script src="{{secure_asset('/js/frontJs/map.js')}}"></script> -->
+    <!-- <script src="{{asset('/js/frontJs/map.js')}}"></script> -->
 
     <script type="text/javascript">
       function initMap() {

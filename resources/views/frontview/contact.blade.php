@@ -17,7 +17,7 @@
 
                         <div class="about-us">
                             <div class="about-icon">
-                             <img src="{{secure_asset('img/front/phone.jpg')}}" />
+                             <img src="{{asset('img/front/phone.jpg')}}" />
                             </div>
                             <div class="contact-content">
                                 <h2>Contact us @</h2>
@@ -34,7 +34,7 @@
 
                         <div class="about-us">
                             <div class="about-icon">
-                             <img src="{{secure_asset('img/front/map.jpg')}}" />
+                             <img src="{{asset('img/front/map.jpg')}}" />
                             </div>
                             <div class="contact-content">
                                 <h2>Our Office Address </h2>
@@ -50,7 +50,7 @@
 
                         <div class="about-us">
                             <div class="about-icon">
-                                <img src="{{secure_asset('img/front/mail.jpg')}}" />
+                                <img src="{{asset('img/front/mail.jpg')}}" />
                             </div>
                             <div class="contact-content">
                                 <h2>Our Email Address </h2>

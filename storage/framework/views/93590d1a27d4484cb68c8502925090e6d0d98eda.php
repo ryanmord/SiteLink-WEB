@@ -8,7 +8,7 @@
 <meta charset="utf-8">
 <title> <?php echo e(config('app.name')); ?> </title>
 
-  <link rel="shortcut icon" href="<?php echo e(secure_asset('img/brick-wall.png')); ?>">
+  <link rel="shortcut icon" href="<?php echo e(asset('img/brick-wall.png')); ?>">
     <?php echo $__env->make('layouts.include_css', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
     <?php echo $__env->yieldContent('css'); ?>
    

@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-lg navbar-dark fixed-top " id="mainNav">
     <div class="container">
         <!-- #page-top -->
-        <a class="navbar-brand js-scroll-trigger" href="{{route('home')}}"><img src="{{secure_asset('img/front/logo.png')}}"></a>
+        <a class="navbar-brand js-scroll-trigger" href="{{route('home')}}"><img src="{{asset('img/front/logo.png')}}"></a>
         <ul class="navbar-nav text-uppercase ml-auto head-left">
             <li class="nav-item" id="aboutus-menu">
                 <a class="nav-link js-scroll-trigger" href="{{route('aboutus')}}">About Us</a>

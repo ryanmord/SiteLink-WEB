@@ -1,5 +1,5 @@
 <?php $__env->startSection('css'); ?>
-<!-- <link href="<?php echo e(secure_asset('/css/themeCss/jquery-ui.css')); ?>" rel="stylesheet" type="text/css">
+<!-- <link href="<?php echo e(asset('/css/themeCss/jquery-ui.css')); ?>" rel="stylesheet" type="text/css">
  --> <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
  <style type="text/css">
    .ui-datepicker-trigger{
@@ -16,7 +16,7 @@
         width: 100%;
         height: 100%;
         z-index: 9999;
-        background: url('<?php echo e(secure_asset('img/Loader.gif')); ?>') 50% 50% no-repeat rgb(249,249,249);
+        background: url('<?php echo e(asset('img/Loader.gif')); ?>') 50% 50% no-repeat rgb(249,249,249);
         opacity: .8;"></div>
  
     <div class="panel panel-success" style="text-align: left;">
@@ -832,11 +832,11 @@ $(function () {
  </script>
 <script>
   $( function() {
-   /* var image = "<?php echo e(secure_asset('images/calender.gif')); ?>";
+   /* var image = "<?php echo e(asset('images/calender.gif')); ?>";
     alert(image);*/
     $( "#datepicker" ).datepicker({
       showOn: "both",
-      buttonImage:"<?php echo e(secure_asset('images/calendar.gif')); ?>",
+      buttonImage:"<?php echo e(asset('images/calendar.gif')); ?>",
       buttonImageOnly: true,
       buttonText: "Select date",
       maxDate: 0 

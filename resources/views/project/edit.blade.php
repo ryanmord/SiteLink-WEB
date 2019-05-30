@@ -4,21 +4,21 @@
 <head>
   <meta charset="utf-8">
   <title> {{config('app.name')}} </title>
- <!--  <link href="{{secure_asset('/css/themeCss/map.css')}}" rel="stylesheet"> -->
-  <link rel="shortcut icon" href="{{{ secure_asset('img/brick-wall.png') }}}">
+ <!--  <link href="{{asset('/css/themeCss/map.css')}}" rel="stylesheet"> -->
+  <link rel="shortcut icon" href="{{{ asset('img/brick-wall.png') }}}">
   @include('layouts.include_css')
-    <link href="{{secure_asset('/css/frontCss/agency.css')}}" rel="stylesheet">
-    <!-- <script src="{{secure_asset('/js/themeJs/notification.js')}}"></script> -->
+    <link href="{{asset('/css/frontCss/agency.css')}}" rel="stylesheet">
+    <!-- <script src="{{asset('/js/themeJs/notification.js')}}"></script> -->
 
     <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
-    <link href="{{secure_asset('/css/themeCss/map.css')}}" rel="stylesheet">
-    <script src="{{secure_asset('/js/themeJs/jquery-1.10.2.js')}}"></script>
-    <script src="{{secure_asset('/js/themeJs/bootstrap.min.js')}}"></script>
-    <script src="{{secure_asset('/js/themeJs/bootstrap-select.min.js')}}"></script>
+    <link href="{{asset('/css/themeCss/map.css')}}" rel="stylesheet">
+    <script src="{{asset('/js/themeJs/jquery-1.10.2.js')}}"></script>
+    <script src="{{asset('/js/themeJs/bootstrap.min.js')}}"></script>
+    <script src="{{asset('/js/themeJs/bootstrap-select.min.js')}}"></script>
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/js/bootstrap-select.min.js"></script> -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/css/bootstrap-select.min.css" rel="stylesheet" />
  
-  <!-- <link href="{{secure_asset('/css/jquery.multiselect.css')}}" rel="stylesheet"/> -->
+  <!-- <link href="{{asset('/css/jquery.multiselect.css')}}" rel="stylesheet"/> -->
     <script>
 
     $(function() {
@@ -68,7 +68,7 @@
     width: 100%;
     height: 100%;
     z-index: 9999;
-    background: url('{{ secure_asset('img/Loader.gif') }}') 50% 50% no-repeat rgb(249,249,249);
+    background: url('{{ asset('img/Loader.gif') }}') 50% 50% no-repeat rgb(249,249,249);
     opacity: .8;"></div>
     <div class="page-wrapper">
       <div class="container-fluid pt-20">
@@ -403,9 +403,9 @@
   </div>
  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCFesVLN0rhPhI0uHrMrQjclKdbyx9X9g0&libraries=places&callback=initMap"
         async defer></script>  
-  <script src="{{secure_asset('/js/themeJs/map.js')}}"></script>
-  <script src="{{secure_asset('/js/themeJs/1_12_1_jquery.js')}}"></script>
-  <script src="{{secure_asset('js/frontJs/jquery.validate.js')}}"></script>  
+  <script src="{{asset('/js/themeJs/map.js')}}"></script>
+  <script src="{{asset('/js/themeJs/1_12_1_jquery.js')}}"></script>
+  <script src="{{asset('js/frontJs/jquery.validate.js')}}"></script>  
     
   </script>
  <script type="text/javascript">

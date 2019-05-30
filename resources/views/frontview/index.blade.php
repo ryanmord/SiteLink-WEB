@@ -18,11 +18,11 @@
                 <a class="btn btn-primary btn-xl text-uppercase js-scroll-trigger" href="{{ route('AssociateLogin') }}">Signin as Associate</a>
                 <div class="download-here">Download The App Here</div>
                 <div class="col-sm-6 qr-code qr-left">
-                     <a href="javascript:void(0);"><img src="{{secure_asset('img/front/android.png')}}"></a>
+                     <a href="javascript:void(0);"><img src="{{asset('img/front/android.png')}}"></a>
                  
                 </div>
                 <div class="col-sm-6  qr-code">
-                    <a href="javascript:void(0);"> <img src="{{secure_asset('img/front/ios.png')}}">
+                    <a href="javascript:void(0);"> <img src="{{asset('img/front/ios.png')}}">
                     </a>
                 
                 </div>

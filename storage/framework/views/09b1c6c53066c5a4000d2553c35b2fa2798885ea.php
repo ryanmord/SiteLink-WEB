@@ -4,13 +4,13 @@
 ?>
 <!--begin::Base Styles -->
 	
-  <link href="<?php echo e(secure_asset('/css/themeCss/site.min.css')); ?>" rel="stylesheet" type="text/css">
-  <link href="<?php echo e(secure_asset('/css/themeCss/table.css')); ?>" rel="stylesheet" type="text/css">
-  <link href="<?php echo e(secure_asset('/css/themeCss/rating.css')); ?>" rel="stylesheet" type="text/css">
-  <link href="<?php echo e(secure_asset('/css/themeCss/datepicker.css')); ?>" rel="stylesheet" type="text/css">
-  <link rel="stylesheet" type="text/css" href="<?php echo e(secure_asset('/css/ratings/star-rating-svg.css')); ?>">
-  <link rel="stylesheet" type="text/css" href="<?php echo e(secure_asset('/css/ratings/demo.css')); ?>">
-   <link href="<?php echo e(secure_asset('/css/themeCss/font.css')); ?>" rel="stylesheet" type="text/css">
+  <link href="<?php echo e(asset('/css/themeCss/site.min.css')); ?>" rel="stylesheet" type="text/css">
+  <link href="<?php echo e(asset('/css/themeCss/table.css')); ?>" rel="stylesheet" type="text/css">
+  <link href="<?php echo e(asset('/css/themeCss/rating.css')); ?>" rel="stylesheet" type="text/css">
+  <link href="<?php echo e(asset('/css/themeCss/datepicker.css')); ?>" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" type="text/css" href="<?php echo e(asset('/css/ratings/star-rating-svg.css')); ?>">
+  <link rel="stylesheet" type="text/css" href="<?php echo e(asset('/css/ratings/demo.css')); ?>">
+   <link href="<?php echo e(asset('/css/themeCss/font.css')); ?>" rel="stylesheet" type="text/css">
  
   <style type="text/css">
  

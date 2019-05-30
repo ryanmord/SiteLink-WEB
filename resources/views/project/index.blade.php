@@ -7,7 +7,7 @@
         width: 100%;
         height: 100%;
         z-index: 9999;
-        background: url('{{ secure_asset('img/Loader.gif') }}') 50% 50% no-repeat rgb(249,249,249);
+        background: url('{{ asset('img/Loader.gif') }}') 50% 50% no-repeat rgb(249,249,249);
         opacity: .8;"></div>
     <div class="panel panel-success">
         <div class="panel-heading">
@@ -63,8 +63,8 @@
 </div>
 @stop
 @section('script')
- <script src="{{secure_asset('/js/themeJs/jquery-1.10.2.js')}}"></script>
-<!--  <script src="{{secure_asset('/js/themeJs/bootstrap.min.js')}}"></script> -->
+ <script src="{{asset('/js/themeJs/jquery-1.10.2.js')}}"></script>
+<!--  <script src="{{asset('/js/themeJs/bootstrap.min.js')}}"></script> -->
 <script type="text/javascript">
     $(document).ready(function () {
        $('#div-no-project').hide();
