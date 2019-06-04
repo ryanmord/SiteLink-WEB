@@ -118,7 +118,7 @@
 @include('frontview.auth.agreement')
      <!-- Footer -->
 @include('frontlayouts.footer')
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCFesVLN0rhPhI0uHrMrQjclKdbyx9X9g0&libraries=places&callback=initMap" async defer></script>  
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBN9cqCkPR1yT6dmHjWFGgc_Fov0kThdwo&libraries=places&callback=initMap" async defer></script>  
 <script src="{{asset('/js/frontJs/map.js')}}"></script>
 @include('frontlayouts.include_js')
 
@@ -136,6 +136,8 @@ document.getElementById("image").onchange = function () {
 };
 
 $(document).ready(function() {
+  //$('#policy-data').load('http://localhost/Scoped/public/index.php/aboutus');
+
 	$(document).on("click",".openmodel",function(){
 		var cls    = $(this).attr('rel');
 		if(cls == 'disclaimer'){
