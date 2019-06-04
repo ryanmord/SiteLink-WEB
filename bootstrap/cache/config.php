@@ -3,15 +3,15 @@
   array (
     'driver' => 'smtp',
     'host' => 'smtp.gmail.com',
-    'port' => '465',
+    'port' => '587',
     'from' => 
     array (
       'address' => 'magnetoapps12@gmail.com',
       'name' => 'SiteLink',
     ),
-    'encryption' => 'ssl',
-    'username' => 'testmail.magneto@gmail.com',
-    'password' => 'yoxjgiekejbupbuq',
+    'encryption' => 'tls',
+    'username' => 'info@gositelink.com',
+    'password' => 'qpyhiosmhndidbvn',
     'sendmail' => '/usr/sbin/sendmail -bs',
     'markdown' => 
     array (
@@ -104,7 +104,7 @@
       'sqlite' => 
       array (
         'driver' => 'sqlite',
-        'database' => 'sitelink',
+        'database' => 'project_managment',
         'prefix' => '',
       ),
       'mysql' => 
@@ -112,7 +112,7 @@
         'driver' => 'mysql',
         'host' => 'localhost',
         'port' => '3306',
-        'database' => 'sitelink',
+        'database' => 'project_managment',
         'username' => 'root',
         'password' => 'root',
         'unix_socket' => '',
@@ -127,7 +127,7 @@
         'driver' => 'pgsql',
         'host' => 'localhost',
         'port' => '3306',
-        'database' => 'sitelink',
+        'database' => 'project_managment',
         'username' => 'root',
         'password' => 'root',
         'charset' => 'utf8',
@@ -140,7 +140,7 @@
         'driver' => 'sqlsrv',
         'host' => 'localhost',
         'port' => '3306',
-        'database' => 'sitelink',
+        'database' => 'project_managment',
         'username' => 'root',
         'password' => 'root',
         'charset' => 'utf8',

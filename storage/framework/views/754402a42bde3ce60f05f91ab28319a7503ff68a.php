@@ -123,11 +123,11 @@
                               <p style="font-size: 15px;">
                               <?php 
                               //$url = 'https://www.google.com/maps/place/Magneto+IT+Solutions/@18.5911585,73.7513083';
-                              $url = 'https://www.google.com/maps/place/'.urlencode($project->project_site_address).'/@'.$project->latitude.','.$project->longitude.',11z/data='.$project->latitude.$project->longitude;
+                              //$url = 'https://www.google.com/maps/place/'.urlencode($project->project_site_address).'/@'.$project->latitude.','.$project->longitude.',11z/data='.$project->latitude.$project->longitude;
                                 //$url = 'https://www.google.com/maps/search/?api=1&address='.urlencode($project->project_site_address).'&key=AIzaSyCFesVLN0rhPhI0uHrMrQjclKdbyx9X9g0&query='.$project->latitude.','.$project->longitude;
                                 //$url = 'https://maps.googleapis.com/maps/api/geocode/json?latlng='.$project->latitude.','.$project->longitude.'&sensor=false&key=AIzaSyCFesVLN0rhPhI0uHrMrQjclKdbyx9X9g0';
                               ?>
-                              <a href="<?php echo e($url); ?>" target="_blank" style="color: #DA4453;"><u><?php echo e($project->project_site_address); ?></u></a></p>
+                              <a href="<?php echo e(url('siteAddress',$project['project_id'])); ?>" target="_blank" style="color: #DA4453;"><u><?php echo e($project->project_site_address); ?></u></a></p>
                               <input type="hidden" id="latitude" name="latitude" value="<?php echo e($project->latitude); ?>">
                               <input type="hidden" id="longitude" name="longitude" value="<?php echo e($project->longitude); ?>">
                             </div>
@@ -514,6 +514,7 @@
     });
     function getNotifyUser()
     {
+      $(".loader").fadeIn("slow");
       document.getElementById("associate-type-ids").value = '';
       var checks = $('input[name="associatetypeid[]"]:checked').map(function(){
               return $(this).val();
@@ -536,7 +537,7 @@
           $('#cntlabel').text(response.count);
           if(response.appendtd === '')
           {
-             
+            $('#live-user-data').html('');
           }
           else
           {
@@ -545,6 +546,7 @@
           }
         }
       });
+      $(".loader").fadeOut("slow");
     }
    
     $(document).on('change', '.usercheck', function() {

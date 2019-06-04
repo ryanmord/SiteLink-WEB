@@ -490,7 +490,7 @@ class ProjectController extends Controller
     public function getaddress($latitude, $longitude)
     {
         $geolocation = $latitude.','.$longitude;
-        $request     = 'https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyCFesVLN0rhPhI0uHrMrQjclKdbyx9X9g0&latlng='.$geolocation.'&sensor=false'; 
+        $request     = 'https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyBN9cqCkPR1yT6dmHjWFGgc_Fov0kThdwo&latlng='.$geolocation.'&sensor=false'; 
         $file_contents = file_get_contents($request);
         $json_decode   = json_decode($file_contents);
         $city = $state = $country = '';
@@ -1025,7 +1025,7 @@ class ProjectController extends Controller
                                     'notificationcount'  => $notificationcount
                                             ]
                                 ])
-                    ->setApiKey('AAAAl2LQWCg:APA91bFeM0f7RojB3_jzuHfPjR4ZUO3RasGnd2y3v7A4N41p0zb7g06Xo89MG-Kpilxo-vIx3iXtlncOqAmpwTqNOYm7ZpPC9bfFUH0-f6rQn2CIBKJUG6d_bhiimyuRq3XOj-qZns_1')
+                    ->setApiKey('AAAAy9qtB-E:APA91bG0Qv7-2GFlQt7d8V7Qoirh0pri1InWsSILJ4aMSLGTIlD4rDVj5uRtPEb0wMytwuBEGn7H0UYpGOSX4QagSQqMhTMgKniDeUJZTECwXexlAXBbYa9eQ4M6zyrw7QiWJLVr7258')
                     ->setDevicesToken([$deviceid])
                     ->send()
                     ->getFeedback();
@@ -1043,7 +1043,7 @@ class ProjectController extends Controller
                                     'notificationcount' => $notificationcount
                                             ]
                                 ])
-                    ->setApiKey('AAAAl2LQWCg:APA91bFeM0f7RojB3_jzuHfPjR4ZUO3RasGnd2y3v7A4N41p0zb7g06Xo89MG-Kpilxo-vIx3iXtlncOqAmpwTqNOYm7ZpPC9bfFUH0-f6rQn2CIBKJUG6d_bhiimyuRq3XOj-qZns_1')
+                    ->setApiKey('AAAAy9qtB-E:APA91bG0Qv7-2GFlQt7d8V7Qoirh0pri1InWsSILJ4aMSLGTIlD4rDVj5uRtPEb0wMytwuBEGn7H0UYpGOSX4QagSQqMhTMgKniDeUJZTECwXexlAXBbYa9eQ4M6zyrw7QiWJLVr7258')
                     ->setDevicesToken([$deviceid])
                     ->send()
                     ->getFeedback();

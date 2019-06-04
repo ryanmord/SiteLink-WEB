@@ -19,9 +19,9 @@
                                 <img src="{{asset('/img/brick-wall.png')}}" />
                             </div>
                             <div class="about-content">
-                                <h2>SCOPED</h2>
+                                <h2>SiteLink</h2>
                                 <h4>About us</h4>
-                                <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500</p>
+                                <p>We are SiteLink, and we are revolutionizing project management and simplifying the real estate due diligence industry. Access the largest pool of reliable and qualified professionals to get the job done with ease and confidence using next generation tracking, communication, and payment tools.</p>
                             </div>        
                         </div>                      
                     </div>

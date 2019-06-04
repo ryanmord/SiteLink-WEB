@@ -119,7 +119,7 @@
 <?php echo $__env->make('frontview.auth.agreement', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
      <!-- Footer -->
 <?php echo $__env->make('frontlayouts.footer', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCFesVLN0rhPhI0uHrMrQjclKdbyx9X9g0&libraries=places&callback=initMap" async defer></script>  
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBN9cqCkPR1yT6dmHjWFGgc_Fov0kThdwo&libraries=places&callback=initMap" async defer></script>  
 <script src="<?php echo e(asset('/js/frontJs/map.js')); ?>"></script>
 <?php echo $__env->make('frontlayouts.include_js', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
 
@@ -137,6 +137,8 @@ document.getElementById("image").onchange = function () {
 };
 
 $(document).ready(function() {
+  //$('#policy-data').load('http://localhost/Scoped/public/index.php/aboutus');
+
 	$(document).on("click",".openmodel",function(){
 		var cls    = $(this).attr('rel');
 		if(cls == 'disclaimer'){

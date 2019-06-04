@@ -267,8 +267,7 @@
   </div>
 </div>
    <?php echo $__env->make('frontlayouts.include_js', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCFesVLN0rhPhI0uHrMrQjclKdbyx9X9g0&libraries=places&callback=initMap" async defer>
-    </script>  
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBN9cqCkPR1yT6dmHjWFGgc_Fov0kThdwo&libraries=places&callback=initMap" async defer></script>  
     <!-- <script src="<?php echo e(asset('/js/frontJs/map.js')); ?>"></script> -->
 
     <script type="text/javascript">

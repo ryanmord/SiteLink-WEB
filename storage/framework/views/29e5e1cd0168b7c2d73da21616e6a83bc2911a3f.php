@@ -35,7 +35,7 @@
     </div>
   </div> 
 </body>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCFesVLN0rhPhI0uHrMrQjclKdbyx9X9g0&libraries=places&callback=initMap"
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBN9cqCkPR1yT6dmHjWFGgc_Fov0kThdwo&libraries=places&callback=initMap"
         async defer></script>  
 <script src="<?php echo e(asset('/js/themeJs/map.js')); ?>"></script>
 </html>
