@@ -118,7 +118,7 @@
 @include('frontview.auth.agreement')
      <!-- Footer -->
 @include('frontlayouts.footer')
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBN9cqCkPR1yT6dmHjWFGgc_Fov0kThdwo&libraries=places&callback=initMap" async defer></script>  
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAxpc335ca9lDAuHcGE7rUljfuPhkfcZ9U&libraries=places&callback=initMap" async defer></script>  
 <script src="{{asset('/js/frontJs/map.js')}}"></script>
 @include('frontlayouts.include_js')
 
