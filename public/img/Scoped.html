@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<!-- saved from url=(0054)http://localhost/Scoped/public/index.php/createProject -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><style type="text/css">.pac-container{background-color:#fff;position:absolute!important;z-index:1000;border-radius:2px;border-top:1px solid #d9d9d9;font-family:Arial,sans-serif;box-shadow:0 2px 6px rgba(0,0,0,0.3);-moz-box-sizing:border-box;-webkit-box-sizing:border-box;box-sizing:border-box;overflow:hidden}.pac-logo:after{content:"";padding:1px 1px 1px 0;height:18px;box-sizing:border-box;text-align:right;display:block;background-image:url(https://maps.gstatic.com/mapfiles/api-3/images/powered-by-google-on-white3.png);background-position:right;background-repeat:no-repeat;background-size:120px 14px}.hdpi.pac-logo:after{background-image:url(https://maps.gstatic.com/mapfiles/api-3/images/powered-by-google-on-white3_hdpi.png)}.pac-item{cursor:default;padding:0 4px;text-overflow:ellipsis;overflow:hidden;white-space:nowrap;line-height:30px;text-align:left;border-top:1px solid #e6e6e6;font-size:11px;color:#999}.pac-item:hover{background-color:#fafafa}.pac-item-selected,.pac-item-selected:hover{background-color:#ebf2fe}.pac-matched{font-weight:700}.pac-item-query{font-size:13px;padding-right:3px;color:#000}.pac-icon{width:15px;height:20px;margin-right:7px;margin-top:6px;display:inline-block;vertical-align:top;background-image:url(https://maps.gstatic.com/mapfiles/api-3/images/autocomplete-icons.png);background-size:34px}.hdpi .pac-icon{background-image:url(https://maps.gstatic.com/mapfiles/api-3/images/autocomplete-icons_hdpi.png)}.pac-icon-search{background-position:-1px -1px}.pac-item-selected .pac-icon-search{background-position:-18px -1px}.pac-icon-marker{background-position:-1px -161px}.pac-item-selected .pac-icon-marker{background-position:-18px -161px}.pac-placeholder{color:gray}
+</style><style type="text/css">.gm-style-pbc{transition:opacity ease-in-out;background-color:rgba(0,0,0,0.45);text-align:center}.gm-style-pbt{font-size:22px;color:white;font-family:Roboto,Arial,sans-serif;position:relative;margin:0;top:50%;-webkit-transform:translateY(-50%);-ms-transform:translateY(-50%);transform:translateY(-50%)}
+</style>
+
+
+<title> Scoped </title>
+<style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 450px;
+        width: 860px;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      #description {
+        font-family: Roboto;
+        font-size: 15px;
+        font-weight: 300;
+      }
+
+      #infowindow-content .title {
+        font-weight: bold;
+      }
+
+      #infowindow-content {
+        display: none;
+      }
+
+      #map #infowindow-content {
+        display: inline;
+      }
+
+      .pac-card {
+        margin: 10px 10px 0 0;
+        border-radius: 2px 0 0 2px;
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        outline: none;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        background-color: #fff;
+        font-family: Roboto;
+        height: 100px;
+        width: 100%;
+      }
+      .pac-container {
+        z-index: 100000;
+        }
+      #pac-container {
+        padding-bottom: 12px;
+        margin-right: 12px;
+      }
+
+      .pac-controls {
+        display: inline-block;
+        padding: 5px 5px;
+      
+      }
+
+      .pac-controls label {
+        font-family: Roboto;
+        font-size: 20px;
+        font-weight: 100;
+      }
+
+      #pac-input {
+        background-color: #fff;
+        font-family: Roboto;
+        font-size: 15px;
+        font-weight: 300;
+        margin-left: 10px;
+        padding: 0 11px 0 10px;
+        text-overflow: ellipsis;
+        width: 200px;
+      }
+
+      #pac-input:focus {
+        border-color: #4d90fe;
+      }
+
+      #title {
+        color: #fff;
+        background-color: #4d90fe;
+        font-size: 25px;
+        font-weight: 500;
+        padding: 6px 12px;
+      }
+      #errmsg
+      {
+        color: #b70a0a;
+      }
+      #projectname-error
+      {
+        color: #b70a0a;
+      }
+      #address-error
+      {
+        color: #b70a0a;
+      }
+      #template-error
+      {
+        color: #b70a0a;
+      }
+      #projectbid-error
+      {
+        color: #b70a0a;
+      }
+      #instruction-error
+      {
+        color: #b70a0a;
+      }
+      #reportdate-error
+      {
+        color: #b70a0a;
+      }
+
+    </style>
+
+  <link rel="shortcut icon" href="http://localhost/Scoped/public/img/brick-wall.png">
+  <link rel="stylesheet" href="./Scoped_files/bootstrap.min.css">
+    <!--begin::Base Styles -->
+	
+    <link href="./Scoped_files/site.min.css" rel="stylesheet" type="text/css">
+   <link href="./Scoped_files/css" rel="stylesheet" type="text/css">
+     <link href="./Scoped_files/agency.css" rel="stylesheet">
+  <link rel="stylesheet" href="./Scoped_files/jquery-ui.css">
+  <script src="./Scoped_files/jquery-1.10.2.js"></script>
+  <script src="./Scoped_files/jquery-ui.js"></script>
+  <script src="./Scoped_files/bootstrap.min.js">
+  </script>
+
+  <script src="./Scoped_files/bootstrap-select.min.js"></script>
+  <link href="./Scoped_files/bootstrap-select.min.css" rel="stylesheet">
+ 
+  <!-- <link href="http://localhost/Scoped/public/css/jquery.multiselect.css" rel="stylesheet"/> -->
+  <script>
+
+  $(function() {
+    $( "#onsitedate" ).datepicker();
+  });
+  </script>
+ <script>
+  $(function() {
+    $( "#reportdate" ).datepicker();
+  });
+  </script>
+ 
+<script type="text/javascript" charset="UTF-8" src="./Scoped_files/common.js"></script><script type="text/javascript" charset="UTF-8" src="./Scoped_files/util.js"></script><script type="text/javascript" charset="UTF-8" src="./Scoped_files/map.js"></script><script type="text/javascript" charset="UTF-8" src="./Scoped_files/controls.js"></script><script type="text/javascript" charset="UTF-8" src="./Scoped_files/places_impl.js"></script><script type="text/javascript" charset="UTF-8" src="./Scoped_files/marker.js"></script><style type="text/css">.gm-style {
+        font: 400 11px Roboto, Arial, sans-serif;
+        text-decoration: none;
+      }
+      .gm-style img { max-width: none; }</style><script type="text/javascript" charset="UTF-8" src="./Scoped_files/onion.js"></script><script type="text/javascript" charset="UTF-8" src="./Scoped_files/infowindow.js"></script></head>
+
+<!-- Body -->
+<body style="">
+    <div class="preloader-it">
+        <div class="la-anim-1"></div>
+    </div>
+    <div class="wrapper theme-6-active pimary-color-pink">
+
+    <!-- Top Menu Items -->
+    <nav role="navigation" class="navbar navbar-custom">
+        <div class="container-fluid">
+          <!-- Brand and toggle get grouped for better mobile display -->
+          <div class="navbar-header">
+            <button data-target="#bs-content-row-navbar-collapse-5" data-toggle="collapse" class="navbar-toggle" type="button">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a href="http://localhost/Scoped/public/index.php/dashboard" class="navbar-brand">Scoped</a>
+          </div>
+
+          <!-- Collect the nav links, forms, and other content for toggling -->
+          <div id="bs-content-row-navbar-collapse-5" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav navbar-right">
+             <!--  <li class="active"><a href="getting-started.html">Getting Started</a></li>
+              <li class="active"><a href="index.html">Documentation</a></li> -->
+              <!-- <li class="disabled"><a href="#">Link</a></li> -->
+              <li class="dropdown">
+                <a data-toggle="dropdown" class="dropdown-toggle" href="http://localhost/Scoped/public/index.php/createProject#"> Admin <b class="caret"></b></a>
+                <ul role="menu" class="dropdown-menu">
+                  <li style="text-align: center;"><a href="http://localhost/Scoped/public/index.php/logout"><span class="glyphicon glyphicon-off"> Signout</span></a></li>
+                </ul>
+              </li>
+            </ul>
+
+          </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+      </nav>    <!-- Left Sidebar Menu -->
+    <div class="container-fluid">
+    <!--documents-->
+  <div class="row row-offcanvas row-offcanvas-left">
+    <div class="col-xs-6 col-sm-3 sidebar-offcanvas" role="navigation">
+      <ul class="list-group panel">
+        <li class="list-group-item"><i class="glyphicon glyphicon-align-justify"></i> <b>SIDE PANEL</b></li>
+                <!-- <li class="list-group-item"><input type="text" class="form-control search-query" placeholder="Search Something"></li> -->
+                <li class="list-group-item"><a href="http://localhost/Scoped/public/index.php/dashboard"><i class="glyphicon glyphicon-home"></i>Dashboard </a></li>
+        <li class="list-group-item"><a href="http://localhost/Scoped/public/index.php/users"><i class="glyphicon glyphicon-user"></i>Associates &amp; Project Managers </a></li>
+        <li class="list-group-item"><a href="http://localhost/Scoped/public/index.php/adminuser"><i class="glyphicon glyphicon-user"></i>Admin Users </a></li>
+        <li class="list-group-item">
+          <a href="http://localhost/Scoped/public/index.php/allProejcts"><i class="fa fa-building"></i>Projects</a>
+                    
+                </li>
+        <li class="list-group-item"><a href="http://localhost/Scoped/public/index.php/setSettings"><i class="glyphicon glyphicon-cog"></i>Settings</a></li>
+              </ul>
+    </div>    <!-- Main Content -->
+    <div class="loader" style="position: fixed; left: 0px; top: 0px; width: 100%; height: 100%; z-index: 9999; background: url(&quot;http://localhost/Scoped/public/img/Loader.gif&quot;) 50% 50% no-repeat rgb(249, 249, 249); opacity: 0.8; display: none;"></div>
+    <div class="page-wrapper">
+        <div class="container-fluid pt-20">
+
+           <div class="col-xs-12 col-sm-9 content">
+ 
+            <div class="panel panel-success" style="text-align: left;">
+                    <div class="panel-heading">
+                      <div class="panel-title"><b>Create New Project</b>
+                      </div>
+
+                      <div class="panel-options">
+                        <a class="bg" data-target="#sample-modal-dialog-1" data-toggle="modal" href="http://localhost/Scoped/public/index.php/createProject#sample-modal"><i class="entypo-cog"></i></a>
+                        <a data-rel="collapse" href="http://localhost/Scoped/public/index.php/createProject#"><i class="entypo-down-open"></i></a>
+                        <a data-rel="close" href="http://localhost/Scoped/public/index.php/createProject#!/tasks" ui-sref="Tasks"><i class="entypo-cancel"></i></a>
+                      </div>
+                    </div>
+					<div class="panel-body">
+					<header class="masthead dashbord-screen">
+          <div class="create-new-project">  
+          <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-9">
+           <!--  <div class="alert-danger print-error-msg" style="display:none">
+              <ul></ul>
+              </div> -->
+              
+                  <form class="new-project" id="createproject" action="http://localhost/Scoped/public/index.php/saveproject">
+                  <input type="hidden" name="_token" value="Vhub4OISP2wZJSfamzsn0YOyYSvnQ1XTGnoEbjfI">
+                   <div class="row">
+                    <div class="form-group col-md-3">
+                    <br>
+                    <label>Project Name</label>
+                    </div>
+                    <div class="form-group col-md-9 ">
+                    <input type="text" name="projectname" value="" placeholder="Project Name" required="">
+                                                    </div>
+                      </div>
+                                    <div class="row">
+                                    <div class="form-group col-md-3">
+                                    <br>
+                                    <label>Site Address</label>
+                                    </div>
+                                    <div class="form-group col-md-7 ">
+                                    
+                                        <input type="text" name="siteaddress" readonly="" id="address" value="" placeholder="site Address" data-toggle="modal" data-target="#myModal" required="">
+                                          <input type="hidden" id="latitude" name="latitude" value="">
+                                      <input type="hidden" id="longitude" name="longitude" value="">
+                                                                             </div>
+                                   
+                                    <div class="form-group col-md-2">
+                                    <br>
+                                     <li style="color: #DA4453" data-toggle="modal" data-target="#myModal"><a href="http://localhost/Scoped/public/index.php/createProject#">set address</a></li>
+                                    <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        
+        <div class="modal-body">
+         <div class="pac-card" id="pac-card">
+      <div>
+        <div id="title">
+         Set Site Address
+          <button type="button" class="close" data-dismiss="modal">×</button>
+        </div>
+      
+       
+      
+      </div>
+     <div>
+     <br>
+        <input id="pac-input" type="text" name="pac-input" placeholder="Enter a location" size="50" style="float: left;" autocomplete="off"> 
+            
+            <button type="button" style="float: left; margin-left: 50px;" data-dismiss="modal">OK</button>
+            
+         
+      </div>
+      
+     
+    </div>
+    <div id="map" style="position: relative; overflow: hidden;"><div style="height: 100%; width: 100%; position: absolute; top: 0px; left: 0px; background-color: rgb(229, 227, 223);"><div style="overflow: hidden;"></div><div class="gm-style" style="position: absolute; z-index: 0; left: 0px; top: 0px; height: 100%; width: 100%; padding: 0px; border-width: 0px; margin: 0px;"><div tabindex="0" style="position: absolute; z-index: 0; left: 0px; top: 0px; height: 100%; width: 100%; padding: 0px; border-width: 0px; margin: 0px; cursor: url(&quot;https://maps.gstatic.com/mapfiles/openhand_8_8.cur&quot;), default; touch-action: pan-x pan-y;"><div style="z-index: 1; position: absolute; left: 50%; top: 50%; width: 100%; transform: translate(0px, 0px);"><div style="position: absolute; left: 0px; top: 0px; z-index: 100; width: 100%;"><div style="position: absolute; left: 0px; top: 0px; z-index: 0;"><div style="position: absolute; z-index: 987; transform: matrix(1, 0, 0, 1, -122, -218);"><div style="position: absolute; left: 0px; top: 0px; width: 256px; height: 256px;"><div style="width: 256px; height: 256px;"></div></div></div></div></div><div style="position: absolute; left: 0px; top: 0px; z-index: 101; width: 100%;"></div><div style="position: absolute; left: 0px; top: 0px; z-index: 102; width: 100%;"></div><div style="position: absolute; left: 0px; top: 0px; z-index: 103; width: 100%;"><div style="position: absolute; left: 0px; top: 0px; z-index: -1;"><div style="position: absolute; z-index: 987; transform: matrix(1, 0, 0, 1, -122, -218);"><div style="width: 256px; height: 256px; overflow: hidden; position: absolute; left: 0px; top: 0px;"></div></div></div></div><div style="position: absolute; left: 0px; top: 0px; z-index: 0;"><div style="position: absolute; z-index: 987; transform: matrix(1, 0, 0, 1, -122, -218);"></div></div></div><div class="gm-style-pbc" style="z-index: 2; position: absolute; height: 100%; width: 100%; padding: 0px; border-width: 0px; margin: 0px; left: 0px; top: 0px; opacity: 0;"><p class="gm-style-pbt"></p></div><div style="z-index: 3; position: absolute; height: 100%; width: 100%; padding: 0px; border-width: 0px; margin: 0px; left: 0px; top: 0px; touch-action: pan-x pan-y;"><div style="z-index: 4; position: absolute; left: 50%; top: 50%; width: 100%; transform: translate(0px, 0px);"><div style="position: absolute; left: 0px; top: 0px; z-index: 104; width: 100%;"></div><div style="position: absolute; left: 0px; top: 0px; z-index: 105; width: 100%;"></div><div style="position: absolute; left: 0px; top: 0px; z-index: 106; width: 100%;"></div><div style="position: absolute; left: 0px; top: 0px; z-index: 107; width: 100%;"></div></div></div></div><iframe aria-hidden="true" frameborder="0" style="z-index: -1; position: absolute; width: 100%; height: 100%; top: 0px; left: 0px; border: none;" src="./Scoped_files/saved_resource.html"></iframe></div></div></div>
+    <div id="infowindow-content">
+      <img src="http://localhost/Scoped/public/index.php/createProject" width="16" height="16" id="place-icon">
+      <span id="place-name" class="title"></span><br>
+      <span id="place-address"></span>
+    </div>
+    </div>
+       
+      </div>
+    </div>
+  </div>
+    
+                                    </div>
+                                    </div>
+                                    <div class="row">
+                                    <div class="form-group col-md-3">
+                                    <br><br>
+                                    <label>Miles Range</label>
+                                    </div>
+                                    <div class="form-group col-md-9 ">
+                                	<output style="float: left;">Radius&nbsp;</output>
+                                    <output name="miles" id="miles" style="float: left;">0</output>
+                                    <output style="float: left;">&nbsp;MILES</output>
+                                        <input type="range" name="milesrange" id="milesrange" value="0" min="0" max="500" oninput="miles.value = milesrange.value">
+										<output name="minmiles" id="minmiles" style="float: left;">0 MILES</output>
+    									<output name="maxmiles" id="maxmiles" style="float: right;">500 MILES</output>
+    									<br>
+    									<br>
+                       </div>
+                                    </div>
+                                    <div class="row">
+                                    <div class="form-group col-md-3">
+                                    <br>
+                                    <label>Report Due From Field</label>
+                                    </div>
+                                    <div class="form-group col-md-4 ">
+                                    
+                                        <input type="text" name="reportdate" id="reportdate" value="" placeholder="Report Due Date" class="hasDatepicker">
+                                      <i class="fa fa-calendar" aria-hidden="true"></i>
+                                      
+                                    </div>
+                                    <div class="form-group col-md-2">
+                                    <br>
+                                    <label>On Site Date</label>
+                                    </div>
+
+                                    <div class="form-group col-md-3">
+                                        <input type="text" name="onsitedate" id="onsitedate" value="" placeholder="On Site Date" class="hasDatepicker">
+                                      <i class="fa fa-calendar" id="datepickericon"></i>
+                                    </div>
+                                  </div>
+                                  <div class="row">
+                                    <div class="form-group col-md-3">
+                                   <br>
+                                    <label>Report Template</label>
+                                    </div>
+                                  <div class="form-group col-md-9">
+
+                                        <input type="text" name="template" value="" placeholder="Report template" required="">
+                                    </div>
+                                    </div>
+                                    <div class="row">
+                                    <div class="form-group col-md-3">
+                                   <br>
+                                    <label>Special Instructions</label>
+                                    </div>
+                                  <div class="form-group col-md-9">
+
+                                        <input type="text" name="instruction" value="" placeholder="Special instruction" required="">
+                                    </div>
+                                    </div>
+                                    
+                                    <div class="row">
+                                    <div class="form-group col-md-3">
+                                    <br>
+                                    <label>Suggest A Bid</label>
+                                    </div>
+                                    <div class="form-group col-md-9">
+
+                                        <input type="text" name="projectbid" id="projectbid" value="" placeholder="  Suggest a bid" required="" style="padding-left: 12px;">
+                                        <i class="glyphicon glyphicon-usd form-control-feedback" style="left: 0; line-height: 27px;"></i>
+
+                                        &nbsp;<span id="errmsg"></span>
+                                                                          </div>
+                                    </div>
+                                  
+                              <div class="row">
+                                    <div class="form-group col-md-3">
+                                    <br><br><br>
+                                    <label>Scope Performed</label>
+                                    </div>
+                                    <div class="form-group col-md-9">
+                                    
+                             
+                             
+                                                            <label class="checkbox" style="color: grey;">
+                              <input type="checkbox" value="1" name="scopeperformedid[]">
+                              Esa Phase 1 
+                              </label>
+                                                            <label class="checkbox" style="color: grey;">
+                              <input type="checkbox" value="2" name="scopeperformedid[]">
+                              PCA 
+                              </label>
+                                                            <label class="checkbox" style="color: grey;">
+                              <input type="checkbox" value="3" name="scopeperformedid[]">
+                              ESA Phase 1 Agency 
+                              </label>
+                                                            <label class="checkbox" style="color: grey;">
+                              <input type="checkbox" value="4" name="scopeperformedid[]">
+                              PCA-Agency 
+                              </label>
+                                                            <label class="checkbox" style="color: grey;">
+                              <input type="checkbox" value="5" name="scopeperformedid[]">
+                              CLM 
+                              </label>
+                                                           
+                              <input type="hidden" id="scopeid" name="scopeid" value="">
+                             
+                              </div>
+                              </div>
+
+                              <div class="row">
+                                    <div class="form-group col-md-3">
+                                    <br><br><br>
+                                    <label>Project Manager</label>
+                                    </div>
+                                    <div class="form-group col-md-9">
+                              <div class="btn-group bootstrap-select form-control"><button type="button" class="btn dropdown-toggle btn-default" data-toggle="dropdown" data-id="selectmanger" title="--Select Project Manager--"><span class="filter-option pull-left">--Select Project Manager--</span>&nbsp;<span class="bs-caret"><span class="caret"></span></span></button><div class="dropdown-menu open"><div class="bs-searchbox"><input type="text" class="form-control" autocomplete="off"></div><ul class="dropdown-menu inner" role="menu"><li data-original-index="0" class="selected"><a tabindex="0" class="" style="" data-tokens="null"><span class="text">--Select Project Manager--</span><span class="glyphicon glyphicon-ok check-mark"></span></a></li><li data-original-index="1"><a tabindex="0" class="" style="" data-tokens="null"><span class="text">
+                              swati</span><span class="glyphicon glyphicon-ok check-mark"></span></a></li><li data-original-index="2"><a tabindex="0" class="" style="" data-tokens="null"><span class="text">
+                              swatinew</span><span class="glyphicon glyphicon-ok check-mark"></span></a></li></ul></div><select class="form-control selectpicker" data-live-search="true" id="selectmanger" name="selectmanger" style="width:100px;max-height:50px;overflow-y:auto;" tabindex="-98">
+                              <option value="">--Select Project Manager--</option>
+                              
+                              <option value="1">
+                              swati</option>
+
+                              
+                              <option value="5">
+                              swatinew</option>
+
+                                                            </select></div> 
+                              <input type="hidden" id="managerid" name="managerid" value="">
+                             </div>
+                              </div>
+                               <div class="row">
+                               <div class="form-group col-md-3">
+                               </div>
+                               <div class="form-group col-md-3">
+                              <button type="submit" class="btn btn-success" id="saveproject"> Submit   
+                              </button>
+                              </div>
+                              <div class="form-group col-md-3">
+                              <button type="reset" class="btn btn-danger" id="reset"> Reset  
+                              </button>
+                              </div>
+                              </div>
+                              </form>
+                                
+                          </div>
+
+                   
+                   </div>
+                 </div>
+             </header>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+ </div>
+<script src="./Scoped_files/js" async="" defer=""></script>  
+
+<script src="./Scoped_files/map(1).js"></script>
+ <script src="./Scoped_files/jquery-1.12.4.js"></script>
+ <script src="./Scoped_files/jquery-ui(1).js"></script>
+ <script src="./Scoped_files/jquery.caret.min.js"></script>
+ <script type="text/javascript">
+$(window).load(function() {
+    $(".loader").fadeOut("slow");
+});
+</script>
+<script type="text/javascript">
+$(document).ready(function(){
+    $("#selectmanger").change(function(){
+        var managerid = jQuery("#selectmanger option:selected").val();
+        document.getElementById("managerid").value = managerid;
+    });
+});
+</script>
+<script type="text/javascript">
+  $(document).ready(function () {
+  //called when key is pressed in textbox
+  $("#projectbid").keypress(function (e) {
+     //if the letter is not digit then display error and don't type anything
+      if ((e.which != 46 || $(this).val().indexOf('.') != -1) && (e.which < 48 || e.which > 57) || (e.which == 46 && $(this).caret().start == 0)) {
+    
+        //display error message
+        $("#errmsg").html("Digits Only").show().fadeOut("slow");
+               return false;
+    }
+    $('#projectbid').keyup(function(e) {
+    if ($(this).val().indexOf('.') == 0 || $(this).val().indexOf('0') == 0) {
+      $(this).val($(this).val().substring(1));
+    }
+    });
+   });
+});
+</script>
+
+<script src="./Scoped_files/jquery.validate.min.js">
+  
+</script>
+  <script>
+    $(document).ready(function () {
+     function validater()
+     {
+
+
+    $('#createproject').validate({ // initialize the plugin
+        rules: {
+            projectname: {
+                required: true
+            },
+            siteaddress: {
+                required: true
+                
+            },
+            managerid: {
+                required: true,
+                
+                
+            },
+            reportdate: {
+                required: true,
+                
+                
+            },
+            template: {
+                required: true,
+               
+                
+            },
+            instruction: {
+                required: true,
+                
+              },
+            projectbid: {
+                required: true,
+                numeric: true,
+                
+                
+            },
+            
+        }
+       
+    });
+  }
+
+});
+
+    
+
+  
+    $(document).ready(function() {
+      $('#createproject').submit(function(event){
+        if ($('#createproject').validate()){
+        checks = $('input[type="checkbox"]:checked').map(function(){
+              return $(this).val();
+                }).get();
+        document.getElementById("scopeid").value = checks;
+        $(".loader").fadeIn("slow");
+        $.ajax({
+            type: 'POST',
+              url: $("#createproject").attr("action"),
+              data: $('form#createproject').serialize(),
+              dataType: 'json',
+          })
+
+          .done(function(msg) {
+          $(".loader").fadeOut("slow");
+          alert("Project created successfully");
+          url = 'http://localhost/Scoped/public/index.php/allProejcts';
+          window.location.replace(url);
+          
+        });
+
+          event.preventDefault();
+        }
+      });
+    });
+
+</script>
+ <!-- <script type="text/javascript">
+
+    jQuery(document).ready(function(){
+
+            jQuery('#saveproject').click(function(e){
+               e.preventDefault();
+                
+               checks = $('input[type="checkbox"]:checked').map(function(){
+              return $(this).val();
+                }).get();
+               document.getElementById("scopeid").value = checks;
+               $(".loader").fadeIn("slow");
+               jQuery.ajaxSetup({
+                  headers: {
+                      'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                  }
+              });
+               jQuery.ajax({
+
+                  url: $("#createproject").attr("action"),
+                  method: 'post',
+                  data: $('form#createproject').serialize(),
+                  success: function(data){
+                    
+                          if(data.success) {
+                              $(".loader").fadeOut("slow");
+                              alert("Project created successfully");
+                              url = '';
+                              window.location.replace(url);
+
+
+                              $(this).closest('form').find("input[type=text], textarea").val("");
+                          }
+
+                      jQuery.each(data.errors, function(key, value){
+                        $(".loader").fadeOut("slow");
+                        jQuery('.alert-danger').show();
+                        jQuery('.alert-danger').append('<p>'+value+'</p>');
+                      });
+
+
+                  }
+                    
+                  });
+               });
+            });
+
+
+ 
+</script>
+  -->
+ 
+ 
+                    
+</div></div><div id="ui-datepicker-div" class="ui-datepicker ui-widget ui-widget-content ui-helper-clearfix ui-corner-all"></div><div style="position: absolute; left: 0px; top: -2px; height: 1px; overflow: hidden; visibility: hidden; width: 1px;"><span style="position: absolute; font-size: 300px; width: auto; height: auto; margin: 0px; padding: 0px; font-family: Roboto, Arial, sans-serif;">BESbswy</span></div><div class="pac-container pac-logo" style="display: none; width: 0px; position: absolute; left: 0px; top: 146px;"></div></body></html>

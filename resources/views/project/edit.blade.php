@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title> {{config('app.name')}} </title>
+  <title> Scoped </title>
  <!--  <link href="{{asset('/css/themeCss/map.css')}}" rel="stylesheet"> -->
   <link rel="shortcut icon" href="{{{ asset('img/brick-wall.png') }}}">
   @include('layouts.include_css')
@@ -155,7 +155,7 @@
                                 </div>
                                 <div class="form-group col-md-2">
                                   <br>
-                                  <li style="color: #DA4453;" data-toggle="modal" data-target="#myModal"><a href="#">set address</a></li>
+                                  <li style="color: #DA4453" data-toggle="modal" data-target="#myModal"><a href="#">set address</a></li>
                                     @include('project.demomap')
    
                                 </div>

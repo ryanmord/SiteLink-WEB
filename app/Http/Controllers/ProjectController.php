@@ -1025,7 +1025,7 @@ class ProjectController extends Controller
                                     'notificationcount'  => $notificationcount
                                             ]
                                 ])
-                    ->setApiKey('AAAAl2LQWCg:APA91bFeM0f7RojB3_jzuHfPjR4ZUO3RasGnd2y3v7A4N41p0zb7g06Xo89MG-Kpilxo-vIx3iXtlncOqAmpwTqNOYm7ZpPC9bfFUH0-f6rQn2CIBKJUG6d_bhiimyuRq3XOj-qZns_1')
+                    ->setApiKey('AAAAy9qtB-E:APA91bG0Qv7-2GFlQt7d8V7Qoirh0pri1InWsSILJ4aMSLGTIlD4rDVj5uRtPEb0wMytwuBEGn7H0UYpGOSX4QagSQqMhTMgKniDeUJZTECwXexlAXBbYa9eQ4M6zyrw7QiWJLVr7258')
                     ->setDevicesToken([$deviceid])
                     ->send()
                     ->getFeedback();
@@ -1043,7 +1043,7 @@ class ProjectController extends Controller
                                     'notificationcount' => $notificationcount
                                             ]
                                 ])
-                    ->setApiKey('AAAAl2LQWCg:APA91bFeM0f7RojB3_jzuHfPjR4ZUO3RasGnd2y3v7A4N41p0zb7g06Xo89MG-Kpilxo-vIx3iXtlncOqAmpwTqNOYm7ZpPC9bfFUH0-f6rQn2CIBKJUG6d_bhiimyuRq3XOj-qZns_1')
+                    ->setApiKey('AAAAy9qtB-E:APA91bG0Qv7-2GFlQt7d8V7Qoirh0pri1InWsSILJ4aMSLGTIlD4rDVj5uRtPEb0wMytwuBEGn7H0UYpGOSX4QagSQqMhTMgKniDeUJZTECwXexlAXBbYa9eQ4M6zyrw7QiWJLVr7258')
                     ->setDevicesToken([$deviceid])
                     ->send()
                     ->getFeedback();
@@ -2930,13 +2930,13 @@ class ProjectController extends Controller
         $updateprojectbid = ProjectBid::where(['project_id'   => $projectid,
                                          'project_bid_status' => 1,
                                          'bid_status'         => 1])
-                                ->update(['user_id'           => $associateid,
+                                ->update(['user_id'              => $associateid,
                                           'accepted_rejected_at' => $date]);
         $pojectstatus = ProjectStatus::where('project_status_type_id','=',3)
                                        ->update(['created_at'=> $date]);
-        $userid   = session('loginuserid');
+        $userid  = session('loginuserid');
         $touserid = $associateid;
-        $project  = Project::select('project_name')
+        $project = Project::select('project_name')
                            ->where('project_id','=',$projectid)->first();
         $body = $project->project_name;
         $msg  = 'You have been assigned a project!';
