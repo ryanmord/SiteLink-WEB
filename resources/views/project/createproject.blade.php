@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title> {{config('app.name')}} </title>
+  <title> Scoped </title>
  <!--  <link href="{{asset('/css/themeCss/map.css')}}" rel="stylesheet"> -->
   <link rel="shortcut icon" href="{{{ asset('img/brick-wall.png') }}}">
   @include('layouts.include_css')
@@ -391,7 +391,7 @@
       </div>
     </div>
   </div>
- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAxpc335ca9lDAuHcGE7rUljfuPhkfcZ9U&libraries=places&callback=initMap"
+ <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCFesVLN0rhPhI0uHrMrQjclKdbyx9X9g0&libraries=places&callback=initMap"
         async defer></script>  
         <script src="{{asset('/js/themeJs/createprojectMap.js')}}"></script>
        <!--  <script src="https://code.jquery.com/jquery-1.12.4.js"></script> -->

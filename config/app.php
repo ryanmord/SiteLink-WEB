@@ -11,7 +11,7 @@ return [
     | any other location as required by the application or its packages.
     */
 
-    'name' => env('APP_NAME', 'SiteLink'),
+    'name' => env('APP_NAME', 'Scoped'),
 
     /*
     |--------------------------------------------------------------------------
@@ -63,7 +63,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => 'Asia/Kolkata',
 
     /*
     |--------------------------------------------------------------------------
@@ -228,6 +228,5 @@ return [
         
     ],
     'TINYPNG_KEY'    =>  '83q9lPQrJvuExef8Z37lSIP2dWfZEV5M',
-    'fcm_server_key' =>  'AAAAl2LQWCg:APA91bFeM0f7RojB3_jzuHfPjR4ZUO3RasGnd2y3v7A4N41p0zb7g06Xo89MG-Kpilxo-vIx3iXtlncOqAmpwTqNOYm7ZpPC9bfFUH0-f6rQn2CIBKJUG6d_bhiimyuRq3XOj-qZns_1',
 
 ];

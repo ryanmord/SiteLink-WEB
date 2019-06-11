@@ -3,22 +3,22 @@
   array (
     'driver' => 'smtp',
     'host' => 'smtp.gmail.com',
-    'port' => '587',
+    'port' => '465',
     'from' => 
     array (
       'address' => 'magnetoapps12@gmail.com',
       'name' => 'SiteLink',
     ),
-    'encryption' => 'tls',
-    'username' => 'info@gositelink.com',
-    'password' => 'qpyhiosmhndidbvn',
+    'encryption' => 'ssl',
+    'username' => 'testmail.magneto@gmail.com',
+    'password' => 'yoxjgiekejbupbuq',
     'sendmail' => '/usr/sbin/sendmail -bs',
     'markdown' => 
     array (
       'theme' => 'default',
       'paths' => 
       array (
-        0 => '/var/www/html/Scoped/resources/views/vendor/mail',
+        0 => '/var/www/html/scoped_development/resources/views/vendor/mail',
       ),
     ),
   ),
@@ -77,13 +77,13 @@
       'local' => 
       array (
         'driver' => 'local',
-        'root' => '/var/www/html/Scoped/storage/app',
+        'root' => '/var/www/html/scoped_development/storage/app',
       ),
       'public' => 
       array (
         'driver' => 'local',
-        'root' => '/var/www/html/Scoped/storage/app/public',
-        'url' => 'http://103.51.153.235/project_management/public//storage',
+        'root' => '/var/www/html/scoped_development/storage/app/public',
+        'url' => 'http://54.156.147.140/scoped_development/public/index.php/storage',
         'visibility' => 'public',
       ),
       's3' => 
@@ -194,9 +194,9 @@
   array (
     'paths' => 
     array (
-      0 => '/var/www/html/Scoped/resources/views',
+      0 => '/var/www/html/scoped_development/resources/views',
     ),
-    'compiled' => '/var/www/html/Scoped/storage/framework/views',
+    'compiled' => '/var/www/html/scoped_development/storage/framework/views',
   ),
   'pushnotification' => 
   array (
@@ -210,13 +210,13 @@
     array (
       'priority' => 'high',
       'dry_run' => false,
-      'apiKey' => 'AAAAl2LQWCg:APA91bFeM0f7RojB3_jzuHfPjR4ZUO3RasGnd2y3v7A4N41p0zb7g06Xo89MG-Kpilxo-vIx3iXtlncOqAmpwTqNOYm7ZpPC9bfFUH0-f6rQn2CIBKJUG6d_bhiimyuRq3XOj-qZns_1',
+      'apiKey' => 'AAAA1XC4TOY:APA91bFz5hGNBaAmj9kFuaWP5LDA7CP5k4wqwka2WxSXYl1gBMF2U8DXEXdnZvie_JQ5kRU8HZE7k3d5VtbZxFgPP-yKcPp_kaYJTEwV-WwzMz7ak3pbo-aQsTabMLFUi5WGuMCq9U16',
     ),
     'apn' => 
     array (
-      'certificate' => '/var/www/html/Scoped/config/iosCertificates/apns-dev-cert.pem',
+      'certificate' => '/var/www/html/scoped_development/config/iosCertificates/apns-dev-cert.pem',
       'passPhrase' => '1234',
-      'passFile' => '/var/www/html/Scoped/config/iosCertificates/yourKey.pem',
+      'passFile' => '/var/www/html/scoped_development/config/iosCertificates/yourKey.pem',
       'dry_run' => true,
     ),
   ),
@@ -225,8 +225,8 @@
     'name' => 'SiteLink',
     'env' => 'local',
     'debug' => true,
-    'url' => 'http://103.51.153.235/project_management/public/',
-    'timezone' => 'UTC',
+    'url' => 'http://54.156.147.140/scoped_development/public/index.php',
+    'timezone' => 'Asia/Kolkata',
     'locale' => 'en',
     'fallback_locale' => 'en',
     'key' => 'base64:SZA6ppTVLhk9H4Y4H92MT62wrHgDpYvC3871mdbpUHg=',
@@ -303,7 +303,6 @@
       'PushNotification' => 'Edujugon\\PushNotification\\Facades\\PushNotification',
     ),
     'TINYPNG_KEY' => '83q9lPQrJvuExef8Z37lSIP2dWfZEV5M',
-    'fcm_server_key' => 'AAAAl2LQWCg:APA91bFeM0f7RojB3_jzuHfPjR4ZUO3RasGnd2y3v7A4N41p0zb7g06Xo89MG-Kpilxo-vIx3iXtlncOqAmpwTqNOYm7ZpPC9bfFUH0-f6rQn2CIBKJUG6d_bhiimyuRq3XOj-qZns_1',
   ),
   'auth' => 
   array (
@@ -359,7 +358,7 @@
     'lifetime' => 120,
     'expire_on_close' => false,
     'encrypt' => false,
-    'files' => '/var/www/html/Scoped/storage/framework/sessions',
+    'files' => '/var/www/html/scoped_development/storage/framework/sessions',
     'connection' => NULL,
     'table' => 'sessions',
     'store' => NULL,
@@ -420,7 +419,7 @@
       'file' => 
       array (
         'driver' => 'file',
-        'path' => '/var/www/html/Scoped/storage/framework/cache/data',
+        'path' => '/var/www/html/scoped_development/storage/framework/cache/data',
       ),
       'memcached' => 
       array (

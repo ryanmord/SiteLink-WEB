@@ -120,8 +120,7 @@
                               <label style="font-size: 15px;">Project Address</label>
                             </div>
                             <div class="col-md-9">
-                              <p style="font-size: 15px;">
-                              <a href="{{url('siteAddress',$project['project_id'])}}" target="_blank" style="color: #DA4453;"><u>{{ $project->project_site_address }}</u></a></p>
+                              <p style="font-size: 15px;"><a href="{{url('siteAddress',$project['project_id'])}}" target="_blank" style="color: #DA4453;"><u>{{ $project->project_site_address }}</u></a></p>
                               <input type="hidden" id="latitude" name="latitude" value="{{ $project->latitude }}">
                               <input type="hidden" id="longitude" name="longitude" value="{{ $project->longitude }}">
                             </div>

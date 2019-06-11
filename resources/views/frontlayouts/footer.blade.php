@@ -8,10 +8,10 @@
                 <div class="col-md-6">
                     <ul class="list-inline quicklinks">
                         <li class="list-inline-item">
-                            <a href="https://www.gositelink.com/terms-privacy" target="new">Terms & Conditions</a>
+                            <a href="#">Terms & Conditions</a>
                         </li>
                         <li class="list-inline-item">
-                            <a href="https://www.gositelink.com/terms-privacy" target="new">Privacy Policy</a>
+                            <a href="#">Privacy Policy</a>
                         </li>
                 </ul>
             </div>
