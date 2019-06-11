@@ -592,7 +592,7 @@ class ProjectController extends Controller
             $ratingflag = $projectdetail['ratingflag'];
         }
         $temp =  array('success'          => true, 
-                        'projectname'     => $projectname,
+                        'projectname'     =>$projectname,
                         'projectid'       => $projectid,
                         'createddate'     => $createddate,
                         'siteaddress'     => $siteaddress,

@@ -8,7 +8,7 @@
         
         var map = new google.maps.Map(document.getElementById('map'), {
           center: {lat: -33.8688, lng: 151.2195},
-          zoom: 16
+          zoom: 13
         });
        // var card = document.getElementById('pac-card');
          var input = document.getElementById('pac-input');
@@ -64,7 +64,7 @@
             map.fitBounds(place.geometry.viewport);
           } else {
             map.setCenter(place.geometry.location);
-            map.setZoom(16);  // Why 17? Because it looks good.
+            map.setZoom(17);  // Why 17? Because it looks good.
           }
           marker.setPosition(place.geometry.location);
           marker.setVisible(true);

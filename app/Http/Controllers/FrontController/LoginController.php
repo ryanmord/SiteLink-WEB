@@ -46,7 +46,7 @@ class LoginController extends Controller
         $request['email']    = $request['login_email'];
         $request['password'] = $request['login_password'];
         $this->validate($request, [
-                        'login_email'    => 'required|email',
+                        'login_email' => 'required|email',
                         'login_password' => 'required',
                     ]);
         $request['callFrom'] = 1;

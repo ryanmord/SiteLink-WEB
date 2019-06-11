@@ -490,7 +490,7 @@ class ProjectController extends Controller
     public function getaddress($latitude, $longitude)
     {
         $geolocation = $latitude.','.$longitude;
-        $request     = 'https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyAxpc335ca9lDAuHcGE7rUljfuPhkfcZ9U&latlng='.$geolocation.'&sensor=false'; 
+        $request     = 'https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyCFesVLN0rhPhI0uHrMrQjclKdbyx9X9g0&latlng='.$geolocation.'&sensor=false'; 
         $file_contents = file_get_contents($request);
         $json_decode   = json_decode($file_contents);
         $city = $state = $country = '';
@@ -2930,13 +2930,13 @@ class ProjectController extends Controller
         $updateprojectbid = ProjectBid::where(['project_id'   => $projectid,
                                          'project_bid_status' => 1,
                                          'bid_status'         => 1])
-                                ->update(['user_id'           => $associateid,
+                                ->update(['user_id'              => $associateid,
                                           'accepted_rejected_at' => $date]);
         $pojectstatus = ProjectStatus::where('project_status_type_id','=',3)
                                        ->update(['created_at'=> $date]);
-        $userid   = session('loginuserid');
+        $userid  = session('loginuserid');
         $touserid = $associateid;
-        $project  = Project::select('project_name')
+        $project = Project::select('project_name')
                            ->where('project_id','=',$projectid)->first();
         $body = $project->project_name;
         $msg  = 'You have been assigned a project!';
