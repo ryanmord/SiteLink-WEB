@@ -554,9 +554,7 @@
 
       function refreshMap(mapAvailableProject,userData) {
 
-        // var userData = $("#div-userData").val();
-        // var mapAvailableProject = $("#div-mapAvailableProject").val();
-
+      
         console.log(mapAvailableProject);
 
         var UserLat  = userData['latitude'];        
@@ -649,11 +647,7 @@
         }
     });
 };*/
-
-
-    
-
-    $("#project-name-list").scroll(function() {
+  $("#project-name-list").scroll(function() {
 
         var $this = $(this);
         var pagenumber1 = document.getElementById('pagenumber').value;

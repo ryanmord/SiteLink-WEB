@@ -23,13 +23,10 @@
 <script src="{{asset('js/frontJs/jquery.validate.js')}}"></script>		
 <script src="{{asset('js/frontJs/bootstrap-select.min.js')}}"></script>	
 <script type="text/javascript" src="{{asset('js/frontJs/bootstrap-multiselect.js')}}"></script>	
-<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js">
-	
-</script>
+<script src="{{asset('js/frontJs/toggle_min.js')}}"></script>
 
-
- <script src="{{asset('/js/ratingsJs/jquery.star-rating-svg.js')}}"></script>
- <script src="{{asset('/js/ratingsJs/jquery.star-rating-svg.min.js')}}"></script>
+<script src="{{asset('/js/ratingsJs/jquery.star-rating-svg.js')}}"></script>
+<script src="{{asset('/js/ratingsJs/jquery.star-rating-svg.min.js')}}"></script>
 <script type="text/javascript">
 
   	
