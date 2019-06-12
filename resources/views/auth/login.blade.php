@@ -179,6 +179,11 @@ $(document).ready(function () {
     });
     if($("#login-form").valid()) {
      $(".loader").fadeIn("slow");
+     $.ajaxSetup({
+      headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      }
+    });
       $.ajax({
             type: 'POST',
               url: $("#login-form").attr("action"),
