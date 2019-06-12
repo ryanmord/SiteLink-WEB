@@ -15,7 +15,7 @@ class VerifyCsrfToken extends BaseVerifier
      */
     protected $except_urls = [
        // 'checkProjectManagerEmail',
-        '*',
+        '*'
       
     ];
 
